@@ -717,9 +717,21 @@ h1 { font-family: var(--serif); color: var(--b900); font-size: 26px; margin: 0; 
 .seg button[aria-pressed="true"] { background: var(--white); color: var(--b900); box-shadow: 0 1px 2px rgba(0,0,0,.08); }
 .seg button:disabled { opacity: .4; cursor: default; }
 .tabs { display: none; }
-.sitetabs { display: flex; gap: 4px; margin: 4px 0 14px; border-bottom: 1px solid var(--line); }
+.sitetabs { display: flex; gap: 4px; margin: 4px 0 14px; border-bottom: 1px solid var(--line); overflow-x: auto; scrollbar-width: none; }
+.sitetabs button { white-space: nowrap; }
+.sitetabs .sh { display: none; }
+.aboutpage { max-width: 760px; margin: 0 auto; background: var(--white); border: 1px solid var(--line); border-radius: 16px; padding: 22px 24px; line-height: 1.55; }
+.aboutpage h2 { font-family: var(--serif); color: var(--b900); font-size: 22px; margin: 0 0 6px; }
+.aboutpage h3 { font-family: var(--serif); color: var(--b900); font-size: 17px; margin: 22px 0 6px; }
+.aboutpage p, .aboutpage ul { margin: 6px 0; color: #44403C; }
+.aboutpage ul { padding-left: 20px; }
+.aboutpage .note { background: #FFF7ED; border: 1px solid #FED7AA; border-radius: 12px; padding: 10px 14px; color: #7C2D12; margin: 12px 0 4px; }
+.aboutpage .stats { font-weight: 700; color: var(--b800); }
+.aboutpage .btn { display: inline-block; margin-top: 6px; background: var(--b700); color: #fff; text-decoration: none; font-weight: 700; padding: 10px 16px; border-radius: 10px; }
+.aboutpage .small { font-size: 13px; color: #78716C; }
 .sitetabs button { border: 0; background: none; padding: 9px 14px 10px; font-weight: 700; font-size: 14px; color: #78716C; cursor: pointer; border-bottom: 3px solid transparent; margin-bottom: -1px; }
 .sitetabs button[aria-selected="true"] { color: var(--b900); border-bottom-color: var(--b600); }
+@media (max-width: 420px) { .sitetabs { gap: 0; } .sitetabs button { padding-inline: 7px; font-size: 13px; } .sitetabs .lg { display: none; } .sitetabs .sh { display: inline; } }
 .tq { display: flex; gap: 10px; flex-wrap: wrap; align-items: stretch; }
 .tq .q { flex: 1 1 280px; }
 .toggle { display: flex; align-items: center; gap: 8px; background: var(--b50); border: 2px solid transparent; border-radius: 12px; padding: 8px 14px; font-weight: 600; cursor: pointer; }
@@ -813,9 +825,10 @@ footer.urgent p { color: #FEE2E2; }
     <p class="lede" id="lede">Mental health and wellbeing support across Somerset.</p>
     <p class="datasrc" id="datasrc" hidden></p>
     <nav class="sitetabs" role="tablist" aria-label="Kind of support">
-      <button type="button" role="tab" id="tab-talk" aria-selected="true" aria-controls="panel-talk">Phone and online</button>
+      <button type="button" role="tab" id="tab-talk" aria-selected="true" aria-controls="panel-talk"><span class="lg">Phone and online</span><span class="sh">Phone &amp; online</span></button>
       <button type="button" role="tab" id="tab-near" aria-selected="false" aria-controls="panel-near">In person</button>
       <button type="button" role="tab" id="tab-course" aria-selected="false" aria-controls="panel-course">Courses</button>
+      <button type="button" role="tab" id="tab-about" aria-selected="false" aria-controls="panel-about">About</button>
     </nav>
     <div id="hdr-talk" class="tq">
       <div class="q" id="q-tsupport"><label for="t-support">Support for</label><select id="t-support"></select></div>
@@ -826,6 +839,7 @@ footer.urgent p { color: #FEE2E2; }
       <div class="q" id="q-cfmt" style="flex:0 1 220px"><label for="c-fmt">Format</label><select id="c-fmt"><option value="">In person or online</option><option value="in-person">In person</option><option value="online">Online</option></select></div>
       <label class="toggle" id="q-cbook"><input type="checkbox" id="c-book"> Can still join</label>
     </div>
+    <div id="hdr-about" hidden></div>
     <div id="hdr-near" hidden>
     <div class="qs">
       <div class="q" id="q-support"><label for="f-support">1. Support for</label>
@@ -859,6 +873,7 @@ footer.urgent p { color: #FEE2E2; }
 </header>
 
 <section id="panel-talk" role="tabpanel" aria-labelledby="tab-talk"><div class="talk gut" id="talk"></div></section>
+<section id="panel-about" role="tabpanel" aria-labelledby="tab-about" hidden style="flex:1;min-height:0;overflow-y:auto"><div class="talk gut" id="about"></div></section>
 <section id="panel-course" role="tabpanel" aria-labelledby="tab-course" hidden style="flex:1;min-height:0;overflow-y:auto"><div class="talk gut" id="courses"></div></section>
 <div id="panel-near" role="tabpanel" aria-labelledby="tab-near" hidden style="flex:1;min-height:0;display:flex;flex-direction:column">
 
@@ -878,8 +893,8 @@ footer.urgent p { color: #FEE2E2; }
 <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.js"></script>
 <script>
 const DATA = [];
-const TOWNS = {"Axbridge": [51.2866, -2.8188], "Berrow": [51.268, -3.007], "Bishops Lydeard": [51.06, -3.187], "Brean": [51.293, -3.012], "Bridgwater": [51.1279, -3.0036], "Bruton": [51.1118, -2.4532], "Burnham-on-Sea": [51.2384, -2.9972], "Castle Cary": [51.089, -2.513], "Chard": [50.8722, -2.9616], "Cheddar": [51.2771, -2.7781], "Cotford St Luke": [51.042, -3.177], "Creech St Michael": [51.025, -3.035], "Crewkerne": [50.884, -2.795], "Dulverton": [51.04, -3.55], "Frome": [51.2283, -2.3218], "Glastonbury": [51.1486, -2.7145], "Highbridge": [51.2187, -2.9727], "Ilminster": [50.9265, -2.9112], "Langport": [51.038, -2.828], "Minehead": [51.2041, -3.4794], "North Petherton": [51.093, -3.013], "Porlock": [51.208, -3.595], "Shepton Mallet": [51.1906, -2.5462], "Somerton": [51.055, -2.734], "South Petherton": [50.948, -2.81], "Stoke St Gregory": [51.04, -2.935], "Street": [51.1268, -2.7393], "Taunton": [51.015, -3.103], "Watchet": [51.181, -3.33], "Wellington": [50.9787, -3.2263], "Wells": [51.2093, -2.6474], "West Huntspill": [51.198, -2.99], "Williton": [51.162, -3.322], "Wincanton": [51.056, -2.41], "Wiveliscombe": [51.041, -3.312], "Woolavington": [51.168, -2.94], "Yeovil": [50.9421, -2.633], "Cannington": [51.15, -3.064], "Coleford": [51.239, -2.444], "Drayton": [51.006, -2.836], "Dunster": [51.183, -3.444], "East Huntspill": [51.2, -2.96], "Evercreech": [51.148, -2.502], "Galmington": [51.011, -3.122], "Keinton Mandeville": [51.068, -2.645], "Lisieux Way": [51.018, -3.075], "Long Load": [50.997, -2.756], "Long Sutton": [51.023, -2.758], "Martock": [50.97, -2.768], "Merriott": [50.905, -2.795], "Milborne Port": [50.966, -2.462], "Milverton": [51.026, -3.257], "Mudford": [50.968, -2.611], "Oake": [51.024, -3.199], "Oakhill": [51.226, -2.522], "Queen Camel": [51.022, -2.582], "Staplegrove": [51.033, -3.12], "Stogursey": [51.18, -3.14], "West Monkton": [51.04, -3.06], "Weston-super-Mare": [51.346, -2.977], "Edington": [51.162, -2.885], "Ruishton": [51.017, -3.055], "Steart": [51.203, -3.046], "Stoke-sub-Hamdon": [50.953, -2.749], "Wedmore": [51.227, -2.811], "Westhay": [51.183, -2.783]};
-const APPROX_TOWNS = ["Cannington", "Coleford", "Drayton", "Dunster", "East Huntspill", "Edington", "Evercreech", "Galmington", "Keinton Mandeville", "Lisieux Way", "Long Load", "Long Sutton", "Martock", "Merriott", "Milborne Port", "Milverton", "Mudford", "Oake", "Oakhill", "Queen Camel", "Ruishton", "Staplegrove", "Steart", "Stogursey", "Stoke-sub-Hamdon", "Wedmore", "West Monkton", "Westhay", "Weston-super-Mare"];
+const TOWNS = {"Axbridge": [51.2866, -2.8188], "Berrow": [51.268, -3.007], "Bishops Lydeard": [51.06, -3.187], "Brean": [51.293, -3.012], "Bridgwater": [51.1279, -3.0036], "Bruton": [51.1118, -2.4532], "Burnham-on-Sea": [51.2384, -2.9972], "Castle Cary": [51.089, -2.513], "Chard": [50.8722, -2.9616], "Cheddar": [51.2771, -2.7781], "Cotford St Luke": [51.042, -3.177], "Creech St Michael": [51.025, -3.035], "Crewkerne": [50.884, -2.795], "Dulverton": [51.04, -3.55], "Frome": [51.2283, -2.3218], "Glastonbury": [51.1486, -2.7145], "Highbridge": [51.2187, -2.9727], "Ilminster": [50.9265, -2.9112], "Langport": [51.038, -2.828], "Minehead": [51.2041, -3.4794], "North Petherton": [51.093, -3.013], "Porlock": [51.208, -3.595], "Shepton Mallet": [51.1906, -2.5462], "Somerton": [51.055, -2.734], "South Petherton": [50.948, -2.81], "Stoke St Gregory": [51.04, -2.935], "Street": [51.1268, -2.7393], "Taunton": [51.015, -3.103], "Watchet": [51.181, -3.33], "Wellington": [50.9787, -3.2263], "Wells": [51.2093, -2.6474], "West Huntspill": [51.198, -2.99], "Williton": [51.162, -3.322], "Wincanton": [51.056, -2.41], "Wiveliscombe": [51.041, -3.312], "Woolavington": [51.168, -2.94], "Yeovil": [50.9421, -2.633], "Cannington": [51.15, -3.064], "Coleford": [51.239, -2.444], "Drayton": [51.006, -2.836], "Dunster": [51.183, -3.444], "East Huntspill": [51.2, -2.96], "Evercreech": [51.148, -2.502], "Galmington": [51.011, -3.122], "Keinton Mandeville": [51.068, -2.645], "Lisieux Way": [51.018, -3.075], "Long Load": [50.997, -2.756], "Long Sutton": [51.023, -2.758], "Martock": [50.97, -2.768], "Merriott": [50.905, -2.795], "Milborne Port": [50.966, -2.462], "Milverton": [51.026, -3.257], "Mudford": [50.968, -2.611], "Oake": [51.024, -3.199], "Oakhill": [51.226, -2.522], "Queen Camel": [51.022, -2.582], "Staplegrove": [51.033, -3.12], "Stogursey": [51.18, -3.14], "West Monkton": [51.04, -3.06], "Weston-super-Mare": [51.346, -2.977], "Edington": [51.162, -2.885], "Ruishton": [51.017, -3.055], "Steart": [51.203, -3.046], "Stoke-sub-Hamdon": [50.953, -2.749], "Wedmore": [51.227, -2.811], "Westhay": [51.183, -2.783], "Nailsea": [51.432, -2.757]};
+const APPROX_TOWNS = ["Cannington", "Coleford", "Drayton", "Dunster", "East Huntspill", "Edington", "Evercreech", "Galmington", "Keinton Mandeville", "Lisieux Way", "Long Load", "Long Sutton", "Martock", "Merriott", "Milborne Port", "Milverton", "Mudford", "Nailsea", "Oake", "Oakhill", "Queen Camel", "Ruishton", "Staplegrove", "Steart", "Stogursey", "Stoke-sub-Hamdon", "Wedmore", "West Monkton", "Westhay", "Weston-super-Mare"];
 const LIVE_ONLY = true;  // true in the GitHub version: no built-in copy, records come only from the sheet
 let liveMsg = "<strong>Loading services…</strong>";
 
@@ -1192,17 +1207,58 @@ function renderCourses() {
   $("courses").innerHTML = rows.length ? `<h2 class="gh">Courses<small>${rows.length}</small></h2><div class="tgrid">${rows.map(card).join("")}</div>`
     : `<div class="empty"><strong>No courses match</strong><br>Try "Anything", or untick "Can still join".</div>`;
 }
+/* ---------- About ---------- */
+// Paste the Google Form link between the quotes to show the "Suggest a change" button.
+const FEEDBACK_FORM_URL = "https://docs.google.com/forms/d/e/1FAIpQLSf8NCl7EpGkgKNACUMDJEFzToJnoQp_xs7Fj0E9z4o2pLiqOQ/viewform";
+function renderAbout() {
+  const n = ALL.length, providers = new Set(ALL.map(s => s.provider).filter(Boolean)).size;
+  const stats = n ? `${n} services from ${providers} providers.` : "Loading services…";
+  const suggest = FEEDBACK_FORM_URL
+    ? `<p>Spotted something out of date, or know a service that should be here? Local knowledge is what keeps this useful.</p>
+       <a class="btn" href="${esc(FEEDBACK_FORM_URL)}" target="_blank" rel="noopener">Suggest a change</a>
+       <p class="small">Please don't include personal details about anyone you support.</p>`
+    : `<p>Spotted something out of date, or know a service that should be here? Please tell the person who shared this site with you. A suggestion form is coming soon.</p>`;
+  $("about").innerHTML = `<article class="aboutpage">
+    <h2>About Signposting Somerset</h2>
+    <div class="note"><strong>Demo version.</strong> Details are checked against each provider's own information, but services change. Please confirm with the service before attending.
+      In an emergency call <a href="tel:999">999</a>. For urgent mental health help call NHS <a href="tel:111">111</a> and choose option 2.</div>
+    <h3>What it is</h3>
+    <p>One place to find local mental health and wellbeing support across Somerset: what's on, when and where, and whether someone can go.
+      It's built mainly for support workers and volunteers helping others find support, and anyone is welcome to use it.</p>
+    <p class="stats">${esc(stats)}</p>
+    <h3>What's included</h3>
+    <ul>
+      <li><strong>Specialist support:</strong> crisis prevention, bereavement, hearing voices, long-term pain, eating disorders, dementia, drugs and alcohol, caring for someone.</li>
+      <li><strong>Practical help and support:</strong> money, housing and food, including advice and advocacy.</li>
+      <li><strong>Everyday wellbeing:</strong> connection, activity, learning and nature, based on the Five Ways to Wellbeing.</li>
+      <li>Helplines and online groups, in-person services on a map, and courses with set dates.</li>
+    </ul>
+    <h3>How it's kept accurate</h3>
+    <ul>
+      <li>Every service is checked against the provider's own website, timetable or leaflet, and dated.</li>
+      <li>Nothing is guessed: if a provider doesn't say something, it's left blank.</li>
+      <li>Some venues are only shared after registration, and Crisis Safe Space addresses are never published. These show at the town centre.</li>
+      <li>The records are shared, so people with local knowledge can keep them up to date. Changes appear here within minutes.</li>
+    </ul>
+    <h3>Suggest a change</h3>
+    ${suggest}
+    <h3>Where it came from</h3>
+    <p>It started from a Padlet of local services created by colleagues at a Somerset mental health charity, and grew from there.</p>
+    <p class="small">Service information belongs to the providers listed. Map data © <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap</a> contributors, © <a href="https://carto.com/attributions" target="_blank" rel="noopener">CARTO</a>.</p>
+  </article>`;
+}
 let tab = "talk";
 const LEDE = { talk: "Phone lines, text services and online groups: support you can reach from anywhere.",
-  near: "In-person mental health and wellbeing support across Somerset.", course: "Courses with a set programme and length, in person or online. Most need booking." };
+  near: "In-person mental health and wellbeing support across Somerset.", about: "What this is, how it's kept accurate, and how to suggest a change.", course: "Courses with a set programme and length, in person or online. Most need booking." };
 function setSiteTab(t) {
   tab = t;
-  for (const k of ["talk", "near", "course"]) { $("tab-" + k).setAttribute("aria-selected", k === t); $("panel-" + k).hidden = k !== t; $("hdr-" + k).hidden = k !== t; }
+  try { $("tab-" + t).scrollIntoView({ block: "nearest", inline: "nearest" }); } catch (e) {}
+  for (const k of ["talk", "near", "course", "about"]) { $("tab-" + k).setAttribute("aria-selected", k === t); $("panel-" + k).hidden = k !== t; $("hdr-" + k).hidden = k !== t; }
   $("lede").textContent = LEDE[t];
-  if (t === "talk") renderTalk(); else if (t === "course") renderCourses(); else { initMap(); setTimeout(() => { map && map.invalidateSize(); fitPending = true; render(); }, 30); }
+  if (t === "talk") renderTalk(); else if (t === "course") renderCourses(); else if (t === "about") renderAbout(); else { initMap(); setTimeout(() => { map && map.invalidateSize(); fitPending = true; render(); }, 30); }
   try { history.replaceState(null, "", "#" + t); } catch (e) {}
 }
-for (const k of ["talk", "near", "course"]) $("tab-" + k).onclick = () => setSiteTab(k);
+for (const k of ["talk", "near", "course", "about"]) $("tab-" + k).onclick = () => setSiteTab(k);
 $("c-support").onchange = renderCourses; $("c-fmt").onchange = renderCourses; $("c-book").onchange = renderCourses;
 $("t-support").onchange = renderTalk; $("t-open").onchange = renderTalk;
 
@@ -1222,7 +1278,7 @@ function setTab(t) { $("main").classList.toggle("show-map", t === "map"); $("t-l
   if (t === "map" && map) setTimeout(() => { map.invalidateSize(); fitPending = true; render(); }, 30); }
 $("t-list").onclick = () => setTab("list"); $("t-map").onclick = () => setTab("map");
 addEventListener("resize", () => map && map.invalidateSize());
-setSiteTab(["#near", "#course"].includes(location.hash) ? location.hash.slice(1) : "talk");
+setSiteTab(["#near", "#course", "#about"].includes(location.hash) ? location.hash.slice(1) : "talk");
 
 /* ---------- live data: read records from a published Google Sheet (CSV) ---------- */
 // Paste the sheet's "Publish to web → CSV" link between the quotes. Leave empty to use the built-in copy only.
@@ -1260,7 +1316,7 @@ function recordsFromCSV(text) {
   }
   return { recs };
 }
-function applyRecords(recs) {
+function applyRecords(recs) {  // (also refreshes the About counts)
   prepare(recs);
   origin = null; sortBy = "soon"; fitPending = true; $("f-town").value = "";
   setSiteTab(tab);
@@ -1276,7 +1332,7 @@ if (SHEET_CSV_URL) {
       const { recs, error } = recordsFromCSV(text);
       if (error || recs.length < 10) throw new Error(error || "too few records");
       applyRecords(recs);
-      showSource(`${recs.length} services, updated from the shared records at ${new Date().toLocaleTimeString("en-GB", { hour: "2-digit", minute: "2-digit" })}.`);
+      showSource(`${recs.length} services, updated from shared Google Sheet at ${new Date().toLocaleTimeString("en-GB", { hour: "2-digit", minute: "2-digit" })}.`);
     })
     .catch(() => {
       if (LIVE_ONLY) {
