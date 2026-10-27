@@ -92,6 +92,29 @@ select { border: 1px solid var(--b200); border-radius: 8px; padding: 8px 10px; b
 .topnote { margin: 8px 0 0; font-size: 13px; color: var(--b100); }
 .topnote a { color: #fff; }
 .linkbtn { background: none; border: 0; padding: 0; color: var(--b700); text-decoration: underline; cursor: pointer; font-size: 13px; }
+.reshead { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 8px; }
+.reshead h2 { margin: 0; }
+.planbar { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; }
+.btn.small { padding: 6px 12px; font-size: 13px; border-radius: 8px; }
+.copied { font-size: 13px; color: var(--b700); width: 100%; text-align: right; }
+.copied:empty { display: none; }
+details.pick { background: var(--white); border: 1px solid var(--line); border-left: 4px solid var(--b500); border-radius: 12px; margin-bottom: 8px; }
+details.pick summary { list-style: none; cursor: pointer; padding: 12px 40px 12px 14px; position: relative; display: flex; flex-direction: column; gap: 2px; }
+details.pick summary::-webkit-details-marker { display: none; }
+details.pick summary::after { content: ""; position: absolute; right: 16px; top: 18px; width: 8px; height: 8px; border-right: 2px solid var(--b600); border-bottom: 2px solid var(--b600); transform: rotate(45deg); transition: transform .15s; }
+details.pick[open] summary::after { transform: rotate(-135deg); top: 22px; }
+.pk-name { font-weight: 700; font-size: 16px; }
+.pk-facts { font-size: 13px; color: var(--muted); }
+.pk-why { font-size: 14px; color: var(--b900); margin-top: 2px; }
+.pk-body { padding: 0 14px 14px; border-top: 1px solid var(--line); margin-top: 0; padding-top: 10px; }
+#printplan { display: none; }
+@media print {
+  body { background: #fff; }
+  body > *:not(main), main form, main .alert, main .status, main .err, #out, #refine, main .note { display: none !important; }
+  #app { display: block !important; }
+  #printplan { display: block !important; font-size: 13pt; color: #000; }
+  #printplan a { color: #000; }
+}
 </style>
 </head>
 <body>
@@ -136,6 +159,7 @@ select { border: 1px solid var(--b200); border-radius: 8px; padding: 8px 10px; b
   <p class="status" id="status" hidden><span class="dot"></span><span id="statusText">Thinking...</span></p>
   <p class="err" id="err" hidden></p>
   <section id="out" hidden></section>
+  <div id="printplan"></div>
 
   <form class="refine card" id="refine" hidden>
     <label class="h" for="more">Not quite right? Tell it more</label>
@@ -217,52 +241,117 @@ async function run() {
     const data = await r.json().catch(() => ({ error: "bad_answer" }));
     if (data.error) {
       if (data.error === "bad_code") { store.set("assist-code", null); code = ""; showGate(ERRORS.bad_code); return; }
-      return note(ERRORS[data.error] || "Something went wrong. Please try again.");
+      if (data.error === "ai_error") return note("The AI service returned an error" + (data.status ? ` (${data.status})` : "") + (data.detail ? `: ${data.detail}` : "."));
+      return note(ERRORS[data.error] || `Something went wrong (${data.error}). Please try again.`);
     }
     render(data);
   } catch { note("Couldn't reach the service. Check your connection and try again."); }
   finally { busy(false); }
 }
 
+let lastPicks = [];
+const STEPS = ["First step", "Next step", "When ready"];
+const normStep = s => STEPS.find(x => x.toLowerCase() === String(s).toLowerCase()) || "Next step";
+const HOW = { "drop in": "Just turn up", "sign up": "Sign up first", "book": "Book first", "referral": "Needs a referral", "call": "Call" };
+const SITE = "https://chris010970.github.io/signposting-somerset/";
+
 function render(r) {
   if (r.risk) $("crisis").hidden = false;
   state.previous = r.picks.map(p => p.record.name);
-  const steps = ["First step", "Next step", "When ready"];
-  const norm = s => steps.find(x => x.toLowerCase() === String(s).toLowerCase()) || "Next step";
   const sc = r.scope || {};
+  lastPicks = STEPS.flatMap(st => r.picks.filter(p => normStep(p.step) === st).map(p => ({ ...p, step: st })));
   let h = `<div class="reading"><h2>How it read this</h2><p>${esc(r.reading)}</p>
     <p class="scope">Chose from ${sc.total} of ${sc.records} services: ${[sc.near ? `${sc.near} in person ${esc(sc.place)}` : "", sc.remote ? `${sc.remote} phone or online` : ""].filter(Boolean).join(" and ")}.</p></div>`;
-  h += `<div class="res"><h2>Suggestions</h2>`;
-  if (!r.picks.length) h += `<p>No suitable services were found for this need and area. Try a wider distance.</p>`;
-  for (const st of steps) { const list = r.picks.filter(p => norm(p.step) === st); if (list.length) h += `<div class="step"><h3>${st}</h3>${list.map(card).join("")}</div>`; }
+  h += `<div class="res"><div class="reshead"><h2>Suggestions</h2>`;
+  if (lastPicks.length) h += `<div class="planbar"><button type="button" class="btn small" id="copyPlan">Copy plan</button>${navigator.share ? `<button type="button" class="btn small ghost" id="sharePlan">Share</button>` : ""}<button type="button" class="btn small ghost" id="printPlan">Print</button><span class="copied" id="copied" role="status"></span></div>`;
+  h += `</div>`;
+  if (!lastPicks.length) h += `<p>No suitable services were found for this need and area. Try a wider distance.</p>`;
+  else h += `<p class="hint" style="margin:2px 0 0">Tap a service for full details.</p>`;
+  for (const st of STEPS) { const list = lastPicks.filter(p => p.step === st); if (list.length) h += `<div class="step"><h3>${st}</h3>${list.map(card).join("")}</div>`; }
   h += `</div>`;
   if (r.gaps) h += `<p class="gaps"><b>Not covered:</b> ${esc(r.gaps)}</p>`;
   if (r.questions?.length) h += `<div class="qs"><b>Questions that might help</b><ul>${r.questions.map(q => `<li>${esc(q)}</li>`).join("")}</ul></div>`;
   $("out").innerHTML = h; $("out").hidden = false; $("refine").hidden = false;
+  if (lastPicks.length) {
+    $("copyPlan").onclick = copyPlan;
+    $("printPlan").onclick = () => { $("printplan").innerHTML = plan().html; window.print(); };
+    if ($("sharePlan")) $("sharePlan").onclick = () => navigator.share({ title: "Things that might help", text: plan().text }).catch(() => {});
+  }
   $("out").scrollIntoView({ behavior: "smooth", block: "start" });
 }
-function whenText(s) { return s.dates ? "Dates: " + s.dates.replace(/;/g, ", ") + (s.times ? " " + s.times : "") : [s.days, s.times, s.frequency].filter(Boolean).join(" "); }
+function whenText(s) { return s.dates ? "Dates: " + s.dates.replace(/;/g, ", ") + (s.times ? " " + s.times : "") : [[s.days, s.times].filter(Boolean).join(" "), s.frequency].filter(Boolean).join(", "); }
+const telOf = s => s.phone ? s.phone.split(" (")[0].split(" or ")[0].replace(/\s/g, "") : "";
+const isUrl = u => /^https?:\/\//.test(u || "");
 function card(p) {
   const s = p.record, w = whenText(s), mode = s.mode || "";
+  const inPerson = mode.includes("in-person");
   const where = [s.address, s.town, s.postcode].filter(Boolean).join(", ");
   const dist = p.distance !== null ? ` (${p.distance} miles)` : "";
-  const tel = s.phone ? s.phone.split(" (")[0].split(" or ")[0].replace(/\s/g, "") : "";
-  const contact = [s.phone && `<a href="tel:${esc(tel)}">${esc(s.phone)}</a>`, s.email && `<a href="mailto:${esc(s.email)}">${esc(s.email)}</a>`, /^https?:\/\//.test(s.url || "") && `<a href="${esc(s.url)}" target="_blank" rel="noopener">Website</a>`].filter(Boolean).join(" · ");
-  return `<article class="svc">
-    <p class="why"><b>Why:</b> ${esc(p.why)}</p>
-    <h4>${esc(s.name)}</h4><div class="prov">${esc(s.provider)} · ${esc(s.type)}</div>
-    <p class="desc">${esc(s.description)}</p>
-    <dl class="facts">
-      ${w ? `<dt>When</dt><dd>${esc(w)}</dd>` : ""}
-      ${mode.includes("in-person") && where ? `<dt>Where</dt><dd>${esc(where)}${dist}</dd>` : ""}
-      <dt>How</dt><dd>${esc(s.access)}${mode !== "in-person" ? " · " + esc(mode.replace(/;/g, ", ")) : ""}</dd>
-      ${s.cost ? `<dt>Cost</dt><dd>${esc(s.cost)}</dd>` : ""}
-      ${s.eligibility ? `<dt>Who</dt><dd>${esc(s.eligibility)}</dd>` : ""}
-      ${contact ? `<dt>Contact</dt><dd>${contact}</dd>` : ""}
-      ${s.last_checked ? `<dt>Checked</dt><dd>${esc(s.last_checked)}</dd>` : ""}
-    </dl>
-    <div class="tags">${(s.support_for || "").split(";").filter(Boolean).map(t => `<span class="tag">${esc(t)}</span>`).join("")}</div>
-  </article>`;
+  const contact = [s.phone && `<a href="tel:${esc(telOf(s))}">${esc(s.phone)}</a>`, s.email && `<a href="mailto:${esc(s.email)}">${esc(s.email)}</a>`, isUrl(s.url) && `<a href="${esc(s.url)}" target="_blank" rel="noopener">Website</a>`].filter(Boolean).join(" · ");
+  const quick = [w, inPerson ? (p.distance !== null && s.address ? `${p.distance} mi` : s.town) : mode.replace(/;/g, " / ").replace("phone", "Phone").replace("online", "Online"), HOW[s.access] || s.access, s.cost].filter(Boolean);
+  return `<details class="pick">
+    <summary>
+      <span class="pk-name">${esc(s.name)}</span>
+      <span class="pk-facts">${quick.map(esc).join(" · ")}</span>
+      <span class="pk-why">${esc(p.why)}</span>
+    </summary>
+    <div class="pk-body">
+      <div class="prov">${esc(s.provider)} · ${esc(s.type)}</div>
+      <p class="desc">${esc(s.description)}</p>
+      <dl class="facts">
+        ${w ? `<dt>When</dt><dd>${esc(w)}</dd>` : ""}
+        ${inPerson && where ? `<dt>Where</dt><dd>${esc(where)}${dist}</dd>` : ""}
+        <dt>How</dt><dd>${esc(s.access)}${mode !== "in-person" ? " · " + esc(mode.replace(/;/g, ", ")) : ""}</dd>
+        ${s.cost ? `<dt>Cost</dt><dd>${esc(s.cost)}</dd>` : ""}
+        ${s.eligibility ? `<dt>Who</dt><dd>${esc(s.eligibility)}</dd>` : ""}
+        ${contact ? `<dt>Contact</dt><dd>${contact}</dd>` : ""}
+        ${s.last_checked ? `<dt>Checked</dt><dd>${esc(s.last_checked)}</dd>` : ""}
+      </dl>
+      <div class="tags">${(s.support_for || "").split(";").filter(Boolean).map(t => `<span class="tag">${esc(t)}</span>`).join("")}</div>
+    </div>
+  </details>`;
+}
+
+// ---- the plan: a short summary to give to the person (email, text, print) ----
+const STEP_TITLE = { "First step": "A good place to start", "Next step": "Next", "When ready": "When you feel ready" };
+const FOOT = "Please check with the service before going, as details can change. If things get worse, call Mindline any time on 0800 138 1692 (free), or 999 in an emergency.";
+function plan() {
+  let html = `<h3 style="margin:0 0 6px">Things that might help</h3>`, text = "Things that might help\n";
+  let n = 0;
+  for (const st of STEPS) {
+    const list = lastPicks.filter(p => p.step === st); if (!list.length) continue;
+    html += `<p style="margin:12px 0 4px"><b>${STEP_TITLE[st]}</b></p><ol start="${n + 1}" style="margin:0;padding-left:22px">`;
+    text += `\n${STEP_TITLE[st]}\n`;
+    for (const p of list) {
+      n++;
+      const s = p.record, inPerson = (s.mode || "").includes("in-person");
+      const when = whenText(s), where = inPerson ? [s.address, s.town, s.postcode].filter(Boolean).join(", ") : "";
+      const how = [HOW[s.access] || s.access, s.cost].filter(Boolean).join(". ");
+      const lines = [when && where ? `${when}, ${where}` : when || where, how].filter(Boolean);
+      const contactH = [s.phone && `<a href="tel:${esc(telOf(s))}">${esc(s.phone)}</a>`, s.email && `<a href="mailto:${esc(s.email)}">${esc(s.email)}</a>`].filter(Boolean).join(" · ");
+      const contactT = [s.phone, s.email].filter(Boolean).join(" · ");
+      const name = isUrl(s.url) ? `<a href="${esc(s.url)}"><b>${esc(s.name)}</b></a>` : `<b>${esc(s.name)}</b>`;
+      html += `<li style="margin:0 0 8px">${name}<br>${lines.map(esc).join("<br>")}${contactH ? `<br>${contactH}` : ""}</li>`;
+      text += `${n}. ${s.name}\n` + lines.map(l => `   ${l}\n`).join("") + (contactT ? `   ${contactT}\n` : "") + (isUrl(s.url) ? `   ${s.url}\n` : "");
+    }
+    html += `</ol>`;
+  }
+  html += `<p style="margin:12px 0 4px"><i>${esc(FOOT)}</i></p><p style="margin:0;font-size:12px">From Signposting Somerset: <a href="${SITE}">${SITE}</a></p>`;
+  text += `\n${FOOT}\nFrom Signposting Somerset: ${SITE}\n`;
+  return { html, text };
+}
+async function copyPlan() {
+  const { html, text } = plan();
+  let ok = false;
+  try {
+    if (window.ClipboardItem && navigator.clipboard?.write) {
+      await navigator.clipboard.write([new ClipboardItem({ "text/html": new Blob([html], { type: "text/html" }), "text/plain": new Blob([text], { type: "text/plain" }) })]);
+      ok = true;
+    }
+  } catch {}
+  if (!ok) { try { await navigator.clipboard.writeText(text); ok = true; } catch {} }
+  $("copied").textContent = ok ? "Copied: paste into an email, letter or text." : "Couldn't copy on this device. Try Print instead.";
+  setTimeout(() => { if ($("copied")) $("copied").textContent = ""; }, 5000);
 }
 </script>
 </body>
