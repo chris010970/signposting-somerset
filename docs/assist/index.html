@@ -143,6 +143,22 @@ details.pick summary:focus-visible { outline: 2px solid var(--b500); outline-off
 .act:hover { background: var(--b100); }
 .pk-body .prov { color: var(--muted); font-size: 13px; }
 .pk-body .desc { margin: 6px 0; }
+/* colours borrowed from the main site */
+.pk-name { font-family: var(--serif); font-size: 17px !important; color: var(--b900); line-height: 1.25; }
+.pk-badges { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; margin: 4px 0 2px; }
+.badge { display: inline-flex; align-items: center; gap: 6px; font-size: 12px; font-weight: 700; padding: 3px 9px; border-radius: 7px; border: 1px solid; }
+.b-drop { background: #D1FAE5; color: #064E3B; border-color: #A7F3D0; }
+.b-sign { background: #E0F2FE; color: #0C4A6E; border-color: #BAE6FD; }
+.b-book { background: #FEF3C7; color: #78350F; border-color: #FDE68A; }
+.b-ref { background: #F1F5F9; color: #1E293B; border-color: #CBD5E1; }
+.chip { display: inline-flex; align-items: center; font-size: 12px; font-weight: 600; color: #57534E; background: #F5F5F4; border: 1px solid var(--line); padding: 3px 8px; border-radius: 6px; }
+.chip.dist { color: var(--b800); background: var(--b50); border-color: var(--b100); }
+.chip .m { display: inline-flex; align-items: center; gap: 4px; }
+.chip svg { width: 13px; height: 13px; fill: currentColor; }
+.pk-when { font-size: 14px; color: var(--ink); font-weight: 600; margin-top: 4px; }
+.pk-when .lab { font-size: 10px; letter-spacing: .1em; text-transform: uppercase; font-weight: 700; color: var(--b700); margin-right: 8px; }
+.pk-why { background: rgba(242,246,244,.8); border: 1px solid var(--b100); border-radius: 10px; padding: 8px 10px; margin-top: 8px !important; }
+.pk-body .tags .tag { background: var(--b50); border: 1px solid var(--b100); }
 #printplan { display: none; }
 @media print {
   body { background: #fff; }
@@ -288,7 +304,8 @@ async function run() {
 let lastPicks = [];
 const STEPS = ["First step", "Next step", "When ready"];
 const normStep = s => STEPS.find(x => x.toLowerCase() === String(s).toLowerCase()) || "Next step";
-const HOW = { "drop in": "Just turn up", "sign up": "Sign up first", "book": "Book first", "referral": "Needs a referral", "call": "Call" };
+const HOW = { "drop in": "Just turn up", "sign up": "Contact to join", "book": "Book first", "referral": "Needs a referral", "call": "Phone line" };
+const HOWCLS = { "drop in": "b-drop", "sign up": "b-sign", "book": "b-book", "referral": "b-ref", "call": "b-ref" };
 const SITE = "https://chris010970.github.io/signposting-somerset/";
 
 function render(r) {
@@ -354,11 +371,13 @@ function card(p) {
   const modeBit = inPerson
     ? `<span class="m">${ICON.place}${esc(p.distance !== null && s.address ? `${p.distance} mi` : s.town)}</span>`
     : `<span class="m">${mode.includes("phone") ? ICON.phone : ""}${mode.includes("online") ? ICON.online : ""}${esc(mode.replace(/;/g, " / ").replace("phone", "Phone").replace("online", "Online"))}</span>`;
-  const quick = [w && esc(w), modeBit, esc(HOW[s.access] || s.access), s.cost && esc(s.cost)].filter(Boolean);
+  const badges = `<span class="badge ${HOWCLS[s.access] || "b-ref"}">${esc(HOW[s.access] || s.access)}</span>` +
+    `<span class="chip dist">${modeBit}</span>` + (s.cost ? `<span class="chip">${esc(s.cost)}</span>` : "");
   return `<details class="pick">
     <summary>
       <span class="pk-name">${esc(s.name)}</span>
-      <span class="pk-facts">${quick.join('<span class="sep">·</span>')}</span>
+      <span class="pk-badges">${badges}</span>
+      ${w ? `<span class="pk-when"><span class="lab">When</span>${esc(w)}</span>` : ""}
       <span class="pk-why">${esc(p.why)}</span>
       <span class="pk-acts">${actions(s)}</span>
     </summary>
