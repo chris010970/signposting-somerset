@@ -28,7 +28,7 @@ const MULTI = {
         "LGBTQ+", "displaced people"],
   support_for: ["connect", "be active", "take notice", "keep learning", "crisis prevention", "bereavement",
                 "caring for someone", "finances", "housing", "food", "long-term pain", "hearing voices",
-                "eating disorders", "drugs and alcohol", "dementia"],
+                "eating disorders", "drugs and alcohol", "dementia", "low mood", "anxiety"],
   mode: ["in-person", "phone", "online"],
 };
 const REQUIRED = ["name", "provider", "type", "access", "support_for", "mode", "who", "source", "last_checked"];
@@ -141,7 +141,7 @@ function checkRecords() {
     }
 
     // where
-    const withheld = /venue confirmed (on registration|once referred)|meeting point (varies|given on booking)/i.test(v.description + " " + v.address);
+    const withheld = /venue confirmed (on registration|once referred)|location given on booking|meeting point (varies|given on booking)/i.test(v.description + " " + v.address);
     if (v.mode.includes("in-person")) {
       if (!v.town && !withheld) add("warn", "town", "in person but no town");
       if (!v.address && !withheld) add("warn", "address", "in person but no address or venue");
