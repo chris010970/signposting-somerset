@@ -2,7 +2,7 @@
 
 **Find local mental health and wellbeing support in Somerset, quickly.**
 
-👉 **https://chris010970.github.io/signposting-somerset/**
+👉 **https://chris010970.github.io/signposting-somerset/main/**
 
 > **Demo version.** Details are checked against each provider's own information, but services change. Please confirm with the service before attending.
 
