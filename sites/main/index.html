@@ -901,10 +901,10 @@ let liveMsg = "<strong>Loading services…</strong>";
 /* ---------- vocabularies ---------- */
 // Specialist: mental health, crisis, bereavement and other specific needs. Practical: housing, finances and life circumstances.
 // Everyday wellbeing: connection, activity, learning, mindfulness and community.
-const GROUPS = [["Specialist support", ["crisis prevention", "bereavement", "hearing voices", "eating disorders", "long-term pain", "dementia", "drugs and alcohol", "caring for someone"]],
+const GROUPS = [["Specialist support", ["crisis prevention", "low mood", "anxiety", "bereavement", "hearing voices", "eating disorders", "long-term pain", "dementia", "drugs and alcohol", "caring for someone"]],
   ["Practical help and support", ["housing", "finances", "food"]],
   ["Everyday wellbeing", ["connect", "be active", "take notice", "keep learning"]]];
-const LABEL = { "hearing voices": "Psychosis and hearing voices" };
+const LABEL = { "hearing voices": "Psychosis and hearing voices", "crisis prevention": "Crisis support" };
 const cap = s => LABEL[s] || s[0].toUpperCase() + s.slice(1);
 const esc = s => String(s ?? "").replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
 const split = s => (s || "").split(";").map(x => x.trim()).filter(Boolean);
@@ -1228,7 +1228,7 @@ function renderAbout() {
     <p class="stats">${esc(stats)}</p>
     <h3>What's included</h3>
     <ul>
-      <li><strong>Specialist support:</strong> crisis prevention, bereavement, hearing voices, long-term pain, eating disorders, dementia, drugs and alcohol, caring for someone.</li>
+      <li><strong>Specialist support:</strong> crisis support, low mood, anxiety, bereavement, hearing voices, long-term pain, eating disorders, dementia, drugs and alcohol, caring for someone.</li>
       <li><strong>Practical help and support:</strong> money, housing and food, including advice and advocacy.</li>
       <li><strong>Everyday wellbeing:</strong> connection, activity, learning and nature, based on the Five Ways to Wellbeing.</li>
       <li>Helplines and online groups, in-person services on a map, and courses with set dates.</li>
@@ -1257,6 +1257,7 @@ function setSiteTab(t) {
   $("lede").textContent = LEDE[t];
   if (t === "talk") renderTalk(); else if (t === "course") renderCourses(); else if (t === "about") renderAbout(); else { initMap(); setTimeout(() => { map && map.invalidateSize(); fitPending = true; render(); }, 30); }
   try { history.replaceState(null, "", "#" + t); } catch (e) {}
+  try { localStorage.setItem("ss-tab", t); } catch (e) {}
 }
 for (const k of ["talk", "near", "course", "about"]) $("tab-" + k).onclick = () => setSiteTab(k);
 $("c-support").onchange = renderCourses; $("c-fmt").onchange = renderCourses; $("c-book").onchange = renderCourses;
@@ -1278,7 +1279,12 @@ function setTab(t) { $("main").classList.toggle("show-map", t === "map"); $("t-l
   if (t === "map" && map) setTimeout(() => { map.invalidateSize(); fitPending = true; render(); }, 30); }
 $("t-list").onclick = () => setTab("list"); $("t-map").onclick = () => setTab("map");
 addEventListener("resize", () => map && map.invalidateSize());
-setSiteTab(["#near", "#course", "#about"].includes(location.hash) ? location.hash.slice(1) : "talk");
+// First visit opens on About; after that, the tab the person last used. A link with #near, #course, #about or #talk wins.
+(function () {
+  const fromHash = ["#talk", "#near", "#course", "#about"].includes(location.hash) ? location.hash.slice(1) : "";
+  let last = ""; try { last = localStorage.getItem("ss-tab") || ""; } catch (e) {}
+  setSiteTab(fromHash || (["talk", "near", "course", "about"].includes(last) ? last : "about"));
+})();
 
 /* ---------- live data: read records from a published Google Sheet (CSV) ---------- */
 // Paste the sheet's "Publish to web → CSV" link between the quotes. Leave empty to use the built-in copy only.
