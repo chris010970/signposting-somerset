@@ -697,6 +697,7 @@ header.top { background: var(--white); border-bottom: 1px solid var(--line); pad
 .inner { max-width: 1400px; margin: 0 auto; }
 h1 { font-family: var(--serif); color: var(--b900); font-size: 26px; margin: 0; }
 .lede { color: #78716C; margin: 2px 0 14px; }
+.datasrc { color: #78716C; font-size: 12px; margin: -10px 0 12px; }
 .qs { display: grid; grid-template-columns: 1.1fr 1.3fr 1fr; gap: 10px; }
 @media (max-width: 899px) { .qs { grid-template-columns: 1fr; } }
 .q { background: var(--b50); border: 2px solid transparent; border-radius: 12px; padding: 8px 10px; min-width: 0; }
@@ -810,6 +811,7 @@ footer.urgent p { color: #FEE2E2; }
   <div class="inner">
     <h1>Signposting Somerset</h1>
     <p class="lede" id="lede">Mental health and wellbeing support across Somerset.</p>
+    <p class="datasrc" id="datasrc" hidden></p>
     <nav class="sitetabs" role="tablist" aria-label="Kind of support">
       <button type="button" role="tab" id="tab-talk" aria-selected="true" aria-controls="panel-talk">Phone and online</button>
       <button type="button" role="tab" id="tab-near" aria-selected="false" aria-controls="panel-near">In person</button>
@@ -1216,75 +1218,62 @@ function setTab(t) { $("main").classList.toggle("show-map", t === "map"); $("t-l
 $("t-list").onclick = () => setTab("list"); $("t-map").onclick = () => setTab("map");
 addEventListener("resize", () => map && map.invalidateSize());
 setSiteTab(["#near", "#course"].includes(location.hash) ? location.hash.slice(1) : "talk");
-/* ---------- TRIAL ONLY: load a different records CSV from your computer ---------- */
-(function () {
-  const css = document.createElement("style");
-  css.textContent = `#trialbar{position:fixed;left:16px;bottom:72px;z-index:2000;background:#fff;border:2px dashed #B45309;border-radius:12px;
-    padding:10px 12px;box-shadow:0 4px 16px rgba(0,0,0,.15);font:14px system-ui,sans-serif;max-width:min(420px,calc(100vw - 32px))}
-    #trialbar b{color:#B45309}#trialbar button{margin-top:6px;padding:7px 12px;border-radius:8px;border:1px solid #B45309;background:#FFF7ED;
-    font:600 14px system-ui,sans-serif;cursor:pointer}#trialmsg{margin-top:6px;color:#57534E;font-size:13px;white-space:pre-line}
-    body.trialdrag::after{content:"Drop the CSV to load it";position:fixed;inset:0;z-index:3000;display:grid;place-items:center;
-    background:rgba(180,83,9,.15);font:700 24px system-ui,sans-serif;color:#7C2D12}
-    #trialmin{position:absolute;top:4px;right:6px;margin:0!important;padding:0 8px!important;border:0!important;background:none!important;font-size:18px!important}
-    #trialbar.min .tx,#trialbar.min #trialmsg,#trialbar.min #trialmin{display:none}#trialbar.min{padding:4px 8px}`;
-  document.head.appendChild(css);
-  const bar = document.createElement("div");
-  bar.id = "trialbar";
-  bar.innerHTML = `<button id="trialmin" type="button" title="Minimise">–</button><span class="tx"><b>Trial version</b>: test any records file with the same columns as services.csv.<br></span>
-    <button id="trialbtn" type="button">Load records (CSV)…</button><input id="trialfile" type="file" accept=".csv,text/csv" hidden>
-    <div id="trialmsg">Showing the ${DATA.length} built-in records. You can also drag a CSV onto the page.</div>`;
-  document.body.appendChild(bar);
 
-  // CSV parser: handles quoted fields, commas and line breaks inside quotes, "" escapes, BOM.
-  function parseCSV(text) {
-    text = text.replace(/^﻿/, "");
-    const rows = []; let row = [], f = "", q = false;
-    for (let i = 0; i < text.length; i++) {
-      const c = text[i];
-      if (q) { if (c === '"') { if (text[i + 1] === '"') { f += '"'; i++; } else q = false; } else f += c; }
-      else if (c === '"') q = true;
-      else if (c === ",") { row.push(f); f = ""; }
-      else if (c === "\n" || c === "\r") { if (c === "\r" && text[i + 1] === "\n") i++; row.push(f); rows.push(row); row = []; f = ""; }
-      else f += c;
-    }
-    if (f !== "" || row.length) { row.push(f); rows.push(row); }
-    return rows;
+/* ---------- live data: read records from a published Google Sheet (CSV) ---------- */
+// Paste the sheet's "Publish to web → CSV" link between the quotes. Leave empty to use the built-in copy only.
+const SHEET_CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQOdzHvjorJsKwgMF6itFW5CKbpzfge4fXlJXxmFiVBTQJdodYABCJS5hxxu8nGp_tqWU-kVsByaMbw/pub?output=csv";
+const BUILT = "27 Oct 2026";
+function parseCSV(text) {
+  text = text.replace(/^﻿/, "");
+  const rows = []; let row = [], f = "", q = false;
+  for (let i = 0; i < text.length; i++) {
+    const c = text[i];
+    if (q) { if (c === '"') { if (text[i + 1] === '"') { f += '"'; i++; } else q = false; } else f += c; }
+    else if (c === '"') q = true;
+    else if (c === ",") { row.push(f); f = ""; }
+    else if (c === "\n" || c === "\r") { if (c === "\r" && text[i + 1] === "\n") i++; row.push(f); rows.push(row); row = []; f = ""; }
+    else f += c;
   }
-
-  function load(text, fname) {
-    const rows = parseCSV(text);
-    const head = (rows[0] || []).map(h => h.trim().toLowerCase());
-    const need = ["name", "type", "mode"], missing = need.filter(k => !head.includes(k));
-    if (missing.length) { $("trialmsg").textContent = `Couldn't use ${fname}: no ${missing.join(", ")} column. Is it a services.csv-style file?`; return; }
-    const recs = [];
-    for (const r of rows.slice(1)) {
-      const o = {}; head.forEach((h, i) => { if (h) o[h] = (r[i] ?? "").trim(); });
-      if (o.name) recs.push(o);
-    }
-    prepare(recs);
-    origin = null; sortBy = "soon"; fitPending = true; $("f-town").value = "";
-    setSiteTab(tab);
-    const ended = recs.length - ALL.length;
-    const unpinned = S.filter(s => isNaN(s.lat)).map(s => s.name);
-    let msg = `Showing ${recs.length} records from ${fname}: ${T.length} phone/online, ${S.length} in person, ${C.length} courses.`;
-    if (ended) msg += `\n${ended} hidden because their dates have passed.`;
-    if (unpinned.length) msg += `\n${unpinned.length} in person but not on the map (no lat/lon and town not recognised): ${unpinned.slice(0, 5).join("; ")}${unpinned.length > 5 ? "…" : ""}`;
-    $("trialmsg").textContent = msg;
+  if (f !== "" || row.length) { row.push(f); rows.push(row); }
+  return rows;
+}
+// Undo what spreadsheets do to values: 25/10/2026 -> 2026-10-25, 10:00:00 -> 10:00
+const fixDate = v => v.replace(/\b(\d{1,2})\/(\d{1,2})\/(\d{4})\b/g, (m, d, mo, y) => `${y}-${mo.padStart(2, "0")}-${d.padStart(2, "0")}`);
+const fixTime = v => v.replace(/\b(\d{1,2}):(\d\d)(?::\d\d)?\b/g, (m, h, mi) => `${h.padStart(2, "0")}:${mi}`).replace(/\s*-\s*/g, "-");
+function recordsFromCSV(text) {
+  const rows = parseCSV(text), head = (rows[0] || []).map(h => h.trim().toLowerCase());
+  const missing = ["name", "type", "mode"].filter(k => !head.includes(k));
+  if (missing.length) return { error: `no ${missing.join(", ")} column` };
+  const recs = [];
+  for (const r of rows.slice(1)) {
+    const o = {}; head.forEach((h, i) => { if (h) o[h] = String(r[i] ?? "").trim(); });
+    if (!o.name) continue;
+    if (o.dates) o.dates = fixDate(o.dates);
+    if (o.last_checked) o.last_checked = fixDate(o.last_checked);
+    if (o.times) o.times = fixTime(o.times);
+    recs.push(o);
   }
-  function readFile(file) {
-    if (!file) return;
-    const fr = new FileReader();
-    fr.onload = () => load(String(fr.result), file.name);
-    fr.onerror = () => { $("trialmsg").textContent = `Couldn't read ${file.name}.`; };
-    fr.readAsText(file, "utf-8");
-  }
-  $("trialmin").onclick = () => bar.classList.add("min");
-  $("trialbtn").onclick = () => { if (bar.classList.contains("min")) { bar.classList.remove("min"); return; } $("trialfile").click(); };
-  $("trialfile").onchange = e => { readFile(e.target.files[0]); e.target.value = ""; };
-  addEventListener("dragover", e => { e.preventDefault(); document.body.classList.add("trialdrag"); });
-  addEventListener("dragleave", e => { if (!e.relatedTarget) document.body.classList.remove("trialdrag"); });
-  addEventListener("drop", e => { e.preventDefault(); document.body.classList.remove("trialdrag"); readFile(e.dataTransfer.files[0]); });
-})();
+  return { recs };
+}
+function applyRecords(recs) {
+  prepare(recs);
+  origin = null; sortBy = "soon"; fitPending = true; $("f-town").value = "";
+  setSiteTab(tab);
+}
+function showSource(txt) { const el = $("datasrc"); el.textContent = txt; el.hidden = !txt; }
+if (SHEET_CSV_URL) {
+  showSource(`Loading the latest records…`);
+  const ctl = new AbortController(); setTimeout(() => ctl.abort(), 10000);
+  fetch(SHEET_CSV_URL, { cache: "no-store", signal: ctl.signal })
+    .then(r => { if (!r.ok) throw new Error("HTTP " + r.status); return r.text(); })
+    .then(text => {
+      const { recs, error } = recordsFromCSV(text);
+      if (error || recs.length < 10) throw new Error(error || "too few records");
+      applyRecords(recs);
+      showSource(`Live records from the shared sheet: ${recs.length} services, loaded ${new Date().toLocaleTimeString("en-GB", { hour: "2-digit", minute: "2-digit" })}.`);
+    })
+    .catch(() => showSource(`Couldn't reach the shared sheet, so this is the saved copy from ${BUILT}.`));
+}
 
 setInterval(() => tab === "talk" ? renderTalk() : tab === "course" ? renderCourses() : render(), 5 * 60 * 1000);
 </script>
