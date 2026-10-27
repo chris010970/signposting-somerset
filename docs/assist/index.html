@@ -159,6 +159,24 @@ details.pick summary:focus-visible { outline: 2px solid var(--b500); outline-off
 .pk-when .lab { font-size: 10px; letter-spacing: .1em; text-transform: uppercase; font-weight: 700; color: var(--b700); margin-right: 8px; }
 .pk-why { background: rgba(242,246,244,.8); border: 1px solid var(--b100); border-radius: 10px; padding: 8px 10px; margin-top: 8px !important; }
 .pk-body .tags .tag { background: var(--b50); border: 1px solid var(--b100); }
+/* expanded details */
+.pk-body { background: linear-gradient(var(--b50), #fff 120px); border-radius: 0 0 12px 0; }
+.pb-prov { font-size: 12px; font-weight: 700; color: var(--b700); text-transform: uppercase; letter-spacing: .06em; display: flex; flex-wrap: wrap; gap: 4px 8px; align-items: center; }
+.pb-prov span { text-transform: none; letter-spacing: 0; font-weight: 600; color: var(--muted); background: #fff; border: 1px solid var(--line); border-radius: 999px; padding: 1px 8px; }
+.pb-desc { font-size: 15px; margin: 8px 0 12px; color: var(--ink); }
+.pb-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 8px; }
+.pb-tile { background: #fff; border: 1px solid var(--b100); border-radius: 10px; padding: 8px 10px; min-width: 0; }
+.pb-tile.wide { grid-column: 1 / -1; }
+.pb-tile.warn { background: #FFFBEB; border-color: #FDE68A; }
+.pb-tile.warn .pb-lab { color: #92400E; }
+.pb-lab { display: flex; align-items: center; gap: 5px; font-size: 10px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; color: var(--b700); margin-bottom: 3px; }
+.pb-lab svg { width: 13px; height: 13px; fill: currentColor; }
+.pb-val { font-size: 14px; overflow-wrap: anywhere; }
+.pb-val a { font-size: 13px; }
+.pb-foot { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 8px; margin-top: 12px; }
+.pb-tags { display: flex; flex-wrap: wrap; gap: 5px; }
+.pb-tags .tag { background: var(--b100); color: var(--b900); border: 0; font-weight: 600; }
+.pb-checked { font-size: 12px; color: var(--muted); }
 #printplan { display: none; }
 @media print {
   body { background: #fff; }
@@ -340,7 +358,7 @@ function render(r) {
   }
   $("out").scrollIntoView({ behavior: "smooth", block: "start" });
 }
-function whenText(s) { return s.dates ? "Dates: " + s.dates.replace(/;/g, ", ") + (s.times ? " " + s.times : "") : [[s.days, s.times].filter(Boolean).join(" "), s.frequency].filter(Boolean).join(", "); }
+function whenText(s) { return s.dates ? "Dates: " + s.dates.replace(/;/g, ", ") + (s.times ? " " + s.times : "") : [[(s.days || "").replace(/;/g, ", "), s.times].filter(Boolean).join(" "), s.frequency].filter(Boolean).join(", "); }
 const telOf = s => s.phone ? s.phone.split(" (")[0].split(" or ")[0].replace(/\s/g, "") : "";
 const isUrl = u => /^https?:\/\//.test(u || "");
 const ICON = {
@@ -348,6 +366,10 @@ const ICON = {
   online: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5h16a1 1 0 0 1 1 1v10a1 1 0 0 1-1 1h-6l1 2h2v2H7v-2h2l1-2H4a1 1 0 0 1-1-1V6a1 1 0 0 1 1-1zm1 2v8h14V7z"/></svg>',
   place: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2a7 7 0 0 1 7 7c0 5-7 13-7 13S5 14 5 9a7 7 0 0 1 7-7zm0 4.5a2.5 2.5 0 1 0 0 5 2.5 2.5 0 0 0 0-5z"/></svg>',
   web: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14 3h7v7h-2V6.4l-9.3 9.3-1.4-1.4L17.6 5H14zM5 5h6v2H6v11h11v-5h2v6a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V6a1 1 0 0 1 1-1z"/></svg>',
+  clock: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2a10 10 0 1 1 0 20 10 10 0 0 1 0-20zm0 2a8 8 0 1 0 0 16 8 8 0 0 0 0-16zm1 3v4.6l3.2 1.9-1 1.7L11 12.7V7z"/></svg>',
+  person: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3a4.5 4.5 0 1 1 0 9 4.5 4.5 0 0 1 0-9zm0 11c4.4 0 8 2.2 8 5v2H4v-2c0-2.8 3.6-5 8-5z"/></svg>',
+  cost: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14.5 3A5.5 5.5 0 0 1 20 8.5h-2A3.5 3.5 0 0 0 14.5 5 3.5 3.5 0 0 0 11 8.5V11h5v2h-5v4h8v2H6v-2h3v-4H6v-2h3V8.5A5.5 5.5 0 0 1 14.5 3z"/></svg>',
+  join: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M10 4h9a1 1 0 0 1 1 1v14a1 1 0 0 1-1 1h-9v-2h8V6h-8zm-.6 3.6L14 12l-4.6 4.4-1.4-1.4 2.2-2H3v-2h7.2L8 9z"/></svg>',
   mail: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 5h18a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1V6a1 1 0 0 1 1-1zm1 3.2V17h16V8.2l-8 5-8-5zM5.2 7 12 11.3 18.8 7z"/></svg>',
 };
 function actions(s) {
@@ -362,6 +384,9 @@ function actions(s) {
   else if (s.email) a.push(`<a class="act" href="mailto:${esc(s.email)}">${ICON.mail}Email</a>`);
   return a.join("");
 }
+const LABEL = { "hearing voices": "Psychosis and hearing voices", "crisis prevention": "Crisis support" };
+function niceDate(d) { const t = new Date(d + "T12:00:00"); return isNaN(t) ? d : t.toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric" }); }
+function tile(icon, label, html, cls = "") { return `<div class="pb-tile ${cls}"><div class="pb-lab">${ICON[icon] || ""}${label}</div><div class="pb-val">${html}</div></div>`; }
 function card(p) {
   const s = p.record, w = whenText(s), mode = s.mode || "";
   const inPerson = mode.includes("in-person");
@@ -382,18 +407,19 @@ function card(p) {
       <span class="pk-acts">${actions(s)}</span>
     </summary>
     <div class="pk-body">
-      <div class="prov">${esc(s.provider)} · ${esc(s.type)}</div>
-      <p class="desc">${esc(s.description)}</p>
-      <dl class="facts">
-        ${w ? `<dt>When</dt><dd>${esc(w)}</dd>` : ""}
-        ${inPerson && where ? `<dt>Where</dt><dd>${esc(where)}${dist}</dd>` : ""}
-        <dt>How</dt><dd>${esc(s.access)}${mode !== "in-person" ? " · " + esc(mode.replace(/;/g, ", ")) : ""}</dd>
-        ${s.cost ? `<dt>Cost</dt><dd>${esc(s.cost)}</dd>` : ""}
-        ${s.eligibility ? `<dt>Who</dt><dd>${esc(s.eligibility)}</dd>` : ""}
-        ${contact ? `<dt>Contact</dt><dd>${contact}</dd>` : ""}
-        ${s.last_checked ? `<dt>Checked</dt><dd>${esc(s.last_checked)}</dd>` : ""}
-      </dl>
-      <div class="tags">${(s.support_for || "").split(";").filter(Boolean).map(t => `<span class="tag">${esc(t)}</span>`).join("")}</div>
+      <div class="pb-prov">${esc(s.provider)}<span>${esc(s.type)}</span></div>
+      <p class="pb-desc">${esc(s.description)}</p>
+      <div class="pb-grid">
+        ${inPerson && where ? tile("place", "Where", `${esc(where)}${dist}${s.address ? `<br><a href="https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(where)}" target="_blank" rel="noopener">Open in maps</a>` : ""}`) : ""}
+        ${!inPerson ? tile(mode.includes("phone") ? "phone" : "online", "How", esc(mode.replace(/;/g, ", ").replace("phone", "Phone").replace("online", "Online"))) : ""}
+        ${s.who || s.eligibility ? tile("person", "For", esc([s.who && s.who.replace(/;/g, ", "), s.eligibility].filter(Boolean).join(". ")), s.eligibility ? "warn" : "") : ""}
+        ${s.cost ? tile("cost", "Cost", esc(s.cost)) : ""}
+        ${contact ? tile("mail", "Contact", contact, "wide") : ""}
+      </div>
+      <div class="pb-foot">
+        <span class="pb-tags">${(s.support_for || "").split(";").filter(Boolean).map(t => `<span class="tag">${esc(LABEL[t] || t[0].toUpperCase() + t.slice(1))}</span>`).join("")}</span>
+        ${s.last_checked ? `<span class="pb-checked">Checked ${esc(niceDate(s.last_checked))}</span>` : ""}
+      </div>
     </div>
   </details>`;
 }
