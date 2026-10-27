@@ -1,0 +1,269 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex">
+<title>Signposting Somerset Assist</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2032%2032%22%3E%3Crect%20width%3D%2232%22%20height%3D%2232%22%20rx%3D%227%22%20fill%3D%22%23234031%22%2F%3E%3Cpath%20d%3D%22M15%206h2v21h-2z%22%20fill%3D%22%23fff%22%2F%3E%3Cpath%20d%3D%22M8%209h13l3%202.5-3%202.5H8z%22%20fill%3D%22%23FBBF24%22%2F%3E%3Cpath%20d%3D%22M24%2016H11l-3%202.5%203%202.5h13z%22%20fill%3D%22%23fff%22%2F%3E%3C%2Fsvg%3E">
+<style>
+:root {
+  color-scheme: light;
+  --cream: #F9F9F7; --white: #FFFFFF; --ink: #1E293B; --muted: #57534E; --line: #E7E5E4;
+  --b50: #F2F6F4; --b100: #E1EBE5; --b200: #C2D6CA; --b500: #528368; --b600: #3D6C53; --b700: #2F5441; --b800: #234031; --b900: #1B3126;
+  --amber: #FBBF24; --urgent: #DC2626; --urgent-bg: #FEF2F2;
+  --sans: "Inter", "Segoe UI", system-ui, sans-serif; --serif: "Literata", Georgia, serif;
+}
+* { box-sizing: border-box; }
+[hidden] { display: none !important; }
+body { margin: 0; background: var(--cream); color: var(--ink); font-family: var(--sans); font-size: 15px; line-height: 1.5; }
+.gut { padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
+button, select, textarea, input { font: inherit; color: inherit; }
+:focus-visible { outline: 2px solid var(--b500); outline-offset: 2px; }
+a { color: var(--b700); }
+.crisis { background: #0F172A; color: #E7E5E4; padding-block: 7px; font-size: 13px; }
+.crisis b { color: var(--amber); text-transform: uppercase; letter-spacing: .08em; font-size: 11px; margin-right: 8px; }
+.crisis a { color: #fff; }
+header { background: var(--b800); color: #fff; padding-block: 22px 20px; }
+.wrap { max-width: 860px; margin: 0 auto; }
+h1 { font-family: var(--serif); font-weight: 600; font-size: 26px; margin: 0 0 4px; letter-spacing: -.01em; }
+h1 span { font-family: var(--sans); font-size: 12px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; background: var(--amber); color: var(--b900); padding: 2px 8px; border-radius: 999px; vertical-align: middle; margin-left: 8px; }
+.lede { margin: 0; color: var(--b100); max-width: 62ch; }
+main { padding-block: 20px 40px; }
+.card { background: var(--white); border: 1px solid var(--line); border-radius: 14px; padding: 18px; }
+label.h { display: block; font-weight: 700; margin-bottom: 6px; }
+textarea { width: 100%; min-height: 110px; resize: vertical; border: 1px solid var(--b200); border-radius: 10px; padding: 10px 12px; background: var(--white); }
+.hint { font-size: 13px; color: var(--muted); margin: 6px 0 0; }
+.examples { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 10px; }
+.examples button { border: 1px solid var(--b200); background: var(--b50); color: var(--b800); border-radius: 999px; padding: 4px 11px; font-size: 13px; cursor: pointer; text-align: left; }
+.row { display: flex; flex-wrap: wrap; gap: 12px 18px; align-items: end; margin-top: 16px; }
+.field { display: flex; flex-direction: column; gap: 4px; min-width: 0; }
+.field span { font-size: 13px; font-weight: 700; }
+select { border: 1px solid var(--b200); border-radius: 8px; padding: 8px 10px; background: var(--white); max-width: 100%; }
+.chk { display: flex; gap: 8px; align-items: center; font-size: 14px; padding-bottom: 8px; }
+.go { margin-left: auto; display: flex; gap: 8px; }
+.btn { border: 0; border-radius: 10px; padding: 10px 18px; font-weight: 700; cursor: pointer; background: var(--b700); color: #fff; }
+.btn:disabled { opacity: .55; cursor: default; }
+.btn.ghost { background: transparent; color: var(--b800); border: 1px solid var(--b200); }
+.status { margin: 18px 0 0; color: var(--muted); font-size: 14px; display: flex; gap: 10px; align-items: center; }
+.dot { width: 10px; height: 10px; border-radius: 50%; background: var(--b500); animation: pulse 1.1s ease-in-out infinite; flex: none; }
+@keyframes pulse { 50% { opacity: .25; } }
+.alert { border: 1px solid #FCA5A5; background: var(--urgent-bg); border-radius: 12px; padding: 14px 16px; margin-top: 18px; }
+.alert h2 { margin: 0 0 6px; font-size: 16px; color: #991B1B; }
+.alert p { margin: 0; }
+.alert .lines { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px; }
+.alert .lines a { background: var(--urgent); color: #fff; text-decoration: none; font-weight: 700; font-size: 13px; padding: 6px 12px; border-radius: 8px; }
+.reading { margin-top: 22px; }
+.reading h2, .res h2 { font-family: var(--serif); font-size: 19px; font-weight: 600; margin: 0 0 6px; }
+.reading p { margin: 0; max-width: 70ch; }
+.scope { font-size: 13px; color: var(--muted); margin-top: 6px; }
+.res { margin-top: 22px; }
+.step { margin-top: 16px; }
+.step h3 { font-size: 12px; text-transform: uppercase; letter-spacing: .08em; color: var(--b600); margin: 0 0 8px; }
+.svc { background: var(--white); border: 1px solid var(--line); border-left: 4px solid var(--b500); border-radius: 12px; padding: 14px 16px; margin-bottom: 10px; }
+.svc .why { background: var(--b50); border-radius: 8px; padding: 8px 10px; margin: 0 0 10px; font-size: 14px; color: var(--b900); }
+.svc .why b { color: var(--b700); }
+.svc h4 { margin: 0; font-size: 16px; }
+.svc .prov { color: var(--muted); font-size: 13px; }
+.svc .desc { margin: 6px 0; }
+.facts { display: grid; grid-template-columns: max-content 1fr; gap: 2px 12px; font-size: 13px; margin: 8px 0 0; }
+.facts dt { color: var(--muted); }
+.facts dd { margin: 0; overflow-wrap: anywhere; }
+.tags { display: flex; flex-wrap: wrap; gap: 5px; margin-top: 8px; }
+.tag { font-size: 12px; background: var(--b50); color: var(--b800); border-radius: 999px; padding: 2px 9px; }
+.gaps, .qs { margin-top: 18px; font-size: 14px; }
+.qs ul { margin: 6px 0 0; padding-left: 20px; }
+.note { margin-top: 26px; font-size: 13px; color: var(--muted); border-top: 1px solid var(--line); padding-top: 14px; }
+.err { margin-top: 18px; color: #991B1B; }
+@media (max-width: 560px) { .go { margin-left: 0; width: 100%; } .go .btn { flex: 1; } h1 { font-size: 22px; } }
+@media (prefers-reduced-motion: reduce) { .dot { animation: none; } }
+</style>
+<style>
+.gate { max-width: 420px; }
+.gate input { width: 100%; border: 1px solid var(--b200); border-radius: 10px; padding: 10px 12px; background: var(--white); margin-top: 4px; }
+.gate .btn { margin-top: 12px; }
+.refine { margin-top: 22px; }
+.refine .rowr { display: flex; gap: 8px; margin-top: 6px; }
+.refine input { flex: 1; min-width: 0; border: 1px solid var(--b200); border-radius: 10px; padding: 10px 12px; background: var(--white); }
+.quick { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px; }
+.quick button { border: 1px solid var(--b200); background: var(--white); color: var(--b800); border-radius: 999px; padding: 4px 11px; font-size: 13px; cursor: pointer; }
+.trail { font-size: 13px; color: var(--muted); margin-top: 8px; }
+.trail span { background: var(--b50); border-radius: 6px; padding: 1px 7px; margin-right: 4px; display: inline-block; margin-top: 3px; }
+.topnote { margin: 8px 0 0; font-size: 13px; color: var(--b100); }
+.topnote a { color: #fff; }
+.linkbtn { background: none; border: 0; padding: 0; color: var(--b700); text-decoration: underline; cursor: pointer; font-size: 13px; }
+</style>
+</head>
+<body>
+<div class="crisis gut"><div class="wrap"><b>Crisis</b>Immediate danger or medical emergency: call <a href="tel:999">999</a> or NHS <a href="tel:111">111 (option 2)</a></div></div>
+
+<header class="gut"><div class="wrap">
+  <h1>Signposting Somerset <span>Assist demo</span></h1>
+  <p class="lede">For support workers and volunteers. Describe what someone is going through, and AI suggests a few local services from the checked Signposting Somerset list, starting with gentle first steps, and says why each might help.</p>
+  <p class="topnote">Browse everything yourself on <a href="../">Signposting Somerset</a>.</p>
+</div></header>
+
+<main class="gut"><div class="wrap">
+
+  <form class="card gate" id="gate" hidden>
+    <label class="h" for="code">Access code</label>
+    <p class="hint" style="margin:0 0 4px">This demo is for invited support workers and volunteers.</p>
+    <input id="code" type="password" autocomplete="off">
+    <button class="btn" type="submit">Continue</button>
+    <p class="err" id="gateErr" hidden></p>
+  </form>
+
+  <div id="app" hidden>
+  <form class="card" id="f">
+    <label class="h" for="need">What's going on for them?</label>
+    <textarea id="need" maxlength="2000" placeholder="e.g. Feeling very low since losing his job. Struggles to get out of bed, hardly leaves the house, misses having people around. No car."></textarea>
+    <p class="hint">Describe the need, not the person: no names, dates of birth or anything that could identify them. What you type is sent to an AI service (Anthropic) to produce suggestions; it isn't stored by this site.</p>
+    <div class="examples" id="ex"></div>
+    <div class="row">
+      <label class="field"><span>Near</span><select id="town"></select></label>
+      <label class="field"><span>Within</span><select id="rad"><option value="3">3 miles</option><option value="5">5 miles</option><option value="8" selected>8 miles</option><option value="12">12 miles</option><option value="20">20 miles</option></select></label>
+      <label class="chk"><input type="checkbox" id="remote" checked> Include phone and online</label>
+      <div class="go"><button class="btn" id="ask" type="submit">Suggest support</button></div>
+    </div>
+  </form>
+
+  <div class="alert" id="crisis" hidden>
+    <h2>This sounds like it may need urgent support</h2>
+    <p>If someone is at risk right now, call 999. For urgent mental health help, call NHS 111 and choose option 2. They can also talk to Samaritans or Mindline any time.</p>
+    <div class="lines"><a href="tel:999">999</a><a href="tel:111">NHS 111, option 2</a><a href="tel:116123">Samaritans 116 123</a><a href="tel:08001381692">Mindline 0800 138 1692</a></div>
+  </div>
+
+  <p class="status" id="status" hidden><span class="dot"></span><span id="statusText">Thinking...</span></p>
+  <p class="err" id="err" hidden></p>
+  <section id="out" hidden></section>
+
+  <form class="refine card" id="refine" hidden>
+    <label class="h" for="more">Not quite right? Tell it more</label>
+    <div class="rowr"><input id="more" maxlength="300" placeholder="e.g. he won't go to groups, weekends only"><button class="btn" type="submit" id="moreBtn">Update</button></div>
+    <div class="quick" id="quick"></div>
+    <div class="trail" id="trail"></div>
+  </form>
+
+  <p class="note">Suggestions come only from the services listed on Signposting Somerset. The AI chooses and explains, but every detail on a card comes from the checked record itself. Please confirm with the service before going. This is a demo: use your own judgement, as always. <button class="linkbtn" id="forget" type="button">Forget access code on this device</button></p>
+  </div>
+</div></main>
+
+<script>
+const WORKER_URL = "";
+const TOWN_NAMES = ["Axbridge", "Berrow", "Bishops Lydeard", "Brean", "Bridgwater", "Bruton", "Burnham-on-Sea", "Cannington", "Castle Cary", "Chard", "Cheddar", "Coleford", "Cotford St Luke", "Creech St Michael", "Crewkerne", "Drayton", "Dulverton", "Dunster", "East Huntspill", "Edington", "Evercreech", "Frome", "Galmington", "Glastonbury", "Highbridge", "Ilminster", "Keinton Mandeville", "Langport", "Lisieux Way", "Long Load", "Long Sutton", "Martock", "Merriott", "Milborne Port", "Milverton", "Minehead", "Mudford", "Nailsea", "North Petherton", "Oake", "Oakhill", "Porlock", "Queen Camel", "Ruishton", "Shepton Mallet", "Somerton", "South Petherton", "Staplegrove", "Steart", "Stogursey", "Stoke St Gregory", "Stoke-sub-Hamdon", "Street", "Taunton", "Watchet", "Wedmore", "Wellington", "Wells", "West Huntspill", "West Monkton", "Westhay", "Weston-super-Mare", "Williton", "Wincanton", "Wiveliscombe", "Woolavington", "Yeovil"];
+const EXAMPLES = [
+  "Low mood for months, lives alone, finds it hard to get out of bed and has stopped seeing friends.",
+  "Recently bereaved older woman, lonely, doesn't drive, a bit anxious about groups.",
+  "Young man, anxious and isolated, spends most days gaming, wants to feel useful.",
+  "Caring full-time for husband with dementia, exhausted, worried about money and heating bills.",
+];
+const QUICK = ["No groups", "Weekends only", "Free only", "Nearer to home", "Start from home (phone or online)", "Something for a carer too"];
+const RISK = /suicid|kill (my|him|her|them)sel|end (my|his|her|their) life|self[- ]?harm|cutting (my|him|her)|overdos|want(s|ed)? to die|no reason to live|better off dead/i;
+const $ = id => document.getElementById(id);
+const esc = s => String(s ?? "").replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+const store = { get: k => { try { return localStorage.getItem(k); } catch { return null; } }, set: (k, v) => { try { v == null ? localStorage.removeItem(k) : localStorage.setItem(k, v); } catch {} } };
+
+let code = store.get("assist-code") || "";
+let state = null;   // { need, town, radius, remote, followups: [], previous: [] }
+
+// ---- set up ----
+$("town").innerHTML = '<option value="">Choose a town…</option><option value="__remote">No town: phone and online only</option>' + TOWN_NAMES.map(t => `<option>${esc(t)}</option>`).join("");
+{ const t = store.get("assist-town"); if (t && [...$("town").options].some(o => o.value === t)) $("town").value = t; }
+EXAMPLES.forEach(e => { const b = document.createElement("button"); b.type = "button"; b.textContent = e; b.onclick = () => { $("need").value = e; $("need").focus(); }; $("ex").append(b); });
+QUICK.forEach(q => { const b = document.createElement("button"); b.type = "button"; b.textContent = q; b.onclick = () => refine(q); $("quick").append(b); });
+function showApp() { $("gate").hidden = true; $("app").hidden = false; }
+function showGate(msg) { $("app").hidden = true; $("gate").hidden = false; $("gateErr").hidden = !msg; $("gateErr").textContent = msg || ""; $("code").focus(); }
+if (!WORKER_URL || WORKER_URL.startsWith("/*")) { document.querySelector("main .wrap").innerHTML = '<p class="err">This page isn\'t connected to its relay yet (WORKER_URL is empty).</p>'; }
+else if (code) showApp(); else showGate();
+$("gate").onsubmit = e => { e.preventDefault(); code = $("code").value.trim(); if (!code) return; store.set("assist-code", code); showApp(); };
+$("forget").onclick = () => { store.set("assist-code", null); code = ""; $("code").value = ""; showGate(); };
+
+function note(t) { $("err").textContent = t; $("err").hidden = !t; }
+function busy(on, t) { $("status").hidden = !on; $("statusText").textContent = t || "Thinking..."; $("ask").disabled = on; $("moreBtn").disabled = on; }
+
+// ---- ask ----
+$("f").onsubmit = e => {
+  e.preventDefault();
+  const need = $("need").value.trim(), town = $("town").value;
+  if (!need) return note("Describe the need first.");
+  if (!town) return note("Choose a town, or 'phone and online only'.");
+  store.set("assist-town", town);
+  state = { need, town, radius: +$("rad").value, remote: $("remote").checked, followups: [], previous: [] };
+  $("trail").innerHTML = "";
+  run();
+};
+$("refine").onsubmit = e => { e.preventDefault(); const v = $("more").value.trim(); if (v) refine(v); };
+function refine(text) {
+  if (!state) return;
+  state.followups = [...state.followups, text].slice(-5);
+  $("more").value = "";
+  $("trail").innerHTML = "So far: " + state.followups.map(f => `<span>${esc(f)}</span>`).join("");
+  run();
+}
+
+const ERRORS = {
+  bad_code: "That access code wasn't accepted.", rate_limited: "Too many requests from here in the last hour. Please try again later.",
+  busy: "The AI service is busy. Please try again in a minute.", sheet_unavailable: "The records couldn't be loaded just now. Please try again shortly.",
+  bad_town: "Please choose a town from the list.", bad_answer: "The answer came back in an unexpected shape. Please try again.",
+  forbidden: "This page isn't allowed to use the relay.",
+};
+async function run() {
+  note("");
+  $("crisis").hidden = !RISK.test([state.need, ...state.followups].join(" "));
+  const place = state.town === "__remote" ? "phone and online services" : `services within ${state.radius} miles of ${state.town}`;
+  busy(true, state.followups.length ? "Updating the suggestions…" : `Reading the need and looking through ${place}…`);
+  try {
+    const r = await fetch(WORKER_URL, { method: "POST", headers: { "Content-Type": "application/json", "X-Access-Code": code }, body: JSON.stringify(state) });
+    const data = await r.json().catch(() => ({ error: "bad_answer" }));
+    if (data.error) {
+      if (data.error === "bad_code") { store.set("assist-code", null); code = ""; showGate(ERRORS.bad_code); return; }
+      return note(ERRORS[data.error] || "Something went wrong. Please try again.");
+    }
+    render(data);
+  } catch { note("Couldn't reach the service. Check your connection and try again."); }
+  finally { busy(false); }
+}
+
+function render(r) {
+  if (r.risk) $("crisis").hidden = false;
+  state.previous = r.picks.map(p => p.record.name);
+  const steps = ["First step", "Next step", "When ready"];
+  const norm = s => steps.find(x => x.toLowerCase() === String(s).toLowerCase()) || "Next step";
+  const sc = r.scope || {};
+  let h = `<div class="reading"><h2>How it read this</h2><p>${esc(r.reading)}</p>
+    <p class="scope">Chose from ${sc.total} of ${sc.records} services: ${[sc.near ? `${sc.near} in person ${esc(sc.place)}` : "", sc.remote ? `${sc.remote} phone or online` : ""].filter(Boolean).join(" and ")}.</p></div>`;
+  h += `<div class="res"><h2>Suggestions</h2>`;
+  if (!r.picks.length) h += `<p>No suitable services were found for this need and area. Try a wider distance.</p>`;
+  for (const st of steps) { const list = r.picks.filter(p => norm(p.step) === st); if (list.length) h += `<div class="step"><h3>${st}</h3>${list.map(card).join("")}</div>`; }
+  h += `</div>`;
+  if (r.gaps) h += `<p class="gaps"><b>Not covered:</b> ${esc(r.gaps)}</p>`;
+  if (r.questions?.length) h += `<div class="qs"><b>Questions that might help</b><ul>${r.questions.map(q => `<li>${esc(q)}</li>`).join("")}</ul></div>`;
+  $("out").innerHTML = h; $("out").hidden = false; $("refine").hidden = false;
+  $("out").scrollIntoView({ behavior: "smooth", block: "start" });
+}
+function whenText(s) { return s.dates ? "Dates: " + s.dates.replace(/;/g, ", ") + (s.times ? " " + s.times : "") : [s.days, s.times, s.frequency].filter(Boolean).join(" "); }
+function card(p) {
+  const s = p.record, w = whenText(s), mode = s.mode || "";
+  const where = [s.address, s.town, s.postcode].filter(Boolean).join(", ");
+  const dist = p.distance !== null ? ` (${p.distance} miles)` : "";
+  const tel = s.phone ? s.phone.split(" (")[0].split(" or ")[0].replace(/\s/g, "") : "";
+  const contact = [s.phone && `<a href="tel:${esc(tel)}">${esc(s.phone)}</a>`, s.email && `<a href="mailto:${esc(s.email)}">${esc(s.email)}</a>`, /^https?:\/\//.test(s.url || "") && `<a href="${esc(s.url)}" target="_blank" rel="noopener">Website</a>`].filter(Boolean).join(" · ");
+  return `<article class="svc">
+    <p class="why"><b>Why:</b> ${esc(p.why)}</p>
+    <h4>${esc(s.name)}</h4><div class="prov">${esc(s.provider)} · ${esc(s.type)}</div>
+    <p class="desc">${esc(s.description)}</p>
+    <dl class="facts">
+      ${w ? `<dt>When</dt><dd>${esc(w)}</dd>` : ""}
+      ${mode.includes("in-person") && where ? `<dt>Where</dt><dd>${esc(where)}${dist}</dd>` : ""}
+      <dt>How</dt><dd>${esc(s.access)}${mode !== "in-person" ? " · " + esc(mode.replace(/;/g, ", ")) : ""}</dd>
+      ${s.cost ? `<dt>Cost</dt><dd>${esc(s.cost)}</dd>` : ""}
+      ${s.eligibility ? `<dt>Who</dt><dd>${esc(s.eligibility)}</dd>` : ""}
+      ${contact ? `<dt>Contact</dt><dd>${contact}</dd>` : ""}
+      ${s.last_checked ? `<dt>Checked</dt><dd>${esc(s.last_checked)}</dd>` : ""}
+    </dl>
+    <div class="tags">${(s.support_for || "").split(";").filter(Boolean).map(t => `<span class="tag">${esc(t)}</span>`).join("")}</div>
+  </article>`;
+}
+</script>
+</body>
+</html>
