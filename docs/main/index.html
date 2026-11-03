@@ -757,12 +757,15 @@ h1 { font-family: var(--serif); color: var(--b900); font-size: 26px; margin: 0; 
 .sitetabs button { white-space: nowrap; }
 .sitetabs .sh { display: none; }
 #about.talk { max-width: 1432px; }  /* 1400 + gutters, so the card lines up with the title and tabs */
-.aboutpage { max-width: 760px; margin: 0; background: var(--white); border: 1px solid var(--line); border-radius: 16px; padding: 22px 24px; line-height: 1.55; }
+.aboutpage { max-width: none; margin: 0; background: var(--white); border: 1px solid var(--line); border-radius: 16px; padding: 22px 24px; line-height: 1.55; }
 .aboutpage h2 { font-family: var(--serif); color: var(--b900); font-size: 22px; margin: 0 0 6px; }
 .aboutpage h3 { font-family: var(--serif); color: var(--b900); font-size: 17px; margin: 22px 0 6px; }
 .aboutpage p, .aboutpage ul { margin: 6px 0; color: #44403C; }
 .aboutpage ul { padding-left: 20px; }
 .aboutpage .note { background: #FFF7ED; border: 1px solid #FED7AA; border-radius: 12px; padding: 10px 14px; color: #7C2D12; margin: 12px 0 4px; }
+.aboutpage .note { max-width: none; }
+.aboutpage .acols { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 420px), 1fr)); gap: 4px 48px; align-items: start; }
+.aboutpage .acols section { max-width: 68ch; }
 .aboutpage .stats { font-weight: 700; color: var(--b800); }
 .aboutpage .btn { display: inline-block; margin-top: 6px; background: var(--b700); color: #fff; text-decoration: none; font-weight: 700; padding: 10px 16px; border-radius: 10px; }
 .aboutpage .small { font-size: 13px; color: #78716C; }
@@ -896,7 +899,7 @@ footer.urgent p { color: #FEE2E2; }
       <div class="illus" role="img" aria-label="Watercolour illustration: a path with map pins winding through Somerset fields towards Glastonbury Tor, people meeting and walking together, and a signpost to drop-ins, peer support, advice and community"></div>
     <div class="hero">
       <h1><svg class="logo" viewBox="0 0 32 32" aria-hidden="true"><path d="M15 6h2v21h-2z" fill="#3F5E36"/><path d="M8 9h13l3 2.5-3 2.5H8z" fill="#D4884A"/><path d="M24 16H11l-3 2.5 3 2.5h13z" fill="#6A8F4C"/><path d="M11 27h10" stroke="#3F5E36" stroke-width="2" stroke-linecap="round"/></svg>Signposting Somerset</h1>
-      <p class="lede" id="lede">Connecting people with local mental health and wellbeing support, groups and activities.</p>
+      <p class="lede" id="lede">Connecting people with local mental health and wellbeing support.</p>
       <p class="datasrc" id="datasrc" hidden></p>
     </div>
     <nav class="sitetabs" role="tablist" aria-label="Kind of support">
@@ -1352,10 +1355,14 @@ function renderAbout() {
     <h2>About Signposting Somerset</h2>
     <div class="note"><strong>Demo version.</strong> Details are checked against each provider's own information, but services change. Please confirm with the service before attending.
       In an emergency call <a href="tel:999">999</a>. For urgent mental health help call NHS <a href="tel:111">111</a> and choose option 2.</div>
+    <div class="acols">
+    <section>
     <h3>What it is</h3>
     <p>One place to find local mental health and wellbeing support across Somerset: what's on, when and where, and whether someone can go.
       It's built mainly for support workers and volunteers helping others find support, and anyone is welcome to use it.</p>
     <p class="stats">${esc(stats)}</p>
+    </section>
+    <section>
     <h3>What's included</h3>
     <ul>
       <li><strong>Specialist support:</strong> crisis support, low mood, anxiety, bereavement, hearing voices, long-term pain, eating disorders, dementia, drugs and alcohol, caring for someone.</li>
@@ -1363,6 +1370,8 @@ function renderAbout() {
       <li><strong>Everyday wellbeing:</strong> connection, activity, learning and nature, based on the Five Ways to Wellbeing.</li>
       <li>Helplines and online groups, in-person services on a map, and courses with set dates.</li>
     </ul>
+    </section>
+    <section>
     <h3>How it's kept accurate</h3>
     <ul>
       <li>Every service is checked against the provider's own website, timetable or leaflet, and dated.</li>
@@ -1370,10 +1379,16 @@ function renderAbout() {
       <li>Some venues are only shared after registration, and Crisis Safe Space addresses are never published. These show at the town centre.</li>
       <li>The records are shared, so people with local knowledge can keep them up to date. Changes appear here within minutes.</li>
     </ul>
+    </section>
+    <section>
     <h3>Suggest a change</h3>
     ${suggest}
+    </section>
+    <section>
     <h3>Where it came from</h3>
     <p>It started from a Padlet of local services created by colleagues at a Somerset mental health charity, and grew from there.</p>
+    </section>
+    </div>
     <p class="small">Service information belongs to the providers listed. Map data © <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap</a> contributors, © <a href="https://carto.com/attributions" target="_blank" rel="noopener">CARTO</a>.</p>
   </article>`;
 }
