@@ -5,6 +5,9 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="robots" content="noindex">
 <title>Signposting Somerset Assist</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Literata:opsz,wght@7..72,600;7..72,700&display=swap">
 <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2064%2064%22%3E%3Crect%20width%3D%2264%22%20height%3D%2264%22%20rx%3D%2214%22%20fill%3D%22%23F4EEDC%22%2F%3E%3Crect%20x%3D%2229%22%20y%3D%228%22%20width%3D%226%22%20height%3D%2248%22%20rx%3D%222%22%20fill%3D%22%233F5E36%22%2F%3E%3Cpath%20d%3D%22M10%2013h32l8%207-8%207H10z%22%20fill%3D%22%23D4884A%22%2F%3E%3Cpath%20d%3D%22M54%2032H22l-8%207%208%207h32z%22%20fill%3D%22%236A8F4C%22%2F%3E%3Crect%20x%3D%2220%22%20y%3D%2253%22%20width%3D%2224%22%20height%3D%225%22%20rx%3D%222.5%22%20fill%3D%22%233F5E36%22%2F%3E%3C%2Fsvg%3E">
 <style>
 :root {
@@ -112,9 +115,7 @@ details.pick[open] summary::after { transform: rotate(-135deg); top: 22px; }
 .maincol { min-width: 0; }
 .preview { display: none; }
 @media (min-width: 1100px) {
-  main .wrap { max-width: 1180px; }
-  header .wrap, .crisis .wrap { max-width: 1180px; }
-  #f, #crisis, #refine, .note, #err, #status { max-width: 760px; }
+  #crisis, #refine, .note, #err, #status { max-width: 760px; }
   .results { display: grid; grid-template-columns: minmax(0, 760px) minmax(0, 1fr); gap: 32px; align-items: start; }
   .preview { display: block; position: sticky; top: 16px; background: var(--white); border: 1px solid var(--line); border-radius: 14px; padding: 16px 18px; font-size: 14px; max-height: calc(100vh - 32px); overflow-y: auto; }
   .pv-label { font-size: 12px; text-transform: uppercase; letter-spacing: .08em; color: var(--b600); font-weight: 700; margin-bottom: 8px; }
@@ -201,14 +202,34 @@ header.ahead .topnote a { color: var(--b700); }
   header.ahead .illus { display: none; }
   header.ahead h1 { font-size: 26px; } header.ahead h1 .logo { width: 26px; height: 26px; }
 }
+/* Match the main site: crisis bar, page width, header layout */
+.crisis { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
+.exit { background: #1E293B; color: #fff !important; border: 1px solid #334155; border-radius: 6px; padding: 5px 10px; font-size: 12px; font-weight: 600; text-decoration: none; white-space: nowrap; }
+.wrap { max-width: 1400px !important; }
+header.ahead { padding-block: 34px 26px; }
+@media (min-width: 761px) { header.ahead { min-height: 250px; display: flex; align-items: center; } header.ahead > .wrap { width: 100%; } }
+header.ahead .illus { left: max(0px, calc(50% - 716px)); right: max(0px, calc(50% - 716px)); background-position: right 30%; }
+/* Title identical to the main site */
+header.ahead h1 { font-size: 42px; font-weight: 700; line-height: 1.05; letter-spacing: -.01em; gap: 4px 10px; }
+header.ahead h1 .logo { width: 38px; height: 38px; }
+header.ahead h1 span { align-self: center; }
+@media (max-width: 760px) { header.ahead h1 { font-size: 26px; gap: 6px 8px; } header.ahead h1 .logo { width: 26px; height: 26px; } }
+header.ahead .lede { font-size: 16px; color: #78716C; max-width: 54ch; }
+header.ahead .illus { -webkit-mask-image: linear-gradient(to left, transparent 0, #000 5%); mask-image: linear-gradient(to left, transparent 0, #000 5%); }
+#app .note { max-width: none; }
+#f .row { flex-wrap: nowrap; }
+@media (max-width: 900px) { #f .row { flex-wrap: wrap; } }
 </style>
 </head>
 <body>
-<div class="crisis gut"><div class="wrap"><b>Crisis</b>Immediate danger or medical emergency: call <a href="tel:999">999</a> or NHS <a href="tel:111">111 (option 2)</a></div></div>
+<div class="crisis gut">
+  <div><b>Crisis</b>Immediate danger or medical emergency: call <a href="tel:999">999</a> or NHS <a href="tel:111">111 (option 2)</a></div>
+  <a class="exit" href="https://www.bbc.co.uk/weather" rel="noopener">Quick exit</a>
+</div>
 
 <header class="gut ahead"><div class="illus" role="img" aria-label="Watercolour illustration: a path with map pins winding through Somerset fields towards Glastonbury Tor, people meeting and walking together, and a signpost"></div><div class="wrap">
   <h1><svg class="logo" viewBox="0 0 32 32" aria-hidden="true"><path d="M15 6h2v21h-2z" fill="#3F5E36"/><path d="M8 9h13l3 2.5-3 2.5H8z" fill="#D4884A"/><path d="M24 16H11l-3 2.5 3 2.5h13z" fill="#6A8F4C"/><path d="M11 27h10" stroke="#3F5E36" stroke-width="2" stroke-linecap="round"/></svg>Signposting Somerset <span>Assist demo</span></h1>
-  <p class="lede">For support workers and volunteers. Describe what someone is going through, and AI suggests a few local services from the checked list, starting with gentle first steps, and says why each might help.</p>
+  <p class="lede">AI-assisted support planning for support workers and volunteers.</p>
   <p class="topnote">Browse everything yourself on <a href="../">Signposting Somerset</a>.</p>
 </div></header>
 
@@ -225,6 +246,7 @@ header.ahead .topnote a { color: var(--b700); }
   <div id="app" hidden>
   <form class="card" id="f">
     <label class="h" for="need">What's going on for them?</label>
+    <p class="hint" style="margin:-2px 0 8px">Describe what someone is going through. AI suggests a few local services from the checked list, starting with gentle first steps, and says why each might help.</p>
     <textarea id="need" maxlength="2000" placeholder="e.g. Feeling very low since losing his job. Struggles to get out of bed, hardly leaves the house, misses having people around. No car."></textarea>
     <p class="hint">Describe the need, not the person: no names, dates of birth or anything that could identify them. What you type is sent to an AI service (Anthropic) to produce suggestions; it isn't stored by this site.</p>
     <div class="examples" id="ex"></div>
@@ -363,7 +385,7 @@ function render(r) {
   if (r.gaps) m += `<p class="gaps"><b>Not covered:</b> ${esc(r.gaps)}</p>`;
   if (r.questions?.length) m += `<div class="qs"><b>Questions that might help</b><ul>${r.questions.map(q => `<li>${esc(q)}</li>`).join("")}</ul></div>`;
   m += `<p class="scope">Chose from ${sc.total} of ${sc.records} services: ${[sc.near ? `${sc.near} in person ${esc(sc.place)}` : "", sc.remote ? `${sc.remote} phone or online` : ""].filter(Boolean).join(" and ")}.</p>`;
-  const side = lastPicks.length ? `<aside class="preview" aria-label="Plan preview"><div class="pv-label">What the plan looks like</div><div class="pv-body">${plan().html}</div><p class="pv-hint">Copy it into an email or letter, share it by text, or print it.</p></aside>` : "";
+  const side = lastPicks.length ? `<aside class="preview" aria-label="Support plan"><div class="pv-label">Support plan</div><div class="pv-body">${plan().html}</div><p class="pv-hint">Copy it into an email or letter, share it by text, or print it.</p></aside>` : "";
   $("out").innerHTML = `<div class="results"><div class="maincol">${m}</div>${side}</div>`;
   $("out").hidden = false; $("refine").hidden = false;
   if (lastPicks.length) {
