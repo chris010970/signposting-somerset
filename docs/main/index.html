@@ -699,7 +699,7 @@ button, select { font: inherit; }
 .hero > :not(.illus) { position: relative; z-index: 1; max-width: min(44%, 640px); }
 .hero h1 { font-size: 42px; line-height: 1.05; letter-spacing: -.01em; display: flex; align-items: center; gap: 10px; }
 .hero h1 .logo { width: 38px; height: 38px; flex: none; }
-.hero .lede { font-size: 17px; color: #57534E; margin: 8px 0 4px; }
+.hero .lede { font-size: 16px; color: #78716C; margin: 8px 0 4px; max-width: 54ch; }
 .masthead { position: relative; }
 .masthead > :not(.illus) { position: relative; z-index: 1; }
 .masthead .illus { position: absolute; z-index: 0; top: -16px; bottom: -1px; left: calc(50% - 50vw); right: calc(50% - 50vw); background: var(--banner) center 30% / cover no-repeat; }
@@ -896,7 +896,7 @@ footer.urgent p { color: #FEE2E2; }
       <div class="illus" role="img" aria-label="Watercolour illustration: a path with map pins winding through Somerset fields towards Glastonbury Tor, people meeting and walking together, and a signpost to drop-ins, peer support, advice and community"></div>
     <div class="hero">
       <h1><svg class="logo" viewBox="0 0 32 32" aria-hidden="true"><path d="M15 6h2v21h-2z" fill="#3F5E36"/><path d="M8 9h13l3 2.5-3 2.5H8z" fill="#D4884A"/><path d="M24 16H11l-3 2.5 3 2.5h13z" fill="#6A8F4C"/><path d="M11 27h10" stroke="#3F5E36" stroke-width="2" stroke-linecap="round"/></svg>Signposting Somerset</h1>
-      <p class="lede" id="lede">Mental health and wellbeing support across Somerset.</p>
+      <p class="lede" id="lede">Connecting people with local mental health and wellbeing support, groups and activities.</p>
       <p class="datasrc" id="datasrc" hidden></p>
     </div>
     <nav class="sitetabs" role="tablist" aria-label="Kind of support">
@@ -1384,7 +1384,6 @@ function setSiteTab(t) {
   tab = t;
   try { $("tab-" + t).scrollIntoView({ block: "nearest", inline: "nearest" }); } catch (e) {}
   for (const k of ["talk", "near", "course", "about"]) { $("tab-" + k).setAttribute("aria-selected", k === t); $("panel-" + k).hidden = k !== t; $("hdr-" + k).hidden = k !== t; }
-  $("lede").textContent = LEDE[t];
   if (t === "talk") renderTalk(); else if (t === "course") renderCourses(); else if (t === "about") renderAbout(); else { initMap(); setTimeout(() => { map && map.invalidateSize(); fitPending = true; render(); }, 30); }
   try { history.replaceState(null, "", "#" + t); } catch (e) {}
   try { localStorage.setItem("ss-tab", t); } catch (e) {}
