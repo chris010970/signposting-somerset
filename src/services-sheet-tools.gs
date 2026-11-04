@@ -7,6 +7,11 @@
  *   - Clear check marks: removes the highlights and notes.
  *   - Add / refresh dropdowns: dropdown lists for type, access and area. (who, support_for and mode
  *     can hold several values separated by ";", so they have no dropdown; any old dropdown is removed.)
+ *   - Fill blank areas: sets area from the town (North Somerset / Bath and North East Somerset towns
+ *     below; any other town = Somerset). Rows with no town are left for you to fill.
+ *
+ * Areas: Somerset; North Somerset; Bath and North East Somerset; national (UK-wide).
+ * Every row should have one. Check records warns if it is blank, or if the town belongs to another area.
  *
  * Install: Extensions → Apps Script → replace ALL the code with this file → Save → reload the sheet.
  * (This replaces the earlier dropdown-only script, which it includes.)
@@ -20,7 +25,7 @@ const LISTS = {
   type: ["Advocacy", "Community", "Peer group", "Activity group", "One-to-one support", "Course",
          "Practical support", "Counselling or therapy", "Volunteering"],
   access: ["drop in", "sign up", "book", "referral", "call"],
-  area: ["Somerset", "national"],
+  area: ["Somerset", "North Somerset", "Bath and North East Somerset", "national"],
 };
 // Columns that can hold several values separated by ";" (no dropdown; checked by "Check records")
 const MULTI = {
@@ -28,9 +33,20 @@ const MULTI = {
         "LGBTQ+", "displaced people"],
   support_for: ["connect", "be active", "take notice", "keep learning", "crisis prevention", "bereavement",
                 "caring for someone", "finances", "housing", "food", "long-term pain", "hearing voices",
-                "eating disorders", "drugs and alcohol", "dementia", "low mood", "anxiety"],
+                "eating disorders", "drugs and alcohol", "dementia", "low mood", "anxiety", "giving"],
   mode: ["in-person", "phone", "online"],
 };
+// Towns used to fill and check area (any other town = Somerset)
+const AREA_TOWNS = {
+  "North Somerset": ["Weston-super-Mare", "Nailsea", "Backwell", "Clevedon", "Portishead", "Yatton", "Worle",
+                     "Congresbury", "Winscombe", "Long Ashton"],
+  "Bath and North East Somerset": ["Bath", "Keynsham", "Saltford", "Midsomer Norton", "Radstock", "Paulton",
+                     "Peasedown St John", "Timsbury", "Chew Magna", "Batheaston", "Newton St Loe", "Stanton Drew",
+                     "Westfield", "Farrington Gurney", "Tunley"],
+};
+// Towns whose postal town crosses the boundary (e.g. Ammerdown has a Radstock address but is in Somerset):
+// filled as above, but never flagged as a mismatch.
+const AREA_BORDER_TOWNS = ["Radstock"];
 const REQUIRED = ["name", "provider", "type", "access", "support_for", "mode", "who", "source", "last_checked"];
 const DAYS = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
 const JS_DAY = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
@@ -43,6 +59,7 @@ function onOpen() {
     .addItem("Clear check marks", "clearCheckMarks")
     .addSeparator()
     .addItem("Add / refresh dropdowns", "addDropdowns")
+    .addItem("Fill blank areas", "fillAreas")
     .addToUi();
 }
 
@@ -65,6 +82,33 @@ function addDropdowns() {
     if (col) sheet.getRange(2, col, rows, 1).clearDataValidations();
   }
   toast_("Dropdowns added: " + done.join(", ") + (missing.length ? ". Not found: " + missing.join(", ") : ""));
+}
+
+/* ---------------- areas ---------------- */
+function areaForTown_(town) {
+  if (!town) return "";
+  for (const [area, towns] of Object.entries(AREA_TOWNS)) if (towns.includes(town)) return area;
+  return "Somerset";
+}
+
+function fillAreas() {
+  const sheet = recordsSheet_();
+  const headers = headers_(sheet);
+  const ac = headers.indexOf("area"), tc = headers.indexOf("town");
+  if (ac < 0 || tc < 0) { toast_("Need both an 'area' and a 'town' column."); return; }
+  const n = sheet.getLastRow() - 1;
+  if (n < 1) return;
+  const areaRange = sheet.getRange(2, ac + 1, n, 1);
+  const areas = areaRange.getDisplayValues(), towns = sheet.getRange(2, tc + 1, n, 1).getDisplayValues();
+  let filled = 0, noTown = 0;
+  const out = areas.map((a, i) => {
+    if (String(a[0]).trim()) return [a[0]];
+    const t = String(towns[i][0]).trim();
+    if (!t) { noTown++; return [""]; }
+    filled++; return [areaForTown_(t)];
+  });
+  areaRange.setValues(out);
+  toast_(`Filled ${filled} blank areas from the town.` + (noTown ? ` ${noTown} rows have no town: fill those by hand.` : ""));
 }
 
 /* ---------------- checking ---------------- */
@@ -161,7 +205,9 @@ function checkRecords() {
       const la = Number(v.lat), lo = Number(v.lon);
       if (isNaN(la) || isNaN(lo) || la < 49.8 || la > 52.5 || lo < -6 || lo > 0) add("warn", "lat", "lat/lon look wrong for the South West");
     }
-    if (!v.mode.includes("in-person") && v.mode && !v.area) add("warn", "area", "phone/online service with no area (Somerset or national)");
+    if (!v.area) add("warn", "area", "blank: use Somerset, North Somerset, Bath and North East Somerset or national (menu: Fill blank areas)");
+    else if (v.town && v.area !== "national" && !AREA_BORDER_TOWNS.includes(v.town) && areaForTown_(v.town) !== v.area)
+      add("warn", "area", v.town + " is usually " + areaForTown_(v.town) + ", not " + v.area);
 
     // contact and text
     if (!v.phone && !v.email && !v.url) add("warn", "phone", "no phone, email or website");
