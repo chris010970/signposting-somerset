@@ -732,10 +732,14 @@ h1 { font-family: var(--serif); color: var(--b900); font-size: 26px; margin: 0; 
 .q.on { background: var(--white); border-color: var(--b500); }
 .q label, .q .lab { display: block; font-size: 10px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: var(--b700); margin: 0 0 2px 2px; }
 .q select { width: 100%; border: 0; background: transparent; font-weight: 600; color: var(--ink); padding: 2px 0; cursor: pointer; }
-.where { display: grid; grid-template-columns: 1fr auto; gap: 8px; align-items: end; }
+.where { display: grid; grid-template-columns: 1fr auto auto; gap: 8px; align-items: center; }
 .where select#within { width: auto; }
 .pointnote { font-size: 11px; color: var(--muted); margin: 2px 2px 0; }
 .pointnote:empty { display: none; }
+.locbtn { display: grid; place-items: center; width: 26px; height: 26px; border: 1px solid #C9D6CE; border-radius: 50%; background: var(--white); color: var(--b700); cursor: pointer; padding: 0; }
+.locbtn:hover, .locbtn:focus-visible { border-color: var(--b500); background: var(--b50); }
+.locbtn svg { width: 14px; height: 14px; }
+.locbtn[disabled] { opacity: .5; cursor: progress; }
 .pointnote button { border: 0; background: none; color: var(--b700); text-decoration: underline; cursor: pointer; padding: 0; font-size: 11px; }
 .sumrow { display: flex; justify-content: space-between; align-items: center; gap: 10px; margin-top: 10px; padding-top: 8px; border-top: 1px solid #F5F5F4; flex-wrap: wrap; }
 /* Count line hidden on screen; still read out by screen readers when results change */
@@ -926,6 +930,7 @@ footer.urgent p { color: #FEE2E2; }
       <div class="q" id="q-where"><span class="lab">2. Where?</span>
         <div class="where">
           <select id="f-town" aria-label="Town"></select>
+          <button type="button" class="locbtn" id="uselocation" hidden aria-label="Use my location" title="Use my location (stays on your device: not stored or sent anywhere)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="7"/><circle cx="12" cy="12" r="2.5" fill="currentColor"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3"/></svg></button>
           <select id="within" aria-label="Distance">
             <option value="2">within 2 miles</option><option value="5">within 5 miles</option>
             <option value="10" selected>within 10 miles</option><option value="20">within 20 miles</option><option value="0">any distance</option>
@@ -975,8 +980,17 @@ const DATA = [];
 // Keep the map and list clear of the fixed helpline bar, whatever its height
 (() => { const f = document.getElementById("help"); const set = () => document.documentElement.style.setProperty("--footh", f.offsetHeight + "px");
   set(); if (window.ResizeObserver) new ResizeObserver(set).observe(f); else addEventListener("resize", set); })();
-const TOWNS = {"Axbridge": [51.2866, -2.8188], "Berrow": [51.268, -3.007], "Bishops Lydeard": [51.06, -3.187], "Brean": [51.293, -3.012], "Bridgwater": [51.1279, -3.0036], "Bruton": [51.1118, -2.4532], "Burnham-on-Sea": [51.2384, -2.9972], "Castle Cary": [51.089, -2.513], "Chard": [50.8722, -2.9616], "Cheddar": [51.2771, -2.7781], "Cotford St Luke": [51.042, -3.177], "Creech St Michael": [51.025, -3.035], "Crewkerne": [50.884, -2.795], "Dulverton": [51.04, -3.55], "Frome": [51.2283, -2.3218], "Glastonbury": [51.1486, -2.7145], "Highbridge": [51.2187, -2.9727], "Ilminster": [50.9265, -2.9112], "Langport": [51.038, -2.828], "Minehead": [51.2041, -3.4794], "North Petherton": [51.093, -3.013], "Porlock": [51.208, -3.595], "Shepton Mallet": [51.1906, -2.5462], "Somerton": [51.055, -2.734], "South Petherton": [50.948, -2.81], "Stoke St Gregory": [51.04, -2.935], "Street": [51.1268, -2.7393], "Taunton": [51.015, -3.103], "Watchet": [51.181, -3.33], "Wellington": [50.9787, -3.2263], "Wells": [51.2093, -2.6474], "West Huntspill": [51.198, -2.99], "Williton": [51.162, -3.322], "Wincanton": [51.056, -2.41], "Wiveliscombe": [51.041, -3.312], "Woolavington": [51.168, -2.94], "Yeovil": [50.9421, -2.633], "Cannington": [51.15, -3.064], "Coleford": [51.239, -2.444], "Drayton": [51.006, -2.836], "Dunster": [51.183, -3.444], "East Huntspill": [51.2, -2.96], "Evercreech": [51.148, -2.502], "Galmington": [51.011, -3.122], "Keinton Mandeville": [51.068, -2.645], "Lisieux Way": [51.018, -3.075], "Long Load": [50.997, -2.756], "Long Sutton": [51.023, -2.758], "Martock": [50.97, -2.768], "Merriott": [50.905, -2.795], "Milborne Port": [50.966, -2.462], "Milverton": [51.026, -3.257], "Mudford": [50.968, -2.611], "Oake": [51.024, -3.199], "Oakhill": [51.226, -2.522], "Queen Camel": [51.022, -2.582], "Staplegrove": [51.033, -3.12], "Stogursey": [51.18, -3.14], "West Monkton": [51.04, -3.06], "Weston-super-Mare": [51.346, -2.977], "Edington": [51.162, -2.885], "Ruishton": [51.017, -3.055], "Steart": [51.203, -3.046], "Stoke-sub-Hamdon": [50.953, -2.749], "Wedmore": [51.227, -2.811], "Westhay": [51.183, -2.783], "Nailsea": [51.432, -2.757]};
-const APPROX_TOWNS = ["Cannington", "Coleford", "Drayton", "Dunster", "East Huntspill", "Edington", "Evercreech", "Galmington", "Keinton Mandeville", "Lisieux Way", "Long Load", "Long Sutton", "Martock", "Merriott", "Milborne Port", "Milverton", "Mudford", "Nailsea", "Oake", "Oakhill", "Queen Camel", "Ruishton", "Staplegrove", "Steart", "Stogursey", "Stoke-sub-Hamdon", "Wedmore", "West Monkton", "Westhay", "Weston-super-Mare"];
+const TOWNS = {"Axbridge": [51.2866, -2.8188], "Berrow": [51.268, -3.007], "Bishops Lydeard": [51.06, -3.187], "Brean": [51.293, -3.012], "Bridgwater": [51.1279, -3.0036], "Bruton": [51.1118, -2.4532], "Burnham-on-Sea": [51.2384, -2.9972], "Castle Cary": [51.089, -2.513], "Chard": [50.8722, -2.9616], "Cheddar": [51.2771, -2.7781], "Cotford St Luke": [51.042, -3.177], "Creech St Michael": [51.025, -3.035], "Crewkerne": [50.884, -2.795], "Dulverton": [51.04, -3.55], "Frome": [51.2283, -2.3218], "Glastonbury": [51.1486, -2.7145], "Highbridge": [51.2187, -2.9727], "Ilminster": [50.9265, -2.9112], "Langport": [51.038, -2.828], "Minehead": [51.2041, -3.4794], "North Petherton": [51.093, -3.013], "Porlock": [51.208, -3.595], "Shepton Mallet": [51.1906, -2.5462], "Somerton": [51.055, -2.734], "South Petherton": [50.948, -2.81], "Stoke St Gregory": [51.04, -2.935], "Street": [51.1268, -2.7393], "Taunton": [51.015, -3.103], "Watchet": [51.181, -3.33], "Wellington": [50.9787, -3.2263], "Wells": [51.2093, -2.6474], "West Huntspill": [51.198, -2.99], "Williton": [51.162, -3.322], "Wincanton": [51.056, -2.41], "Wiveliscombe": [51.041, -3.312], "Woolavington": [51.168, -2.94], "Yeovil": [50.9421, -2.633], "Cannington": [51.15, -3.064], "Coleford": [51.239, -2.444], "Drayton": [51.006, -2.836], "Dunster": [51.183, -3.444], "East Huntspill": [51.2, -2.96], "Evercreech": [51.148, -2.502], "Galmington": [51.011, -3.122], "Keinton Mandeville": [51.068, -2.645], "Lisieux Way": [51.018, -3.075], "Long Load": [50.997, -2.756], "Long Sutton": [51.023, -2.758], "Martock": [50.97, -2.768], "Merriott": [50.905, -2.795], "Milborne Port": [50.966, -2.462], "Milverton": [51.026, -3.257], "Mudford": [50.968, -2.611], "Oake": [51.024, -3.199], "Oakhill": [51.226, -2.522], "Queen Camel": [51.022, -2.582], "Staplegrove": [51.033, -3.12], "Stogursey": [51.18, -3.14], "West Monkton": [51.04, -3.06], "Weston-super-Mare": [51.346, -2.977], "Edington": [51.162, -2.885], "Ruishton": [51.017, -3.055], "Steart": [51.203, -3.046], "Stoke-sub-Hamdon": [50.953, -2.749], "Wedmore": [51.227, -2.811], "Westhay": [51.183, -2.783], "Nailsea": [51.432, -2.757], "Backwell": [51.411, -2.732], "Bath": [51.381, -2.359], "Batheaston": [51.405, -2.318], "Chew Magna": [51.367, -2.609], "Chilcompton": [51.267, -2.511], "Keynsham": [51.414, -2.498], "Midsomer Norton": [51.284, -2.482], "Newton St Loe": [51.373, -2.43], "Radstock": [51.293, -2.448], "Saltford": [51.402, -2.457], "Sparkford": [51.034, -2.565], "Stanton Drew": [51.367, -2.577], "Tatworth": [50.852, -2.957], "Timberscombe": [51.168, -3.487], "Timsbury": [51.328, -2.478], "Tunley": [51.343, -2.45]};
+const APPROX_TOWNS = ["Backwell", "Bath", "Batheaston", "Cannington", "Chew Magna", "Chilcompton", "Coleford", "Drayton", "Dunster", "East Huntspill", "Edington", "Evercreech", "Galmington", "Keinton Mandeville", "Keynsham", "Lisieux Way", "Long Load", "Long Sutton", "Martock", "Merriott", "Midsomer Norton", "Milborne Port", "Milverton", "Mudford", "Nailsea", "Newton St Loe", "Oake", "Oakhill", "Queen Camel", "Radstock", "Ruishton", "Saltford", "Sparkford", "Stanton Drew", "Staplegrove", "Steart", "Stogursey", "Stoke-sub-Hamdon", "Tatworth", "Timberscombe", "Timsbury", "Tunley", "Wedmore", "West Monkton", "Westhay", "Weston-super-Mare"];
+/* Places in the "Where?" dropdown: fixed centre points. With "within 10 miles" these cover almost all of the county;
+   anywhere else is reached with the location button or by tapping the map. Joint entries sit between the two towns. */
+const PLACES = [
+  ["Somerset", [["Taunton", 51.015, -3.103], ["Yeovil", 50.942, -2.633], ["Bridgwater", 51.128, -3.003], ["Frome", 51.228, -2.322],
+    ["Wells", 51.209, -2.645], ["Glastonbury and Street", 51.137, -2.727], ["Burnham-on-Sea", 51.238, -2.997], ["Minehead", 51.204, -3.475],
+    ["Dulverton", 51.041, -3.551], ["Chard", 50.872, -2.964], ["Wincanton", 51.056, -2.410], ["Langport", 51.038, -2.828]]],
+  ["North Somerset", [["Weston-super-Mare", 51.346, -2.977], ["Nailsea and Clevedon", 51.435, -2.805]]],
+  ["Bath and North East Somerset", [["Bath", 51.381, -2.359], ["Midsomer Norton and Radstock", 51.288, -2.465]]]];
+const PLACE = Object.fromEntries(PLACES.flatMap(([, ps]) => ps.map(([n, la, lo]) => [n, [la, lo]])));
 const LIVE_ONLY = true;  // true in the GitHub version: no built-in copy, records come only from the sheet
 let liveMsg = "<strong>Loading services…</strong>";
 
@@ -985,7 +999,7 @@ let liveMsg = "<strong>Loading services…</strong>";
 // Everyday wellbeing: connection, activity, learning, mindfulness and community.
 const GROUPS = [["Specialist support", ["crisis prevention", "low mood", "anxiety", "bereavement", "hearing voices", "eating disorders", "long-term pain", "dementia", "drugs and alcohol", "caring for someone"]],
   ["Practical help and support", ["housing", "finances", "food"]],
-  ["Everyday wellbeing", ["connect", "be active", "take notice", "keep learning"]]];
+  ["Everyday wellbeing", ["connect", "be active", "take notice", "keep learning", "giving"]]];
 const LABEL = { "hearing voices": "Psychosis and hearing voices", "crisis prevention": "Crisis support" };
 const cap = s => LABEL[s] || s[0].toUpperCase() + s.slice(1);
 const esc = s => String(s ?? "").replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
@@ -1084,15 +1098,16 @@ function prepare(rows) {
   S = ALL.filter(s => s.type !== "Course" && split(s.mode).includes("in-person"));
   T = ALL.filter(s => s.type !== "Course" && !split(s.mode).includes("in-person"));  // services with a place live on the In person tab
   fs.innerHTML = supportOptions(S); $("t-support").innerHTML = supportOptions(T); $("c-support").innerHTML = supportOptions(C);
-  const towns = [...new Set(S.map(s => s.town).filter(t => TOWNS[t]))].sort();
-  $("f-town").innerHTML = `<option value="">All of Somerset</option>` + towns.map(t => `<option>${esc(t)}</option>`).join("") + `<option value="__pt" hidden>Point on map</option>`;
+  $("f-town").innerHTML = `<option value="">All of Somerset</option>` +
+    PLACES.map(([g, ps]) => `<optgroup label="${esc(g)}">` + [...ps].sort((x, y) => x[0].localeCompare(y[0])).map(([n]) => `<option>${esc(n)}</option>`).join("") + `</optgroup>`).join("") +
+    `<option value="__pt" hidden>Point on map</option>`;
 }
 prepare(DATA);
 // services at the same spot share one numbered pin (grouped in drawMap)
 const spotKey = s => s.lat.toFixed(4) + "," + s.lon.toFixed(4);
 $("today").textContent = new Date().toLocaleDateString("en-GB", { weekday: "short", day: "numeric", month: "short" });
 
-let origin = null, sortBy = "soon", fitPending = true;
+let origin = null, sortBy = "soon", fitPending = true, locMsg = "";
 
 /* ---------- map ---------- */
 let map = null, layer = null, ring = null, opin = null, markers = {};
@@ -1127,7 +1142,7 @@ function initMap() {
       if (++which < TILE_URLS.length) tiles.setUrl(TILE_URLS[which]); else $("tilenote").hidden = false;
     }).addTo(map);
   layer = L.layerGroup().addTo(map);
-  map.on("click", e => { origin = { lat: e.latlng.lat, lon: e.latlng.lng, label: "the point on the map" }; $("f-town").value = "__pt"; sortBy = "near"; fitPending = true; render(); });
+  map.on("click", e => { origin = { lat: e.latlng.lat, lon: e.latlng.lng, label: "the point on the map" }; setPtLabel("Point on map"); $("f-town").value = "__pt"; sortBy = "near"; fitPending = true; render(); });
 }
 
 /* ---------- render ---------- */
@@ -1147,7 +1162,7 @@ function render() {
   $("within").disabled = !origin;
   $("s-near").disabled = !origin; if (!origin && sortBy === "near") sortBy = "soon";
   $("s-soon").setAttribute("aria-pressed", sortBy === "soon"); $("s-near").setAttribute("aria-pressed", sortBy === "near");
-  $("pointnote").innerHTML = origin ? `Searching from ${esc(origin.label)} · <button type="button" id="clearpt">Clear</button>` : "";
+  $("pointnote").innerHTML = origin ? `Searching from ${esc(origin.label)}${origin.label === "your location" ? " (stays on your device)" : ""} · <button type="button" id="clearpt">Clear</button>` : esc(locMsg);
   if (origin) $("clearpt").onclick = () => { origin = null; $("f-town").value = ""; fitPending = true; render(); };
 
   const win = windowFor(when, now);
@@ -1292,7 +1307,7 @@ function renderTalk() {
     const modes = split(s.mode).filter(m => m !== "in-person").map(m => m === "phone" ? "Phone" : "Online").join(" · ");
     const reach = s.phone ? (/^text/i.test(s.phone) ? esc(s.phone) : `<a href="tel:${esc(s.phone.split(" (")[0].split(" or ")[0].replace(/\s/g, ""))}">${esc(s.phone)}</a>`) : s.email ? `<a href="mailto:${esc(s.email)}">${esc(s.email)}</a>` : "";
     return `<article class="tcard">
-      <div class="row1"><span class="mode">${modes} · ${esc(s.area === "national" ? "UK-wide" : "Somerset")}</span><span class="openp ${st.open ? "yes" : "no"}">${esc(st.txt)}</span></div>
+      <div class="row1"><span class="mode">${modes} · ${esc(s.area === "national" ? "UK-wide" : (s.area || "Somerset"))}</span><span class="openp ${st.open ? "yes" : "no"}">${esc(st.txt)}</span></div>
       <h3>${esc(s.name)}</h3>
       ${reach ? `<div class="reach${s.phone ? "" : " email"}">${reach}</div>` : ""}
       <p class="desc" style="-webkit-line-clamp:3">${esc(s.description)}</p>
@@ -1367,7 +1382,7 @@ function renderAbout() {
     <ul>
       <li><strong>Specialist support:</strong> crisis support, low mood, anxiety, bereavement, hearing voices, long-term pain, eating disorders, dementia, drugs and alcohol, caring for someone.</li>
       <li><strong>Practical help and support:</strong> money, housing and food, including advice and advocacy.</li>
-      <li><strong>Everyday wellbeing:</strong> connection, activity, learning and nature, based on the Five Ways to Wellbeing.</li>
+      <li><strong>Everyday wellbeing:</strong> connection, activity, learning, nature and giving, based on the Five Ways to Wellbeing.</li>
       <li>Helplines and online groups, in-person services on a map, and courses with set dates.</li>
     </ul>
     </section>
@@ -1411,9 +1426,27 @@ $("t-support").onchange = renderTalk; $("t-open").onchange = renderTalk;
 fs.onchange = () => { fitPending = true; render(); };
 $("f-when").onchange = () => { fitPending = true; render(); };
 $("within").onchange = () => { fitPending = true; render(); };
-$("f-town").onchange = e => { const t = e.target.value;
-  origin = t && TOWNS[t] ? { lat: TOWNS[t][0], lon: TOWNS[t][1], label: t } : null; sortBy = origin ? "near" : "soon"; fitPending = true; render(); };
+$("f-town").onchange = e => { const t = e.target.value; locMsg = "";
+  origin = t && PLACE[t] ? { lat: PLACE[t][0], lon: PLACE[t][1], label: t } : null; sortBy = origin ? "near" : "soon"; fitPending = true; render(); };
 $("s-soon").onclick = () => { sortBy = "soon"; render(); };
+/* "Use my location": optional, asks only when pressed; the position never leaves the browser */
+function setPtLabel(txt) { const o = $("f-town").querySelector('option[value="__pt"]'); if (o) o.textContent = txt; }
+(() => {
+  const btn = $("uselocation");
+  if (!btn || !("geolocation" in navigator)) return;
+  btn.hidden = false;
+  btn.onclick = () => {
+    btn.disabled = true; locMsg = "Finding your location…"; render();
+    navigator.geolocation.getCurrentPosition(p => {
+      btn.disabled = false; locMsg = "";
+      origin = { lat: p.coords.latitude, lon: p.coords.longitude, label: "your location" };
+      setPtLabel("Your location"); $("f-town").value = "__pt"; sortBy = "near"; fitPending = true; render();
+    }, err => {
+      btn.disabled = false;
+      locMsg = err.code === 1 ? "Location not allowed: choose a town instead." : "Couldn't find your location: choose a town instead."; render();
+    }, { enableHighAccuracy: false, timeout: 12000, maximumAge: 600000 });
+  };
+})();
 $("s-near").onclick = () => { sortBy = "near"; render(); };
 $("list").addEventListener("mouseover", e => { const c = e.target.closest(".card"); document.querySelectorAll(".pin.hot, .cpin.hot").forEach(p => p.classList.remove("hot"));
   const m = c && markers[c.dataset.id]; if (m) m.getElement()?.firstElementChild?.classList.add("hot"); });
