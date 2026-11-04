@@ -835,6 +835,15 @@ main { flex: 1; min-height: 0; display: grid; grid-template-columns: minmax(0, 4
 .maplegend button[aria-pressed="false"] .lt { text-decoration: line-through; }
 .maplegend button[aria-pressed="false"] i { background: transparent; box-shadow: inset 0 0 0 1.5px #A8A29E; }
 .maplegend button.all { justify-content: center; color: var(--b700); font-weight: 700; text-decoration: underline; margin-top: 2px; }
+.maplegend button.lghead { border: 0; padding: 2px 2px 4px; margin: 0; gap: 6px; font-size: 10px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: var(--b700); }
+.maplegend button.lghead:hover { background: none; }
+.maplegend button.lghead span { text-transform: none; letter-spacing: 0; font-weight: 500; color: #78716C; }
+.maplegend button.lghead .dots { display: inline-flex; gap: 3px; text-transform: none; }
+.maplegend button.lghead .dots i { width: 9px; height: 9px; border-radius: 50%; }
+.maplegend button.lghead svg { margin-left: auto; width: 14px; height: 14px; flex: none; color: var(--b700); transition: transform .15s; }
+.maplegend.closed { min-width: 0; padding: 6px 10px !important; }
+.maplegend.closed button.lghead { padding: 2px; }
+.maplegend.closed button.lghead svg { transform: rotate(180deg); }
 @media (max-width: 700px) { .maplegend { min-width: 0; } .maplegend .lt small, .maplegend button em { display: none; } .maplegend button { padding: 3px 4px; font-size: 12px; } .maplegend button i { width: 18px; height: 10px; } }
 .kind { display: flex; align-items: center; gap: 6px; font-size: 11px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; color: #57534E; margin: 0 0 3px; }
 .kind i { width: 10px; height: 10px; border-radius: 50%; flex: none; box-shadow: 0 0 0 2px #fff, 0 0 0 3px rgba(0,0,0,.12); }
@@ -1126,6 +1135,7 @@ function initMap() {
     L.DomEvent.disableClickPropagation(d); L.DomEvent.disableScrollPropagation(d);   // clicks here mustn't set a search point
     d.addEventListener("click", e => {
       const b = e.target.closest("button"); if (!b) return;
+      if (b.dataset.k === "toggle") { legendOpen = !legendOpen; try { localStorage.setItem("keyOpen", legendOpen ? "1" : "0"); } catch (_) {} setTimeout(() => drawLegend(d), 0); return; }
       if (b.dataset.k === "all") kindsOff.clear();
       else { const k = +b.dataset.k; kindsOff.has(k) ? kindsOff.delete(k) : kindsOff.add(k); if (KINDS.every((_, i) => kindsOff.has(i) || !S.some(x => kindOf(x) === i))) kindsOff.clear(); }
       setTimeout(() => render(), 0);   // redraw after the click finishes, so the map knows it came from the key
@@ -1234,11 +1244,19 @@ const pinCol = s => (KINDS[kindOf(s)] || [, "#64748B"])[1];
 // Map key doubles as a filter: tap a kind to hide or show it
 const kindsOff = new Set();
 let kindCounts = null, legendEl = null;
+// The key starts open on wider screens and folded on phones; a viewer's choice is remembered on their device
+let legendOpen = !matchMedia("(max-width: 700px)").matches;
+try { const v = localStorage.getItem("keyOpen"); if (v) legendOpen = v === "1"; } catch (_) {}
 function drawLegend(d) {
   legendEl = d;
   const has = KINDS.map((_, i) => S.some(x => kindOf(x) === i));      // kinds that ever appear on this map
   const n = kindCounts || KINDS.map((_, i) => S.filter(x => kindOf(x) === i).length);
-  d.innerHTML = `<b>What it is <span>tap to filter</span></b>` + KINDS.map((k, i) => !has[i] ? "" : `<button type="button" data-k="${i}" aria-pressed="${!kindsOff.has(i)}">
+  d.classList.toggle("closed", !legendOpen);
+  const chev = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 15l6-6 6 6"/></svg>`;
+  const head = `<button type="button" class="lghead" data-k="toggle" aria-expanded="${legendOpen}" title="${legendOpen ? "Hide the key" : "Show the key"}">What it is ` +
+    (legendOpen ? `<span>tap to filter</span>` : `<span class="dots">${KINDS.map((k, i) => has[i] && !kindsOff.has(i) ? `<i style="background:${k[1]}"></i>` : "").join("")}</span>${kindsOff.size ? `<span>· filtered</span>` : ""}`) + chev + `</button>`;
+  if (!legendOpen) { d.innerHTML = head; return; }
+  d.innerHTML = head + KINDS.map((k, i) => !has[i] ? "" : `<button type="button" data-k="${i}" aria-pressed="${!kindsOff.has(i)}">
       <i style="--c:${k[1]}"></i><span class="lt">${esc(k[0])}<small>${esc(k[2].filter(t => S.some(x => x.type === t)).join(", "))}</small></span><em>${n[i]}</em></button>`.replace('<button type="button"', `<button type="button"${n[i] ? "" : ' class="zero"'}`)).join("") +
     (kindsOff.size ? `<button type="button" class="all" data-k="all">Show all</button>` : "");
 }
