@@ -734,7 +734,8 @@ h1 { font-family: var(--serif); color: var(--b900); font-size: 26px; margin: 0; 
 .q select { width: 100%; border: 0; background: transparent; font-weight: 600; color: var(--ink); padding: 2px 0; cursor: pointer; }
 .where { display: grid; grid-template-columns: 1fr auto auto; gap: 8px; align-items: center; }
 .where select#within { width: auto; }
-.pointnote { font-size: 11px; color: var(--muted); margin: 2px 2px 0; }
+#q-where { position: relative; }
+.pointnote { position: absolute; right: 10px; top: 6px; max-width: 70%; font-size: 11px; line-height: 1.2; color: #9A3412; text-align: right; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .pointnote:empty { display: none; }
 .locbtn { display: grid; place-items: center; width: 26px; height: 26px; border: 1px solid #C9D6CE; border-radius: 50%; background: var(--white); color: var(--b700); cursor: pointer; padding: 0; }
 .locbtn:hover, .locbtn:focus-visible { border-color: var(--b500); background: var(--b50); }
@@ -1162,8 +1163,7 @@ function render() {
   $("within").disabled = !origin;
   $("s-near").disabled = !origin; if (!origin && sortBy === "near") sortBy = "soon";
   $("s-soon").setAttribute("aria-pressed", sortBy === "soon"); $("s-near").setAttribute("aria-pressed", sortBy === "near");
-  $("pointnote").innerHTML = origin ? `Searching from ${esc(origin.label)}${origin.label === "your location" ? " (stays on your device)" : ""} · <button type="button" id="clearpt">Clear</button>` : esc(locMsg);
-  if (origin) $("clearpt").onclick = () => { origin = null; $("f-town").value = ""; fitPending = true; render(); };
+  $("pointnote").textContent = locMsg;  // only short location messages; floats below the box so the filters never change height
 
   const win = windowFor(when, now);
   let rows = S.filter(s => !sup || s._sf.includes(sup)).map(s => {
@@ -1443,7 +1443,8 @@ function setPtLabel(txt) { const o = $("f-town").querySelector('option[value="__
       setPtLabel("Your location"); $("f-town").value = "__pt"; sortBy = "near"; fitPending = true; render();
     }, err => {
       btn.disabled = false;
-      locMsg = err.code === 1 ? "Location not allowed: choose a town instead." : "Couldn't find your location: choose a town instead."; render();
+      locMsg = err.code === 1 ? "Location not allowed" : "Location not found"; render();
+      setTimeout(() => { locMsg = ""; render(); }, 5000);
     }, { enableHighAccuracy: false, timeout: 12000, maximumAge: 600000 });
   };
 })();
