@@ -786,7 +786,8 @@ h1 { font-family: var(--serif); color: var(--b900); font-size: 26px; margin: 0; 
 .tgrid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 12px; }
 .gh { font-family: var(--serif); color: var(--b900); font-size: 18px; margin: 20px 4px 10px; }
 .gh small { font-family: var(--sans); font-size: 12px; color: var(--muted); font-weight: 500; margin-left: 8px; }
-.tcard { background: var(--white); border-radius: 16px; padding: 14px 16px; box-shadow: 0 1px 2px rgba(0,0,0,.05); border: 1px solid var(--line); display: grid; gap: 8px; align-content: start; min-width: 0; }
+.tcard { background: var(--white); border-radius: 16px; padding: 14px 16px; box-shadow: 0 1px 2px rgba(0,0,0,.05); border: 1px solid var(--line); display: grid; grid-template-columns: minmax(0, 1fr); gap: 8px; align-content: start; min-width: 0; }
+.tcard h3 { overflow-wrap: anywhere; }
 .tcard h3 { font-family: var(--serif); color: var(--b900); font-size: 17px; margin: 0; }
 .reach { font-size: 18px; font-weight: 700; color: var(--b800); font-variant-numeric: tabular-nums; overflow-wrap: anywhere; }
 .reach.email { font-size: 15px; font-weight: 600; }
@@ -1401,10 +1402,10 @@ function renderTalk() {
   let rows = T.filter(s => !sup || s._sf.includes(sup)).map(s => ({ s, st: openState(s, now) }));
   if (onlyOpen) rows = rows.filter(r => r.st.open);
   const card = ({ s, st }) => {
-    const modes = split(s.mode).filter(m => m !== "in-person").map(m => m === "phone" ? "Phone" : "Online").join(" · ");
+    const modes = split(s.mode).filter(m => m !== "in-person").map(m => m === "phone" ? "Phone" : "Online").sort((a, b) => a === "Phone" ? -1 : b === "Phone" ? 1 : 0).join(" · ");
     const reach = s.phone ? (/^text/i.test(s.phone) ? esc(s.phone) : `<a href="tel:${esc(s.phone.split(" (")[0].split(" or ")[0].replace(/\s/g, ""))}">${esc(s.phone)}</a>`) : s.email ? `<a href="mailto:${esc(s.email)}">${esc(s.email)}</a>` : "";
     return `<article class="tcard">
-      <div class="row1"><span class="mode">${modes} · ${esc(s.area === "national" ? "UK-wide" : (s.area || "Somerset"))}</span><span class="openp ${st.open ? "yes" : st.when || "no"}">${esc(st.txt)}</span></div>
+      <div class="row1"><span class="mode">${modes} · ${s.area === "national" ? "UK-wide" : "Local"}</span><span class="openp ${st.open ? "yes" : st.when || "no"}">${esc(st.txt)}</span></div>
       <h3>${esc(s.name)}</h3>
       ${reach ? `<div class="reach${s.phone ? "" : " email"}">${reach}</div>` : ""}
       <p class="desc" style="-webkit-line-clamp:3">${esc(s.description)}</p>
