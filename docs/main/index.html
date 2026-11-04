@@ -793,7 +793,13 @@ h1 { font-family: var(--serif); color: var(--b900); font-size: 26px; margin: 0; 
 .reach a { color: inherit; text-decoration: none; }
 .openp { display: inline-flex; align-items: center; gap: 6px; font-size: 12px; font-weight: 700; padding: 3px 9px; border-radius: 999px; }
 .openp.yes { background: #D1FAE5; color: #064E3B; } .openp.no { background: #F5F5F4; color: #57534E; }
+/* not open yet: later today = amber, this week = blue, further off stays grey */
+.openp.today { background: #FEF3C7; color: #78350F; } .openp.week { background: #E0ECF8; color: #1E3A5F; }
+.openp.today::before, .openp.week::before { content: ""; width: 7px; height: 7px; border-radius: 50%; border: 1.5px solid currentColor; box-sizing: border-box; }
 .openp.yes::before { content: ""; width: 7px; height: 7px; border-radius: 50%; background: #10B981; }
+.tcard .row1 { flex-wrap: nowrap; align-items: center; }
+.tcard .row1 .mode { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.tcard .row1 .openp { flex-shrink: 0; white-space: nowrap; }
 .mode { font-size: 10px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: var(--b700); }
 @media (max-width: 899px) { .tabs { display: inline-flex; } }
 
@@ -1374,9 +1380,19 @@ function openState(s, now) {
   if (allDay) return { txt: "Open 24/7", open: true };
   const o = occurrences(s, now, 14), cur = o.find(x => x.st <= now && x.en > now);
   // Online sessions and some phone lines run on set days with no set time: say so, and don't count them as "open now"
-  if (cur && !s._times) return { txt: "Today (no set time)", open: false };
+  if (cur && !s._times) return { txt: "Today (no set time)", open: false, when: "today" };
   if (cur) return { txt: s.mode.includes("phone") ? `Open now until ${fmtT(s._times.e ?? s._times.s)}` : "Happening now", open: true };
-  const nx = nextText(s, now); return { txt: (s.mode.includes("phone") ? "Opens " : "Next ") + nx.txt, open: false };
+  const nx = o.find(x => x.en > now), dd = nx ? Math.round((dayStart(nx.st) - dayStart(now)) / 864e5) : 99;
+  return { txt: (s.mode.includes("phone") ? "Opens " : "Next ") + shortNext(s, o, now), open: false, when: dd === 0 ? "today" : dd < 7 ? "week" : "" };
+}
+// Compact "when" for the status pill: "today 20:00", "Fri 20:00", "24 Nov 19:00"
+function shortNext(s, occ, now) {
+  const o = occ.find(x => x.en > now) || occurrences(s, now, 70).find(x => x.en > now);
+  if (!o) return "date to be confirmed";
+  const dd = Math.round((dayStart(o.st) - dayStart(now)) / 864e5);
+  const day = dd === 0 ? "today" : dd === 1 ? "tomorrow" : dd < 7 ? o.st.toLocaleDateString("en-GB", { weekday: "short" })
+    : o.st.toLocaleDateString("en-GB", { day: "numeric", month: "short" });
+  return day + (s._times ? " " + fmtT(s._times.s) : " (no set time)") + (o.bank ? " (bank hol.)" : "");
 }
 function renderTalk() {
   if (LIVE_ONLY && !ALL.length) { panelMessage(liveMsg); return; }
@@ -1388,7 +1404,7 @@ function renderTalk() {
     const modes = split(s.mode).filter(m => m !== "in-person").map(m => m === "phone" ? "Phone" : "Online").join(" · ");
     const reach = s.phone ? (/^text/i.test(s.phone) ? esc(s.phone) : `<a href="tel:${esc(s.phone.split(" (")[0].split(" or ")[0].replace(/\s/g, ""))}">${esc(s.phone)}</a>`) : s.email ? `<a href="mailto:${esc(s.email)}">${esc(s.email)}</a>` : "";
     return `<article class="tcard">
-      <div class="row1"><span class="mode">${modes} · ${esc(s.area === "national" ? "UK-wide" : (s.area || "Somerset"))}</span><span class="openp ${st.open ? "yes" : "no"}">${esc(st.txt)}</span></div>
+      <div class="row1"><span class="mode">${modes} · ${esc(s.area === "national" ? "UK-wide" : (s.area || "Somerset"))}</span><span class="openp ${st.open ? "yes" : st.when || "no"}">${esc(st.txt)}</span></div>
       <h3>${esc(s.name)}</h3>
       ${reach ? `<div class="reach${s.phone ? "" : " email"}">${reach}</div>` : ""}
       <p class="desc" style="-webkit-line-clamp:3">${esc(s.description)}</p>
