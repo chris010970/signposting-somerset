@@ -1088,7 +1088,7 @@ function nextText(s, now) {
   if (!o) return { cls: "chk", txt: "No upcoming dates" };
   const d0 = dayStart(now), dd = Math.round((dayStart(o.st) - d0) / 864e5);
   const day = dd === 0 ? "Today" : dd === 1 ? "Tomorrow" : o.st.toLocaleDateString("en-GB", { weekday: "short", day: "numeric", month: "short" });
-  const t = s._times ? `, ${fmtT(s._times.s)}${s._times.e != null ? "–" + fmtT(s._times.e) : ""}` : "";
+  const t = s._times ? `, ${fmtT(s._times.s)}${s._times.e != null ? "–" + fmtT(s._times.e) : ""}` : split(s.mode).includes("in-person") ? " (time not given: check)" : " (no set time)";
   return { cls: dd === 0 ? "today" : "", txt: `${day}${t}${o.bank ? " (bank holiday: check it's running)" : ""}`, at: o.st };
 }
 
@@ -1373,6 +1373,8 @@ function openState(s, now) {
   const allDay = s._days.size === 7 && s._times && s._times.s === 0 && s._times.e >= 1439;
   if (allDay) return { txt: "Open 24/7", open: true };
   const o = occurrences(s, now, 14), cur = o.find(x => x.st <= now && x.en > now);
+  // Online sessions and some phone lines run on set days with no set time: say so, and don't count them as "open now"
+  if (cur && !s._times) return { txt: "Today (no set time)", open: false };
   if (cur) return { txt: s.mode.includes("phone") ? `Open now until ${fmtT(s._times.e ?? s._times.s)}` : "Happening now", open: true };
   const nx = nextText(s, now); return { txt: (s.mode.includes("phone") ? "Opens " : "Next ") + nx.txt, open: false };
 }
