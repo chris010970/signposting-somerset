@@ -777,10 +777,14 @@ h1 { font-family: var(--serif); color: var(--b900); font-size: 26px; margin: 0; 
 .sitetabs button { border: 0; background: none; padding: 9px 14px 10px; font-weight: 700; font-size: 14px; color: #78716C; cursor: pointer; border-bottom: 3px solid transparent; margin-bottom: -1px; }
 .sitetabs button[aria-selected="true"] { color: var(--b900); border-bottom-color: var(--b600); }
 @media (max-width: 420px) { .sitetabs { gap: 0; } .sitetabs button { padding-inline: 7px; font-size: 13px; } .sitetabs .lg { display: none; } .sitetabs .sh { display: inline; } }
-/* Phone and online / Courses bars use the In person grid, so "Support for" is the same width on every tab */
-.tq { display: grid; grid-template-columns: 27% 33% minmax(0, 1fr) auto; gap: 10px; align-items: stretch; }
-.tq > .toggle { justify-self: start; }
-@media (max-width: 899px) { .tq { grid-template-columns: 1fr; } .tq > .toggle { justify-self: stretch; } }
+/* Phone and online / Courses bars: the dropdowns share the width evenly; the checkbox sits at the right, where Sort is on In person */
+.tq { display: flex; gap: 10px; align-items: stretch; }
+.tq > .q { flex: 1 1 0; min-width: 0; }
+.tq > div.q:last-of-type:not(:first-child) { flex: 0 0 var(--lastdd); }
+.tq > .toggle { flex: 0 0 var(--endcol); white-space: nowrap; }
+:root { --endcol: 168px; --lastdd: 25%; }  /* --lastdd: width of the rightmost dropdown on every tab */  /* width of Sort on In person, and of the checkbox on the other tabs */
+@media (min-width: 900px) { .qs { grid-template-columns: minmax(0, 1fr) minmax(0, 1.3fr) var(--lastdd) var(--endcol); } }
+@media (max-width: 899px) { .tq { flex-direction: column; } .tq > .q, .tq > div.q:last-of-type:not(:first-child), .tq > .toggle { flex: none; } }
 .toggle { display: flex; align-items: center; gap: 8px; background: var(--b50); border: 2px solid transparent; border-radius: 12px; padding: 8px 14px; font-weight: 600; cursor: pointer; }
 .toggle.on { background: var(--white); border-color: var(--b500); }
 #panel-talk { flex: 1; min-height: 0; overflow-y: auto; }
