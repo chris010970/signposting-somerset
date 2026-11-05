@@ -726,7 +726,7 @@ header.top { position: relative; overflow: hidden; background: var(--white); bor
 h1 { font-family: var(--serif); color: var(--b900); font-size: 26px; margin: 0; }
 .lede { color: #78716C; margin: 2px 0 14px; }
 .datasrc { color: #78716C; font-size: 12px; margin: -10px 0 12px; }
-.qs { display: grid; grid-template-columns: 1.1fr 1.3fr 1fr auto; gap: 10px; }
+.qs { display: grid; grid-template-columns: 27% 33% minmax(0, 1fr) auto; gap: 10px; }
 @media (max-width: 899px) { .qs { grid-template-columns: 1fr; } }
 .q { background: var(--b50); border: 2px solid transparent; border-radius: 10px; padding: 5px 10px; min-width: 0; }
 .q.on { background: var(--white); border-color: var(--b500); }
@@ -777,14 +777,17 @@ h1 { font-family: var(--serif); color: var(--b900); font-size: 26px; margin: 0; 
 .sitetabs button { border: 0; background: none; padding: 9px 14px 10px; font-weight: 700; font-size: 14px; color: #78716C; cursor: pointer; border-bottom: 3px solid transparent; margin-bottom: -1px; }
 .sitetabs button[aria-selected="true"] { color: var(--b900); border-bottom-color: var(--b600); }
 @media (max-width: 420px) { .sitetabs { gap: 0; } .sitetabs button { padding-inline: 7px; font-size: 13px; } .sitetabs .lg { display: none; } .sitetabs .sh { display: inline; } }
-.tq { display: flex; gap: 10px; flex-wrap: wrap; align-items: stretch; }
-.tq .q { flex: 1 1 280px; }
+/* Phone and online / Courses bars use the In person grid, so "Support for" is the same width on every tab */
+.tq { display: grid; grid-template-columns: 27% 33% minmax(0, 1fr) auto; gap: 10px; align-items: stretch; }
+.tq > .toggle { justify-self: start; }
+@media (max-width: 899px) { .tq { grid-template-columns: 1fr; } .tq > .toggle { justify-self: stretch; } }
 .toggle { display: flex; align-items: center; gap: 8px; background: var(--b50); border: 2px solid transparent; border-radius: 12px; padding: 8px 14px; font-weight: 600; cursor: pointer; }
 .toggle.on { background: var(--white); border-color: var(--b500); }
 #panel-talk { flex: 1; min-height: 0; overflow-y: auto; }
 .talk { max-width: 1400px; margin: 0 auto; padding-block: 14px 110px; }
 .tgrid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 12px; }
 .gh { font-family: var(--serif); color: var(--b900); font-size: 18px; margin: 20px 4px 10px; }
+.talk > .gh:first-child { margin-top: 0; }  /* first heading sits as close to the filters as the In person cards */
 .gh small { font-family: var(--sans); font-size: 12px; color: var(--muted); font-weight: 500; margin-left: 8px; }
 .tcard { background: var(--white); border-radius: 16px; padding: 14px 16px; box-shadow: 0 1px 2px rgba(0,0,0,.05); border: 1px solid var(--line); display: grid; grid-template-columns: minmax(0, 1fr); gap: 8px; align-content: start; min-width: 0; }
 .tcard h3 { overflow-wrap: anywhere; }
@@ -1069,7 +1072,9 @@ footer.urgent p { color: #FEE2E2; }
   #panel-assist #a-map { height: 290px; }
 }
 /* the Assist filter bar uses the In person bar's look; "Include phone and online" sits where When would be */
-#hdr-assist .qs > .toggle { align-self: stretch; }
+#hdr-assist .qs { width: 100%; }
+#hdr-assist .qs > .toggle { align-self: stretch; justify-self: start; }
+@media (max-width: 899px) { #hdr-assist .qs > .toggle { justify-self: stretch; } }
 
 #hdr-assist.a-locked .qs { display: none; }
 #hdr-assist #aq-remote.a-off { opacity: .5; cursor: default; }
@@ -1106,7 +1111,7 @@ footer.urgent p { color: #FEE2E2; }
     </div>
     <div id="hdr-course" class="tq" hidden>
       <div class="q" id="q-csupport"><label for="c-support">Support for</label><select id="c-support"></select></div>
-      <div class="q" id="q-cfmt" style="flex:0 1 220px"><label for="c-fmt">Format</label><select id="c-fmt"><option value="">In person or online</option><option value="in-person">In person</option><option value="online">Online</option></select></div>
+      <div class="q" id="q-cfmt"><label for="c-fmt">Format</label><select id="c-fmt"><option value="">In person or online</option><option value="in-person">In person</option><option value="online">Online</option></select></div>
       <label class="toggle" id="q-cbook"><input type="checkbox" id="c-book"> Can still join</label>
     </div>
     <div id="hdr-about" hidden></div>
