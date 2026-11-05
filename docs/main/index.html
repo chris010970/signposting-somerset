@@ -726,7 +726,7 @@ header.top { position: relative; overflow: hidden; background: var(--white); bor
 h1 { font-family: var(--serif); color: var(--b900); font-size: 26px; margin: 0; }
 .lede { color: #78716C; margin: 2px 0 14px; }
 .datasrc { color: #78716C; font-size: 12px; margin: -10px 0 12px; }
-.qs { display: grid; grid-template-columns: 1.1fr 1.3fr 1fr auto; gap: 10px; }
+.qs { display: grid; grid-template-columns: 27% 33% minmax(0, 1fr) auto; gap: 10px; }
 @media (max-width: 899px) { .qs { grid-template-columns: 1fr; } }
 .q { background: var(--b50); border: 2px solid transparent; border-radius: 10px; padding: 5px 10px; min-width: 0; }
 .q.on { background: var(--white); border-color: var(--b500); }
@@ -777,14 +777,17 @@ h1 { font-family: var(--serif); color: var(--b900); font-size: 26px; margin: 0; 
 .sitetabs button { border: 0; background: none; padding: 9px 14px 10px; font-weight: 700; font-size: 14px; color: #78716C; cursor: pointer; border-bottom: 3px solid transparent; margin-bottom: -1px; }
 .sitetabs button[aria-selected="true"] { color: var(--b900); border-bottom-color: var(--b600); }
 @media (max-width: 420px) { .sitetabs { gap: 0; } .sitetabs button { padding-inline: 7px; font-size: 13px; } .sitetabs .lg { display: none; } .sitetabs .sh { display: inline; } }
-.tq { display: flex; gap: 10px; flex-wrap: wrap; align-items: stretch; }
-.tq .q { flex: 1 1 280px; }
+/* Phone and online / Courses bars use the In person grid, so "Support for" is the same width on every tab */
+.tq { display: grid; grid-template-columns: 27% 33% minmax(0, 1fr) auto; gap: 10px; align-items: stretch; }
+.tq > .toggle { justify-self: start; }
+@media (max-width: 899px) { .tq { grid-template-columns: 1fr; } .tq > .toggle { justify-self: stretch; } }
 .toggle { display: flex; align-items: center; gap: 8px; background: var(--b50); border: 2px solid transparent; border-radius: 12px; padding: 8px 14px; font-weight: 600; cursor: pointer; }
 .toggle.on { background: var(--white); border-color: var(--b500); }
 #panel-talk { flex: 1; min-height: 0; overflow-y: auto; }
 .talk { max-width: 1400px; margin: 0 auto; padding-block: 14px 110px; }
 .tgrid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 12px; }
 .gh { font-family: var(--serif); color: var(--b900); font-size: 18px; margin: 20px 4px 10px; }
+.talk > .gh:first-child { margin-top: 0; }  /* first heading sits as close to the filters as the In person cards */
 .gh small { font-family: var(--sans); font-size: 12px; color: var(--muted); font-weight: 500; margin-left: 8px; }
 .tcard { background: var(--white); border-radius: 16px; padding: 14px 16px; box-shadow: 0 1px 2px rgba(0,0,0,.05); border: 1px solid var(--line); display: grid; grid-template-columns: minmax(0, 1fr); gap: 8px; align-content: start; min-width: 0; }
 .tcard h3 { overflow-wrap: anywhere; }
@@ -933,8 +936,8 @@ footer.urgent p { color: #FEE2E2; }
       <button type="button" role="tab" id="tab-talk" aria-selected="true" aria-controls="panel-talk"><span class="lg">Phone and online</span><span class="sh">Phone &amp; online</span></button>
       <button type="button" role="tab" id="tab-near" aria-selected="false" aria-controls="panel-near">In person</button>
       <button type="button" role="tab" id="tab-course" aria-selected="false" aria-controls="panel-course">Courses</button>
-      <button type="button" role="tab" id="tab-about" aria-selected="false" aria-controls="panel-about">About</button>
-    </nav>
+<!--ASSIST_TAB-->
+      <button type="button" role="tab" id="tab-about" aria-selected="false" aria-controls="panel-about">About</button>    </nav>
     </div>
     <div id="hdr-talk" class="tq">
       <div class="q" id="q-tsupport"><label for="t-support">Support for</label><select id="t-support"></select></div>
@@ -942,11 +945,11 @@ footer.urgent p { color: #FEE2E2; }
     </div>
     <div id="hdr-course" class="tq" hidden>
       <div class="q" id="q-csupport"><label for="c-support">Support for</label><select id="c-support"></select></div>
-      <div class="q" id="q-cfmt" style="flex:0 1 220px"><label for="c-fmt">Format</label><select id="c-fmt"><option value="">In person or online</option><option value="in-person">In person</option><option value="online">Online</option></select></div>
+      <div class="q" id="q-cfmt"><label for="c-fmt">Format</label><select id="c-fmt"><option value="">In person or online</option><option value="in-person">In person</option><option value="online">Online</option></select></div>
       <label class="toggle" id="q-cbook"><input type="checkbox" id="c-book"> Can still join</label>
     </div>
     <div id="hdr-about" hidden></div>
-    <div id="hdr-near" hidden>
+<!--ASSIST_HDR-->    <div id="hdr-near" hidden>
     <div class="qs">
       <div class="q" id="q-support"><label for="f-support">1. Support for</label>
         <select id="f-support"></select></div>
@@ -982,7 +985,7 @@ footer.urgent p { color: #FEE2E2; }
 <section id="panel-talk" role="tabpanel" aria-labelledby="tab-talk"><div class="talk gut" id="talk"></div></section>
 <section id="panel-about" role="tabpanel" aria-labelledby="tab-about" hidden style="flex:1;min-height:0;overflow-y:auto"><div class="talk gut" id="about"></div></section>
 <section id="panel-course" role="tabpanel" aria-labelledby="tab-course" hidden style="flex:1;min-height:0;overflow-y:auto"><div class="talk gut" id="courses"></div></section>
-<div id="panel-near" role="tabpanel" aria-labelledby="tab-near" hidden style="flex:1;min-height:0;display:flex;flex-direction:column">
+<!--ASSIST_PANEL--><div id="panel-near" role="tabpanel" aria-labelledby="tab-near" hidden style="flex:1;min-height:0;display:flex;flex-direction:column">
 
 <main id="main">
   <section id="list" aria-live="polite"></section>
@@ -1506,17 +1509,18 @@ function renderAbout() {
   </article>`;
 }
 let tab = "talk";
+const SITE_TABS = ["talk", "near", "course", "about"/*ASSIST_TABNAME*/];
 const LEDE = { talk: "Phone lines, text services and online groups: support you can reach from anywhere.",
   near: "In-person mental health and wellbeing support across Somerset.", about: "What this is, how it's kept accurate, and how to suggest a change.", course: "Courses with a set programme and length, in person or online. Most need booking." };
 function setSiteTab(t) {
   tab = t;
   try { $("tab-" + t).scrollIntoView({ block: "nearest", inline: "nearest" }); } catch (e) {}
-  for (const k of ["talk", "near", "course", "about"]) { $("tab-" + k).setAttribute("aria-selected", k === t); $("panel-" + k).hidden = k !== t; $("hdr-" + k).hidden = k !== t; }
-  if (t === "talk") renderTalk(); else if (t === "course") renderCourses(); else if (t === "about") renderAbout(); else { initMap(); setTimeout(() => { map && map.invalidateSize(); fitPending = true; render(); }, 30); }
+  for (const k of SITE_TABS) { $("tab-" + k).setAttribute("aria-selected", k === t); $("panel-" + k).hidden = k !== t; $("hdr-" + k).hidden = k !== t; }
+  if (t === "talk") renderTalk(); else if (t === "course") renderCourses(); else if (t === "about") renderAbout(); else if (t === "assist") { if (window.assistShow) window.assistShow(); } else { initMap(); setTimeout(() => { map && map.invalidateSize(); fitPending = true; render(); }, 30); }
   try { history.replaceState(null, "", "#" + t); } catch (e) {}
   try { localStorage.setItem("ss-tab", t); } catch (e) {}
 }
-for (const k of ["talk", "near", "course", "about"]) $("tab-" + k).onclick = () => setSiteTab(k);
+for (const k of SITE_TABS) $("tab-" + k).onclick = () => setSiteTab(k);
 $("c-support").onchange = renderCourses; $("c-fmt").onchange = renderCourses; $("c-book").onchange = renderCourses;
 $("t-support").onchange = renderTalk; $("t-open").onchange = renderTalk;
 
@@ -1559,9 +1563,9 @@ $("t-list").onclick = () => setTab("list"); $("t-map").onclick = () => setTab("m
 addEventListener("resize", () => map && map.invalidateSize());
 // First visit opens on About; after that, the tab the person last used. A link with #near, #course, #about or #talk wins.
 (function () {
-  const fromHash = ["#talk", "#near", "#course", "#about"].includes(location.hash) ? location.hash.slice(1) : "";
+  const fromHash = SITE_TABS.includes(location.hash.slice(1)) ? location.hash.slice(1) : "";
   let last = ""; try { last = localStorage.getItem("ss-tab") || ""; } catch (e) {}
-  setSiteTab(fromHash || (["talk", "near", "course", "about"].includes(last) ? last : "about"));
+  setSiteTab(fromHash || (SITE_TABS.includes(last) ? last : "about"));
 })();
 
 /* ---------- live data: read records from a published Google Sheet (CSV) ---------- */
