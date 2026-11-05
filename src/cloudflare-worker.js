@@ -26,6 +26,8 @@ const RISK = /suicid|kill (my|him|her|them)sel|end (my|his|her|their) life|self[
 
 let cache = { at: 0, recs: null };
 const hits = new Map();
+const badCodes = new Map();
+const MAX_BAD_CODES = 10;              // wrong codes per visitor per hour
 
 export default {
   async fetch(request, env) {
@@ -42,11 +44,17 @@ export default {
     if (request.method === "OPTIONS") return new Response(null, { status: 204, headers: cors });
     if (request.method !== "POST") return reply({ error: "not_found" }, 404);
     if (env.ALLOWED_ORIGIN && request.headers.get("Origin") !== env.ALLOWED_ORIGIN) return reply({ error: "forbidden" }, 403);
-    if (!env.ACCESS_CODE || request.headers.get("X-Access-Code") !== env.ACCESS_CODE) return reply({ error: "bad_code" }, 401);
-
-    // Simple per-visitor limit
+    // Wrong codes are limited per visitor, so the code can't be guessed by trying many (best effort, as below)
     const ip = request.headers.get("CF-Connecting-IP") || "?";
     const now = Date.now(), hour = 3600e3;
+    const fails = (badCodes.get(ip) || []).filter(t => now - t < hour);
+    if (fails.length >= MAX_BAD_CODES) return reply({ error: "rate_limited" }, 429);
+    if (!env.ACCESS_CODE || request.headers.get("X-Access-Code") !== env.ACCESS_CODE) { fails.push(now); badCodes.set(ip, fails); return reply({ error: "bad_code" }, 401); }
+
+    // Unlock check from the site's Assist tab: confirms the code without using the AI
+    if (new URL(request.url).pathname.replace(/\/+$/, "").endsWith("/verify")) return reply({ ok: true });
+
+    // Simple per-visitor limit
     const mine = (hits.get(ip) || []).filter(t => now - t < hour);
     if (mine.length >= MAX_PER_HOUR) return reply({ error: "rate_limited" }, 429);
     mine.push(now); hits.set(ip, mine);
@@ -61,14 +69,28 @@ export default {
     const remoteOnly = town === "__remote";
     const remote = remoteOnly || body.remote !== false;
     if (!need) return reply({ error: "no_need" }, 400);
-    if (!remoteOnly && !TOWNS[town]) return reply({ error: "bad_town" }, 400);
+    // A point picked on the map: accept only a rounded point (about 1 km) inside the area, and describe it by the nearest town
+    let centre = null, placeName = town;
+    if (town === "__pt") {
+      const la = Math.round(Number(body.lat) * 100) / 100, lo = Math.round(Number(body.lon) * 100) / 100;
+      if (!(la > 50.5 && la < 51.8 && lo > -4.1 && lo < -1.9)) return reply({ error: "bad_town" }, 400);
+      centre = [la, lo];
+      const near = Object.entries(TOWNS).map(([t, p]) => [t, miles(centre, p)]).sort((x, y) => x[1] - y[1])[0];
+      placeName = near ? (near[1] < 1 ? near[0] : `a point about ${Math.round(near[1])} mile${Math.round(near[1]) === 1 ? "" : "s"} from ${near[0]}`) : "the chosen point";
+    } else if (!remoteOnly) {
+      if (!TOWNS[town]) return reply({ error: "bad_town" }, 400);
+      centre = TOWNS[town];
+    }
 
     today = DAY_FMT.format(new Date());
     let recs;
     try { recs = await records(env); } catch { return reply({ error: "sheet_unavailable" }, 502); }
 
-    const cands = candidates(recs, remoteOnly ? null : TOWNS[town], radius, remote);
-    const place = remoteOnly ? "phone and online only" : `within ${radius} miles of ${town}`;
+    // Optional "Support for" choice from the page: only services tagged with it
+    const support = String(body.support || "").trim().toLowerCase().slice(0, 40);
+    let cands = candidates(recs, remoteOnly ? null : centre, radius, remote);
+    if (support) cands = cands.filter(c => String(c.s.support_for || "").toLowerCase().split(";").map(x => x.trim()).includes(support));
+    const place = (remoteOnly ? "phone and online only" : `within ${radius} miles of ${placeName}`) + (support ? `, for ${support}` : "");
     const nNear = cands.filter(c => c.d !== null).length;
     const scope = { place, total: cands.length, near: nNear, remote: cands.length - nNear, records: recs.length };
     const riskWords = RISK.test([need, ...followups].join(" "));
