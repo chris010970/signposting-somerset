@@ -983,8 +983,9 @@ footer.urgent p { color: #FEE2E2; }
 #panel-assist #a-out { scroll-margin-top: 12px; }
 #panel-assist .a-maincol { min-width: 0; }
 #panel-assist .a-preview { display: none; }
-@media (min-width: 1100px) {
-  #panel-assist .a-results { display: grid; grid-template-columns: minmax(0, 1fr) minmax(320px, 440px); gap: 32px; align-items: start; }
+@media (min-width: 1000px) {
+  /* same two columns as the prompt and map above (inside the card: 1px border + 18px padding, 24px gap) */
+  #panel-assist .a-results { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 24px; padding: 0 19px; align-items: start; }
   #panel-assist .a-preview { display: block; position: sticky; top: 16px; background: var(--white); border: 1px solid var(--line); border-radius: 14px; padding: 16px 18px; font-size: 14px; margin-top: 22px; }
   #panel-assist .a-pv-label { font-size: 12px; text-transform: uppercase; letter-spacing: .08em; color: var(--b600); font-weight: 700; margin-bottom: 8px; }
   #panel-assist .a-pv-body h3 { font-family: var(--serif); font-size: 17px; }
@@ -1071,21 +1072,31 @@ footer.urgent p { color: #FEE2E2; }
   #panel-assist .a-formgrid { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 24px; align-items: start; }
   #panel-assist .a-mapbox, #panel-assist .a-mapbox[hidden] { display: block !important; margin-top: 0; }
   #panel-assist .a-mapbtn { display: none; }
-  #panel-assist .a-compose { height: 290px; box-sizing: border-box; }
+  #panel-assist .a-compose { height: 210px; box-sizing: border-box; }
   #panel-assist .a-compose textarea { height: auto; min-height: 0; }
-  #panel-assist #a-map { height: 290px; }
+  #panel-assist #a-map { height: 210px; }
 }
 /* the Assist filter bar uses the In person bar's look; "Include phone and online" sits where When would be */
 #hdr-assist .qs { width: 100%; }
 /* same as Phone and online / Courses: dropdowns share the width, checkbox at the right */
 #hdr-assist .qs { display: flex; gap: 10px; align-items: stretch; }
 #hdr-assist .qs > .q { flex: 1 1 0; min-width: 0; }
-#hdr-assist .qs > #aq-where { flex: 0 0 var(--lastdd, 25%); min-width: 300px; }  /* town, location button and distance need about 300px */
+/* Support for matches its width on the In person tab (first of its 1 : 1.3 columns); Where takes the rest */
+#hdr-assist .qs > #aq-support { flex: 0 0 calc((100% - var(--lastdd, 25%) - var(--endcol, 168px) - 30px) / 2.3); }
+#hdr-assist .qs > #aq-where { flex: 1 1 0; }
 #hdr-assist .qs > .toggle { flex: 0 0 var(--endcol, 168px); white-space: nowrap; }
 @media (max-width: 899px) { #hdr-assist .qs { flex-direction: column; } #hdr-assist .qs > .q, #hdr-assist .qs > #aq-where, #hdr-assist .qs > .toggle { flex: none; min-width: 0; } }
 
 #hdr-assist.a-locked .qs { display: none; }
 #hdr-assist #aq-remote.a-off { opacity: .5; cursor: default; }
+
+/* the picks on the small map: numbered pins that match the cards (pin-shaped, so they don't read as the step numbers) */
+.a-pin { display: grid; place-items: center; width: 26px; height: 26px; border-radius: 50% 50% 50% 0; transform: rotate(-45deg); background: var(--pc, #64748B); border: 2px solid #fff; box-shadow: 0 1px 4px rgba(0,0,0,.35); cursor: pointer; }
+.a-pin b { transform: rotate(45deg); color: #fff; font: 700 12px/1 system-ui, sans-serif; }
+.a-pin.approx { background: #fff; border: 2px dashed var(--pc, #64748B); } .a-pin.approx b { color: var(--pc, #64748B); }
+#panel-assist .a-pk-num { display: inline-flex; align-items: center; gap: 2px; height: 22px; padding: 0 7px 0 5px; margin-right: 8px; border-radius: 11px; background: var(--pc, #64748B); color: #fff; font: 700 12px/1 system-ui, sans-serif; vertical-align: 2px; }
+#panel-assist .a-pk-num svg { width: 12px; height: 12px; fill: currentColor; }
+#panel-assist .a-pick.a-flash { box-shadow: 0 0 0 3px var(--b500); transition: box-shadow .3s; }
 </style>
 </head>
 <body>
@@ -1115,6 +1126,7 @@ footer.urgent p { color: #FEE2E2; }
     </div>
     <div id="hdr-talk" class="tq">
       <div class="q" id="q-tsupport"><label for="t-support">Support for</label><select id="t-support"></select></div>
+      <div class="q" id="q-tarea"><label for="t-area">Coverage</label><select id="t-area"><option value="">Local and UK-wide</option><option value="local">Local only</option><option value="national">UK-wide only</option></select></div>
       <label class="toggle" id="q-open"><input type="checkbox" id="t-open"> Open now only</label>
     </div>
     <div id="hdr-course" class="tq" hidden>
@@ -1636,9 +1648,9 @@ function shortNext(s, occ, now) {
 }
 function renderTalk() {
   if (LIVE_ONLY && !ALL.length) { panelMessage(liveMsg); return; }
-  const now = new Date(), sup = $("t-support").value, onlyOpen = $("t-open").checked;
-  $("q-tsupport").classList.toggle("on", !!sup); $("q-open").classList.toggle("on", onlyOpen);
-  let rows = T.filter(s => !sup || s._sf.includes(sup)).map(s => ({ s, st: openState(s, now) }));
+  const now = new Date(), sup = $("t-support").value, onlyOpen = $("t-open").checked, area = $("t-area").value;
+  $("q-tsupport").classList.toggle("on", !!sup); $("q-open").classList.toggle("on", onlyOpen); $("q-tarea").classList.toggle("on", !!area);
+  let rows = T.filter(s => (!sup || s._sf.includes(sup)) && (!area || (area === "national") === (s.area === "national"))).map(s => ({ s, st: openState(s, now) }));
   if (onlyOpen) rows = rows.filter(r => r.st.open);
   const card = ({ s, st }) => {
     const modes = split(s.mode).filter(m => m !== "in-person").map(m => m === "phone" ? "Phone" : "Online").sort((a, b) => a === "Phone" ? -1 : b === "Phone" ? 1 : 0).join(" · ");
@@ -1659,7 +1671,7 @@ function renderTalk() {
     rs.sort((a, b) => (b.st.open - a.st.open) || a.s.name.localeCompare(b.s.name));
     if (rs.length) html += `<h2 class="gh">${g}<small>${rs.length}</small></h2><div class="tgrid">${rs.map(card).join("")}</div>`;
   }
-  $("talk").innerHTML = html || `<div class="empty"><strong>Nothing open right now for this</strong><br>Untick "Open now only" to see all phone and online support, or call Samaritans on 116 123 at any time.</div>`;
+  $("talk").innerHTML = html || `<div class="empty"><strong>${onlyOpen ? "Nothing open right now for this" : "Nothing listed for this"}</strong><br>${[onlyOpen ? 'untick "Open now only"' : "", area ? 'choose "Local and UK-wide"' : "", sup ? 'choose "Anything" under Support for' : ""].filter(Boolean).join(", or ").replace(/^./, c => c.toUpperCase()) || "Try again later"}, or call Samaritans on 116 123 at any time.</div>`;
 }
 function courseInfo(s, now) {
   const today = iso(now);
@@ -1758,7 +1770,7 @@ function setSiteTab(t) {
 }
 for (const k of SITE_TABS) $("tab-" + k).onclick = () => setSiteTab(k);
 $("c-support").onchange = renderCourses; $("c-fmt").onchange = renderCourses; $("c-book").onchange = renderCourses;
-$("t-support").onchange = renderTalk; $("t-open").onchange = renderTalk;
+$("t-support").onchange = renderTalk; $("t-open").onchange = renderTalk; $("t-area").onchange = renderTalk;
 
 /* ---------- events ---------- */
 fs.onchange = () => { fitPending = true; render(); };
@@ -1876,7 +1888,7 @@ setInterval(() => { if (!ALL.length) return; tab === "talk" ? renderTalk() : tab
    this page only remembers it for the current browser session. */
 (() => {
 const WORKER_URL = "https://signposting-assist.c-r-williams0109.workers.dev";
-const SITE = "https://chris010970.github.io/signposting-somerset/";   // the plan always points people to the public site
+const SITE = "https://chris010970.github.io/signposting-somerset/assist/";   // the plan always points people to the public site
 const QUICK = ["No groups", "Weekends only", "Free only", "Nearer to home", "Start from home (phone or online)", "Something for a carer too"];
 const RISK = /suicid|kill (my|him|her|them)sel|end (my|his|her|their) life|self[- ]?harm|cutting (my|him|her)|overdos|want(s|ed)? to die|no reason to live|better off dead/i;
 const $a = id => document.getElementById(id);
@@ -1946,7 +1958,7 @@ function nearest(p) {
   return best ? (bd < 1 ? best : `about ${Math.round(bd)} mile${Math.round(bd) === 1 ? "" : "s"} from ${best}`) : "on the map";
 }
 function setPlace(p) {
-  place = p;
+  place = p; clearPins();                                      // the pins belonged to the old place
   const sel = $a("a-town"), ptOpt = sel.querySelector('option[value="__pt"]');
   if (p.kind === "pt") { ptOpt.hidden = false; ptOpt.textContent = p.label; sel.value = "__pt"; }
   else { ptOpt.hidden = true; sel.value = p.kind === "place" ? p.name : p.kind === "remote" ? "__remote" : ""; }
@@ -2007,7 +2019,7 @@ function pullFromMain() {
 })();
 
 // ---- map: click roughly where the person is ----
-let amap = null, marker = null, circle = null;
+let amap = null, marker = null, circle = null, pinLayer = null;
 function initAMap() {
   if (amap || !window.L) return;
   amap = L.map("a-map", { zoomSnap: 0.25 }).setView([51.1, -2.95], 8);
@@ -2094,7 +2106,7 @@ const ERRORS = {
   forbidden: "This page isn't allowed to use the relay.",
 };
 async function run() {
-  note("");
+  note(""); clearPins();
   $a("a-crisis").hidden = !RISK.test([state.need, ...state.followups].join(" "));
   const where = state.town === "__remote" ? "phone and online services" : `services within ${state.radius} miles of ${place.kind === "place" ? place.name : place.label.replace(/^Point on the map \((.*)\)$/, "$1")}`;
   busy(true, state.followups.length ? "Updating the suggestions…" : `Reading the need and looking through ${where}…`);
@@ -2122,6 +2134,7 @@ function show(r) {
   state.previous = r.picks.map(p => p.record.name);
   const sc = r.scope || {};
   lastPicks = STEPS.flatMap(st => r.picks.filter(p => normStep(p.step) === st).map(p => ({ ...p, step: st })));
+  lastPicks.forEach((p, i) => { p.n = i + 1; p.ll = pinPos(p.record); });   // same numbers as the plan
   let m = `<div class="a-reshead"><h2>Suggestions</h2>`;
   if (lastPicks.length) m += `<div class="a-planbar"><button type="button" class="a-btn small" id="a-copyPlan">Copy plan</button>${navigator.share ? `<button type="button" class="a-btn small ghost" id="a-sharePlan">Share</button>` : ""}<button type="button" class="a-btn small ghost" id="a-printPlan">Print</button><span class="a-copied" id="a-copied" role="status"></span></div>`;
   m += `</div>`;
@@ -2147,7 +2160,33 @@ function show(r) {
     if ($a("a-sharePlan")) $a("a-sharePlan").onclick = () => navigator.share({ title: "Things that might help", text: plan().text }).catch(() => {});
     $a("a-out").querySelectorAll(".a-preview a").forEach(a => { a.target = "_blank"; a.rel = "noopener"; });
   }
+  showPins();
   $a("a-out").scrollIntoView({ behavior: "smooth", block: "start" });
+}
+
+// ---- picks on the small map: numbered like the cards and the plan ----
+// Coordinates come from the site's own copy of the sheet (matched by name and postcode), so the AI never handles locations.
+function pinPos(s) {
+  if (!(s.mode || "").includes("in-person") || typeof ALL === "undefined") return null;
+  const m = ALL.find(x => x.name === s.name && (x.postcode || "") === (s.postcode || "")) || ALL.find(x => x.name === s.name && x.town === s.town);
+  return m && !isNaN(m.lat) ? { lat: m.lat, lon: m.lon, approx: !!m.approx } : null;
+}
+// same colours as the In person map key (by kind of service)
+const kindCol = s => typeof pinCol === "function" ? pinCol(s) : "#64748B";
+function clearPins() { if (pinLayer) { pinLayer.remove(); pinLayer = null; } }
+function showPins() {
+  clearPins();
+  const pins = lastPicks.filter(p => p.ll); if (!amap || !pins.length) return;
+  pinLayer = L.layerGroup().addTo(amap);
+  pins.forEach(p => {
+    const icon = L.divIcon({ className: "", html: `<span class="a-pin${p.ll.approx ? " approx" : ""}" style="--pc:${kindCol(p.record)}"><b>${p.n}</b></span>`, iconSize: [26, 26], iconAnchor: [13, 30] });
+    L.marker([p.ll.lat, p.ll.lon], { icon, title: p.record.name, keyboard: true, riseOnHover: true })
+      .bindTooltip(e_(p.record.name) + (p.ll.approx ? " (town centre: exact spot not listed)" : ""), { direction: "top", offset: [0, -28] })
+      .on("click", () => { const d = document.getElementById("a-pick-" + p.n); if (d) { d.open = true; d.scrollIntoView({ behavior: "smooth", block: "center" }); d.classList.add("a-flash"); setTimeout(() => d.classList.remove("a-flash"), 1200); } })
+      .addTo(pinLayer);
+  });
+  const pts = pins.map(p => [p.ll.lat, p.ll.lon]); if (place.lat) pts.push([place.lat, place.lon]);
+  amap.fitBounds(L.latLngBounds(pts).pad(0.2), { maxZoom: 13 });
 }
 window.addEventListener("afterprint", () => document.body.classList.remove("a-printing"));
 
@@ -2189,9 +2228,9 @@ function card(p) {
     : `<span class="a-m">${mode.includes("phone") ? ICON.phone : ""}${mode.includes("online") ? ICON.online : ""}${e_(mode.replace(/;/g, " / ").replace("phone", "Phone").replace("online", "Online"))}</span>`;
   const badges = `<span class="a-badge ${HOWCLS[s.access] || "ab-ref"}">${e_(HOW[s.access] || s.access)}</span>` +
     `<span class="a-chip dist">${modeBit}</span>` + (s.cost ? `<span class="a-chip">${e_(s.cost)}</span>` : "");
-  return `<details class="a-pick">
+  return `<details class="a-pick" id="a-pick-${p.n}">
     <summary>
-      <span class="a-pk-name">${e_(s.name)}</span>
+      <span class="a-pk-name">${p.ll ? `<span class="a-pk-num" style="--pc:${kindCol(s)}" title="Number ${p.n} on the map">${ICON.place}${p.n}</span>` : ""}${e_(s.name)}</span>
       <span class="a-pk-badges">${badges}</span>
       ${w ? `<span class="a-pk-when"><span class="a-wl">When</span>${e_(w)}</span>` : ""}
       <span class="a-pk-why">${e_(p.why)}</span>
