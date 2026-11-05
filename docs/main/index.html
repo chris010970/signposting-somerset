@@ -945,6 +945,7 @@ footer.urgent p { color: #FEE2E2; }
     </div>
     <div id="hdr-talk" class="tq">
       <div class="q" id="q-tsupport"><label for="t-support">Support for</label><select id="t-support"></select></div>
+      <div class="q" id="q-tarea"><label for="t-area">Coverage</label><select id="t-area"><option value="">Local and UK-wide</option><option value="local">Local only</option><option value="national">UK-wide only</option></select></div>
       <label class="toggle" id="q-open"><input type="checkbox" id="t-open"> Open now only</label>
     </div>
     <div id="hdr-course" class="tq" hidden>
@@ -1404,9 +1405,9 @@ function shortNext(s, occ, now) {
 }
 function renderTalk() {
   if (LIVE_ONLY && !ALL.length) { panelMessage(liveMsg); return; }
-  const now = new Date(), sup = $("t-support").value, onlyOpen = $("t-open").checked;
-  $("q-tsupport").classList.toggle("on", !!sup); $("q-open").classList.toggle("on", onlyOpen);
-  let rows = T.filter(s => !sup || s._sf.includes(sup)).map(s => ({ s, st: openState(s, now) }));
+  const now = new Date(), sup = $("t-support").value, onlyOpen = $("t-open").checked, area = $("t-area").value;
+  $("q-tsupport").classList.toggle("on", !!sup); $("q-open").classList.toggle("on", onlyOpen); $("q-tarea").classList.toggle("on", !!area);
+  let rows = T.filter(s => (!sup || s._sf.includes(sup)) && (!area || (area === "national") === (s.area === "national"))).map(s => ({ s, st: openState(s, now) }));
   if (onlyOpen) rows = rows.filter(r => r.st.open);
   const card = ({ s, st }) => {
     const modes = split(s.mode).filter(m => m !== "in-person").map(m => m === "phone" ? "Phone" : "Online").sort((a, b) => a === "Phone" ? -1 : b === "Phone" ? 1 : 0).join(" · ");
@@ -1427,7 +1428,7 @@ function renderTalk() {
     rs.sort((a, b) => (b.st.open - a.st.open) || a.s.name.localeCompare(b.s.name));
     if (rs.length) html += `<h2 class="gh">${g}<small>${rs.length}</small></h2><div class="tgrid">${rs.map(card).join("")}</div>`;
   }
-  $("talk").innerHTML = html || `<div class="empty"><strong>Nothing open right now for this</strong><br>Untick "Open now only" to see all phone and online support, or call Samaritans on 116 123 at any time.</div>`;
+  $("talk").innerHTML = html || `<div class="empty"><strong>${onlyOpen ? "Nothing open right now for this" : "Nothing listed for this"}</strong><br>${[onlyOpen ? 'untick "Open now only"' : "", area ? 'choose "Local and UK-wide"' : "", sup ? 'choose "Anything" under Support for' : ""].filter(Boolean).join(", or ").replace(/^./, c => c.toUpperCase()) || "Try again later"}, or call Samaritans on 116 123 at any time.</div>`;
 }
 function courseInfo(s, now) {
   const today = iso(now);
@@ -1526,7 +1527,7 @@ function setSiteTab(t) {
 }
 for (const k of SITE_TABS) $("tab-" + k).onclick = () => setSiteTab(k);
 $("c-support").onchange = renderCourses; $("c-fmt").onchange = renderCourses; $("c-book").onchange = renderCourses;
-$("t-support").onchange = renderTalk; $("t-open").onchange = renderTalk;
+$("t-support").onchange = renderTalk; $("t-open").onchange = renderTalk; $("t-area").onchange = renderTalk;
 
 /* ---------- events ---------- */
 fs.onchange = () => { fitPending = true; render(); };
