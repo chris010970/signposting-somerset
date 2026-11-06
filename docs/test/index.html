@@ -769,8 +769,11 @@ h1 { font-family: var(--serif); color: var(--b900); font-size: 26px; margin: 0; 
 .aboutpage ul { padding-left: 20px; }
 .aboutpage .note { background: #FFF7ED; border: 1px solid #FED7AA; border-radius: 12px; padding: 10px 14px; color: #7C2D12; margin: 12px 0 4px; }
 .aboutpage .note { max-width: none; }
-.aboutpage .acols { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 420px), 1fr)); gap: 4px 48px; align-items: start; }
-.aboutpage .acols section { max-width: 68ch; }
+/* Two fixed columns (one on narrow screens), each a simple stack, so a short section doesn't leave a gap beside a long one.
+   Left: what it is, what's included, About Assist (with its lock button). Right: how it's kept accurate, suggest a change. */
+.aboutpage .acols { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 420px), 1fr)); gap: 0 48px; align-items: start; margin-top: 18px; }
+.aboutpage .acols section { max-width: 68ch; margin: 0 0 18px; }
+.aboutpage .acols section > h3:first-child { margin-top: 0; }
 .aboutpage .stats { font-weight: 700; color: var(--b800); }
 .aboutpage .btn { display: inline-block; margin-top: 6px; background: var(--b700); color: #fff; text-decoration: none; font-weight: 700; padding: 10px 16px; border-radius: 10px; }
 .aboutpage .small { font-size: 13px; color: #78716C; }
@@ -1736,7 +1739,7 @@ function renderAbout() {
     <h2>About Signposting Somerset</h2>
     <div class="note"><strong>Demo version.</strong> Details are checked against each provider's own information, but services change. Please confirm with the service before attending.
       In an emergency call <a href="tel:999">999</a>. For urgent mental health help call NHS <a href="tel:111">111</a> and choose option 2.</div>
-    <div class="acols">
+    <div class="acols"><div class="acol">
     <section>
     <h3>What it is</h3>
     <p>One place to find local mental health and wellbeing support across Somerset: what's on, when and where, and whether someone can go.
@@ -1753,6 +1756,7 @@ function renderAbout() {
     </ul>
     </section>
     ${typeof window.assistAbout === "function" ? window.assistAbout() : ""}
+    </div><div class="acol">
     <section>
     <h3>How it's kept accurate</h3>
     <ul>
@@ -1766,13 +1770,9 @@ function renderAbout() {
     <h3>Suggest a change</h3>
     ${suggest}
     </section>
-    <section>
-    <h3>Where it came from</h3>
-    <p>It started from a Padlet of local services created by colleagues at a Somerset mental health charity, and grew from there.</p>
-    </section>
-    </div>
+    </div></div>
     <p class="small">Service information belongs to the providers listed. Map data © <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap</a> contributors, © <a href="https://carto.com/attributions" target="_blank" rel="noopener">CARTO</a>.</p>
-    <p class="small" id="site-version">Version: test 2026-11-06 11:28${typeof window.assistRelayVersion === "function" ? window.assistRelayVersion() : ""}</p>
+    <p class="small" id="site-version">Version: test 2026-11-06 11:34${typeof window.assistRelayVersion === "function" ? window.assistRelayVersion() : ""}</p>
   </article>`;
 }
 let tab = "talk";
@@ -1907,7 +1907,7 @@ setInterval(() => { if (!ALL.length) return; tab === "talk" ? renderTalk() : tab
    this page only remembers it for the current browser session. */
 (() => {
 const WORKER_URL = "https://signposting-assist.c-r-williams0109.workers.dev";
-const PAGE_VERSION = "test 2026-11-06 11:28";
+const PAGE_VERSION = "test 2026-11-06 11:34";
 let relayVersion = "";
 // The version line is at the bottom of the About tab: "Version: test 2026-11-06 11:30 · Assist relay 2026-11-06 11:07"
 window.assistRelayVersion = () => relayVersion ? ` · Assist relay ${relayVersion}` : "";
