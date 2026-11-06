@@ -1103,6 +1103,18 @@ footer.urgent p { color: #FEE2E2; }
 #panel-assist .a-compose textarea { padding-top: 4px; }
 #panel-assist .a-mapbox { position: relative; }
 #panel-assist .a-maptl { position: absolute; top: 10px; right: 10px; z-index: 500; background: rgba(255, 255, 255, .92); border: 1px solid var(--line); border-radius: 8px; padding: 5px 9px; font-size: 10px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: var(--b700); pointer-events: none; box-shadow: 0 1px 3px rgba(0, 0, 0, .1); }
+
+/* safety note, online search bar and online finds */
+#panel-assist .a-safety { margin: 8px 0; padding: 10px 12px; border-left: 4px solid #B45309; background: color-mix(in srgb, #F59E0B 12%, transparent); border-radius: 6px; font-size: 14px; }
+#panel-assist .a-safety span { color: var(--muted); font-size: 12px; }
+#panel-assist .a-webbar { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 12px; margin: 10px 0; font-size: 13px; color: var(--muted); }
+#panel-assist .a-webbar .a-btn svg { width: 15px; height: 15px; fill: currentColor; vertical-align: -3px; margin-right: 5px; }
+#panel-assist .a-webbar.busy { color: var(--ink, inherit); }
+#panel-assist .a-spin { width: 14px; height: 14px; border: 2px solid currentColor; border-right-color: transparent; border-radius: 50%; display: inline-block; animation: a-spin .8s linear infinite; }
+@keyframes a-spin { to { transform: rotate(360deg); } }
+#panel-assist .a-webtag { display: inline-block; font-size: 11.5px; font-weight: 600; padding: 2px 8px; border-radius: 999px; border: 1px dashed #B45309; color: #92400E; background: color-mix(in srgb, #F59E0B 10%, transparent); }
+#panel-assist .a-webpick { border-style: dashed; }
+@media (prefers-color-scheme: dark) { #panel-assist .a-webtag { color: #FCD34D; border-color: #FCD34D; } }
 </style>
 </head>
 <body>
@@ -1236,7 +1248,7 @@ footer.urgent p { color: #FEE2E2; }
     <div class="a-trail" id="a-trail"></div>
   </form>
 
-  <p class="a-note">Suggestions come only from the services listed on Signposting Somerset. The AI chooses and explains, but every detail on a card comes from the checked record itself. Please confirm with the service before going. This is a trial: use your own judgement, as always. <button class="a-linkbtn" id="a-forget" type="button">Lock Assist on this device</button></p>
+  <p class="a-note">Suggestions come from the services listed on Signposting Somerset, and every detail on those cards comes from the checked record itself. Where the directory doesn't cover the main need, Assist also searches online for just that part (sending only a short search phrase and the nearest town, never the description); those finds are marked "Found online, not checked". Please confirm with the service before going. This is a trial: use your own judgement, as always. <button class="a-linkbtn" id="a-forget" type="button">Lock Assist on this device</button></p>
   </div>
 </div></div></section>
 <div id="a-printplan"></div>
@@ -1280,10 +1292,10 @@ let liveMsg = "<strong>Loading services…</strong>";
 /* ---------- vocabularies ---------- */
 // Specialist: mental health, crisis, bereavement and other specific needs. Practical: housing, finances and life circumstances.
 // Everyday wellbeing: connection, activity, learning, mindfulness and community.
-const GROUPS = [["Specialist support", ["crisis prevention", "low mood", "anxiety", "bereavement", "hearing voices", "eating disorders", "long-term pain", "dementia", "drugs and alcohol", "caring for someone"]],
+const GROUPS = [["Specialist support", ["crisis prevention", "low mood", "anxiety", "bereavement", "hearing voices", "eating disorders", "long-term pain", "dementia", "addiction", "caring for someone"]],
   ["Practical help and support", ["housing", "finances", "food"]],
   ["Everyday wellbeing", ["connect", "be active", "take notice", "keep learning", "giving"]]];
-const LABEL = { "hearing voices": "Psychosis and hearing voices", "crisis prevention": "Crisis support" };
+const LABEL = { "hearing voices": "Psychosis and hearing voices", "crisis prevention": "Crisis support", "addiction": "Addiction (alcohol, drugs, gambling)" };
 const cap = s => LABEL[s] || s[0].toUpperCase() + s.slice(1);
 const esc = s => String(s ?? "").replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
 const split = s => (s || "").split(";").map(x => x.trim()).filter(Boolean);
@@ -1736,7 +1748,7 @@ function renderAbout() {
     <section>
     <h3>What's included</h3>
     <ul>
-      <li><strong>Specialist support:</strong> crisis support, low mood, anxiety, bereavement, hearing voices, long-term pain, eating disorders, dementia, drugs and alcohol, caring for someone.</li>
+      <li><strong>Specialist support:</strong> crisis support, low mood, anxiety, bereavement, hearing voices, long-term pain, eating disorders, dementia, addiction (alcohol, drugs and gambling), caring for someone.</li>
       <li><strong>Practical help and support:</strong> money, housing and food, including advice and advocacy.</li>
       <li><strong>Everyday wellbeing:</strong> connection, activity, learning, nature and giving, based on the Five Ways to Wellbeing.</li>
       <li>Helplines and online groups, in-person services on a map, and courses with set dates.</li>
@@ -2136,26 +2148,31 @@ const normStep = s => STEPS.find(x => x.toLowerCase() === String(s).toLowerCase(
 const HOW = { "drop in": "Just turn up", "sign up": "Contact to join", "book": "Book first", "referral": "Needs a referral", "call": "Phone line" };
 const HOWCLS = { "drop in": "ab-drop", "sign up": "ab-sign", "book": "ab-book", "referral": "ab-ref", "call": "ab-ref" };
 
-function show(r) {
+let lastResult = null;
+function show(r, keepScroll) {
+  lastResult = r;
   if (r.risk) $a("a-crisis").hidden = false;
   state.previous = r.picks.map(p => p.record.name);
   const sc = r.scope || {};
-  lastPicks = STEPS.flatMap(st => r.picks.filter(p => normStep(p.step) === st).map(p => ({ ...p, step: st })));
-  lastPicks.forEach((p, i) => { p.n = i + 1; p.ll = pinPos(p.record); });   // same numbers as the plan
+  const web = (r.web?.items || []).map(w => ({ step: normStep(w.step), why: w.why, web: w }));
+  lastPicks = STEPS.flatMap(st => [...r.picks.filter(p => normStep(p.step) === st).map(p => ({ ...p, step: st })), ...web.filter(p => p.step === st)]);
+  lastPicks.forEach((p, i) => { p.n = i + 1; p.ll = p.web ? null : pinPos(p.record); });   // same numbers as the plan
   let m = `<div class="a-reshead"><h2>Suggestions</h2>`;
   if (lastPicks.length) m += `<div class="a-planbar"><button type="button" class="a-btn small" id="a-copyPlan">Copy plan</button>${navigator.share ? `<button type="button" class="a-btn small ghost" id="a-sharePlan">Share</button>` : ""}<button type="button" class="a-btn small ghost" id="a-printPlan">Print</button><span class="a-copied" id="a-copied" role="status"></span></div>`;
   m += `</div>`;
   if (r.reading) m += `<p class="a-readas"><b>Read as:</b> ${e_(r.reading)}</p>`;
+  if (r.safety) m += `<p class="a-safety" role="note"><b>Safety:</b> ${e_(r.safety)} <span>(this goes at the top of the plan)</span></p>`;
   if (!lastPicks.length) m += `<p>No suitable services were found for this need and area. Try a wider distance.</p>`;
   else {
     m += `<ol class="a-ladder">`;
     STEPS.forEach((st, i) => {
       const list = lastPicks.filter(p => p.step === st); if (!list.length) return;
-      m += `<li class="a-rung"><span class="a-rdot" aria-hidden="true">${i + 1}</span><h3>${st}</h3>${list.map(card).join("")}</li>`;
+      m += `<li class="a-rung"><span class="a-rdot" aria-hidden="true">${i + 1}</span><h3>${st}</h3>${list.map(p => p.web ? webCard(p) : card(p)).join("")}</li>`;
     });
     m += `</ol>`;
   }
-  if (r.gaps) m += `<p class="a-gaps"><b>Not covered:</b> ${e_(r.gaps)}</p>`;
+  if (r.gaps) m += `<p class="a-gaps"><b>Not covered by the directory:</b> ${e_(r.gaps)}</p>`;
+  m += webBar(r);
   if (r.questions?.length) m += `<div class="a-qs"><b>Questions that might help</b><ul>${r.questions.map(q => `<li>${e_(q)}</li>`).join("")}</ul></div>`;
   m += `<p class="a-scope">Chose from ${sc.total} of ${sc.records} services: ${[sc.near ? `${sc.near} in person ${e_(sc.place)}` : "", sc.remote ? `${sc.remote} phone or online` : ""].filter(Boolean).join(" and ")}.</p>`;
   const side = lastPicks.length ? `<aside class="a-preview" aria-label="Support plan"><div class="a-pv-label">Support plan</div><div class="a-pv-body">${plan().html}</div><p class="a-pv-hint">Copy it into an email or letter, share it by text, or print it.</p></aside>` : "";
@@ -2167,8 +2184,58 @@ function show(r) {
     if ($a("a-sharePlan")) $a("a-sharePlan").onclick = () => navigator.share({ title: "Things that might help", text: plan().text }).catch(() => {});
     $a("a-out").querySelectorAll(".a-preview a").forEach(a => { a.target = "_blank"; a.rel = "noopener"; });
   }
+  const wb = $a("a-webGo"); if (wb) wb.onclick = () => searchWeb(true);
   showPins();
-  $a("a-out").scrollIntoView({ behavior: "smooth", block: "start" });
+  if (!keepScroll) $a("a-out").scrollIntoView({ behavior: "smooth", block: "start" });
+  // The directory doesn't fully cover the core need: look online for just that part straight away
+  if (!keepScroll && !r.web && r.search_for && r.core_covered !== "yes") searchWeb(false);
+}
+
+// ---- online search for the gap: only a short search phrase and the nearest town leave the page ----
+let webBusy = false;
+function webBar(r) {
+  const q = r.web?.query || r.search_for || "";
+  if (webBusy) return `<div class="a-webbar busy" role="status"><span class="a-spin" aria-hidden="true"></span>Searching online for: <i>${e_(q)}</i>…</div>`;
+  if (r.web) {
+    const n = r.web.items.length;
+    return `<div class="a-webbar">${n ? `Added ${n} found online for <i>${e_(q)}</i>, marked <span class="a-webtag">Found online, not checked</span>.` : e_(r.web.note || "Nothing suitable was found online.")}${r.web.error ? ` ${e_(r.web.error)}` : ""}</div>`;
+  }
+  const core = (r.core_needs || []).join(", ");
+  const label = r.core_covered === "yes" ? "Search online for more" : "Search online for what's missing";
+  return `<div class="a-webbar">${r.core_covered === "yes" ? "The directory covers the main need" + (core ? ` (${e_(core)})` : "") + "." : ""}<button type="button" class="a-btn small ghost" id="a-webGo">${ICON.web}${label}</button></div>`;
+}
+async function searchWeb(manual) {
+  const r = lastResult; if (!r || webBusy) return;
+  const q = scrub(r.search_for || (r.core_needs || []).join(" ") + " support " + (r.place || "Somerset")).text;
+  webBusy = true; r.search_for = q; show(r, true);
+  let web;
+  try {
+    const res = await fetch(WORKER_URL.replace(/\/$/, "") + "/web", { method: "POST", headers: { "Content-Type": "application/json", "X-Access-Code": code },
+      body: JSON.stringify({ search_for: q, core_needs: r.core_needs || [], place: r.place || "", gaps: r.gaps || "", remote: state.remote, have: r.picks.map(p => p.record.name) }) });
+    const d = await res.json().catch(() => ({ error: "bad_answer" }));
+    web = d.error ? { items: [], query: q, error: d.error === "busy" ? "The online search is busy; try again in a minute." : d.error === "rate_limited" ? ERRORS.rate_limited : "The online search didn't work this time." } : { items: d.items || [], note: d.note, query: d.query || q };
+  } catch { web = { items: [], query: q, error: "Couldn't reach the online search." }; }
+  webBusy = false;
+  if (lastResult !== r) return;          // a newer request has replaced these results
+  r.web = web; show(r, true);
+}
+function webCard(p) {
+  const w = p.web;
+  const rows = [["When", w.when], ["Where", w.where], ["Contact", w.contact]].filter(x => x[1]);
+  return `<details class="a-pick a-webpick" id="a-pick-${p.n}">
+    <summary>
+      <span class="a-pk-name">${e_(w.name)}</span>
+      <span class="a-pk-badges"><span class="a-webtag">Found online, not checked</span></span>
+      ${w.when ? `<span class="a-pk-when"><span class="a-wl">When</span>${e_(w.when)}</span>` : ""}
+      <span class="a-pk-why">${e_(w.why || w.what)}</span>
+      <span class="a-pk-acts"><a class="a-act" href="${e_(w.url)}" target="_blank" rel="noopener">${ICON.web}${e_(w.source)}</a></span>
+    </summary>
+    <div class="a-pk-body">
+      <p class="a-pb-desc">${e_(w.what)}</p>
+      <div class="a-pb-grid">${rows.map(([k, v]) => tile(k === "Contact" ? "mail" : k === "Where" ? "place" : "online", k, e_(v), k === "Contact" ? "wide" : "")).join("")}</div>
+      <div class="a-pb-foot"><span class="a-pb-tags">Found by an online search. Signposting Somerset hasn't checked it: please confirm the details with the service.</span></div>
+    </div>
+  </details>`;
 }
 
 // ---- picks on the small map: numbered like the cards and the plan ----
@@ -2237,7 +2304,7 @@ function actions(s) {
   else if (s.email) a.push(`<a class="a-act" href="mailto:${e_(s.email)}">${ICON.mail}Email</a>`);
   return a.join("");
 }
-const NICE = { "hearing voices": "Psychosis and hearing voices", "crisis prevention": "Crisis support" };
+const NICE = { "hearing voices": "Psychosis and hearing voices", "crisis prevention": "Crisis support", "addiction": "Addiction" };
 function niceDate(d) { const t = new Date(d + "T12:00:00"); return isNaN(t) ? d : t.toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric" }); }
 function tile(icon, label, html, cls = "") { return `<div class="a-pb-tile ${cls}"><div class="a-pb-lab">${ICON[icon] || ""}${label}</div><div class="a-pb-val">${html}</div></div>`; }
 function card(p) {
@@ -2279,9 +2346,11 @@ function card(p) {
 
 // ---- the plan: a short summary to give to the person (email, text, print) ----
 const STEP_TITLE = { "First step": "A good place to start", "Next step": "Next", "When ready": "When you feel ready" };
-const FOOT = "Please check with the service before going, as details can change. If things get worse, call Mindline any time on 0800 138 1692 (free), or 999 in an emergency.";
+const FOOT = "Please check with the service before going, as details can change. Anything marked \"found online\" hasn't been checked by Signposting Somerset. If things get worse, call Mindline any time on 0800 138 1692 (free), or 999 in an emergency.";
 function plan() {
   let html = `<h3 style="margin:0 0 6px">Things that might help</h3>`, text = "Things that might help\n";
+  const safety = lastResult?.safety;
+  if (safety) { html += `<p style="margin:6px 0 8px;padding:8px 10px;border-left:4px solid #B45309;background:#FFF7ED"><b>Please read first:</b> ${e_(safety)}</p>`; text += `\nPLEASE READ FIRST: ${safety}\n`; }
   let n = 0;
   for (const st of STEPS) {
     const list = lastPicks.filter(p => p.step === st); if (!list.length) continue;
@@ -2289,6 +2358,12 @@ function plan() {
     text += `\n${STEP_TITLE[st]}\n`;
     for (const p of list) {
       n++;
+      if (p.web) {
+        const w = p.web, lines = [w.what, w.when, w.where, w.contact].filter(Boolean);
+        html += `<li style="margin:0 0 8px"><a href="${e_(w.url)}"><b>${e_(w.name)}</b></a> <i style="font-size:12px">(found online, not checked)</i><br>${lines.map(e_).join("<br>")}</li>`;
+        text += `${n}. ${w.name} (found online, not checked)\n` + lines.map(l => `   ${l}\n`).join("") + `   ${w.url}\n`;
+        continue;
+      }
       const s = p.record, inPerson = (s.mode || "").includes("in-person");
       const when = whenText(s), where = inPerson ? [s.address, s.town, s.postcode].filter(Boolean).join(", ") : "";
       const how = [HOW[s.access] || s.access, s.cost].filter(Boolean).join(". ");

@@ -8,6 +8,8 @@
  *      plus phone and online services for Somerset or nationally.
  *   4. Asks Claude to choose a few and explain why, using only those records.
  *   5. Sends back the chosen records themselves, so every fact shown comes from the sheet.
+ *   6. On request (POST .../web), searches the web for only the part of the need the directory
+ *      doesn't cover. It receives a short search phrase and the nearest town, never the need itself.
  *
  * Settings (Cloudflare dashboard → this Worker → Settings → Variables and secrets):
  *   ANTHROPIC_API_KEY  (Secret)  your key from console.anthropic.com
@@ -54,6 +56,8 @@ export default {
     // Unlock check from the site's Assist tab: confirms the code without using the AI
     if (new URL(request.url).pathname.replace(/\/+$/, "").endsWith("/verify")) return reply({ ok: true });
 
+    const isWeb = new URL(request.url).pathname.replace(/\/+$/, "").endsWith("/web");
+
     // Simple per-visitor limit
     const mine = (hits.get(ip) || []).filter(t => now - t < hour);
     if (mine.length >= MAX_PER_HOUR) return reply({ error: "rate_limited" }, 429);
@@ -61,6 +65,7 @@ export default {
 
     let body;
     try { body = await request.json(); } catch { return reply({ error: "bad_request" }, 400); }
+    if (isWeb) return webSearch(body, env, reply);
     const need = String(body.need || "").trim().slice(0, 2000);
     const followups = (Array.isArray(body.followups) ? body.followups : []).map(s => String(s).trim().slice(0, 300)).filter(Boolean).slice(-5);
     const previous = (Array.isArray(body.previous) ? body.previous : []).map(s => String(s).slice(0, 120)).slice(0, 10);
@@ -127,6 +132,11 @@ export default {
       .map(p => ({ step: p.step, why: p.why, distance: p.c.d === null ? null : Math.round(p.c.d * 10) / 10, record: publicRecord(p.c.s) }));
     return reply({
       reading: String(out.reading || "").slice(0, 600),
+      safety: String(out.safety || "").slice(0, 400),
+      core_needs: (Array.isArray(out.core_needs) ? out.core_needs : []).map(x => String(x).slice(0, 60)).slice(0, 3),
+      core_covered: ["yes", "partly", "no"].includes(String(out.core_covered).toLowerCase()) ? String(out.core_covered).toLowerCase() : "partly",
+      search_for: String(out.search_for || "").slice(0, 120),
+      place: placeName,
       risk: !!out.risk || riskWords,
       picks,
       gaps: String(out.gaps || "").slice(0, 400),
@@ -231,13 +241,82 @@ id | name | type | access (drop in / sign up / book / referral / call) | support
 ${cands.map(line).join("\n")}
 
 Think like an experienced social prescriber:
-- Work out what the need suggests about energy and motivation, confidence and anxiety about groups, isolation, money, transport, age, caring role, and whether specialist help is needed (e.g. bereavement, debt, dementia, drugs and alcohol) as well as everyday wellbeing.
+- Work out what the need suggests about energy and motivation, confidence and anxiety about groups, isolation, money, transport, age, caring role, and whether specialist help is needed (e.g. bereavement, debt, dementia, addiction to alcohol, drugs or gambling) as well as everyday wellbeing.
 - Use the Five Ways to Wellbeing (connect, be active, take notice, keep learning, give) where they fit, but match the effort to the person. Someone who struggles to get out of bed needs a gentle, low-pressure first step (a phone call, a small drop-in, a café, a short gentle walk), not a demanding activity or a long course.
+- First work out the person's core need or needs: the specific reason they need support (such as stopping gambling, cutting down drinking, bereavement, caring for someone, debt), as distinct from general wellbeing. If anything on the list addresses the core need directly, at least one "First step" must be that service; put gentle wellbeing options around it, not instead of it.
 - Respect eligibility and 'who it's for' strictly (age, gender, carers, referral needed). Prefer drop-in, free and nearer options when motivation, money or transport sound like barriers. Don't recommend crisis services unless the need suggests risk.
-- Build a ladder of 4 to 7 picks: "First step" (1-2, the easiest to do this week), "Next step" (1-3), "When ready" (0-2). If leaving the house sounds hard, include a phone or online option as a first step.
+- Build a ladder of up to 7 picks: "First step" (1-2, the easiest to do this week), "Next step" (1-3), "When ready" (0-2). If leaving the house sounds hard, include a phone or online option as a first step. Only include services that genuinely fit this person: fewer good picks are better than padding the plan with unrelated groups. A service for a different problem (for example an alcohol service for a gambling problem) must never be used to fill the gap.
+- Pronouns: refer to the person as "he" or "she" only if the need makes it clear (e.g. "a woman", "his wife", "man in his 50s", "my son"); otherwise use "they" or "the person". Never guess.
+- Safety: if the situation carries a known safety point, write it in "safety" as 1-2 plain, kind sentences addressed to the person ("you"), so it can go in the plan they are given. Examples: heavy daily drinking (don't stop suddenly: withdrawal can be dangerous, so cut down with the drug and alcohol service or GP); suicidal thoughts or self-harm (call Mindline Somerset any time on 0800 138 1692, or 999 if in immediate danger); an under-18 at risk (tell a trusted adult or call Childline on 0800 1111); domestic abuse (999 if in danger now). Otherwise leave it empty.
 - Never invent services or details. Your "why" must be consistent with the record and specific to this person. Don't restate times or addresses (the card shows them), and don't call anything "today" or "tonight" unless it really is still to come today given the current time.
 - If the need mentions suicidal thoughts, self-harm or immediate risk, set "risk" to true.
 
 Reply with only this JSON:
-{"reading": "1-2 sentences: what the need suggests and the approach you took", "risk": false, "picks": [{"id": 12, "step": "First step", "why": "max 30 words"}], "gaps": "one sentence on anything important the list doesn't cover, or empty string", "questions": ["up to 2 short questions the worker could ask the person to refine this"]}`;
+{"reading": "1-2 sentences for the worker: what the need suggests and the approach you took", "core_needs": ["1 to 3 short phrases"], "core_covered": "yes, partly or no: does the list address the core need(s) well?", "search_for": "if partly or no: a short web search phrase for ONLY the missing support plus the nearest town (no names or personal details), else empty string", "safety": "1-2 sentences to the person, or empty string", "risk": false, "picks": [{"id": 12, "step": "First step", "why": "max 30 words"}], "gaps": "one sentence on anything important the list doesn't cover, or empty string", "questions": ["up to 2 short questions the worker could ask the person to refine this"]}`;
+}
+
+// ---------- web search for the gap (only on request) ----------
+// The page sends only: a short search phrase, the core needs as short phrases, the nearest town,
+// what wasn't covered, and the names already in the plan. Never the need itself.
+const WEB_MAX = 3;
+async function webSearch(body, env, reply) {
+  const clean = (v, n) => String(v || "").replace(/[\r\n"`]/g, " ").trim().slice(0, n);
+  const query = clean(body.search_for, 120);
+  if (!query) return reply({ error: "no_need" }, 400);
+  const needs = (Array.isArray(body.core_needs) ? body.core_needs : []).map(x => clean(x, 60)).filter(Boolean).slice(0, 3);
+  const town = clean(body.place, 80) || "Somerset";
+  const gaps = clean(body.gaps, 300);
+  const have = (Array.isArray(body.have) ? body.have : []).map(x => clean(x, 120)).slice(0, 12);
+  const remoteOk = body.remote !== false;
+  const prompt = `You are helping a support worker in Somerset, UK, fill a gap in a support plan. Today is ${DAY_FMT.format(new Date())}.
+The person is near ${town}, Somerset. Their core need: ${needs.join("; ") || query}.
+${gaps ? `The local directory doesn't cover: ${gaps}\n` : ""}Search the web for: ${query}
+
+Find up to ${WEB_MAX} real, current services that meet ONLY this gap. Prefer services in or near ${town}${remoteOk ? ", or UK-wide phone and online services" : " (in person only)"}. Skip anything already in the plan: ${have.join("; ") || "none"}.
+Rules:
+- Only include a service you found on a web page in your searches, and give that page's URL. Prefer the provider's own page.
+- Never invent details. If the page doesn't state when, where or how to contact, write "Check with the service".
+- Never give addresses of crisis safe spaces or refuges.
+- Write "why" without "he" or "she": say "they" or address no one.
+Reply with only this JSON:
+{"items": [{"name": "...", "what": "max 20 words", "when": "...", "where": "...", "contact": "phone, email or how to join", "url": "https://...", "step": "First step, Next step or When ready", "why": "max 25 words"}], "note": "one sentence if nothing suitable was found, else empty"}`;
+  const tools = [{ type: "web_search_20250305", name: "web_search", max_uses: WEB_MAX,
+    user_location: { type: "approximate", city: town.replace(/^a point about .* from /, ""), region: "England", country: "GB", timezone: "Europe/London" } }];
+  let messages = [{ role: "user", content: prompt }], content = [];
+  try {
+    for (let turn = 0; turn < 3; turn++) {
+      const r = await fetch("https://api.anthropic.com/v1/messages", {
+        method: "POST",
+        headers: { "x-api-key": env.ANTHROPIC_API_KEY, "anthropic-version": "2023-06-01", "content-type": "application/json" },
+        body: JSON.stringify({ model: env.MODEL || DEFAULT_MODEL, max_tokens: 6000, messages, tools }),
+      });
+      if (r.status === 429 || r.status === 529) return reply({ error: "busy" }, 503);
+      if (!r.ok) {
+        let detail = ""; try { const e = await r.json(); detail = String(e?.error?.message || e?.error?.type || "").slice(0, 300); } catch {}
+        console.log("Claude API error (web)", r.status, detail);
+        return reply({ error: "ai_error", status: r.status, detail }, 502);
+      }
+      const data = await r.json();
+      content = content.concat(data.content || []);
+      if (data.stop_reason !== "pause_turn") break;
+      messages = [{ role: "user", content: prompt }, { role: "assistant", content: data.content }];
+    }
+  } catch (e) { console.log("Web search failed", String(e)); return reply({ error: "ai_error", detail: "Couldn't reach the AI service" }, 502); }
+
+  // Pages the search actually returned: an item is kept only if its link is on one of these sites
+  const seen = new Set();
+  for (const b of content) if (b.type === "web_search_tool_result" && Array.isArray(b.content)) for (const x of b.content) { try { seen.add(new URL(x.url).hostname.replace(/^www\./, "")); } catch {} }
+  const text = content.filter(b => b.type === "text").map(b => b.text).join("");
+  let out = {};
+  try { out = JSON.parse(text.slice(text.indexOf("{"), text.lastIndexOf("}") + 1)); } catch { return reply({ items: [], note: "The online search didn't return anything usable.", query }); }
+  const STEPS = ["First step", "Next step", "When ready"];
+  const items = (Array.isArray(out.items) ? out.items : []).map(it => {
+    let host = ""; try { const u = new URL(String(it.url)); if (/^https?:$/.test(u.protocol)) host = u.hostname.replace(/^www\./, ""); } catch {}
+    return { host, it };
+  }).filter(x => x.host && seen.has(x.host)).slice(0, WEB_MAX).map(({ host, it }) => ({
+    name: clean(it.name, 120), what: clean(it.what, 200), when: clean(it.when, 160), where: clean(it.where, 200),
+    contact: clean(it.contact, 200), url: String(it.url).slice(0, 400), source: host,
+    step: STEPS.find(s => s.toLowerCase() === String(it.step || "").toLowerCase()) || "Next step", why: clean(it.why, 250),
+  })).filter(x => x.name);
+  return reply({ items, note: clean(out.note, 300), query });
 }
