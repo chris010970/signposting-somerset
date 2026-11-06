@@ -1249,6 +1249,7 @@ footer.urgent p { color: #FEE2E2; }
   </form>
 
   <p class="a-note">Suggestions come from the services listed on Signposting Somerset, and every detail on those cards comes from the checked record itself. Where the directory doesn't cover the main need, Assist also searches online for just that part (sending only a short search phrase and the nearest town, never the description); those finds are marked "Found online, not checked". Please confirm with the service before going. This is a trial: use your own judgement, as always. <button class="a-linkbtn" id="a-forget" type="button">Lock Assist on this device</button></p>
+  <p class="a-note a-version" id="a-version"></p>
   </div>
 </div></div></section>
 <div id="a-printplan"></div>
@@ -1773,6 +1774,7 @@ function renderAbout() {
     </section>
     </div>
     <p class="small">Service information belongs to the providers listed. Map data © <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap</a> contributors, © <a href="https://carto.com/attributions" target="_blank" rel="noopener">CARTO</a>.</p>
+    <p class="small" id="site-version">Version: test 2026-11-06 10:39</p>
   </article>`;
 }
 let tab = "talk";
@@ -1907,6 +1909,9 @@ setInterval(() => { if (!ALL.length) return; tab === "talk" ? renderTalk() : tab
    this page only remembers it for the current browser session. */
 (() => {
 const WORKER_URL = "https://signposting-assist.c-r-williams0109.workers.dev";
+const PAGE_VERSION = "test 2026-11-06 10:39";
+let relayVersion = "";
+function showVersion(v) { if (v) relayVersion = v; const el = document.getElementById("a-version"); if (el) el.textContent = `Version: page ${PAGE_VERSION}${relayVersion ? ` · relay ${relayVersion}` : ""}`; }
 const SITE = "https://chris010970.github.io/signposting-somerset/main/";   // the plan always points people to the public site
 const QUICK = ["No groups", "Weekends only", "Free only", "Nearer to home", "Start from home (phone or online)", "Something for a carer too"];
 const RISK = /suicid|kill (my|him|her|them)sel|end (my|his|her|their) life|self[- ]?harm|cutting (my|him|her)|overdos|want(s|ed)? to die|no reason to live|better off dead/i;
@@ -1952,6 +1957,7 @@ $a("a-gate").onsubmit = async e => {
   try {
     const r = await fetch(WORKER_URL.replace(/\/$/, "") + "/verify", { method: "POST", headers: { "Content-Type": "application/json", "X-Access-Code": c }, body: "{}" });
     const d = await r.json().catch(() => ({}));
+    showVersion(d.version);
     if (r.ok && d.ok) { code = c; sess.set("assist-code", c); $a("a-code").value = ""; showApp(); $a("a-need").focus(); }
     else showGate(d.error === "rate_limited" ? "Too many tries. Please wait an hour and try again." : d.error === "bad_code" ? "That code wasn't accepted." : "Couldn't check the code just now. Please try again.");
   } catch { showGate("Couldn't reach Assist. Check your connection and try again."); }
@@ -2132,6 +2138,7 @@ async function run() {
   try {
     const r = await fetch(WORKER_URL, { method: "POST", headers: { "Content-Type": "application/json", "X-Access-Code": code }, body: JSON.stringify(scrubAll(state)) });
     const data = await r.json().catch(() => ({ error: "bad_answer" }));
+    showVersion(data.version);
     if (data.error) {
       if (data.error === "bad_code") { sess.set("assist-code", null); code = ""; showGate(ERRORS.bad_code); return; }
       if (data.error === "ai_error") return note("The AI service returned an error" + (data.status ? ` (${data.status})` : "") + (data.detail ? `: ${data.detail}` : "."));
@@ -2394,6 +2401,7 @@ async function copyPlan() {
   setTimeout(() => { if ($a("a-copied")) $a("a-copied").textContent = ""; }, 5000);
 }
 
+showVersion();
 // If the page opened straight onto the Assist tab (e.g. #assist), show it now that everything is ready
 if (typeof tab !== "undefined" && tab === "assist") window.assistShow();
 })();
