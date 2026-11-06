@@ -1141,11 +1141,11 @@ footer.urgent p { color: #FEE2E2; }
       <p class="datasrc" id="datasrc" hidden></p>
     </div>
     <nav class="sitetabs" role="tablist" aria-label="Kind of support">
-      <button type="button" role="tab" id="tab-talk" aria-selected="true" aria-controls="panel-talk"><span class="lg">Phone and online</span><span class="sh">Phone &amp; online</span></button>
-      <button type="button" role="tab" id="tab-near" aria-selected="false" aria-controls="panel-near">In person</button>
-      <button type="button" role="tab" id="tab-course" aria-selected="false" aria-controls="panel-course">Courses</button>
       <button type="button" role="tab" id="tab-assist" aria-selected="false" aria-controls="panel-assist" title="Assist: for invited support workers (access code needed)"><svg class="lock" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M12 2a5 5 0 0 1 5 5v3h1a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2v-8a2 2 0 0 1 2-2h1V7a5 5 0 0 1 5-5zm0 2a3 3 0 0 0-3 3v3h6V7a3 3 0 0 0-3-3z"/></svg><span>Assist</span><span class="sr-lock" id="tab-assist-sr" style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)"> (access code needed)</span></button>
 
+      <button type="button" role="tab" id="tab-near" aria-selected="false" aria-controls="panel-near">In person</button>
+      <button type="button" role="tab" id="tab-talk" aria-selected="false" aria-controls="panel-talk"><span class="lg">Phone and online</span><span class="sh">Phone &amp; online</span></button>
+      <button type="button" role="tab" id="tab-course" aria-selected="false" aria-controls="panel-course">Courses</button>
       <button type="button" role="tab" id="tab-about" aria-selected="false" aria-controls="panel-about">About</button>    </nav>
     </div>
     <div id="hdr-talk" class="tq">
@@ -1247,15 +1247,6 @@ footer.urgent p { color: #FEE2E2; }
   <p class="a-err" id="a-err" hidden></p>
   <section id="a-out" hidden></section>
 
-  <form class="a-refine a-card" id="a-refine" hidden>
-    <label class="a-h" for="a-more">Not quite right? Tell it more</label>
-    <div class="a-rowr"><input id="a-more" maxlength="300" placeholder="e.g. he won't go to groups, weekends only"><button class="a-btn" type="submit" id="a-moreBtn">Update</button></div>
-    <div class="a-quick" id="a-quick"></div>
-    <div class="a-trail" id="a-trail"></div>
-  </form>
-
-  <p class="a-note">Suggestions come from the services listed on Signposting Somerset, and every detail on those cards comes from the checked record itself. Where the directory doesn't cover the main need, Assist also searches online for just that part (sending only a short search phrase and the nearest town, never the description); those finds are marked "Found online, not checked". Please confirm with the service before going. This is a trial: use your own judgement, as always. <button class="a-linkbtn" id="a-forget" type="button">Lock Assist on this device</button></p>
-  <p class="a-note a-version" id="a-version"></p>
   </div>
 </div></div></section>
 <div id="a-printplan"></div>
@@ -1761,6 +1752,7 @@ function renderAbout() {
       <li>Helplines and online groups, in-person services on a map, and courses with set dates.</li>
     </ul>
     </section>
+    ${typeof window.assistAbout === "function" ? window.assistAbout() : ""}
     <section>
     <h3>How it's kept accurate</h3>
     <ul>
@@ -1780,7 +1772,7 @@ function renderAbout() {
     </section>
     </div>
     <p class="small">Service information belongs to the providers listed. Map data © <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap</a> contributors, © <a href="https://carto.com/attributions" target="_blank" rel="noopener">CARTO</a>.</p>
-    <p class="small" id="site-version">Version: test 2026-11-06 11:07</p>
+    <p class="small" id="site-version">Version: test 2026-11-06 11:22</p>
   </article>`;
 }
 let tab = "talk";
@@ -1836,11 +1828,11 @@ function setTab(t) { $("main").classList.toggle("show-map", t === "map"); $("t-l
   if (t === "map" && map) setTimeout(() => { map.invalidateSize(); fitPending = true; render(); }, 30); }
 $("t-list").onclick = () => setTab("list"); $("t-map").onclick = () => setTab("map");
 addEventListener("resize", () => map && map.invalidateSize());
-// First visit opens on About; after that, the tab the person last used. A link with #near, #course, #about or #talk wins.
+// Opens on Assist when it's unlocked in this browser, otherwise on In person. A link with #near, #talk, #course, #about or #assist wins.
 (function () {
   const fromHash = SITE_TABS.includes(location.hash.slice(1)) ? location.hash.slice(1) : "";
-  let last = ""; try { last = localStorage.getItem("ss-tab") || ""; } catch (e) {}
-  setSiteTab(fromHash || (SITE_TABS.includes(last) ? last : "about"));
+  let unlocked = false; try { unlocked = !!sessionStorage.getItem("assist-code"); } catch (e) {}
+  setSiteTab(fromHash || (unlocked && SITE_TABS.includes("assist") ? "assist" : "near"));
 })();
 
 /* ---------- live data: read records from a published Google Sheet (CSV) ---------- */
@@ -1915,11 +1907,24 @@ setInterval(() => { if (!ALL.length) return; tab === "talk" ? renderTalk() : tab
    this page only remembers it for the current browser session. */
 (() => {
 const WORKER_URL = "https://signposting-assist.c-r-williams0109.workers.dev";
-const PAGE_VERSION = "test 2026-11-06 11:07";
+const PAGE_VERSION = "test 2026-11-06 11:22";
 let relayVersion = "";
-function showVersion(v) { if (v) relayVersion = v; const el = document.getElementById("a-version"); if (el) el.textContent = `Version: page ${PAGE_VERSION}${relayVersion ? ` · relay ${relayVersion}` : ""}`; }
+const versionText = () => `Version: page ${PAGE_VERSION}${relayVersion ? ` · relay ${relayVersion}` : ""}`;
+function showVersion(v) { if (v) relayVersion = v; const el = document.getElementById("a-version"); if (el) el.textContent = versionText(); }
+// "About Assist" section on the About tab: how it works, privacy, the lock button and the version
+window.assistAbout = () => `<section>
+    <h3>About Assist</h3>
+    <p>Assist is a trial for invited support workers and volunteers. Describe someone's situation and it suggests a short plan of support, with the easiest steps first.</p>
+    <ul>
+      <li>Suggestions come from the services listed here, and every detail on those cards comes from the checked record itself.</li>
+      <li>With <strong>Search online</strong> switched on, it also looks online for anything the directory doesn't cover. Those finds are marked <em>Found online, not checked</em>.</li>
+      <li>Names, phone numbers and email addresses are removed before anything is sent, and the description itself is never sent to the online search: only a short search phrase and the nearest town.</li>
+      <li>Please confirm details with the service before going, and use your own judgement, as always.</li>
+    </ul>
+    ${code ? `<p><button type="button" class="btn ghost" id="a-forget">Lock Assist on this device</button></p>` : ""}
+    <p class="small" id="a-version">${e_(versionText())}</p>
+    </section>`;
 const SITE = "https://chris010970.github.io/signposting-somerset/main/";   // the plan always points people to the public site
-const QUICK = ["No groups", "Weekends only", "Free only", "Nearer to home", "Start from home (phone or online)", "Something for a carer too"];
 const RISK = /suicid|kill (my|him|her|them)sel|end (my|his|her|their) life|self[- ]?harm|cutting (my|him|her)|overdos|want(s|ed)? to die|no reason to live|better off dead/i;
 const $a = id => document.getElementById(id);
 const e_ = s => String(s ?? "").replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
@@ -1969,12 +1974,16 @@ $a("a-gate").onsubmit = async e => {
   } catch { showGate("Couldn't reach Assist. Check your connection and try again."); }
   finally { $a("a-codeBtn").disabled = false; }
 };
-$a("a-forget").onclick = () => { sess.set("assist-code", null); code = ""; state = null; $a("a-out").hidden = true; $a("a-refine").hidden = true; showGate(); };
+// The lock button lives on the About tab, which is redrawn each time it opens
+document.addEventListener("click", e => {
+  if (!e.target.closest || !e.target.closest("#a-forget")) return;
+  sess.set("assist-code", null); code = ""; state = null; $a("a-out").hidden = true; setLocked(true);
+  if (typeof renderAbout === "function") renderAbout();
+});
 
 // ---- set up the form ----
-QUICK.forEach(q => { const b = document.createElement("button"); b.type = "button"; b.textContent = q; b.onclick = () => refine(q); $a("a-quick").append(b); });
 function note(t) { $a("a-err").textContent = t; $a("a-err").hidden = !t; }
-function busy(on, t) { $a("a-status").hidden = !on; $a("a-statusText").textContent = t || "Thinking..."; $a("a-ask").disabled = on; $a("a-moreBtn").disabled = on; }
+function busy(on, t) { $a("a-status").hidden = !on; $a("a-statusText").textContent = t || "Thinking..."; $a("a-ask").disabled = on; }
 
 // ---- where: the same places, distances and "Support for" as the In person tab, shared between the two tabs ----
 // place = { kind: "place" | "pt" | "remote" | "", name, lat, lon, label }. Only a rounded point is ever sent.
@@ -2119,21 +2128,11 @@ $a("a-form").onsubmit = e => {
   state = { need, radius: +$a("a-rad").value, remote: !$a("a-inperson").checked, support: $a("a-support").value, online: onlineOn(), followups: [], previous: [] };
   if (place.kind === "remote") state.town = "__remote";
   else { state.town = "__pt"; state.lat = round2(place.lat); state.lon = round2(place.lon); }
-  $a("a-trail").innerHTML = "";
   run();
 };
 // "Search online" toggle in the prompt box: off by default, remembered only on this page
 const onlineOn = () => $a("a-online").getAttribute("aria-pressed") === "true";
 $a("a-online").onclick = () => { const on = !onlineOn(); $a("a-online").setAttribute("aria-pressed", on); if (state) state.online = on; };
-$a("a-refine").onsubmit = e => { e.preventDefault(); const v = $a("a-more").value.trim(); if (v) refine(v); };
-function refine(text) {
-  if (!state) return;
-  state.followups = [...state.followups, text].slice(-5);
-  state.online = onlineOn();
-  $a("a-more").value = "";
-  $a("a-trail").innerHTML = "So far: " + state.followups.map(f => `<span>${e_(f)}</span>`).join("");
-  run();
-}
 
 const ERRORS = {
   bad_code: "That access code wasn't accepted.", rate_limited: "Too many requests from here in the last hour. Please try again later.",
@@ -2201,7 +2200,7 @@ function show(r, keepScroll) {
   m += `<p class="a-scope">Chose from ${sc.total} of ${sc.records} services: ${[sc.near ? `${sc.near} in person ${e_(sc.place)}` : "", sc.remote ? `${sc.remote} phone or online` : ""].filter(Boolean).join(" and ")}.</p>`;
   const side = lastPicks.length ? `<aside class="a-preview" aria-label="Support plan"><div class="a-pv-label">Support plan</div><div class="a-pv-body">${plan().html}</div><p class="a-pv-hint">Copy it into an email or letter, share it by text, or print it.</p></aside>` : "";
   $a("a-out").innerHTML = `<div class="a-results"><div class="a-maincol">${m}</div>${side}</div>`;
-  $a("a-out").hidden = false; $a("a-refine").hidden = false;
+  $a("a-out").hidden = false;
   if (lastPicks.length) {
     $a("a-copyPlan").onclick = copyPlan;
     $a("a-printPlan").onclick = () => { $a("a-printplan").innerHTML = plan().html; document.body.classList.add("a-printing"); window.print(); };
@@ -2432,6 +2431,7 @@ async function copyPlan() {
 showVersion();
 // If the page opened straight onto the Assist tab (e.g. #assist), show it now that everything is ready
 if (typeof tab !== "undefined" && tab === "assist") window.assistShow();
+if (typeof tab !== "undefined" && tab === "about" && typeof renderAbout === "function") renderAbout();
 })();
 </script>
 
