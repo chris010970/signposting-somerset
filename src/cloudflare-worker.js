@@ -22,10 +22,43 @@
  */
 
 const TOWNS = {"Axbridge": [51.2866, -2.8188], "Berrow": [51.268, -3.007], "Bishops Lydeard": [51.06, -3.187], "Brean": [51.293, -3.012], "Bridgwater": [51.1279, -3.0036], "Bruton": [51.1118, -2.4532], "Burnham-on-Sea": [51.2384, -2.9972], "Castle Cary": [51.089, -2.513], "Chard": [50.8722, -2.9616], "Cheddar": [51.2771, -2.7781], "Cotford St Luke": [51.042, -3.177], "Creech St Michael": [51.025, -3.035], "Crewkerne": [50.884, -2.795], "Dulverton": [51.04, -3.55], "Frome": [51.2283, -2.3218], "Glastonbury": [51.1486, -2.7145], "Highbridge": [51.2187, -2.9727], "Ilminster": [50.9265, -2.9112], "Langport": [51.038, -2.828], "Minehead": [51.2041, -3.4794], "North Petherton": [51.093, -3.013], "Porlock": [51.208, -3.595], "Shepton Mallet": [51.1906, -2.5462], "Somerton": [51.055, -2.734], "South Petherton": [50.948, -2.81], "Stoke St Gregory": [51.04, -2.935], "Street": [51.1268, -2.7393], "Taunton": [51.015, -3.103], "Watchet": [51.181, -3.33], "Wellington": [50.9787, -3.2263], "Wells": [51.2093, -2.6474], "West Huntspill": [51.198, -2.99], "Williton": [51.162, -3.322], "Wincanton": [51.056, -2.41], "Wiveliscombe": [51.041, -3.312], "Woolavington": [51.168, -2.94], "Yeovil": [50.9421, -2.633], "Cannington": [51.15, -3.064], "Coleford": [51.239, -2.444], "Drayton": [51.006, -2.836], "Dunster": [51.183, -3.444], "East Huntspill": [51.2, -2.96], "Evercreech": [51.148, -2.502], "Galmington": [51.011, -3.122], "Keinton Mandeville": [51.068, -2.645], "Lisieux Way": [51.018, -3.075], "Long Load": [50.997, -2.756], "Long Sutton": [51.023, -2.758], "Martock": [50.97, -2.768], "Merriott": [50.905, -2.795], "Milborne Port": [50.966, -2.462], "Milverton": [51.026, -3.257], "Mudford": [50.968, -2.611], "Oake": [51.024, -3.199], "Oakhill": [51.226, -2.522], "Queen Camel": [51.022, -2.582], "Staplegrove": [51.033, -3.12], "Stogursey": [51.18, -3.14], "West Monkton": [51.04, -3.06], "Weston-super-Mare": [51.346, -2.977], "Edington": [51.162, -2.885], "Ruishton": [51.017, -3.055], "Steart": [51.203, -3.046], "Stoke-sub-Hamdon": [50.953, -2.749], "Wedmore": [51.227, -2.811], "Westhay": [51.183, -2.783], "Nailsea": [51.432, -2.757], "Backwell": [51.411, -2.732], "Bath": [51.381, -2.359], "Batheaston": [51.405, -2.318], "Chew Magna": [51.367, -2.609], "Chilcompton": [51.267, -2.511], "Keynsham": [51.414, -2.498], "Midsomer Norton": [51.284, -2.482], "Newton St Loe": [51.373, -2.43], "Radstock": [51.293, -2.448], "Saltford": [51.402, -2.457], "Sparkford": [51.034, -2.565], "Stanton Drew": [51.367, -2.577], "Tatworth": [50.852, -2.957], "Timberscombe": [51.168, -3.487], "Timsbury": [51.328, -2.478], "Tunley": [51.343, -2.45], "Norton St Philip": [51.3, -2.326], "Nunney": [51.21, -2.378], "Paulton": [51.307, -2.504], "Peasedown St John": [51.316, -2.43]};
-const VERSION = "2026-11-06 11:07";        // set when the worker is built; shown on the Assist tab
+const VERSION = "2026-11-06 12:57";        // set when the worker is built; shown on the Assist tab
 const DEFAULT_MODEL = "claude-sonnet-5-5";
 const MAX_PER_HOUR = 30;               // per visitor (best effort: counts reset when Cloudflare restarts the Worker)
 const RISK = /suicid|kill (my|him|her|them)sel|end (my|his|her|their) life|self[- ]?harm|cutting (my|him|her)|overdos|want(s|ed)? to die|no reason to live|better off dead/i;
+
+// Removes personal details from free text before it leaves the page (and again in the Worker before an online search).
+// Shared by assist-tab.js and the Worker: the build scripts paste this file into both, so there is one copy to maintain.
+// It can't catch every name: a lone first name ("Sarah has…") looks like any other word, so the prompt box asks for none.
+const NAME_STOP = new Set(("She He They It This That There Then When What Where Why How Client Clients Man Woman Mum Dad Mother Father Son Daughter Husband Wife " +
+  "Partner Person People Someone Nobody Everyone Recently Since After Before Lives Has Had Is Was Feels Wants Needs Likes Can Could Would Should Will " +
+  "Monday Tuesday Wednesday Thursday Friday Saturday Sunday January February March April May June July August September October November December " +
+  "Somerset Taunton Yeovil Bridgwater Frome Wells Glastonbury Street Minehead Chard Burnham Highbridge Shepton Mallet Wellington Crewkerne Ilminster " +
+  "Langport Somerton Wincanton Castle Cary Cheddar Watchet Williton Bath Weston NHS GP Mind Age UK Our His Her Their My Your Also And But Not No Yes Hope Grace Faith Joy Will Rose Summer Autumn Winter Spring Christmas Easter Money Work Life Home Food Drinking Gambling Everything Nothing").split(" "));
+function scrub(txt) {
+  const n = {};
+  const hit = (k, r) => { n[k] = (n[k] || 0) + 1; return r; };
+  const s = String(txt || "")
+    .replace(/[\w.+-]+@[\w-]+\.[\w.-]+/g, () => hit("email address", "[email]"))
+    // UK phone numbers in any common format: 07700 900123, +44 7700 900123, 020 7946 0018, (01823) 276892, 01823-276892
+    .replace(/(?:\+44[\s-]?\(?0?\)?|\(?\b0)\d[\d\s()-]{7,12}\d\b/g, m => (m.replace(/\D/g, "").length >= 10 ? hit("phone number", "[phone]") : m))
+    .replace(/\b\d{3}\s?\d{3}\s?\d{4}\b/g, () => hit("NHS or ID number", "[number]"))
+    .replace(/\b[A-Z]{2}\s?\d{2}\s?\d{2}\s?\d{2}\s?[A-D]\b/gi, () => hit("NI number", "[number]"))
+    .replace(/\b([A-Z]{1,2}\d[A-Z\d]?)\s?\d[A-Z]{2}\b/gi, (m, out) => hit("full postcode", out.toUpperCase()))
+    .replace(/\b\d{1,2}[\/.-]\d{1,2}[\/.-](?:19|20)?\d{2}\b/g, () => hit("date", "[date]"))
+    .replace(/\b(?:born(?: in| on)?|d\.?o\.?b\.?:?)\s*(?:(?:19|20)\d{2}|\d{1,2}(?:st|nd|rd|th)?\s+[A-Za-z]+(?:\s+(?:19|20)\d{2})?)/gi, () => hit("date of birth", "[date of birth]"))
+    .replace(/\b\d{1,4}[a-z]?,?\s+(?:[A-Za-z']+\s){1,3}(?:road|rd|street|st|lane|ln|avenue|ave|close|drive|dr|way|crescent|place|court|gardens|terrace|hill|row|square|walk|mews|grove)\b\.?/gi, () => hit("street address", "[address]"))
+    .replace(/\b(?:Mr|Mrs|Ms|Miss|Mx|Dr)\.?\s+[A-Z][a-z'-]+(?:\s+[A-Z][a-z'-]+)?/g, () => hit("name", "[name]"))
+    .replace(/\b(called|named|name is|name's|known as)\s+[A-Z][a-z'-]+(?:\s+[A-Z][a-z'-]+)?/gi, (m, w) => hit("name", `${w} [name]`))
+    // "my client John Smith", "client Sarah", "her son Jack"
+    .replace(/\b((?:my |her |his |their |our )?(?:client|patient|service user|resident|son|daughter|husband|wife|partner|mum|dad|mother|father|brother|sister|friend|carer))\s+([A-Z][a-z'-]+(?:\s+[A-Z][a-z'-]+)?)\b/g,
+      (m, w, name) => (NAME_STOP.has(name.split(" ")[0]) ? m : hit("name", `${w} [name]`)))
+    // A capitalised name starting a sentence and followed by a verb: "Sarah has been…", "John Smith is…"
+    .replace(/(^|[.!?]\s+|\n)([A-Z][a-z'-]+(?:\s+[A-Z][a-z'-]+)?)(?=\s+(?:has|is|was|had|feels|felt|says|said|lives|lived|wants|needs|told|cares|can't|won't|doesn't|isn't)\b)/g,
+      (m, pre, name) => (NAME_STOP.has(name.split(" ")[0]) ? m : hit("name", `${pre}[name]`)));
+  return { text: s, removed: n };
+}
+
 
 let cache = { at: 0, recs: null };
 const hits = new Map();
@@ -108,7 +141,8 @@ export default {
       const r = await fetch("https://api.anthropic.com/v1/messages", {
         method: "POST",
         headers: { "x-api-key": env.ANTHROPIC_API_KEY, "anthropic-version": "2023-06-01", "content-type": "application/json" },
-        body: JSON.stringify({ model: env.MODEL || DEFAULT_MODEL, max_tokens: 16000, messages: [{ role: "user", content: prompt }] }),
+        body: JSON.stringify({ model: env.MODEL || DEFAULT_MODEL, max_tokens: 3000, messages: [{ role: "user", content: prompt }] }),
+        signal: AbortSignal.timeout(60000),
       });
       if (r.status === 429 || r.status === 529) return reply({ error: "busy" }, 503);
       if (!r.ok) {
@@ -206,6 +240,50 @@ function when(s) {
   if (s.dates) { const f = futureDates(s); return f.length ? "dates: " + f.slice(0, 4).join(", ") + (f.length > 4 ? "…" : "") + (s.times ? " " + s.times : "") : ""; }
   return [s.days, s.times, s.frequency].filter(Boolean).join(" ");
 }
+// ---------- next session: worked out here (same rules as the site's In person tab), so the AI never does calendar sums ----------
+const DOWN = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"], MONS = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+function ukNow() {
+  const p = Object.fromEntries(new Intl.DateTimeFormat("en-GB", { timeZone: "Europe/London", year: "numeric", month: "2-digit", day: "2-digit", hour: "2-digit", minute: "2-digit", hourCycle: "h23" })
+    .formatToParts(new Date()).map(x => [x.type, x.value]));
+  return { day: Date.UTC(+p.year, +p.month - 1, +p.day), mins: +p.hour * 60 + +p.minute };
+}
+function daysSet(str) {
+  const out = new Set();
+  for (const p of String(str || "").split(";").map(x => x.trim()).filter(Boolean)) {
+    const m = p.match(/^(\w{3})-(\w{3})$/);
+    if (m && DOWN.includes(m[1]) && DOWN.includes(m[2])) { let i = DOWN.indexOf(m[1]); const j = DOWN.indexOf(m[2]); for (;;) { out.add(i); if (i === j) break; i = (i + 1) % 7; } }
+    else if (DOWN.includes(p)) out.add(DOWN.indexOf(p));
+  }
+  return out;
+}
+function nthOk(t, freq) {   // "2nd Tue of month", "1st and 3rd Wed of month", "last Fri of month"
+  const m = freq.match(/^((?:1st|2nd|3rd|4th|last)(?: and (?:1st|2nd|3rd|4th|last))?) (\w{3}) of month$/i);
+  if (!m) return null;
+  const d = new Date(t), n = Math.ceil(d.getUTCDate() / 7), last = new Date(t + 7 * 864e5).getUTCMonth() !== d.getUTCMonth();
+  return m[1].split(" and ").some(w => w.toLowerCase() === "last" ? last : { "1st": 1, "2nd": 2, "3rd": 3, "4th": 4 }[w.toLowerCase()] === n);
+}
+function nextSession(s, now) {
+  const f = (s.frequency || "").toLowerCase(), t = (s.times || "").match(/^(\d\d):(\d\d)(?:-(\d\d):(\d\d))?$/);
+  if (/^mon-sun$/i.test(s.days) && s.times === "00:00-23:59") return "any time";
+  if (!s.dates) {
+    if (f === "see website") return "see website";
+    if (!s.days) return "";
+    if (f === "fortnightly" || f.includes("dates vary")) return "check dates";
+  }
+  const days = daysSet(s.days), parts = String(s.dates || "").split(";").map(x => x.trim()).filter(Boolean);
+  const list = new Set(parts.filter(p => !p.includes(" to "))), ranges = parts.filter(p => p.includes(" to ")).map(p => p.split(" to "));
+  const end = t ? (t[3] ? +t[3] * 60 + +t[4] : +t[1] * 60 + +t[2] + 90) : 1439;
+  for (let i = 0; i < 70; i++) {
+    const d = now.day + i * 864e5, dt = new Date(d), wd = dt.getUTCDay();
+    if (i === 0 && now.mins >= end) continue;
+    if (days.size && !days.has(wd)) continue;
+    if (s.dates) { const k = dt.toISOString().slice(0, 10); if (!(list.has(k) || ranges.some(([a, b]) => k >= a && k <= b))) continue; }
+    else if (f) { const ok = nthOk(d, f); if (ok === null) return "check dates"; if (!ok) continue; }
+    return `${i === 0 ? "today, " : i === 1 ? "tomorrow, " : ""}${DOWN[wd]} ${dt.getUTCDate()} ${MONS[dt.getUTCMonth()]}${t ? " " + t[1] + ":" + t[2] : ""}`;
+  }
+  return "no upcoming dates";
+}
+
 function candidates(recs, origin, radius, remote) {
   const out = [];
   recs.forEach((s, id) => {
@@ -223,10 +301,11 @@ function candidates(recs, origin, radius, remote) {
 // ---------- prompt ----------
 function buildPrompt(need, followups, previous, place, cands) {
   const now = new Intl.DateTimeFormat("en-GB", { timeZone: "Europe/London", weekday: "long", day: "numeric", month: "long", year: "numeric", hour: "2-digit", minute: "2-digit" }).format(new Date());
+  const clock = ukNow();
   const line = c => {
     const s = c.s;
     const where = c.d !== null ? `${s.town} (${c.d.toFixed(1)} mi)` : s.mode.replace(/;/g, ", ");
-    return [c.id, s.name, s.type, s.access, s.support_for, s.who, when(s) || "-", where, s.cost || "-", s.description, s.eligibility || "-"].join(" | ");
+    return [c.id, s.name, s.type, s.access, s.support_for, s.who, when(s) || "-", nextSession(s, clock) || "-", where, s.cost || "-", s.description, s.eligibility || "-"].join(" | ");
   };
   const refine = followups.length
     ? `\nFOLLOW-UP from the worker (newest last). Adjust your suggestions to these; they override earlier preferences:\n${followups.map(f => `- """${f}"""`).join("\n")}\n` +
@@ -240,7 +319,7 @@ ${refine}
 WHERE: ${place}.
 
 SERVICES you may recommend. You may ONLY recommend services from this list, using their id. Each line is:
-id | name | type | access (drop in / sign up / book / referral / call) | support for | who it's for | when | where (distance) | cost | description | eligibility
+id | name | type | access (drop in / sign up / book / referral / call) | support for | who it's for | when | next session (worked out for you; trust it) | where (distance) | cost | description | eligibility
 ${cands.map(line).join("\n")}
 
 Think like an experienced social prescriber:
@@ -250,6 +329,7 @@ Think like an experienced social prescriber:
 - Respect eligibility and 'who it's for' strictly (age, gender, carers, referral needed). Prefer drop-in, free and nearer options when motivation, money or transport sound like barriers. Don't recommend crisis services unless the need suggests risk.
 - Choose the best fits, judged in this order: (1) meets the core need directly; (2) the person can use it (age, gender, eligibility, referral); (3) fits their constraints (travel, times, phone or online if leaving the house is hard); (4) matches their readiness (an easy first step before bigger commitments); (5) soonest and nearest when otherwise equal. Avoid duplicates: two services doing the same job count as one.
 - Build a ladder of at most 8 picks, and as few as 2 or 3 if that's all that genuinely fits: "First step" (1-2, the easiest to do this week), "Next step" (1-3), "When ready" (0-2). If leaving the house sounds hard, include a phone or online option as a first step. Never pad the plan: a service for a different problem (for example an alcohol service for a gambling problem) must never be used to fill a gap.
+- When: if the need says when (a day, "tomorrow", mornings, evenings, weekends), only choose services whose next session meets it; phone and online services open then also count. If nothing meets it, say so plainly in "gaps", and add at most one or two of the nearest alternatives as "When ready", saying in "why" which day they run.
 - Pronouns: refer to the person as "he" or "she" only if the need makes it clear (e.g. "a woman", "his wife", "man in his 50s", "my son"); otherwise use "they" or "the person". Never guess.
 - Safety: if the situation carries a known safety point, write it in "safety" as 1-2 plain, kind sentences addressed to the person ("you"), so it can go in the plan they are given. Examples: heavy daily drinking (don't stop suddenly: withdrawal can be dangerous, so cut down with the drug and alcohol service or GP); suicidal thoughts or self-harm (call Mindline Somerset any time on 0800 138 1692, or 999 if in immediate danger); an under-18 at risk (tell a trusted adult or call Childline on 0800 1111); domestic abuse (999 if in danger now). Otherwise leave it empty.
 - Never invent services or details. Your "why" must be consistent with the record and specific to this person. Don't restate times or addresses (the card shows them), and don't call anything "today" or "tonight" unless it really is still to come today given the current time.
@@ -265,7 +345,8 @@ Reply with only this JSON:
 // what wasn't covered, and the names already in the plan. Never the need itself.
 const WEB_MAX = 3;          // searches per request
 async function webSearch(body, env, reply) {
-  const clean = (v, n) => String(v || "").replace(/[\r\n"`]/g, " ").trim().slice(0, n);
+  // Everything here was written on the page or by the model: strip personal details again before it reaches a web search
+  const clean = (v, n) => scrub(String(v || "")).text.replace(/[\r\n"`]/g, " ").trim().slice(0, n);
   const query = clean(body.search_for, 120);
   if (!query) return reply({ error: "no_need" }, 400);
   const needs = (Array.isArray(body.core_needs) ? body.core_needs : []).map(x => clean(x, 60)).filter(Boolean).slice(0, 3);
@@ -273,7 +354,10 @@ async function webSearch(body, env, reply) {
   const gaps = clean(body.gaps, 300);
   const constraints = clean(body.constraints, 160);
   // The directory picks so far, in order: { name, step, what } (names and short descriptions only)
-  const picks = (Array.isArray(body.picks) ? body.picks : []).slice(0, 8).map((p, i) => ({ i: i + 1, name: clean(p.name, 120), step: clean(p.step, 20), what: clean(p.what, 140) }));
+  const STEPS = ["First step", "Next step", "When ready"];
+  const stepOf = v => STEPS.find(s => s.toLowerCase() === String(v || "").toLowerCase()) || "";
+  const picks = (Array.isArray(body.picks) ? body.picks : []).slice(0, 8).map((p, i) => ({ i: i + 1, name: clean(p.name, 120), step: stepOf(p.step) || "Next step", what: clean(p.what, 140) }));
+  const covered = ["yes", "partly", "no"].includes(body.core_covered) ? body.core_covered : "partly";
   const remoteOk = body.remote !== false;
   const prompt = `You are helping a support worker in Somerset, UK, make the best possible support plan. Today is ${DAY_FMT.format(new Date())}.
 The person is near ${town}, Somerset. Their core need: ${needs.join("; ") || query}.${constraints ? `\nTheir practical constraints: ${constraints}.` : ""}
@@ -300,7 +384,8 @@ Reply with only this JSON:
       const r = await fetch("https://api.anthropic.com/v1/messages", {
         method: "POST",
         headers: { "x-api-key": env.ANTHROPIC_API_KEY, "anthropic-version": "2023-06-01", "content-type": "application/json" },
-        body: JSON.stringify({ model: env.MODEL || DEFAULT_MODEL, max_tokens: 6000, messages, tools }),
+        body: JSON.stringify({ model: env.MODEL || DEFAULT_MODEL, max_tokens: 3000, messages, tools }),
+        signal: AbortSignal.timeout(90000),
       });
       if (r.status === 429 || r.status === 529) return reply({ error: "busy" }, 503);
       if (!r.ok) {
@@ -321,20 +406,28 @@ Reply with only this JSON:
   const text = content.filter(b => b.type === "text").map(b => b.text).join("");
   let out = {};
   try { out = JSON.parse(text.slice(text.indexOf("{"), text.lastIndexOf("}") + 1)); } catch { return reply({ items: [], keep: null, note: "The online search didn't return anything usable.", query }); }
-  const STEPS = ["First step", "Next step", "When ready"];
   const items = (Array.isArray(out.items) ? out.items : []).map(it => {
-    let host = ""; try { const u = new URL(String(it.url)); if (/^https?:$/.test(u.protocol)) host = u.hostname.replace(/^www\./, ""); } catch {}
-    return { host, it };
-  }).filter(x => x.host && seen.has(x.host)).slice(0, 3).map(({ host, it }) => ({
+    let u = null; try { u = new URL(String(it.url)); if (!/^https?:$/.test(u.protocol)) u = null; } catch {}
+    return { u, it };
+  }).filter(x => x.u && seen.has(x.u.hostname.replace(/^www\./, ""))).slice(0, 3).map(({ u, it }) => ({
     name: clean(it.name, 120), what: clean(it.what, 200), when: clean(it.when, 160), where: clean(it.where, 200),
-    contact: clean(it.contact, 200), url: String(it.url).slice(0, 400), source: host,
-    step: STEPS.find(s => s.toLowerCase() === String(it.step || "").toLowerCase()) || "Next step", why: clean(it.why, 250),
+    contact: clean(it.contact, 200), url: u.href.slice(0, 400), source: u.hostname.replace(/^www\./, ""),
+    step: stepOf(it.step) || "Next step", why: clean(it.why, 250),
   })).filter(x => x.name);
-  // Which directory picks to keep (by number), in order; anything unreadable keeps them all
-  let keep = Array.isArray(out.keep) ? out.keep.map(k => ({ n: Number(k?.n ?? k), step: STEPS.find(s => s.toLowerCase() === String(k?.step || "").toLowerCase()) || "" }))
-    .filter(k => Number.isInteger(k.n) && k.n >= 1 && k.n <= picks.length) : null;
-  if (keep && !keep.length && picks.length) keep = null;
-  // At most 8 in all: trim online finds first if needed
-  const room = Math.max(0, 8 - (keep ? keep.length : picks.length));
-  return reply({ items: items.slice(0, room), keep, note: clean(out.note, 300), query });
+
+  // The merged plan is checked here against fixed rules, whatever the model (or a web page it read) asked for:
+  // - the directory's first steps stay, unless the directory doesn't cover the core need at all;
+  // - online finds are never a first step when the directory has one; at most 3 of them; at most 8 items in all.
+  const seenN = new Set();
+  let keep = (Array.isArray(out.keep) ? out.keep : picks.map(p => ({ n: p.i })))
+    .map(k => ({ n: Number(k?.n ?? k), step: stepOf(k?.step) }))
+    .filter(k => Number.isInteger(k.n) && k.n >= 1 && k.n <= picks.length && !seenN.has(k.n) && seenN.add(k.n))
+    .map(k => ({ n: k.n, step: k.step || picks[k.n - 1].step }));
+  const dirFirst = picks.filter(p => p.step === "First step");
+  if (covered !== "no") for (const p of dirFirst) if (!keep.some(k => k.n === p.i)) keep.unshift({ n: p.i, step: "First step" });
+  const hasFirst = keep.some(k => k.step === "First step");
+  if (hasFirst) items.forEach(it => { if (it.step === "First step") it.step = "Next step"; });
+  if (!keep.length && !items.length) keep = picks.map(p => ({ n: p.i, step: p.step }));
+  while (keep.length + items.length > 8) { if (items.length > Math.min(2, 8 - keep.length)) items.pop(); else { const i = keep.map(k => k.step).lastIndexOf("When ready"); keep.splice(i >= 0 ? i : keep.length - 1, 1); } }
+  return reply({ items, keep, note: clean(out.note, 300), query });
 }
