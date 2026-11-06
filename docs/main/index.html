@@ -917,6 +917,192 @@ footer.urgent p { color: #FEE2E2; }
 .line { font-size: 12px; font-weight: 700; padding: 6px 12px; border-radius: 8px; background: #fff; color: var(--b900); text-decoration: none; white-space: nowrap; }
 .line.ghost { background: transparent; color: #fff; border: 1px solid rgba(255,255,255,.45); }
 @media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
+
+/* ---------- Assist tab (v2 only). Everything is scoped to #panel-assist or prefixed a- so it can't affect the rest of the site. ---------- */
+.sitetabs #tab-assist { display: inline-flex; align-items: center; gap: 6px; }
+.sitetabs #tab-assist .lock { width: 13px; height: 13px; flex: none; opacity: .75; }
+.sitetabs #tab-assist.unlocked .lock { display: none; }
+#hdr-assist { display: flex; align-items: center; min-height: 0; }
+#hdr-assist[hidden] { display: none; }
+#hdr-assist p { margin: 0; font-size: 14px; color: #57534E; max-width: 80ch; }
+#panel-assist { --a-amber: #FBBF24; --a-urgent: #DC2626; --a-urgent-bg: #FEF2F2; }
+#panel-assist .a-wrap { max-width: 1400px; margin: 0 auto; padding-block: 18px 110px; }
+#panel-assist .a-card { background: var(--white); border: 1px solid var(--line); border-radius: 14px; padding: 18px; }
+#panel-assist label.a-h { display: block; font-weight: 700; margin-bottom: 6px; }
+#panel-assist textarea { width: 100%; min-height: 110px; resize: vertical; border: 1px solid var(--b200); border-radius: 10px; padding: 10px 12px; background: var(--white); font: inherit; box-sizing: border-box; }
+#panel-assist .a-hint { font-size: 13px; color: var(--muted); margin: 6px 0 0; }
+#panel-assist .a-examples { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 10px; }
+#panel-assist .a-examples button, #panel-assist .a-quick button { border: 1px solid var(--b200); background: var(--b50); color: var(--b800); border-radius: 999px; padding: 4px 11px; font-size: 13px; cursor: pointer; text-align: left; font: inherit; font-size: 13px; }
+#panel-assist .a-row { display: flex; flex-wrap: nowrap; gap: 12px 18px; align-items: end; margin-top: 16px; }
+@media (max-width: 900px) { #panel-assist .a-row { flex-wrap: wrap; } }
+#panel-assist .a-field { display: flex; flex-direction: column; gap: 4px; min-width: 0; }
+#panel-assist .a-field span { font-size: 13px; font-weight: 700; }
+#panel-assist select { border: 1px solid var(--b200); border-radius: 8px; padding: 8px 10px; background: var(--white); max-width: 100%; font: inherit; }
+#panel-assist .a-chk { display: flex; gap: 8px; align-items: center; font-size: 14px; padding-bottom: 8px; }
+#panel-assist .a-go { margin-left: auto; display: flex; gap: 8px; }
+#panel-assist .a-btn { border: 0; border-radius: 10px; padding: 10px 18px; font-weight: 700; cursor: pointer; background: var(--b700); color: #fff; font: inherit; font-weight: 700; }
+#panel-assist .a-btn:disabled { opacity: .55; cursor: default; }
+#panel-assist .a-btn.ghost { background: transparent; color: var(--b800); border: 1px solid var(--b200); }
+#panel-assist .a-btn.small { padding: 6px 12px; font-size: 13px; border-radius: 8px; }
+#panel-assist .a-status { margin: 18px 0 0; color: var(--muted); font-size: 14px; display: flex; gap: 10px; align-items: center; }
+#panel-assist .a-dot { width: 10px; height: 10px; border-radius: 50%; background: var(--b500); animation: a-pulse 1.1s ease-in-out infinite; flex: none; }
+@keyframes a-pulse { 50% { opacity: .25; } }
+@media (prefers-reduced-motion: reduce) { #panel-assist .a-dot { animation: none; } }
+#panel-assist .a-alert { border: 1px solid #FCA5A5; background: var(--a-urgent-bg); border-radius: 12px; padding: 14px 16px; margin-top: 18px; }
+#panel-assist .a-alert h2 { margin: 0 0 6px; font-size: 16px; color: #991B1B; }
+#panel-assist .a-alert p { margin: 0; }
+#panel-assist .a-lines { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px; }
+#panel-assist .a-lines a { background: var(--a-urgent); color: #fff; text-decoration: none; font-weight: 700; font-size: 13px; padding: 6px 12px; border-radius: 8px; }
+#panel-assist .a-err { margin-top: 18px; color: #991B1B; }
+#panel-assist .a-note { margin-top: 26px; font-size: 13px; color: var(--muted); border-top: 1px solid var(--line); padding-top: 14px; }
+#panel-assist .a-gaps, #panel-assist .a-qs { margin-top: 18px; font-size: 14px; }
+#panel-assist .a-qs ul { margin: 6px 0 0; padding-left: 20px; }
+#panel-assist .a-scope { font-size: 13px; color: var(--muted); margin-top: 14px; }
+#panel-assist .a-gate { max-width: 460px; }
+#panel-assist .a-gate input { width: 100%; box-sizing: border-box; border: 1px solid var(--b200); border-radius: 10px; padding: 10px 12px; background: var(--white); margin-top: 4px; font: inherit; }
+#panel-assist .a-gate .a-btn { margin-top: 12px; }
+#panel-assist .a-refine { margin-top: 22px; }
+#panel-assist .a-rowr { display: flex; gap: 8px; margin-top: 6px; }
+#panel-assist .a-rowr input { flex: 1; min-width: 0; border: 1px solid var(--b200); border-radius: 10px; padding: 10px 12px; background: var(--white); font: inherit; }
+#panel-assist .a-quick { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px; }
+#panel-assist .a-quick button { background: var(--white); }
+#panel-assist .a-trail { font-size: 13px; color: var(--muted); margin-top: 8px; }
+#panel-assist .a-trail span { background: var(--b50); border-radius: 6px; padding: 1px 7px; margin-right: 4px; display: inline-block; margin-top: 3px; }
+#panel-assist .a-linkbtn { background: none; border: 0; padding: 0; color: var(--b700); text-decoration: underline; cursor: pointer; font-size: 13px; }
+#panel-assist .a-placenote { font-size: 13px; color: var(--b900); background: #EEF4F0; border-radius: 8px; padding: 6px 10px; margin: 8px 0 0; }
+#panel-assist .a-scrubnote { font-size: 13px; color: #78350F; background: #FEF3C7; border-radius: 8px; padding: 6px 10px; margin: 10px 0 0; }
+#panel-assist .a-reshead { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 8px; margin-top: 22px; }
+#panel-assist .a-reshead h2 { margin: 0; font-family: var(--serif); font-size: 19px; }
+#panel-assist .a-planbar { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; }
+#panel-assist .a-copied { font-size: 13px; color: var(--b700); width: 100%; text-align: right; }
+#panel-assist .a-copied:empty { display: none; }
+#panel-assist .a-readas { margin: 8px 0 0; font-size: 14px; color: var(--muted); max-width: 70ch; }
+#panel-assist .a-readas b { color: var(--b700); }
+/* results: one column; on wide screens the plan preview sits alongside */
+#panel-assist .a-results { display: block; }
+#panel-assist #a-out { scroll-margin-top: 12px; }
+#panel-assist .a-maincol { min-width: 0; }
+#panel-assist .a-preview { display: none; }
+@media (min-width: 1000px) {
+  /* same two columns as the prompt and map above (inside the card: 1px border + 18px padding, 24px gap) */
+  #panel-assist .a-results { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 24px; padding: 0 19px; align-items: start; }
+  #panel-assist .a-preview { display: block; position: sticky; top: 16px; background: var(--white); border: 1px solid var(--line); border-radius: 14px; padding: 16px 18px; font-size: 14px; margin-top: 22px; }
+  #panel-assist .a-pv-label { font-size: 12px; text-transform: uppercase; letter-spacing: .08em; color: var(--b600); font-weight: 700; margin-bottom: 8px; }
+  #panel-assist .a-pv-body h3 { font-family: var(--serif); font-size: 17px; }
+  #panel-assist .a-pv-hint { margin: 10px 0 0; font-size: 12px; color: var(--muted); border-top: 1px solid var(--line); padding-top: 8px; }
+}
+/* the ladder of suggestions */
+#panel-assist .a-ladder { list-style: none; margin: 16px 0 0; padding: 0 0 0 38px; position: relative; }
+#panel-assist .a-ladder::before { content: ""; position: absolute; left: 13px; top: 14px; bottom: 26px; width: 2px; background: var(--b200); }
+#panel-assist .a-rung { position: relative; margin: 0 0 14px; }
+#panel-assist .a-rdot { position: absolute; left: -38px; top: 0; width: 28px; height: 28px; border-radius: 50%; background: var(--b700); color: #fff; font-weight: 700; font-size: 14px; display: grid; place-items: center; box-shadow: 0 0 0 4px var(--cream); }
+#panel-assist .a-rung h3 { font-size: 12px; text-transform: uppercase; letter-spacing: .08em; color: var(--b600); margin: 6px 0 8px; }
+#panel-assist details.a-pick { background: var(--white); border: 1px solid var(--line); border-left: 4px solid var(--b500); border-radius: 12px; margin-bottom: 8px; }
+#panel-assist details.a-pick summary { list-style: none; cursor: pointer; padding: 12px 40px 12px 14px; position: relative; display: flex; flex-direction: column; gap: 2px; }
+#panel-assist details.a-pick summary::-webkit-details-marker { display: none; }
+#panel-assist details.a-pick summary::after { content: ""; position: absolute; right: 16px; top: 18px; width: 8px; height: 8px; border-right: 2px solid var(--b600); border-bottom: 2px solid var(--b600); transform: rotate(45deg); transition: transform .15s; }
+#panel-assist details.a-pick[open] summary::after { transform: rotate(-135deg); top: 22px; }
+#panel-assist details.a-pick summary:focus { outline: none; }
+#panel-assist details.a-pick summary:focus-visible { outline: 2px solid var(--b500); outline-offset: -2px; border-radius: 12px; }
+#panel-assist .a-pk-name { font-family: var(--serif); font-weight: 700; font-size: 17px; color: var(--b900); line-height: 1.25; }
+#panel-assist .a-pk-badges { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; margin: 4px 0 2px; }
+#panel-assist .a-badge { display: inline-flex; align-items: center; gap: 6px; font-size: 12px; font-weight: 700; padding: 3px 9px; border-radius: 7px; border: 1px solid; }
+#panel-assist .ab-drop { background: #D1FAE5; color: #064E3B; border-color: #A7F3D0; }
+#panel-assist .ab-sign { background: #E0F2FE; color: #0C4A6E; border-color: #BAE6FD; }
+#panel-assist .ab-book { background: #FEF3C7; color: #78350F; border-color: #FDE68A; }
+#panel-assist .ab-ref { background: #F1F5F9; color: #1E293B; border-color: #CBD5E1; }
+#panel-assist .a-chip { display: inline-flex; align-items: center; font-size: 12px; font-weight: 600; color: #57534E; background: #F5F5F4; border: 1px solid var(--line); padding: 3px 8px; border-radius: 6px; }
+#panel-assist .a-chip.dist { color: var(--b800); background: var(--b50); border-color: var(--b100); }
+#panel-assist .a-m { display: inline-flex; align-items: center; gap: 4px; }
+#panel-assist .a-chip svg, #panel-assist .a-act svg, #panel-assist .a-pb-lab svg { width: 13px; height: 13px; fill: currentColor; flex: none; }
+#panel-assist .a-pk-when { font-size: 14px; color: var(--ink); font-weight: 600; margin-top: 4px; }
+#panel-assist .a-pk-when .a-wl { font-size: 10px; letter-spacing: .1em; text-transform: uppercase; font-weight: 700; color: var(--b700); margin-right: 8px; }
+#panel-assist .a-pk-why { font-size: 14px; color: var(--b900); background: rgba(242,246,244,.8); border: 1px solid var(--b100); border-radius: 10px; padding: 8px 10px; margin-top: 8px; }
+#panel-assist .a-pk-acts { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px; }
+#panel-assist .a-pk-acts:empty { display: none; }
+#panel-assist .a-act { display: inline-flex; align-items: center; gap: 6px; font-size: 13px; font-weight: 700; text-decoration: none; color: var(--b800); background: var(--b50); border: 1px solid var(--b200); border-radius: 999px; padding: 4px 11px; }
+#panel-assist .a-act:hover { background: var(--b100); }
+#panel-assist .a-pk-body { padding: 10px 14px 14px; border-top: 1px solid var(--line); background: linear-gradient(var(--b50), #fff 120px); border-radius: 0 0 12px 0; }
+#panel-assist .a-pb-prov { font-size: 12px; font-weight: 700; color: var(--b700); text-transform: uppercase; letter-spacing: .06em; display: flex; flex-wrap: wrap; gap: 4px 8px; align-items: center; }
+#panel-assist .a-pb-prov span { text-transform: none; letter-spacing: 0; font-weight: 600; color: var(--muted); background: #fff; border: 1px solid var(--line); border-radius: 999px; padding: 1px 8px; }
+#panel-assist .a-pb-desc { font-size: 15px; margin: 8px 0 12px; color: var(--ink); }
+#panel-assist .a-pb-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 8px; }
+#panel-assist .a-pb-tile { background: #fff; border: 1px solid var(--b100); border-radius: 10px; padding: 8px 10px; min-width: 0; }
+#panel-assist .a-pb-tile.wide { grid-column: 1 / -1; }
+#panel-assist .a-pb-tile.warn { background: #FFFBEB; border-color: #FDE68A; }
+#panel-assist .a-pb-tile.warn .a-pb-lab { color: #92400E; }
+#panel-assist .a-pb-lab { display: flex; align-items: center; gap: 5px; font-size: 10px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; color: var(--b700); margin-bottom: 3px; }
+#panel-assist .a-pb-val { font-size: 14px; overflow-wrap: anywhere; }
+#panel-assist .a-pb-foot { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 8px; margin-top: 12px; }
+#panel-assist .a-pb-tags { display: flex; flex-wrap: wrap; gap: 5px; }
+#panel-assist .a-tag { font-size: 12px; background: var(--b100); color: var(--b900); border-radius: 999px; padding: 2px 9px; font-weight: 600; }
+#panel-assist .a-pb-checked { font-size: 12px; color: var(--muted); }
+@media (max-width: 560px) { #panel-assist .a-rowr .a-go, #panel-assist .a-refine .a-go { margin-left: 0; width: 100%; } }
+/* print just the plan */
+#a-printplan { display: none; }
+@media print {
+  body.a-printing * { visibility: hidden !important; }
+  body.a-printing #a-printplan, body.a-printing #a-printplan * { visibility: visible !important; }
+  body.a-printing #a-printplan { display: block !important; position: absolute; left: 0; top: 0; width: 100%; font-size: 13pt; color: #000; background: #fff; }
+  body.a-printing #a-printplan a { color: #000; }
+}
+
+/* description and button on the left; small location map on the right */
+/* chat-style prompt box: the text area and its buttons share one border */
+#panel-assist .a-compose { display: flex; flex-direction: column; border: 1px solid var(--b200); border-radius: 12px; background: var(--white); transition: border-color .15s, box-shadow .15s; }
+#panel-assist .a-compose:focus-within { border-color: var(--b500); box-shadow: 0 0 0 3px rgba(47, 82, 64, .15); }
+#panel-assist .a-compose textarea { flex: 1; border: 0; border-radius: 12px 12px 0 0; background: transparent; resize: none; min-height: 150px; padding: 12px 14px 4px; outline: none; box-shadow: none; }
+#panel-assist .a-compose .a-go { margin: 0; width: auto; display: flex; align-items: center; gap: 8px; padding: 6px 8px 8px 10px; }
+#panel-assist .a-keytip { flex: 1; min-width: 0; font-size: 12.5px; color: var(--muted, #7a857e); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+#panel-assist .a-send { flex: 0 0 42px; width: 42px; height: 42px; margin-left: auto; border: 0; border-radius: 50%; display: grid; place-items: center; background: var(--b700); color: #fff; cursor: pointer; transition: opacity .15s, transform .1s; }
+#panel-assist .a-send svg { width: 20px; height: 20px; }
+#panel-assist .a-send:hover { filter: brightness(1.1); }
+#panel-assist .a-send:active { transform: scale(.95); }
+#panel-assist .a-send:disabled { opacity: .5; cursor: default; }
+#panel-assist .a-send:focus-visible { outline: 3px solid var(--b500); outline-offset: 2px; }
+@media (hover: none), (pointer: coarse) { #panel-assist .a-keytip { visibility: hidden; } }
+#panel-assist .a-mapbtn { display: inline-flex; align-items: center; gap: 5px; border: 1px solid var(--b200); background: var(--white); color: var(--b800); border-radius: 10px; padding: 9px 12px; font: inherit; font-size: 14px; font-weight: 700; cursor: pointer; white-space: nowrap; }
+#panel-assist .a-mapbtn svg { width: 14px; height: 14px; }
+#panel-assist .a-mapbtn[aria-expanded="true"] { background: var(--b50); border-color: var(--b500); }
+#panel-assist .a-mapbox { margin-top: 12px; min-width: 0; }
+#panel-assist #a-map { height: 240px; border: 1px solid var(--line); border-radius: 12px; overflow: hidden; background: #EEF2EF; cursor: crosshair; }
+#panel-assist .a-mapbox .a-hint { font-size: 12px; margin-top: 4px; }
+#panel-assist .a-formmain { min-width: 0; display: flex; flex-direction: column; }
+@media (min-width: 1000px) {
+  #panel-assist .a-formgrid { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 24px; align-items: start; }
+  #panel-assist .a-mapbox, #panel-assist .a-mapbox[hidden] { display: block !important; margin-top: 0; }
+  #panel-assist .a-mapbtn { display: none; }
+  #panel-assist .a-compose { height: 210px; box-sizing: border-box; }
+  #panel-assist .a-compose textarea { height: auto; min-height: 0; }
+  #panel-assist #a-map { height: 210px; }
+}
+/* the Assist filter bar uses the In person bar's look; "Include phone and online" sits where When would be */
+#hdr-assist .qs { width: 100%; }
+/* same as Phone and online / Courses: dropdowns share the width, checkbox at the right */
+#hdr-assist .qs { display: flex; gap: 10px; align-items: stretch; }
+#hdr-assist .qs > .q { flex: 1 1 0; min-width: 0; }
+/* Support for matches its width on the In person tab (first of its 1 : 1.3 columns); Where takes the rest */
+#hdr-assist .qs > #aq-support { flex: 0 0 calc((100% - var(--lastdd, 25%) - var(--endcol, 168px) - 30px) / 2.3); }
+#hdr-assist .qs > #aq-where { flex: 1 1 0; }
+#hdr-assist .qs > .toggle { flex: 0 0 var(--endcol, 168px); white-space: nowrap; }
+@media (max-width: 899px) { #hdr-assist .qs { flex-direction: column; } #hdr-assist .qs > .q, #hdr-assist .qs > #aq-where, #hdr-assist .qs > .toggle { flex: none; min-width: 0; } }
+
+#hdr-assist.a-locked .qs { display: none; }
+#hdr-assist #aq-remote.a-off { opacity: .5; cursor: default; }
+
+/* the picks on the small map: numbered pins that match the cards (pin-shaped, so they don't read as the step numbers) */
+.a-pin { display: grid; place-items: center; width: 26px; height: 26px; border-radius: 50% 50% 50% 0; transform: rotate(-45deg); background: var(--pc, #64748B); border: 2px solid #fff; box-shadow: 0 1px 4px rgba(0,0,0,.35); cursor: pointer; }
+.a-pin b { transform: rotate(45deg); color: #fff; font: 700 12px/1 system-ui, sans-serif; }
+.a-pin.approx { background: #fff; border: 2px dashed var(--pc, #64748B); } .a-pin.approx b { color: var(--pc, #64748B); }
+#panel-assist .a-pk-num { display: inline-flex; align-items: center; gap: 2px; height: 22px; padding: 0 7px 0 5px; margin-right: 8px; border-radius: 11px; background: var(--pc, #64748B); color: #fff; font: 700 12px/1 system-ui, sans-serif; vertical-align: 2px; }
+#panel-assist .a-pk-num svg { width: 12px; height: 12px; fill: currentColor; }
+#panel-assist .a-pick.a-flash { box-shadow: 0 0 0 3px var(--b500); transition: box-shadow .3s; }
+
+/* titles: the prompt continues the filter bar's numbering; the map label sits over the map */
+#panel-assist .a-compose .a-ttl { display: block; font-size: 10px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: var(--b700); padding: 10px 14px 0; margin: 0; }
+#panel-assist .a-compose textarea { padding-top: 4px; }
+#panel-assist .a-mapbox { position: relative; }
+#panel-assist .a-maptl { position: absolute; top: 10px; right: 10px; z-index: 500; background: rgba(255, 255, 255, .92); border: 1px solid var(--line); border-radius: 8px; padding: 5px 9px; font-size: 10px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: var(--b700); pointer-events: none; box-shadow: 0 1px 3px rgba(0, 0, 0, .1); }
 </style>
 </head>
 <body>
@@ -940,7 +1126,8 @@ footer.urgent p { color: #FEE2E2; }
       <button type="button" role="tab" id="tab-talk" aria-selected="true" aria-controls="panel-talk"><span class="lg">Phone and online</span><span class="sh">Phone &amp; online</span></button>
       <button type="button" role="tab" id="tab-near" aria-selected="false" aria-controls="panel-near">In person</button>
       <button type="button" role="tab" id="tab-course" aria-selected="false" aria-controls="panel-course">Courses</button>
-<!--ASSIST_TAB-->
+      <button type="button" role="tab" id="tab-assist" aria-selected="false" aria-controls="panel-assist" title="Assist: for invited support workers (access code needed)"><svg class="lock" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M12 2a5 5 0 0 1 5 5v3h1a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2v-8a2 2 0 0 1 2-2h1V7a5 5 0 0 1 5-5zm0 2a3 3 0 0 0-3 3v3h6V7a3 3 0 0 0-3-3z"/></svg><span>Assist</span><span class="sr-lock" id="tab-assist-sr" style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)"> (access code needed)</span></button>
+
       <button type="button" role="tab" id="tab-about" aria-selected="false" aria-controls="panel-about">About</button>    </nav>
     </div>
     <div id="hdr-talk" class="tq">
@@ -954,7 +1141,20 @@ footer.urgent p { color: #FEE2E2; }
       <label class="toggle" id="q-cbook"><input type="checkbox" id="c-book"> Can still join</label>
     </div>
     <div id="hdr-about" hidden></div>
-<!--ASSIST_HDR-->    <div id="hdr-near" hidden>
+    <div id="hdr-assist" hidden>
+    <div class="qs">
+      <div class="q" id="aq-support"><label for="a-support">1. Support for</label><select id="a-support"></select></div>
+      <div class="q" id="aq-where"><span class="lab">2. Where?</span>
+        <div class="where">
+          <select id="a-town" aria-label="Place"></select>
+          <button type="button" class="locbtn" id="a-uselocation" hidden aria-label="Use my location" title="Use my location (rounded to about 1 km before anything is sent)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="7"/><circle cx="12" cy="12" r="2.5" fill="currentColor"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3"/></svg></button>
+          <select id="a-rad" aria-label="Distance"><option value="2">within 2 miles</option><option value="5">within 5 miles</option><option value="10" selected>within 10 miles</option><option value="20">within 20 miles</option></select>
+        </div>
+      </div>
+      <label class="toggle" id="aq-remote" title="Leave unticked to include phone and online support too"><input type="checkbox" id="a-inperson"> In person only</label>
+    </div>
+    </div>
+    <div id="hdr-near" hidden>
     <div class="qs">
       <div class="q" id="q-support"><label for="f-support">1. Support for</label>
         <select id="f-support"></select></div>
@@ -990,7 +1190,57 @@ footer.urgent p { color: #FEE2E2; }
 <section id="panel-talk" role="tabpanel" aria-labelledby="tab-talk"><div class="talk gut" id="talk"></div></section>
 <section id="panel-about" role="tabpanel" aria-labelledby="tab-about" hidden style="flex:1;min-height:0;overflow-y:auto"><div class="talk gut" id="about"></div></section>
 <section id="panel-course" role="tabpanel" aria-labelledby="tab-course" hidden style="flex:1;min-height:0;overflow-y:auto"><div class="talk gut" id="courses"></div></section>
-<!--ASSIST_PANEL--><div id="panel-near" role="tabpanel" aria-labelledby="tab-near" hidden style="flex:1;min-height:0;display:flex;flex-direction:column">
+<section id="panel-assist" role="tabpanel" aria-labelledby="tab-assist" hidden style="flex:1;min-height:0;overflow-y:auto"><div class="gut"><div class="a-wrap">
+
+  <form class="a-card a-gate" id="a-gate" hidden>
+    <label class="a-h" for="a-code">Access code</label>
+    <p class="a-hint" style="margin:0 0 4px">Assist is for invited support workers and volunteers. Enter the code you were given.</p>
+    <input id="a-code" type="password" autocomplete="off">
+    <button class="a-btn" type="submit" id="a-codeBtn">Unlock Assist</button>
+    <p class="a-err" id="a-gateErr" hidden></p>
+    <p class="a-hint">The code is remembered only until you close this browser.</p>
+  </form>
+
+  <p class="a-err" id="a-noworker" hidden>Assist isn't connected to its relay yet.</p>
+
+  <div id="a-app" hidden>
+  <form class="a-card a-form" id="a-form"><div class="a-formgrid">
+    <div class="a-formmain">
+      <div class="a-compose">
+      <label class="a-ttl" for="a-need">3. What's going on for them?</label>
+      <textarea id="a-need" maxlength="2000" aria-describedby="a-keytip" placeholder="Describe the need, not the person (no names or contact details).&#10;&#10;e.g. Feeling low since losing his job, hardly leaves the house, no car, not mornings."></textarea>
+      <div class="a-go"><button type="button" class="a-mapbtn" id="a-mapbtn" aria-expanded="false" aria-controls="a-mapbox"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M15 4 9 2 3 4v18l6-2 6 2 6-2V2zm-1 15.6-4-1.3V4.4l4 1.3z"/></svg>Map</button><span class="a-keytip" id="a-keytip">Enter to send, Shift+Enter for a new line</span><button class="a-send" id="a-ask" type="submit" aria-label="Suggest support" title="Suggest support"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></button></div>
+      </div>
+    </div>
+    <div class="a-mapbox" id="a-mapbox" hidden>
+      <div id="a-map" role="application" aria-label="Map: click roughly where the person is"></div>
+      <div class="a-maptl" aria-hidden="true">Or click the map</div>
+    </div>
+  </div></form>
+
+  <div class="a-alert" id="a-crisis" hidden>
+    <h2>This sounds like it may need urgent support</h2>
+    <p>If someone is at risk right now, call 999. For urgent mental health help, call NHS 111 and choose option 2. They can also talk to Samaritans or Mindline any time.</p>
+    <div class="a-lines"><a href="tel:999">999</a><a href="tel:111">NHS 111, option 2</a><a href="tel:116123">Samaritans 116 123</a><a href="tel:08001381692">Mindline 0800 138 1692</a></div>
+  </div>
+
+  <p class="a-scrubnote" id="a-scrubnote" hidden></p>
+  <p class="a-status" id="a-status" hidden><span class="a-dot"></span><span id="a-statusText">Thinking...</span></p>
+  <p class="a-err" id="a-err" hidden></p>
+  <section id="a-out" hidden></section>
+
+  <form class="a-refine a-card" id="a-refine" hidden>
+    <label class="a-h" for="a-more">Not quite right? Tell it more</label>
+    <div class="a-rowr"><input id="a-more" maxlength="300" placeholder="e.g. he won't go to groups, weekends only"><button class="a-btn" type="submit" id="a-moreBtn">Update</button></div>
+    <div class="a-quick" id="a-quick"></div>
+    <div class="a-trail" id="a-trail"></div>
+  </form>
+
+  <p class="a-note">Suggestions come only from the services listed on Signposting Somerset. The AI chooses and explains, but every detail on a card comes from the checked record itself. Please confirm with the service before going. This is a trial: use your own judgement, as always. <button class="a-linkbtn" id="a-forget" type="button">Lock Assist on this device</button></p>
+  </div>
+</div></div></section>
+<div id="a-printplan"></div>
+<div id="panel-near" role="tabpanel" aria-labelledby="tab-near" hidden style="flex:1;min-height:0;display:flex;flex-direction:column">
 
 <main id="main">
   <section id="list" aria-live="polite"></section>
@@ -1514,7 +1764,7 @@ function renderAbout() {
   </article>`;
 }
 let tab = "talk";
-const SITE_TABS = ["talk", "near", "course", "about"/*ASSIST_TABNAME*/];
+const SITE_TABS = ["talk", "near", "course", "about", "assist"];
 const LEDE = { talk: "Phone lines, text services and online groups: support you can reach from anywhere.",
   near: "In-person mental health and wellbeing support across Somerset.", about: "What this is, how it's kept accurate, and how to suggest a change.", course: "Courses with a set programme and length, in person or online. Most need booking." };
 function setSiteTab(t) {
@@ -1639,6 +1889,441 @@ if (SHEET_CSV_URL) {
 
 setInterval(() => { if (!ALL.length) return; tab === "talk" ? renderTalk() : tab === "course" ? renderCourses() : render(); }, 5 * 60 * 1000);
 </script>
+<script>
+/* ---------- Assist tab (v2 only) ----------
+   Locked until a valid access code is entered. The code is checked by the Worker (server side);
+   this page only remembers it for the current browser session. */
+(() => {
+const WORKER_URL = "https://signposting-assist.c-r-williams0109.workers.dev";
+const SITE = "https://chris010970.github.io/signposting-somerset/main/";   // the plan always points people to the public site
+const QUICK = ["No groups", "Weekends only", "Free only", "Nearer to home", "Start from home (phone or online)", "Something for a carer too"];
+const RISK = /suicid|kill (my|him|her|them)sel|end (my|his|her|their) life|self[- ]?harm|cutting (my|him|her)|overdos|want(s|ed)? to die|no reason to live|better off dead/i;
+const $a = id => document.getElementById(id);
+const e_ = s => String(s ?? "").replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+// Code: this browser session only.
+const sess = { get: k => { try { return sessionStorage.getItem(k); } catch { return null; } }, set: (k, v) => { try { v == null ? sessionStorage.removeItem(k) : sessionStorage.setItem(k, v); } catch {} } };
+try { localStorage.removeItem("assist-code"); } catch {}   // never keep the code long-term
+
+let code = sess.get("assist-code") || "";
+let state = null;   // { need, town, radius, remote, followups: [], previous: [] }
+const connected = WORKER_URL && !WORKER_URL.startsWith("/*");
+
+document.body.append($a("a-printplan"));
+function setLocked(locked) {
+  $a("hdr-assist").classList.toggle("a-locked", locked);
+  $a("tab-assist").classList.toggle("unlocked", !locked);
+  $a("tab-assist-sr").textContent = locked ? " (access code needed)" : "";
+  $a("tab-assist").title = locked ? "Assist: for invited support workers (access code needed)" : "Assist: AI-assisted support planning";
+}
+setLocked(!code);
+
+// Called by the site when the tab is opened. The filter bar is always usable; the form needs the code.
+window.assistShow = () => {
+  if (!connected) { $a("a-noworker").hidden = false; return; }
+  if (code) showApp(); else { pullFromMain(); showGate(); }
+};
+const WIDE = window.matchMedia("(min-width: 1000px)");
+function mapIfWide() { if (WIDE.matches && !$a("a-app").hidden) { initAMap(); setTimeout(() => { if (amap) { amap.invalidateSize(); syncMap(); } }, 30); } }
+WIDE.addEventListener?.("change", mapIfWide);
+function showApp() { $a("a-gate").hidden = true; $a("a-app").hidden = false; setLocked(false); pullFromMain(); mapIfWide(); }
+function showGate(msg) {
+  $a("a-app").hidden = true; $a("a-gate").hidden = false; setLocked(true);
+  $a("a-gateErr").hidden = !msg; $a("a-gateErr").textContent = msg || "";
+  setTimeout(() => $a("a-code").focus(), 50);
+}
+
+// ---- unlock: the Worker checks the code without using the AI ----
+$a("a-gate").onsubmit = async e => {
+  e.preventDefault();
+  const c = $a("a-code").value.trim(); if (!c) return;
+  $a("a-codeBtn").disabled = true; $a("a-gateErr").hidden = true;
+  try {
+    const r = await fetch(WORKER_URL.replace(/\/$/, "") + "/verify", { method: "POST", headers: { "Content-Type": "application/json", "X-Access-Code": c }, body: "{}" });
+    const d = await r.json().catch(() => ({}));
+    if (r.ok && d.ok) { code = c; sess.set("assist-code", c); $a("a-code").value = ""; showApp(); $a("a-need").focus(); }
+    else showGate(d.error === "rate_limited" ? "Too many tries. Please wait an hour and try again." : d.error === "bad_code" ? "That code wasn't accepted." : "Couldn't check the code just now. Please try again.");
+  } catch { showGate("Couldn't reach Assist. Check your connection and try again."); }
+  finally { $a("a-codeBtn").disabled = false; }
+};
+$a("a-forget").onclick = () => { sess.set("assist-code", null); code = ""; state = null; $a("a-out").hidden = true; $a("a-refine").hidden = true; showGate(); };
+
+// ---- set up the form ----
+QUICK.forEach(q => { const b = document.createElement("button"); b.type = "button"; b.textContent = q; b.onclick = () => refine(q); $a("a-quick").append(b); });
+function note(t) { $a("a-err").textContent = t; $a("a-err").hidden = !t; }
+function busy(on, t) { $a("a-status").hidden = !on; $a("a-statusText").textContent = t || "Thinking..."; $a("a-ask").disabled = on; $a("a-moreBtn").disabled = on; }
+
+// ---- where: the same places, distances and "Support for" as the In person tab, shared between the two tabs ----
+// place = { kind: "place" | "pt" | "remote" | "", name, lat, lon, label }. Only a rounded point is ever sent.
+const round2 = x => Math.round(x * 100) / 100;          // about 1 km
+const MILE = 1609.34;
+let place = { kind: "" };
+$a("a-town").innerHTML = '<option value="">Choose a place…</option><option value="__remote">No place: phone and online only</option><option value="__pt" hidden>Point on the map</option>'
+  + PLACES.map(([g, ps]) => `<optgroup label="${e_(g)}">${ps.map(([n]) => `<option value="${e_(n)}">${e_(n)}</option>`).join("")}</optgroup>`).join("");
+function nearest(p) {
+  let best = null, bd = 1e9;
+  for (const [t, c] of Object.entries(TOWNS)) { const d = Math.hypot((c[0] - p[0]) * 69, (c[1] - p[1]) * 43.5); if (d < bd) { bd = d; best = t; } }
+  return best ? (bd < 1 ? best : `about ${Math.round(bd)} mile${Math.round(bd) === 1 ? "" : "s"} from ${best}`) : "on the map";
+}
+function setPlace(p) {
+  place = p; clearPins();                                      // the pins belonged to the old place
+  const sel = $a("a-town"), ptOpt = sel.querySelector('option[value="__pt"]');
+  if (p.kind === "pt") { ptOpt.hidden = false; ptOpt.textContent = p.label; sel.value = "__pt"; }
+  else { ptOpt.hidden = true; sel.value = p.kind === "place" ? p.name : p.kind === "remote" ? "__remote" : ""; }
+  $a("aq-where").classList.toggle("on", !!p.kind);
+  // "Phone and online only" as the place can't also be "In person only"
+  const ip = $a("a-inperson"); ip.disabled = p.kind === "remote";
+  if (ip.disabled && ip.checked) { ip.checked = false; $a("aq-remote").classList.remove("on"); }
+  $a("aq-remote").classList.toggle("a-off", ip.disabled);
+  syncMap(); pushToMain();
+}
+const placeByName = n => PLACE[n] ? { kind: "place", name: n, lat: PLACE[n][0], lon: PLACE[n][1] } : null;
+$a("a-town").addEventListener("change", e => {
+  const v = e.target.value;
+  if (v === "__pt") return;                                   // already set by the map or location button
+  setPlace(v === "__remote" ? { kind: "remote" } : placeByName(v) || { kind: "" });
+});
+$a("a-rad").addEventListener("change", () => { syncMap(); pushToMain(); });
+$a("a-support").addEventListener("change", () => { $a("aq-support").classList.toggle("on", !!$a("a-support").value); pushToMain(); });
+$a("a-inperson").addEventListener("change", () => $a("aq-remote").classList.toggle("on", $a("a-inperson").checked));
+
+// Shared with In person: what's chosen on one tab is there on the other
+function pushToMain() {
+  try {
+    fs.value = $a("a-support").value;
+    $a("within").value = $a("a-rad").value;
+    if (place.kind === "place") { $a("f-town").value = place.name; origin = { lat: place.lat, lon: place.lon, label: place.name }; }
+    else if (place.kind === "pt") {
+      const lab = place.label === "Your location" ? "your location" : "the point on the map";
+      setPtLabel(place.label); $a("f-town").value = "__pt"; origin = { lat: place.lat, lon: place.lon, label: lab }; }
+    else { $a("f-town").value = ""; origin = null; }
+    sortBy = origin ? "near" : "soon"; fitPending = true;
+  } catch (e) { /* the In person tab isn't ready yet: nothing to share */ }
+}
+function pullFromMain() {
+  $a("a-support").innerHTML = fs.innerHTML; $a("a-support").value = fs.value;
+  $a("aq-support").classList.toggle("on", !!fs.value);
+  const w = $a("within").value; $a("a-rad").value = w === "0" ? "20" : w;
+  const t = $a("f-town").value;
+  if (origin && PLACE[t]) place = placeByName(t);
+  else if (origin) place = { kind: "pt", lat: round2(origin.lat), lon: round2(origin.lon), label: origin.label === "your location" ? "Your location" : "Point on the map (" + nearest([origin.lat, origin.lon]) + ")" };
+  else if (place.kind !== "remote") place = { kind: "" };
+  setPlace(place);
+}
+
+// ---- location button: rounded before use, like a map click ----
+(() => {
+  const btn = $a("a-uselocation");
+  if (!("geolocation" in navigator)) return;
+  btn.hidden = false;
+  btn.onclick = () => {
+    btn.disabled = true;
+    navigator.geolocation.getCurrentPosition(p => {
+      btn.disabled = false;
+      setPlace({ kind: "pt", lat: round2(p.coords.latitude), lon: round2(p.coords.longitude), label: "Your location" });
+    }, err => { btn.disabled = false; note(err.code === 1 ? "Location wasn't allowed. Choose a place or click the map instead." : "Location couldn't be found. Choose a place or click the map instead."); },
+    { enableHighAccuracy: false, timeout: 12000, maximumAge: 600000 });
+  };
+})();
+
+// ---- map: click roughly where the person is ----
+let amap = null, marker = null, circle = null, pinLayer = null;
+function initAMap() {
+  if (amap || !window.L) return;
+  amap = L.map("a-map", { zoomSnap: 0.25 }).setView([51.1, -2.95], 8);
+  L.tileLayer("https://basemaps.cartocdn.com/rastertiles/light_all/{z}/{x}/{y}.png?key=cb1_4v7b_1_0f5ea1a12b0919dd5e3cbbb7",
+    { maxZoom: 19, attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> &copy; <a href="https://carto.com/attributions">CARTO</a>' }).addTo(amap);
+  if (typeof OUTLINE !== "undefined" && OUTLINE) L.geoJSON(OUTLINE, { interactive: false, style: { color: "#3D6C53", weight: 1.5, dashArray: "4 4", fill: false } }).addTo(amap);
+  amap.on("click", e => {
+    const p = [round2(e.latlng.lat), round2(e.latlng.lng)];
+    setPlace({ kind: "pt", lat: p[0], lon: p[1], label: "Point on the map (" + nearest(p) + ")" }); note("");
+  });
+}
+function syncMap() {
+  if (!amap) return;
+  const c = place.kind === "place" || place.kind === "pt" ? [place.lat, place.lon] : null;
+  if (!c) { if (marker) { marker.remove(); circle.remove(); marker = circle = null; } amap.setView([51.1, -2.95], 8); return; }
+  const r = +$a("a-rad").value * MILE;
+  if (!marker) { marker = L.circleMarker(c, { radius: 7, color: "#fff", weight: 2, fillColor: "#2F5441", fillOpacity: 1 }).addTo(amap); circle = L.circle(c, { radius: r, color: "#3D6C53", weight: 1.5, fillColor: "#528368", fillOpacity: .08, interactive: false }).addTo(amap); }
+  else { marker.setLatLng(c); circle.setLatLng(c).setRadius(r); }
+  amap.fitBounds(circle.getBounds(), { padding: [20, 20] });
+}
+$a("a-mapbtn").onclick = () => {
+  const open = $a("a-mapbox").hidden;
+  $a("a-mapbox").hidden = !open; $a("a-mapbtn").setAttribute("aria-expanded", open);
+  if (open) { initAMap(); setTimeout(() => { amap && amap.invalidateSize(); syncMap(); }, 30); }
+};
+
+// ---- remove identifying details before anything is sent ----
+function scrub(txt) {
+  const n = {};
+  const hit = (k, r) => { n[k] = (n[k] || 0) + 1; return r; };
+  const s = txt
+    .replace(/[\w.+-]+@[\w-]+\.[\w.-]+/g, () => hit("email address", "[email]"))
+    .replace(/(?:\+44\s?7\d{3}|\b07\d{3}|\+44\s?\d{3,4}|\b0\d{3,4})[\s-]?\d{3}[\s-]?\d{3,4}\b/g, () => hit("phone number", "[phone]"))
+    .replace(/\b\d{3}\s?\d{3}\s?\d{4}\b/g, () => hit("NHS or ID number", "[number]"))
+    .replace(/\b([A-Z]{1,2}\d[A-Z\d]?)\s?\d[A-Z]{2}\b/gi, (m, out) => hit("full postcode", out.toUpperCase()))
+    .replace(/\b\d{1,2}[\/.-]\d{1,2}[\/.-](?:19|20)?\d{2}\b/g, () => hit("date", "[date]"))
+    .replace(/\b(?:born(?: in)?|d\.?o\.?b\.?:?)\s*(?:(?:19|20)\d{2}|\d{1,2}(?:st|nd|rd|th)?\s+[A-Z][a-z]+(?:\s+(?:19|20)\d{2})?)/gi, () => hit("date of birth", "[date of birth]"))
+    .replace(/\b\d{1,4}[a-z]?,?\s+(?:[A-Z][a-z]+\s){1,3}(?:Road|Rd|Street|St|Lane|Ln|Avenue|Ave|Close|Drive|Dr|Way|Crescent|Place|Court|Gardens|Terrace|Hill|Row|Square|Walk)\b/g, () => hit("street address", "[address]"))
+    .replace(/\b(?:Mr|Mrs|Ms|Miss|Mx|Dr)\.?\s+[A-Z][a-z'-]+(?:\s+[A-Z][a-z'-]+)?/g, () => hit("name", "[name]"))
+    .replace(/\b(called|named|name is|name's|known as)\s+[A-Z][a-z'-]+(?:\s+[A-Z][a-z'-]+)?/gi, (m, w) => hit("name", `${w} [name]`));
+  return { text: s, removed: n };
+}
+function scrubAll(st) {
+  const tally = {}, add = r => Object.entries(r).forEach(([k, v]) => tally[k] = (tally[k] || 0) + v);
+  const a = scrub(st.need); add(a.removed);
+  const f = st.followups.map(x => { const r = scrub(x); add(r.removed); return r.text; });
+  const msg = Object.entries(tally).map(([k, v]) => `${v} ${k}${v > 1 ? "s" : ""}`).join(", ");
+  $a("a-scrubnote").textContent = msg ? `Removed before sending: ${msg}.` : ""; $a("a-scrubnote").hidden = !msg;
+  return { ...st, need: a.text, followups: f };
+}
+
+// ---- ask ----
+// chat-style keys: Enter sends, Shift+Enter is a new line (touch screens keep Enter as a new line)
+const touchOnly = matchMedia("(hover: none), (pointer: coarse)").matches;
+$a("a-need").addEventListener("keydown", e => {
+  if (e.key !== "Enter" || e.shiftKey || e.isComposing || touchOnly) return;
+  e.preventDefault();
+  if (!$a("a-ask").disabled) $a("a-form").requestSubmit();
+});
+$a("a-form").onsubmit = e => {
+  e.preventDefault();
+  const need = $a("a-need").value.trim();
+  if (!need) return note("Describe the need first.");
+  if (!place.kind) return note("Choose a place above or click the map first.");
+  state = { need, radius: +$a("a-rad").value, remote: !$a("a-inperson").checked, support: $a("a-support").value, followups: [], previous: [] };
+  if (place.kind === "remote") state.town = "__remote";
+  else { state.town = "__pt"; state.lat = round2(place.lat); state.lon = round2(place.lon); }
+  $a("a-trail").innerHTML = "";
+  run();
+};
+$a("a-refine").onsubmit = e => { e.preventDefault(); const v = $a("a-more").value.trim(); if (v) refine(v); };
+function refine(text) {
+  if (!state) return;
+  state.followups = [...state.followups, text].slice(-5);
+  $a("a-more").value = "";
+  $a("a-trail").innerHTML = "So far: " + state.followups.map(f => `<span>${e_(f)}</span>`).join("");
+  run();
+}
+
+const ERRORS = {
+  bad_code: "That access code wasn't accepted.", rate_limited: "Too many requests from here in the last hour. Please try again later.",
+  busy: "The AI service is busy. Please try again in a minute.", sheet_unavailable: "The records couldn't be loaded just now. Please try again shortly.",
+  bad_town: "Please choose a town from the list.", bad_answer: "The answer came back in an unexpected shape. Please try again.",
+  forbidden: "This page isn't allowed to use the relay.",
+};
+async function run() {
+  note(""); clearPins();
+  $a("a-crisis").hidden = !RISK.test([state.need, ...state.followups].join(" "));
+  const where = state.town === "__remote" ? "phone and online services" : `services within ${state.radius} miles of ${place.kind === "place" ? place.name : place.label.replace(/^Point on the map \((.*)\)$/, "$1")}`;
+  busy(true, state.followups.length ? "Updating the suggestions…" : `Reading the need and looking through ${where}…`);
+  try {
+    const r = await fetch(WORKER_URL, { method: "POST", headers: { "Content-Type": "application/json", "X-Access-Code": code }, body: JSON.stringify(scrubAll(state)) });
+    const data = await r.json().catch(() => ({ error: "bad_answer" }));
+    if (data.error) {
+      if (data.error === "bad_code") { sess.set("assist-code", null); code = ""; showGate(ERRORS.bad_code); return; }
+      if (data.error === "ai_error") return note("The AI service returned an error" + (data.status ? ` (${data.status})` : "") + (data.detail ? `: ${data.detail}` : "."));
+      return note(ERRORS[data.error] || `Something went wrong (${data.error}). Please try again.`);
+    }
+    show(data);
+  } catch { note("Couldn't reach the service. Check your connection and try again."); }
+  finally { busy(false); }
+}
+
+let lastPicks = [];
+const STEPS = ["First step", "Next step", "When ready"];
+const normStep = s => STEPS.find(x => x.toLowerCase() === String(s).toLowerCase()) || "Next step";
+const HOW = { "drop in": "Just turn up", "sign up": "Contact to join", "book": "Book first", "referral": "Needs a referral", "call": "Phone line" };
+const HOWCLS = { "drop in": "ab-drop", "sign up": "ab-sign", "book": "ab-book", "referral": "ab-ref", "call": "ab-ref" };
+
+function show(r) {
+  if (r.risk) $a("a-crisis").hidden = false;
+  state.previous = r.picks.map(p => p.record.name);
+  const sc = r.scope || {};
+  lastPicks = STEPS.flatMap(st => r.picks.filter(p => normStep(p.step) === st).map(p => ({ ...p, step: st })));
+  lastPicks.forEach((p, i) => { p.n = i + 1; p.ll = pinPos(p.record); });   // same numbers as the plan
+  let m = `<div class="a-reshead"><h2>Suggestions</h2>`;
+  if (lastPicks.length) m += `<div class="a-planbar"><button type="button" class="a-btn small" id="a-copyPlan">Copy plan</button>${navigator.share ? `<button type="button" class="a-btn small ghost" id="a-sharePlan">Share</button>` : ""}<button type="button" class="a-btn small ghost" id="a-printPlan">Print</button><span class="a-copied" id="a-copied" role="status"></span></div>`;
+  m += `</div>`;
+  if (r.reading) m += `<p class="a-readas"><b>Read as:</b> ${e_(r.reading)}</p>`;
+  if (!lastPicks.length) m += `<p>No suitable services were found for this need and area. Try a wider distance.</p>`;
+  else {
+    m += `<ol class="a-ladder">`;
+    STEPS.forEach((st, i) => {
+      const list = lastPicks.filter(p => p.step === st); if (!list.length) return;
+      m += `<li class="a-rung"><span class="a-rdot" aria-hidden="true">${i + 1}</span><h3>${st}</h3>${list.map(card).join("")}</li>`;
+    });
+    m += `</ol>`;
+  }
+  if (r.gaps) m += `<p class="a-gaps"><b>Not covered:</b> ${e_(r.gaps)}</p>`;
+  if (r.questions?.length) m += `<div class="a-qs"><b>Questions that might help</b><ul>${r.questions.map(q => `<li>${e_(q)}</li>`).join("")}</ul></div>`;
+  m += `<p class="a-scope">Chose from ${sc.total} of ${sc.records} services: ${[sc.near ? `${sc.near} in person ${e_(sc.place)}` : "", sc.remote ? `${sc.remote} phone or online` : ""].filter(Boolean).join(" and ")}.</p>`;
+  const side = lastPicks.length ? `<aside class="a-preview" aria-label="Support plan"><div class="a-pv-label">Support plan</div><div class="a-pv-body">${plan().html}</div><p class="a-pv-hint">Copy it into an email or letter, share it by text, or print it.</p></aside>` : "";
+  $a("a-out").innerHTML = `<div class="a-results"><div class="a-maincol">${m}</div>${side}</div>`;
+  $a("a-out").hidden = false; $a("a-refine").hidden = false;
+  if (lastPicks.length) {
+    $a("a-copyPlan").onclick = copyPlan;
+    $a("a-printPlan").onclick = () => { $a("a-printplan").innerHTML = plan().html; document.body.classList.add("a-printing"); window.print(); };
+    if ($a("a-sharePlan")) $a("a-sharePlan").onclick = () => navigator.share({ title: "Things that might help", text: plan().text }).catch(() => {});
+    $a("a-out").querySelectorAll(".a-preview a").forEach(a => { a.target = "_blank"; a.rel = "noopener"; });
+  }
+  showPins();
+  $a("a-out").scrollIntoView({ behavior: "smooth", block: "start" });
+}
+
+// ---- picks on the small map: numbered like the cards and the plan ----
+// Coordinates come from the site's own copy of the sheet (matched by name and postcode), so the AI never handles locations.
+function pinPos(s) {
+  if (!(s.mode || "").includes("in-person") || typeof ALL === "undefined") return null;
+  const m = ALL.find(x => x.name === s.name && (x.postcode || "") === (s.postcode || "")) || ALL.find(x => x.name === s.name && x.town === s.town);
+  return m && !isNaN(m.lat) ? { lat: m.lat, lon: m.lon, approx: !!m.approx } : null;
+}
+// same colours as the In person map key (by kind of service)
+const kindCol = s => typeof pinCol === "function" ? pinCol(s) : "#64748B";
+function clearPins() { if (pinLayer) { pinLayer.remove(); pinLayer = null; } }
+function showPins() {
+  clearPins();
+  const pins = lastPicks.filter(p => p.ll); if (!amap || !pins.length) return;
+  pinLayer = L.layerGroup().addTo(amap);
+  pins.forEach(p => {
+    const icon = L.divIcon({ className: "", html: `<span class="a-pin${p.ll.approx ? " approx" : ""}" style="--pc:${kindCol(p.record)}"><b>${p.n}</b></span>`, iconSize: [26, 26], iconAnchor: [13, 30] });
+    L.marker([p.ll.lat, p.ll.lon], { icon, title: p.record.name, keyboard: true, riseOnHover: true })
+      .bindTooltip(e_(p.record.name) + (p.ll.approx ? " (town centre: exact spot not listed)" : ""), { direction: "top", offset: [0, -28] })
+      .on("click", () => { const d = document.getElementById("a-pick-" + p.n); if (d) { d.open = true; d.scrollIntoView({ behavior: "smooth", block: "center" }); d.classList.add("a-flash"); setTimeout(() => d.classList.remove("a-flash"), 1200); } })
+      .addTo(pinLayer);
+  });
+  const pts = pins.map(p => [p.ll.lat, p.ll.lon]); if (place.lat) pts.push([place.lat, place.lon]);
+  amap.fitBounds(L.latLngBounds(pts).pad(0.2), { maxZoom: 13 });
+}
+window.addEventListener("afterprint", () => document.body.classList.remove("a-printing"));
+
+// Dates read as "Thu 26 Nov, Thu 11 Feb 2027" (year only when it isn't this year); past dates are left out
+function shortDate(d) {
+  const t = new Date(d + "T12:00:00"); if (isNaN(t)) return d;
+  const o = { weekday: "short", day: "numeric", month: "short" }; if (t.getFullYear() !== new Date().getFullYear()) o.year = "numeric";
+  return t.toLocaleDateString("en-GB", o).replace(",", "").replace("Sept", "Sep");
+}
+function datesText(raw) {
+  const today = new Date().toISOString().slice(0, 10);
+  const parts = raw.split(";").map(x => x.trim()).filter(Boolean)
+    .filter(x => (x.split(" to ").pop()) >= today)
+    .map(x => x.includes(" to ") ? x.split(" to ").map(shortDate).join(" to ") : shortDate(x));
+  return parts.length > 5 ? parts.slice(0, 5).join(", ") + "…" : parts.join(", ");
+}
+function whenText(s) {
+  if (s.dates) { const d = datesText(s.dates); return d ? (d.includes(",") ? "Dates: " : "") + d + (s.times ? ", " + s.times.replace("-", "–") : "") : ""; }
+  return [[(s.days || "").replace(/;/g, ", "), s.times].filter(Boolean).join(" "), s.frequency].filter(Boolean).join(", ");
+}
+const telOf = s => s.phone ? s.phone.split(" (")[0].split(" or ")[0].replace(/\s/g, "") : "";
+const isUrl = u => /^https?:\/\//.test(u || "");
+const ICON = {
+  phone: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6.6 10.8a15.1 15.1 0 0 0 6.6 6.6l2.2-2.2a1 1 0 0 1 1-.25 11.4 11.4 0 0 0 3.6.57 1 1 0 0 1 1 1V20a1 1 0 0 1-1 1A17 17 0 0 1 3 4a1 1 0 0 1 1-1h3.5a1 1 0 0 1 1 1c0 1.25.2 2.45.57 3.57a1 1 0 0 1-.25 1z"/></svg>',
+  online: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5h16a1 1 0 0 1 1 1v10a1 1 0 0 1-1 1h-6l1 2h2v2H7v-2h2l1-2H4a1 1 0 0 1-1-1V6a1 1 0 0 1 1-1zm1 2v8h14V7z"/></svg>',
+  place: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2a7 7 0 0 1 7 7c0 5-7 13-7 13S5 14 5 9a7 7 0 0 1 7-7zm0 4.5a2.5 2.5 0 1 0 0 5 2.5 2.5 0 0 0 0-5z"/></svg>',
+  web: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14 3h7v7h-2V6.4l-9.3 9.3-1.4-1.4L17.6 5H14zM5 5h6v2H6v11h11v-5h2v6a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V6a1 1 0 0 1 1-1z"/></svg>',
+  person: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3a4.5 4.5 0 1 1 0 9 4.5 4.5 0 0 1 0-9zm0 11c4.4 0 8 2.2 8 5v2H4v-2c0-2.8 3.6-5 8-5z"/></svg>',
+  cost: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14.5 3A5.5 5.5 0 0 1 20 8.5h-2A3.5 3.5 0 0 0 14.5 5 3.5 3.5 0 0 0 11 8.5V11h5v2h-5v4h8v2H6v-2h3v-4H6v-2h3V8.5A5.5 5.5 0 0 1 14.5 3z"/></svg>',
+  mail: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 5h18a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1V6a1 1 0 0 1 1-1zm1 3.2V17h16V8.2l-8 5-8-5zM5.2 7 12 11.3 18.8 7z"/></svg>',
+};
+function actions(s) {
+  const a = [];
+  if (s.phone) {
+    const text = /^text\s/i.test(s.phone);
+    const num = text ? s.phone.replace(/^text\s*/i, "").replace(/\s/g, "") : telOf(s);
+    const label = text ? `Text ${num}` : s.phone.split(" (")[0].split(" or ")[0];
+    a.push(`<a class="a-act" href="${text ? "sms:" : "tel:"}${e_(num)}">${ICON.phone}${e_(label)}</a>`);
+  }
+  if (isUrl(s.url)) a.push(`<a class="a-act" href="${e_(s.url)}" target="_blank" rel="noopener">${ICON.web}Website</a>`);
+  else if (s.email) a.push(`<a class="a-act" href="mailto:${e_(s.email)}">${ICON.mail}Email</a>`);
+  return a.join("");
+}
+const NICE = { "hearing voices": "Psychosis and hearing voices", "crisis prevention": "Crisis support" };
+function niceDate(d) { const t = new Date(d + "T12:00:00"); return isNaN(t) ? d : t.toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric" }); }
+function tile(icon, label, html, cls = "") { return `<div class="a-pb-tile ${cls}"><div class="a-pb-lab">${ICON[icon] || ""}${label}</div><div class="a-pb-val">${html}</div></div>`; }
+function card(p) {
+  const s = p.record, w = whenText(s), mode = s.mode || "";
+  const inPerson = mode.includes("in-person");
+  const where = [s.address, s.town, s.postcode].filter(Boolean).join(", ");
+  const dist = p.distance !== null && s.address ? ` (${p.distance} miles)` : "";
+  const contact = [s.phone && `<a href="tel:${e_(telOf(s))}">${e_(s.phone)}</a>`, s.email && `<a href="mailto:${e_(s.email)}">${e_(s.email)}</a>`, isUrl(s.url) && `<a href="${e_(s.url)}" target="_blank" rel="noopener">Website</a>`].filter(Boolean).join(" · ");
+  const modeBit = inPerson
+    ? `<span class="a-m">${ICON.place}${e_(p.distance !== null && s.address ? `${p.distance} mi` : s.town)}</span>`
+    : `<span class="a-m">${mode.includes("phone") ? ICON.phone : ""}${mode.includes("online") ? ICON.online : ""}${e_(mode.replace(/;/g, " / ").replace("phone", "Phone").replace("online", "Online"))}</span>`;
+  const badges = `<span class="a-badge ${HOWCLS[s.access] || "ab-ref"}">${e_(HOW[s.access] || s.access)}</span>` +
+    `<span class="a-chip dist">${modeBit}</span>` + (s.cost ? `<span class="a-chip">${e_(s.cost)}</span>` : "");
+  return `<details class="a-pick" id="a-pick-${p.n}">
+    <summary>
+      <span class="a-pk-name">${p.ll ? `<span class="a-pk-num" style="--pc:${kindCol(s)}" title="Number ${p.n} on the map">${ICON.place}${p.n}</span>` : ""}${e_(s.name)}</span>
+      <span class="a-pk-badges">${badges}</span>
+      ${w ? `<span class="a-pk-when"><span class="a-wl">When</span>${e_(w)}</span>` : ""}
+      <span class="a-pk-why">${e_(p.why)}</span>
+      <span class="a-pk-acts">${actions(s)}</span>
+    </summary>
+    <div class="a-pk-body">
+      <div class="a-pb-prov">${e_(s.provider)}<span>${e_(s.type)}</span></div>
+      <p class="a-pb-desc">${e_(s.description)}</p>
+      <div class="a-pb-grid">
+        ${inPerson && where ? tile("place", "Where", `${e_(where)}${dist}${s.address ? `<br><a href="https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(where)}" target="_blank" rel="noopener">Open in maps</a>` : ""}`) : ""}
+        ${!inPerson ? tile(mode.includes("phone") ? "phone" : "online", "How", e_(mode.replace(/;/g, ", ").replace("phone", "Phone").replace("online", "Online"))) : ""}
+        ${s.who || s.eligibility ? tile("person", "For", e_([s.who && s.who.replace(/;/g, ", "), s.eligibility].filter(Boolean).join(". ")), s.eligibility ? "warn" : "") : ""}
+        ${s.cost ? tile("cost", "Cost", e_(s.cost)) : ""}
+        ${contact ? tile("mail", "Contact", contact, "wide") : ""}
+      </div>
+      <div class="a-pb-foot">
+        <span class="a-pb-tags">${(s.support_for || "").split(";").filter(Boolean).map(t => `<span class="a-tag">${e_(NICE[t] || t[0].toUpperCase() + t.slice(1))}</span>`).join("")}</span>
+        ${s.last_checked ? `<span class="a-pb-checked">Checked ${e_(niceDate(s.last_checked))}</span>` : ""}
+      </div>
+    </div>
+  </details>`;
+}
+
+// ---- the plan: a short summary to give to the person (email, text, print) ----
+const STEP_TITLE = { "First step": "A good place to start", "Next step": "Next", "When ready": "When you feel ready" };
+const FOOT = "Please check with the service before going, as details can change. If things get worse, call Mindline any time on 0800 138 1692 (free), or 999 in an emergency.";
+function plan() {
+  let html = `<h3 style="margin:0 0 6px">Things that might help</h3>`, text = "Things that might help\n";
+  let n = 0;
+  for (const st of STEPS) {
+    const list = lastPicks.filter(p => p.step === st); if (!list.length) continue;
+    html += `<p style="margin:12px 0 4px"><b>${STEP_TITLE[st]}</b></p><ol start="${n + 1}" style="margin:0;padding-left:22px">`;
+    text += `\n${STEP_TITLE[st]}\n`;
+    for (const p of list) {
+      n++;
+      const s = p.record, inPerson = (s.mode || "").includes("in-person");
+      const when = whenText(s), where = inPerson ? [s.address, s.town, s.postcode].filter(Boolean).join(", ") : "";
+      const how = [HOW[s.access] || s.access, s.cost].filter(Boolean).join(". ");
+      const lines = [when && where ? `${when}, ${where}` : when || where, how].filter(Boolean);
+      const contactH = [s.phone && `<a href="tel:${e_(telOf(s))}">${e_(s.phone)}</a>`, s.email && `<a href="mailto:${e_(s.email)}">${e_(s.email)}</a>`].filter(Boolean).join(" · ");
+      const contactT = [s.phone, s.email].filter(Boolean).join(" · ");
+      const name = isUrl(s.url) ? `<a href="${e_(s.url)}"><b>${e_(s.name)}</b></a>` : `<b>${e_(s.name)}</b>`;
+      html += `<li style="margin:0 0 8px">${name}<br>${lines.map(e_).join("<br>")}${contactH ? `<br>${contactH}` : ""}</li>`;
+      text += `${n}. ${s.name}\n` + lines.map(l => `   ${l}\n`).join("") + (contactT ? `   ${contactT}\n` : "") + (isUrl(s.url) ? `   ${s.url}\n` : "");
+    }
+    html += `</ol>`;
+  }
+  html += `<p style="margin:12px 0 4px"><i>${e_(FOOT)}</i></p><p style="margin:0;font-size:12px">From Signposting Somerset: <a href="${SITE}">${SITE}</a></p>`;
+  text += `\n${FOOT}\nFrom Signposting Somerset: ${SITE}\n`;
+  return { html, text };
+}
+async function copyPlan() {
+  const { html, text } = plan();
+  let ok = false;
+  try {
+    if (window.ClipboardItem && navigator.clipboard?.write) {
+      await navigator.clipboard.write([new ClipboardItem({ "text/html": new Blob([html], { type: "text/html" }), "text/plain": new Blob([text], { type: "text/plain" }) })]);
+      ok = true;
+    }
+  } catch {}
+  if (!ok) { try { await navigator.clipboard.writeText(text); ok = true; } catch {} }
+  $a("a-copied").textContent = ok ? "Copied: paste into an email, letter or text." : "Couldn't copy on this device. Try Print instead.";
+  setTimeout(() => { if ($a("a-copied")) $a("a-copied").textContent = ""; }, 5000);
+}
+
+// If the page opened straight onto the Assist tab (e.g. #assist), show it now that everything is ready
+if (typeof tab !== "undefined" && tab === "assist") window.assistShow();
+})();
+</script>
+
 
 </body>
 </html>
