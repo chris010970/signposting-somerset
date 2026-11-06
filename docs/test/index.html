@@ -974,8 +974,7 @@ footer.urgent p { color: #FEE2E2; }
 #panel-assist .a-reshead { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 8px; margin-top: 22px; }
 #panel-assist .a-reshead h2 { margin: 0; font-family: var(--serif); font-size: 19px; }
 #panel-assist .a-planbar { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; }
-#panel-assist .a-copied { font-size: 13px; color: var(--b700); width: 100%; text-align: right; }
-#panel-assist .a-copied:empty { display: none; }
+#panel-assist .a-copied { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); }
 #panel-assist .a-readas { margin: 8px 0 0; font-size: 14px; color: var(--muted); max-width: 70ch; }
 #panel-assist .a-readas b { color: var(--b700); }
 /* results: one column; on wide screens the plan preview sits alongside */
@@ -1115,6 +1114,13 @@ footer.urgent p { color: #FEE2E2; }
 #panel-assist .a-webtag { display: inline-block; font-size: 11.5px; font-weight: 600; padding: 2px 8px; border-radius: 999px; border: 1px dashed #B45309; color: #92400E; background: color-mix(in srgb, #F59E0B 10%, transparent); }
 #panel-assist .a-webpick { border-style: dashed; }
 @media (prefers-color-scheme: dark) { #panel-assist .a-webtag { color: #FCD34D; border-color: #FCD34D; } }
+
+/* "Search online" toggle in the prompt box */
+#panel-assist .a-online { display: inline-flex; align-items: center; gap: 6px; flex: 0 0 auto; border: 1px solid var(--b200); background: var(--white); color: var(--muted, #5b6660); border-radius: 999px; padding: 6px 12px; font: inherit; font-size: 13px; font-weight: 600; cursor: pointer; white-space: nowrap; }
+#panel-assist .a-online svg { width: 15px; height: 15px; }
+#panel-assist .a-online[aria-pressed="true"] { background: var(--b50); border-color: var(--b500); color: var(--b800); }
+#panel-assist .a-online[aria-pressed="true"]::after { content: "On"; font-size: 11px; font-weight: 700; padding: 1px 6px; border-radius: 999px; background: var(--b700); color: #fff; }
+#panel-assist .a-online:focus-visible { outline: 3px solid var(--b500); outline-offset: 2px; }
 </style>
 </head>
 <body>
@@ -1221,7 +1227,7 @@ footer.urgent p { color: #FEE2E2; }
       <div class="a-compose">
       <label class="a-ttl" for="a-need">3. What's going on for them?</label>
       <textarea id="a-need" maxlength="2000" aria-describedby="a-keytip" placeholder="Describe the need, not the person (no names or contact details).&#10;&#10;e.g. Feeling low since losing his job, hardly leaves the house, no car, not mornings."></textarea>
-      <div class="a-go"><button type="button" class="a-mapbtn" id="a-mapbtn" aria-expanded="false" aria-controls="a-mapbox"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M15 4 9 2 3 4v18l6-2 6 2 6-2V2zm-1 15.6-4-1.3V4.4l4 1.3z"/></svg>Map</button><span class="a-keytip" id="a-keytip">Enter to send, Shift+Enter for a new line</span><button class="a-send" id="a-ask" type="submit" aria-label="Suggest support" title="Suggest support"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></button></div>
+      <div class="a-go"><button type="button" class="a-mapbtn" id="a-mapbtn" aria-expanded="false" aria-controls="a-mapbox"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M15 4 9 2 3 4v18l6-2 6 2 6-2V2zm-1 15.6-4-1.3V4.4l4 1.3z"/></svg>Map</button><button type="button" class="a-online" id="a-online" aria-pressed="false" title="Also search online for anything the directory doesn't cover. Only a short search phrase and the nearest town are sent, never the description."><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c2.5 2.7 3.8 5.7 3.8 9s-1.3 6.3-3.8 9c-2.5-2.7-3.8-5.7-3.8-9S9.5 5.7 12 3z"/></svg>Search online</button><span class="a-keytip" id="a-keytip">Enter to send, Shift+Enter for a new line</span><button class="a-send" id="a-ask" type="submit" aria-label="Suggest support" title="Suggest support"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></button></div>
       </div>
     </div>
     <div class="a-mapbox" id="a-mapbox" hidden>
@@ -1774,7 +1780,7 @@ function renderAbout() {
     </section>
     </div>
     <p class="small">Service information belongs to the providers listed. Map data © <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap</a> contributors, © <a href="https://carto.com/attributions" target="_blank" rel="noopener">CARTO</a>.</p>
-    <p class="small" id="site-version">Version: test 2026-11-06 10:39</p>
+    <p class="small" id="site-version">Version: test 2026-11-06 11:07</p>
   </article>`;
 }
 let tab = "talk";
@@ -1909,7 +1915,7 @@ setInterval(() => { if (!ALL.length) return; tab === "talk" ? renderTalk() : tab
    this page only remembers it for the current browser session. */
 (() => {
 const WORKER_URL = "https://signposting-assist.c-r-williams0109.workers.dev";
-const PAGE_VERSION = "test 2026-11-06 10:39";
+const PAGE_VERSION = "test 2026-11-06 11:07";
 let relayVersion = "";
 function showVersion(v) { if (v) relayVersion = v; const el = document.getElementById("a-version"); if (el) el.textContent = `Version: page ${PAGE_VERSION}${relayVersion ? ` · relay ${relayVersion}` : ""}`; }
 const SITE = "https://chris010970.github.io/signposting-somerset/main/";   // the plan always points people to the public site
@@ -2108,17 +2114,22 @@ $a("a-form").onsubmit = e => {
   e.preventDefault();
   const need = $a("a-need").value.trim();
   if (!need) return note("Describe the need first.");
+  if (need.replace(/[^a-z]/gi, "").length < 12 || !/[aeiou]/i.test(need)) return note("Please describe the person's situation in a few words, e.g. what's going on and what might help.");
   if (!place.kind) return note("Choose a place above or click the map first.");
-  state = { need, radius: +$a("a-rad").value, remote: !$a("a-inperson").checked, support: $a("a-support").value, followups: [], previous: [] };
+  state = { need, radius: +$a("a-rad").value, remote: !$a("a-inperson").checked, support: $a("a-support").value, online: onlineOn(), followups: [], previous: [] };
   if (place.kind === "remote") state.town = "__remote";
   else { state.town = "__pt"; state.lat = round2(place.lat); state.lon = round2(place.lon); }
   $a("a-trail").innerHTML = "";
   run();
 };
+// "Search online" toggle in the prompt box: off by default, remembered only on this page
+const onlineOn = () => $a("a-online").getAttribute("aria-pressed") === "true";
+$a("a-online").onclick = () => { const on = !onlineOn(); $a("a-online").setAttribute("aria-pressed", on); if (state) state.online = on; };
 $a("a-refine").onsubmit = e => { e.preventDefault(); const v = $a("a-more").value.trim(); if (v) refine(v); };
 function refine(text) {
   if (!state) return;
   state.followups = [...state.followups, text].slice(-5);
+  state.online = onlineOn();
   $a("a-more").value = "";
   $a("a-trail").innerHTML = "So far: " + state.followups.map(f => `<span>${e_(f)}</span>`).join("");
   run();
@@ -2159,17 +2170,23 @@ let lastResult = null;
 function show(r, keepScroll) {
   lastResult = r;
   if (r.risk) $a("a-crisis").hidden = false;
-  state.previous = r.picks.map(p => p.record.name);
+  state.previous = r.picks.map(p => p.record.name);   // (updated below once the plan is final)
   const sc = r.scope || {};
-  const web = (r.web?.items || []).map(w => ({ step: normStep(w.step), why: w.why, web: w }));
-  lastPicks = STEPS.flatMap(st => [...r.picks.filter(p => normStep(p.step) === st).map(p => ({ ...p, step: st })), ...web.filter(p => p.step === st)]);
-  lastPicks.forEach((p, i) => { p.n = i + 1; p.ll = p.web ? null : pinPos(p.record); });   // same numbers as the plan
+  // Directory picks, or (after an online search) the merged plan: the directory picks it kept plus the online finds, at most 8
+  let dir = r.picks.map(p => ({ ...p, step: normStep(p.step) }));
+  if (r.web?.keep) dir = r.web.keep.map(k => dir[k.n - 1] && { ...dir[k.n - 1], step: k.step || dir[k.n - 1].step }).filter(Boolean);
+  const firstOk = r.core_covered === "no" || !dir.some(p => p.step === "First step");   // online finds go first only if the directory has nothing for the core need
+  const web = (r.web?.items || []).map(w => ({ step: normStep(w.step) === "First step" && !firstOk ? "Next step" : normStep(w.step), why: w.why, web: w }));
+  lastPicks = STEPS.flatMap(st => [...dir.filter(p => p.step === st), ...web.filter(p => p.step === st)]).slice(0, 8);
+  lastPicks.forEach((p, i) => { p.n = i + 1; p.ll = p.web ? null : pinPos(p.record); });
+  state.previous = lastPicks.map(p => p.web ? p.web.name : p.record.name);   // same numbers as the plan
   let m = `<div class="a-reshead"><h2>Suggestions</h2>`;
   if (lastPicks.length) m += `<div class="a-planbar"><button type="button" class="a-btn small" id="a-copyPlan">Copy plan</button>${navigator.share ? `<button type="button" class="a-btn small ghost" id="a-sharePlan">Share</button>` : ""}<button type="button" class="a-btn small ghost" id="a-printPlan">Print</button><span class="a-copied" id="a-copied" role="status"></span></div>`;
   m += `</div>`;
-  if (r.reading) m += `<p class="a-readas"><b>Read as:</b> ${e_(r.reading)}</p>`;
+  if (r.reading && !r.off_topic) m += `<p class="a-readas"><b>Read as:</b> ${e_(r.reading)}</p>`;
   if (r.safety) m += `<p class="a-safety" role="note"><b>Safety:</b> ${e_(r.safety)} <span>(this goes at the top of the plan)</span></p>`;
-  if (!lastPicks.length) m += `<p>No suitable services were found for this need and area. Try a wider distance.</p>`;
+  if (r.off_topic) m += `<p class="a-gaps">That doesn't look like a description of someone's situation, so no suggestions were made. Describe what's going on for the person and what might help.</p>`;
+  else if (!lastPicks.length) m += `<p>No suitable services were found for this need and area. Try a wider distance.</p>`;
   else {
     m += `<ol class="a-ladder">`;
     STEPS.forEach((st, i) => {
@@ -2191,11 +2208,10 @@ function show(r, keepScroll) {
     if ($a("a-sharePlan")) $a("a-sharePlan").onclick = () => navigator.share({ title: "Things that might help", text: plan().text }).catch(() => {});
     $a("a-out").querySelectorAll(".a-preview a").forEach(a => { a.target = "_blank"; a.rel = "noopener"; });
   }
-  const wb = $a("a-webGo"); if (wb) wb.onclick = () => searchWeb(true);
   showPins();
   if (!keepScroll) $a("a-out").scrollIntoView({ behavior: "smooth", block: "start" });
-  // The directory doesn't fully cover the core need: look online for just that part straight away
-  if (!keepScroll && !r.web && r.search_for && r.core_covered !== "yes") searchWeb(false);
+  // "Search online" is on: look online, then merge the finds into one plan
+  if (!keepScroll && !r.web && state.online && !r.off_topic) searchWeb();
 }
 
 // ---- online search for the gap: only a short search phrase and the nearest town leave the page ----
@@ -2203,37 +2219,35 @@ let webBusy = false;
 function webBar(r) {
   const q = r.web?.query || r.search_for || "";
   if (webBusy) return `<div class="a-webbar busy" role="status"><span class="a-spin" aria-hidden="true"></span>Searching online for: <i>${e_(q)}</i>…</div>`;
-  if (r.web) {
-    const n = r.web.items.length;
-    return `<div class="a-webbar">${n ? `Added ${n} found online for <i>${e_(q)}</i>, marked <span class="a-webtag">Found online, not checked</span>.` : e_(r.web.note || "Nothing suitable was found online.")}${r.web.error ? ` ${e_(r.web.error)}` : ""}</div>`;
-  }
-  const core = (r.core_needs || []).join(", ");
-  const label = r.core_covered === "yes" ? "Search online for more" : "Search online for what's missing";
-  return `<div class="a-webbar">${r.core_covered === "yes" ? "The directory covers the main need" + (core ? ` (${e_(core)})` : "") + "." : ""}<button type="button" class="a-btn small ghost" id="a-webGo">${ICON.web}${label}</button></div>`;
+  if (!r.web) return "";
+  const n = r.web.items.length;
+  return `<div class="a-webbar" role="status">${n ? `Searched online for <i>${e_(q)}</i>: ${n} added, marked <span class="a-webtag">Found online, not checked</span>.` : `Searched online for <i>${e_(q)}</i>: ${e_(r.web.note || "nothing better was found.")}`}${r.web.error ? ` ${e_(r.web.error)}` : ""}</div>`;
 }
-async function searchWeb(manual) {
+async function searchWeb() {
   const r = lastResult; if (!r || webBusy) return;
   const q = scrub(r.search_for || (r.core_needs || []).join(" ") + " support " + (r.place || "Somerset")).text;
   webBusy = true; r.search_for = q; show(r, true);
   let web;
   try {
     const res = await fetch(WORKER_URL.replace(/\/$/, "") + "/web", { method: "POST", headers: { "Content-Type": "application/json", "X-Access-Code": code },
-      body: JSON.stringify({ search_for: q, core_needs: r.core_needs || [], place: r.place || "", gaps: r.gaps || "", remote: state.remote, have: r.picks.map(p => p.record.name) }) });
+      body: JSON.stringify({ search_for: q, core_needs: r.core_needs || [], constraints: scrub(r.constraints || "").text, place: r.place || "", gaps: r.gaps || "", remote: state.remote,
+        picks: r.picks.map(p => ({ name: p.record.name, step: normStep(p.step), what: p.record.description || "" })) }) });
     const d = await res.json().catch(() => ({ error: "bad_answer" }));
-    web = d.error ? { items: [], query: q, error: d.error === "busy" ? "The online search is busy; try again in a minute." : d.error === "rate_limited" ? ERRORS.rate_limited : "The online search didn't work this time." } : { items: d.items || [], note: d.note, query: d.query || q };
-  } catch { web = { items: [], query: q, error: "Couldn't reach the online search." }; }
+    web = d.error ? { items: [], keep: null, query: q, error: d.error === "busy" ? "The online search is busy; try again in a minute." : d.error === "rate_limited" ? ERRORS.rate_limited : "The online search didn't work this time." } : { items: d.items || [], keep: d.keep || null, note: d.note, query: d.query || q };
+  } catch { web = { items: [], keep: null, query: q, error: "Couldn't reach the online search." }; }
   webBusy = false;
   if (lastResult !== r) return;          // a newer request has replaced these results
   r.web = web; show(r, true);
 }
 function webCard(p) {
   const w = p.web;
-  const rows = [["When", w.when], ["Where", w.where], ["Contact", w.contact]].filter(x => x[1]);
+  const real = x => x && !/^check with the service\.?$/i.test(x);
+  const rows = [["When", w.when], ["Where", w.where], ["Contact", w.contact]].filter(x => real(x[1]));
   return `<details class="a-pick a-webpick" id="a-pick-${p.n}">
     <summary>
       <span class="a-pk-name">${e_(w.name)}</span>
       <span class="a-pk-badges"><span class="a-webtag">Found online, not checked</span></span>
-      ${w.when ? `<span class="a-pk-when"><span class="a-wl">When</span>${e_(w.when)}</span>` : ""}
+      ${real(w.when) ? `<span class="a-pk-when"><span class="a-wl">When</span>${e_(w.when)}</span>` : ""}
       <span class="a-pk-why">${e_(w.why || w.what)}</span>
       <span class="a-pk-acts"><a class="a-act" href="${e_(w.url)}" target="_blank" rel="noopener">${ICON.web}${e_(w.source)}</a></span>
     </summary>
@@ -2284,9 +2298,20 @@ function datesText(raw) {
     .map(x => x.includes(" to ") ? x.split(" to ").map(shortDate).join(" to ") : shortDate(x));
   return parts.length > 5 ? parts.slice(0, 5).join(", ") + "…" : parts.join(", ");
 }
+// "Mon-Fri 09:00-20:00" reads as "Mon to Fri, 9am to 8pm"; "Mon-Sun 00:00-23:59" as "Every day, 24 hours"
+const DAYN = { Mon: "Mon", Tue: "Tue", Wed: "Wed", Thu: "Thu", Fri: "Fri", Sat: "Sat", Sun: "Sun" };
+function clock(t) { const m = /^(\d\d):(\d\d)$/.exec(t); if (!m) return t; const h = +m[1], mi = +m[2]; if (h === 12 && !mi) return "noon"; return `${h % 12 || 12}${mi ? ":" + m[2] : ""}${h < 12 ? "am" : "pm"}`; }
+function timesText(t) { if (!t) return ""; if (/^00:00-23:59$/.test(t)) return "24 hours"; return t.split(/\s*[;,]\s*/).map(x => x.split("-").map(clock).join(" to ")).join(", "); }
+function daysText(d) {
+  d = (d || "").trim(); if (!d) return "";
+  if (d === "Mon-Sun") return "Every day"; if (d === "Mon-Fri") return "Mon to Fri"; if (d === "Sat-Sun" || d === "Sat;Sun") return "Weekends";
+  return d.split(";").map(x => x.trim().replace(/^(\w{3})-(\w{3})$/, "$1 to $2")).join(", ");
+}
 function whenText(s) {
-  if (s.dates) { const d = datesText(s.dates); return d ? (d.includes(",") ? "Dates: " : "") + d + (s.times ? ", " + s.times.replace("-", "–") : "") : ""; }
-  return [[(s.days || "").replace(/;/g, ", "), s.times].filter(Boolean).join(" "), s.frequency].filter(Boolean).join(", ");
+  if (s.dates) { const d = datesText(s.dates); return d ? (d.includes(",") ? "Dates: " : "") + d + (s.times ? ", " + timesText(s.times) : "") : ""; }
+  const f = (s.frequency || "").trim();
+  if (/^see website$/i.test(f) && !s.days) return "Times on the website";
+  return [[daysText(s.days), timesText(s.times)].filter(Boolean).join(", "), f && !/^see website$/i.test(f) ? f : ""].filter(Boolean).join(", ");
 }
 const telOf = s => s.phone ? s.phone.split(" (")[0].split(" or ")[0].replace(/\s/g, "") : "";
 const isUrl = u => /^https?:\/\//.test(u || "");
@@ -2366,7 +2391,7 @@ function plan() {
     for (const p of list) {
       n++;
       if (p.web) {
-        const w = p.web, lines = [w.what, w.when, w.where, w.contact].filter(Boolean);
+        const w = p.web, lines = [w.what, w.when, w.where, w.contact].filter(x => x && !/^check with the service\.?$/i.test(x));
         html += `<li style="margin:0 0 8px"><a href="${e_(w.url)}"><b>${e_(w.name)}</b></a> <i style="font-size:12px">(found online, not checked)</i><br>${lines.map(e_).join("<br>")}</li>`;
         text += `${n}. ${w.name} (found online, not checked)\n` + lines.map(l => `   ${l}\n`).join("") + `   ${w.url}\n`;
         continue;
@@ -2397,8 +2422,11 @@ async function copyPlan() {
     }
   } catch {}
   if (!ok) { try { await navigator.clipboard.writeText(text); ok = true; } catch {} }
-  $a("a-copied").textContent = ok ? "Copied: paste into an email, letter or text." : "Couldn't copy on this device. Try Print instead.";
-  setTimeout(() => { if ($a("a-copied")) $a("a-copied").textContent = ""; }, 5000);
+  const btn = $a("a-copyPlan"); if (!btn) return;
+  btn.style.minWidth = btn.offsetWidth + "px";      // keep the width, so nothing moves
+  btn.textContent = ok ? "Copied ✓" : "Couldn't copy";
+  $a("a-copied").textContent = ok ? "Plan copied" : "Couldn't copy the plan";   // for screen readers only
+  clearTimeout(copyPlan.t); copyPlan.t = setTimeout(() => { btn.textContent = "Copy plan"; $a("a-copied").textContent = ""; }, 2000);
 }
 
 showVersion();
