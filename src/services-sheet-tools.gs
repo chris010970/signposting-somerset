@@ -33,7 +33,7 @@ const MULTI = {
         "LGBTQ+", "displaced people"],
   support_for: ["connect", "be active", "take notice", "keep learning", "crisis prevention", "bereavement",
                 "caring for someone", "finances", "housing", "food", "long-term pain", "hearing voices",
-                "eating disorders", "drugs and alcohol", "dementia", "low mood", "anxiety", "giving"],
+                "eating disorders", "addiction", "abuse", "dementia", "low mood", "anxiety", "giving"],
   mode: ["in-person", "phone", "online"],
 };
 // Towns used to fill and check area (any other town = Somerset)
@@ -161,7 +161,7 @@ function checkRecords() {
     const t = v.times.replace(/(\d\d:\d\d):\d\d/g, "$1").replace(/\s*-\s*/, "-");
     if (v.times && !/^([01]\d|2[0-3]):[0-5]\d(-([01]\d|2[0-3]):[0-5]\d)?$/.test(t)) add("error", "times", "use HH:MM or HH:MM-HH:MM (24 hour)");
     else if (t.includes("-") && t.split("-")[1] <= t.split("-")[0]) add("error", "times", "ends before it starts");
-    if (v.days && !v.times) add("warn", "times", "days given but no times");
+    if (v.days && !v.times && v.mode.includes("in-person")) add("warn", "times", "days given but no times");   // online/phone sessions may have no set time
     const freqOk = /^(|fortnightly|monthly \(dates vary\)|dates vary|see website|((1st|2nd|3rd|4th|last)( and (1st|2nd|3rd|4th|last))? (Mon|Tue|Wed|Thu|Fri|Sat|Sun) of month))$/i;
     if (!freqOk.test(v.frequency)) add("error", "frequency", "not a recognised pattern");
     const fm = v.frequency.match(/(Mon|Tue|Wed|Thu|Fri|Sat|Sun) of month/);

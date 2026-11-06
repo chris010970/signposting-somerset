@@ -1293,10 +1293,10 @@ let liveMsg = "<strong>Loading services…</strong>";
 /* ---------- vocabularies ---------- */
 // Specialist: mental health, crisis, bereavement and other specific needs. Practical: housing, finances and life circumstances.
 // Everyday wellbeing: connection, activity, learning, mindfulness and community.
-const GROUPS = [["Specialist support", ["crisis prevention", "low mood", "anxiety", "bereavement", "hearing voices", "eating disorders", "long-term pain", "dementia", "addiction", "caring for someone"]],
+const GROUPS = [["Specialist support", ["crisis prevention", "low mood", "anxiety", "bereavement", "hearing voices", "eating disorders", "long-term pain", "dementia", "addiction", "abuse", "caring for someone"]],
   ["Practical help and support", ["housing", "finances", "food"]],
   ["Everyday wellbeing", ["connect", "be active", "take notice", "keep learning", "giving"]]];
-const LABEL = { "hearing voices": "Psychosis and hearing voices", "crisis prevention": "Crisis support", "addiction": "Addiction (alcohol, drugs, gambling)" };
+const LABEL = { "hearing voices": "Psychosis and hearing voices", "crisis prevention": "Crisis support", "addiction": "Addiction (alcohol, drugs, gambling)", "abuse": "Abuse (domestic, child or adult)" };
 const cap = s => LABEL[s] || s[0].toUpperCase() + s.slice(1);
 const esc = s => String(s ?? "").replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
 const split = s => (s || "").split(";").map(x => x.trim()).filter(Boolean);
@@ -1749,7 +1749,7 @@ function renderAbout() {
     <section>
     <h3>What's included</h3>
     <ul>
-      <li><strong>Specialist support:</strong> crisis support, low mood, anxiety, bereavement, hearing voices, long-term pain, eating disorders, dementia, addiction (alcohol, drugs and gambling), caring for someone.</li>
+      <li><strong>Specialist support:</strong> crisis support, low mood, anxiety, bereavement, hearing voices, long-term pain, eating disorders, dementia, addiction (alcohol, drugs and gambling), abuse, caring for someone.</li>
       <li><strong>Practical help and support:</strong> money, housing and food, including advice and advocacy.</li>
       <li><strong>Everyday wellbeing:</strong> connection, activity, learning, nature and giving, based on the Five Ways to Wellbeing.</li>
       <li>Helplines and online groups, in-person services on a map, and courses with set dates.</li>
@@ -1772,7 +1772,7 @@ function renderAbout() {
     </section>
     </div></div>
     <p class="small">Service information belongs to the providers listed. Map data © <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap</a> contributors, © <a href="https://carto.com/attributions" target="_blank" rel="noopener">CARTO</a>.</p>
-    <p class="small" id="site-version">Version: test 2026-11-06 11:34${typeof window.assistRelayVersion === "function" ? window.assistRelayVersion() : ""}</p>
+    <p class="small" id="site-version">Version: test 2026-11-06 14:00${typeof window.assistRelayVersion === "function" ? window.assistRelayVersion() : ""}</p>
   </article>`;
 }
 let tab = "talk";
@@ -1907,7 +1907,7 @@ setInterval(() => { if (!ALL.length) return; tab === "talk" ? renderTalk() : tab
    this page only remembers it for the current browser session. */
 (() => {
 const WORKER_URL = "https://signposting-assist.c-r-williams0109.workers.dev";
-const PAGE_VERSION = "test 2026-11-06 11:34";
+const PAGE_VERSION = "test 2026-11-06 14:00";
 let relayVersion = "";
 // The version line is at the bottom of the About tab: "Version: test 2026-11-06 11:30 · Assist relay 2026-11-06 11:07"
 window.assistRelayVersion = () => relayVersion ? ` · Assist relay ${relayVersion}` : "";
@@ -2087,21 +2087,38 @@ $a("a-mapbtn").onclick = () => {
 };
 
 // ---- remove identifying details before anything is sent ----
+// Removes personal details from free text before it leaves the page (and again in the Worker before an online search).
+// Shared by assist-tab.js and the Worker: the build scripts paste this file into both, so there is one copy to maintain.
+// It can't catch every name: a lone first name ("Sarah has…") looks like any other word, so the prompt box asks for none.
+const NAME_STOP = new Set(("She He They It This That There Then When What Where Why How Client Clients Man Woman Mum Dad Mother Father Son Daughter Husband Wife " +
+  "Partner Person People Someone Nobody Everyone Recently Since After Before Lives Has Had Is Was Feels Wants Needs Likes Can Could Would Should Will " +
+  "Monday Tuesday Wednesday Thursday Friday Saturday Sunday January February March April May June July August September October November December " +
+  "Somerset Taunton Yeovil Bridgwater Frome Wells Glastonbury Street Minehead Chard Burnham Highbridge Shepton Mallet Wellington Crewkerne Ilminster " +
+  "Langport Somerton Wincanton Castle Cary Cheddar Watchet Williton Bath Weston NHS GP Mind Age UK Our His Her Their My Your Also And But Not No Yes Hope Grace Faith Joy Will Rose Summer Autumn Winter Spring Christmas Easter Money Work Life Home Food Drinking Gambling Everything Nothing").split(" "));
 function scrub(txt) {
   const n = {};
   const hit = (k, r) => { n[k] = (n[k] || 0) + 1; return r; };
-  const s = txt
+  const s = String(txt || "")
     .replace(/[\w.+-]+@[\w-]+\.[\w.-]+/g, () => hit("email address", "[email]"))
-    .replace(/(?:\+44\s?7\d{3}|\b07\d{3}|\+44\s?\d{3,4}|\b0\d{3,4})[\s-]?\d{3}[\s-]?\d{3,4}\b/g, () => hit("phone number", "[phone]"))
+    // UK phone numbers in any common format: 07700 900123, +44 7700 900123, 020 7946 0018, (01823) 276892, 01823-276892
+    .replace(/(?:\+44[\s-]?\(?0?\)?|\(?\b0)\d[\d\s()-]{7,12}\d\b/g, m => (m.replace(/\D/g, "").length >= 10 ? hit("phone number", "[phone]") : m))
     .replace(/\b\d{3}\s?\d{3}\s?\d{4}\b/g, () => hit("NHS or ID number", "[number]"))
+    .replace(/\b[A-Z]{2}\s?\d{2}\s?\d{2}\s?\d{2}\s?[A-D]\b/gi, () => hit("NI number", "[number]"))
     .replace(/\b([A-Z]{1,2}\d[A-Z\d]?)\s?\d[A-Z]{2}\b/gi, (m, out) => hit("full postcode", out.toUpperCase()))
     .replace(/\b\d{1,2}[\/.-]\d{1,2}[\/.-](?:19|20)?\d{2}\b/g, () => hit("date", "[date]"))
-    .replace(/\b(?:born(?: in)?|d\.?o\.?b\.?:?)\s*(?:(?:19|20)\d{2}|\d{1,2}(?:st|nd|rd|th)?\s+[A-Z][a-z]+(?:\s+(?:19|20)\d{2})?)/gi, () => hit("date of birth", "[date of birth]"))
-    .replace(/\b\d{1,4}[a-z]?,?\s+(?:[A-Z][a-z]+\s){1,3}(?:Road|Rd|Street|St|Lane|Ln|Avenue|Ave|Close|Drive|Dr|Way|Crescent|Place|Court|Gardens|Terrace|Hill|Row|Square|Walk)\b/g, () => hit("street address", "[address]"))
+    .replace(/\b(?:born(?: in| on)?|d\.?o\.?b\.?:?)\s*(?:(?:19|20)\d{2}|\d{1,2}(?:st|nd|rd|th)?\s+[A-Za-z]+(?:\s+(?:19|20)\d{2})?)/gi, () => hit("date of birth", "[date of birth]"))
+    .replace(/\b\d{1,4}[a-z]?,?\s+(?:[A-Za-z']+\s){1,3}(?:road|rd|street|st|lane|ln|avenue|ave|close|drive|dr|way|crescent|place|court|gardens|terrace|hill|row|square|walk|mews|grove)\b\.?/gi, () => hit("street address", "[address]"))
     .replace(/\b(?:Mr|Mrs|Ms|Miss|Mx|Dr)\.?\s+[A-Z][a-z'-]+(?:\s+[A-Z][a-z'-]+)?/g, () => hit("name", "[name]"))
-    .replace(/\b(called|named|name is|name's|known as)\s+[A-Z][a-z'-]+(?:\s+[A-Z][a-z'-]+)?/gi, (m, w) => hit("name", `${w} [name]`));
+    .replace(/\b(called|named|name is|name's|known as)\s+[A-Z][a-z'-]+(?:\s+[A-Z][a-z'-]+)?/gi, (m, w) => hit("name", `${w} [name]`))
+    // "my client John Smith", "client Sarah", "her son Jack"
+    .replace(/\b((?:my |her |his |their |our )?(?:client|patient|service user|resident|son|daughter|husband|wife|partner|mum|dad|mother|father|brother|sister|friend|carer))\s+([A-Z][a-z'-]+(?:\s+[A-Z][a-z'-]+)?)\b/g,
+      (m, w, name) => (NAME_STOP.has(name.split(" ")[0]) ? m : hit("name", `${w} [name]`)))
+    // A capitalised name starting a sentence and followed by a verb: "Sarah has been…", "John Smith is…"
+    .replace(/(^|[.!?]\s+|\n)([A-Z][a-z'-]+(?:\s+[A-Z][a-z'-]+)?)(?=\s+(?:has|is|was|had|feels|felt|says|said|lives|lived|wants|needs|told|cares|can't|won't|doesn't|isn't)\b)/g,
+      (m, pre, name) => (NAME_STOP.has(name.split(" ")[0]) ? m : hit("name", `${pre}[name]`)));
   return { text: s, removed: n };
 }
+
 function scrubAll(st) {
   const tally = {}, add = r => Object.entries(r).forEach(([k, v]) => tally[k] = (tally[k] || 0) + v);
   const a = scrub(st.need); add(a.removed);
@@ -2174,9 +2191,9 @@ function show(r, keepScroll) {
   // Directory picks, or (after an online search) the merged plan: the directory picks it kept plus the online finds, at most 8
   let dir = r.picks.map(p => ({ ...p, step: normStep(p.step) }));
   if (r.web?.keep) dir = r.web.keep.map(k => dir[k.n - 1] && { ...dir[k.n - 1], step: k.step || dir[k.n - 1].step }).filter(Boolean);
-  const firstOk = r.core_covered === "no" || !dir.some(p => p.step === "First step");   // online finds go first only if the directory has nothing for the core need
-  const web = (r.web?.items || []).map(w => ({ step: normStep(w.step) === "First step" && !firstOk ? "Next step" : normStep(w.step), why: w.why, web: w }));
-  lastPicks = STEPS.flatMap(st => [...dir.filter(p => p.step === st), ...web.filter(p => p.step === st)]).slice(0, 8);
+  // (the Worker has already applied the rules: directory first steps kept, online finds never first when the directory has one, 8 at most)
+  const web = (r.web?.items || []).map(w => ({ step: normStep(w.step), why: w.why, web: w }));
+  lastPicks = STEPS.flatMap(st => [...dir.filter(p => p.step === st), ...web.filter(p => p.step === st)]);
   lastPicks.forEach((p, i) => { p.n = i + 1; p.ll = p.web ? null : pinPos(p.record); });
   state.previous = lastPicks.map(p => p.web ? p.web.name : p.record.name);   // same numbers as the plan
   let m = `<div class="a-reshead"><h2>Suggestions</h2>`;
@@ -2229,7 +2246,7 @@ async function searchWeb() {
   let web;
   try {
     const res = await fetch(WORKER_URL.replace(/\/$/, "") + "/web", { method: "POST", headers: { "Content-Type": "application/json", "X-Access-Code": code },
-      body: JSON.stringify({ search_for: q, core_needs: r.core_needs || [], constraints: scrub(r.constraints || "").text, place: r.place || "", gaps: r.gaps || "", remote: state.remote,
+      body: JSON.stringify({ search_for: q, core_needs: r.core_needs || [], constraints: scrub(r.constraints || "").text, place: r.place || "", gaps: r.gaps || "", remote: state.remote, core_covered: r.core_covered,
         picks: r.picks.map(p => ({ name: p.record.name, step: normStep(p.step), what: p.record.description || "" })) }) });
     const d = await res.json().catch(() => ({ error: "bad_answer" }));
     web = d.error ? { items: [], keep: null, query: q, error: d.error === "busy" ? "The online search is busy; try again in a minute." : d.error === "rate_limited" ? ERRORS.rate_limited : "The online search didn't work this time." } : { items: d.items || [], keep: d.keep || null, note: d.note, query: d.query || q };
@@ -2335,7 +2352,7 @@ function actions(s) {
   else if (s.email) a.push(`<a class="a-act" href="mailto:${e_(s.email)}">${ICON.mail}Email</a>`);
   return a.join("");
 }
-const NICE = { "hearing voices": "Psychosis and hearing voices", "crisis prevention": "Crisis support", "addiction": "Addiction" };
+const NICE = { "hearing voices": "Psychosis and hearing voices", "crisis prevention": "Crisis support", "addiction": "Addiction", "abuse": "Abuse" };
 function niceDate(d) { const t = new Date(d + "T12:00:00"); return isNaN(t) ? d : t.toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric" }); }
 function tile(icon, label, html, cls = "") { return `<div class="a-pb-tile ${cls}"><div class="a-pb-lab">${ICON[icon] || ""}${label}</div><div class="a-pb-val">${html}</div></div>`; }
 function card(p) {
@@ -2381,7 +2398,7 @@ const FOOT = "Please check with the service before going, as details can change.
 function plan() {
   let html = `<h3 style="margin:0 0 6px">Things that might help</h3>`, text = "Things that might help\n";
   const safety = lastResult?.safety;
-  if (safety) { html += `<p style="margin:6px 0 8px;padding:8px 10px;border-left:4px solid #B45309;background:#FFF7ED"><b>Please read first:</b> ${e_(safety)}</p>`; text += `\nPLEASE READ FIRST: ${safety}\n`; }
+  if (safety) { html += `<p style="margin:6px 0 8px;padding:8px 10px;border-left:4px solid #B45309;background:#FFF7ED"><b>Read first:</b> ${e_(safety)}</p>`; text += `\nREAD FIRST: ${safety}\n`; }
   let n = 0;
   for (const st of STEPS) {
     const list = lastPicks.filter(p => p.step === st); if (!list.length) continue;
