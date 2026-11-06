@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Signposting Somerset (with Assist)</title>
+<title>Signposting Somerset (test)</title>
 <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2064%2064%22%3E%3Crect%20width%3D%2264%22%20height%3D%2264%22%20rx%3D%2214%22%20fill%3D%22%23F4EEDC%22%2F%3E%3Crect%20x%3D%2229%22%20y%3D%228%22%20width%3D%226%22%20height%3D%2248%22%20rx%3D%222%22%20fill%3D%22%233F5E36%22%2F%3E%3Cpath%20d%3D%22M10%2013h32l8%207-8%207H10z%22%20fill%3D%22%23D4884A%22%2F%3E%3Cpath%20d%3D%22M54%2032H22l-8%207%208%207h32z%22%20fill%3D%22%236A8F4C%22%2F%3E%3Crect%20x%3D%2220%22%20y%3D%2253%22%20width%3D%2224%22%20height%3D%225%22%20rx%3D%222.5%22%20fill%3D%22%233F5E36%22%2F%3E%3C%2Fsvg%3E">
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -1097,6 +1097,12 @@ footer.urgent p { color: #FEE2E2; }
 #panel-assist .a-pk-num { display: inline-flex; align-items: center; gap: 2px; height: 22px; padding: 0 7px 0 5px; margin-right: 8px; border-radius: 11px; background: var(--pc, #64748B); color: #fff; font: 700 12px/1 system-ui, sans-serif; vertical-align: 2px; }
 #panel-assist .a-pk-num svg { width: 12px; height: 12px; fill: currentColor; }
 #panel-assist .a-pick.a-flash { box-shadow: 0 0 0 3px var(--b500); transition: box-shadow .3s; }
+
+/* titles: the prompt continues the filter bar's numbering; the map label sits over the map */
+#panel-assist .a-compose .a-ttl { display: block; font-size: 10px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: var(--b700); padding: 10px 14px 0; margin: 0; }
+#panel-assist .a-compose textarea { padding-top: 4px; }
+#panel-assist .a-mapbox { position: relative; }
+#panel-assist .a-maptl { position: absolute; top: 10px; right: 10px; z-index: 500; background: rgba(255, 255, 255, .92); border: 1px solid var(--line); border-radius: 8px; padding: 5px 9px; font-size: 10px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: var(--b700); pointer-events: none; box-shadow: 0 1px 3px rgba(0, 0, 0, .1); }
 </style>
 </head>
 <body>
@@ -1201,13 +1207,14 @@ footer.urgent p { color: #FEE2E2; }
   <form class="a-card a-form" id="a-form"><div class="a-formgrid">
     <div class="a-formmain">
       <div class="a-compose">
-      <textarea id="a-need" maxlength="2000" aria-label="What's going on for them?" aria-describedby="a-keytip" placeholder="What's going on for them? Describe the need, not the person (no names or contact details).&#10;&#10;e.g. Feeling low since losing his job, hardly leaves the house, no car."></textarea>
+      <label class="a-ttl" for="a-need">3. What's going on for them?</label>
+      <textarea id="a-need" maxlength="2000" aria-describedby="a-keytip" placeholder="Describe the need, not the person (no names or contact details).&#10;&#10;e.g. Feeling low since losing his job, hardly leaves the house, no car, not mornings."></textarea>
       <div class="a-go"><button type="button" class="a-mapbtn" id="a-mapbtn" aria-expanded="false" aria-controls="a-mapbox"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M15 4 9 2 3 4v18l6-2 6 2 6-2V2zm-1 15.6-4-1.3V4.4l4 1.3z"/></svg>Map</button><span class="a-keytip" id="a-keytip">Enter to send, Shift+Enter for a new line</span><button class="a-send" id="a-ask" type="submit" aria-label="Suggest support" title="Suggest support"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></button></div>
       </div>
     </div>
     <div class="a-mapbox" id="a-mapbox" hidden>
       <div id="a-map" role="application" aria-label="Map: click roughly where the person is"></div>
-      <p class="a-hint">Choose a place above or click the map. Only a rounded point (about 1 km) is sent.</p>
+      <div class="a-maptl" aria-hidden="true">Or click the map</div>
     </div>
   </div></form>
 
@@ -1888,7 +1895,7 @@ setInterval(() => { if (!ALL.length) return; tab === "talk" ? renderTalk() : tab
    this page only remembers it for the current browser session. */
 (() => {
 const WORKER_URL = "https://signposting-assist.c-r-williams0109.workers.dev";
-const SITE = "https://chris010970.github.io/signposting-somerset/assist/";   // the plan always points people to the public site
+const SITE = "https://chris010970.github.io/signposting-somerset/main/";   // the plan always points people to the public site
 const QUICK = ["No groups", "Weekends only", "Free only", "Nearer to home", "Start from home (phone or online)", "Something for a carer too"];
 const RISK = /suicid|kill (my|him|her|them)sel|end (my|his|her|their) life|self[- ]?harm|cutting (my|him|her)|overdos|want(s|ed)? to die|no reason to live|better off dead/i;
 const $a = id => document.getElementById(id);
@@ -2190,7 +2197,23 @@ function showPins() {
 }
 window.addEventListener("afterprint", () => document.body.classList.remove("a-printing"));
 
-function whenText(s) { return s.dates ? "Dates: " + s.dates.replace(/;/g, ", ") + (s.times ? " " + s.times : "") : [[(s.days || "").replace(/;/g, ", "), s.times].filter(Boolean).join(" "), s.frequency].filter(Boolean).join(", "); }
+// Dates read as "Thu 26 Nov, Thu 11 Feb 2027" (year only when it isn't this year); past dates are left out
+function shortDate(d) {
+  const t = new Date(d + "T12:00:00"); if (isNaN(t)) return d;
+  const o = { weekday: "short", day: "numeric", month: "short" }; if (t.getFullYear() !== new Date().getFullYear()) o.year = "numeric";
+  return t.toLocaleDateString("en-GB", o).replace(",", "").replace("Sept", "Sep");
+}
+function datesText(raw) {
+  const today = new Date().toISOString().slice(0, 10);
+  const parts = raw.split(";").map(x => x.trim()).filter(Boolean)
+    .filter(x => (x.split(" to ").pop()) >= today)
+    .map(x => x.includes(" to ") ? x.split(" to ").map(shortDate).join(" to ") : shortDate(x));
+  return parts.length > 5 ? parts.slice(0, 5).join(", ") + "…" : parts.join(", ");
+}
+function whenText(s) {
+  if (s.dates) { const d = datesText(s.dates); return d ? (d.includes(",") ? "Dates: " : "") + d + (s.times ? ", " + s.times.replace("-", "–") : "") : ""; }
+  return [[(s.days || "").replace(/;/g, ", "), s.times].filter(Boolean).join(" "), s.frequency].filter(Boolean).join(", ");
+}
 const telOf = s => s.phone ? s.phone.split(" (")[0].split(" or ")[0].replace(/\s/g, "") : "";
 const isUrl = u => /^https?:\/\//.test(u || "");
 const ICON = {
