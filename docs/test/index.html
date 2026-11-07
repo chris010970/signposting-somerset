@@ -779,7 +779,17 @@ h1 { font-family: var(--serif); color: var(--b900); font-size: 26px; margin: 0; 
 .aboutpage .small { font-size: 13px; color: #78716C; }
 .sitetabs button { border: 0; background: none; padding: 9px 14px 10px; font-weight: 700; font-size: 14px; color: #78716C; cursor: pointer; border-bottom: 3px solid transparent; margin-bottom: -1px; }
 .sitetabs button[aria-selected="true"] { color: var(--b900); border-bottom-color: var(--b600); }
-@media (max-width: 420px) { .sitetabs { gap: 0; } .sitetabs button { padding-inline: 7px; font-size: 13px; } .sitetabs .lg { display: none; } .sitetabs .sh { display: inline; } }
+/* Tabs in groups: Browse (In person, Phone and online, Courses) | Assist | About */
+.sitetabs { align-items: flex-end; }
+.sitetabs .tgrp { display: inline-flex; align-items: flex-end; gap: 4px; position: relative; flex: none; }
+.sitetabs .tgrp-lab { position: absolute; left: 14px; top: -2px; font-size: 10.5px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: #A8A29E; }
+.sitetabs button { padding-top: 16px; }
+.sitetabs #tab-assist, .sitetabs #tab-about { margin-left: 6px; padding-left: 14px; position: relative; }
+.sitetabs #tab-assist::before, .sitetabs #tab-about::before { content: ""; position: absolute; left: 0; top: 14px; bottom: 10px; border-left: 1px solid var(--line); }
+.sitetabs #tab-about { font-weight: 600; }
+/* On narrow phones the last tab may not fit: fade the edge so it's clear the row scrolls */
+.sitetabs.more { -webkit-mask-image: linear-gradient(to right, #000 calc(100% - 36px), transparent); mask-image: linear-gradient(to right, #000 calc(100% - 36px), transparent); }
+@media (max-width: 420px) { .sitetabs { gap: 0; } .sitetabs .tgrp { gap: 0; } .sitetabs button { padding-inline: 5px; font-size: 13px; } .sitetabs .tgrp-lab { left: 5px; } .sitetabs #tab-assist, .sitetabs #tab-about { margin-left: 1px; padding-left: 7px; } .sitetabs #tab-assist { gap: 4px; } .sitetabs .lg { display: none; } .sitetabs .sh { display: inline; } }
 /* Phone and online / Courses bars: the dropdowns share the width evenly; the checkbox sits at the right, where Sort is on In person */
 .tq { display: flex; gap: 10px; align-items: stretch; }
 .tq > .q { flex: 1 1 0; min-width: 0; }
@@ -811,6 +821,15 @@ h1 { font-family: var(--serif); color: var(--b900); font-size: 26px; margin: 0; 
 .tcard .row1 { flex-wrap: nowrap; align-items: center; }
 .tcard .row1 .mode { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .tcard .row1 .openp { flex-shrink: 0; white-space: nowrap; }
+/* Copy details: a small icon on each card; copies plain text ready to paste into a message */
+.chipr { align-items: center; }
+.tcard .row1 .chipr { flex-shrink: 0; flex-wrap: nowrap; }
+.copy { position: relative; width: 28px; height: 28px; display: inline-grid; place-items: center; flex: none; border: 1px solid var(--line); border-radius: 8px; background: #fff; color: var(--b700); cursor: pointer; padding: 0; }
+.copy:hover, .copy:focus-visible { border-color: var(--b200); background: var(--b50); }
+.copy svg { width: 15px; height: 15px; }
+.copy::after { content: attr(data-tip); position: absolute; right: 0; top: calc(100% + 6px); z-index: 5; background: var(--ink); color: #fff; font: 600 12px var(--sans); padding: 4px 8px; border-radius: 6px; white-space: nowrap; opacity: 0; pointer-events: none; transition: opacity .1s; }
+@media (hover: hover) { .copy:hover::after { opacity: 1; } }
+.copy:focus-visible::after { opacity: 1; }
 .mode { font-size: 10px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: var(--b700); }
 @media (max-width: 899px) { .tabs { display: inline-flex; } }
 
@@ -925,6 +944,7 @@ footer.urgent p { color: #FEE2E2; }
 .sitetabs #tab-assist { display: inline-flex; align-items: center; gap: 6px; }
 .sitetabs #tab-assist .lock { width: 13px; height: 13px; flex: none; opacity: .75; }
 .sitetabs #tab-assist.unlocked .lock { display: none; }
+@media (max-width: 420px) { .sitetabs #tab-assist { gap: 3px; } .sitetabs #tab-assist .lock { width: 11px; height: 11px; } }
 #hdr-assist { display: flex; align-items: center; min-height: 0; }
 #hdr-assist[hidden] { display: none; }
 #hdr-assist p { margin: 0; font-size: 14px; color: #57534E; max-width: 80ch; }
@@ -1144,11 +1164,11 @@ footer.urgent p { color: #FEE2E2; }
       <p class="datasrc" id="datasrc" hidden></p>
     </div>
     <nav class="sitetabs" role="tablist" aria-label="Kind of support">
+      <span class="tgrp" role="presentation"><span class="tgrp-lab" aria-hidden="true">Browse</span><button type="button" role="tab" id="tab-near" aria-selected="false" aria-controls="panel-near">In person</button>
+      <button type="button" role="tab" id="tab-talk" aria-selected="false" aria-controls="panel-talk"><span class="lg">Phone and online</span><span class="sh">Phone &amp; online</span></button>
+      <button type="button" role="tab" id="tab-course" aria-selected="false" aria-controls="panel-course">Courses</button></span>
       <button type="button" role="tab" id="tab-assist" aria-selected="false" aria-controls="panel-assist" title="Assist: for invited support workers (access code needed)"><svg class="lock" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M12 2a5 5 0 0 1 5 5v3h1a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2v-8a2 2 0 0 1 2-2h1V7a5 5 0 0 1 5-5zm0 2a3 3 0 0 0-3 3v3h6V7a3 3 0 0 0-3-3z"/></svg><span>Assist</span><span class="sr-lock" id="tab-assist-sr" style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)"> (access code needed)</span></button>
 
-      <button type="button" role="tab" id="tab-near" aria-selected="false" aria-controls="panel-near">In person</button>
-      <button type="button" role="tab" id="tab-talk" aria-selected="false" aria-controls="panel-talk"><span class="lg">Phone and online</span><span class="sh">Phone &amp; online</span></button>
-      <button type="button" role="tab" id="tab-course" aria-selected="false" aria-controls="panel-course">Courses</button>
       <button type="button" role="tab" id="tab-about" aria-selected="false" aria-controls="panel-about">About</button>    </nav>
     </div>
     <div id="hdr-talk" class="tq">
@@ -1508,7 +1528,7 @@ function render() {
     const s = r.s, A = { "drop in": ["b-drop", "Just turn up"], "sign up": ["b-sign", "Contact to join"], "book": ["b-book", "Book first"], "referral": ["b-ref", "Needs a referral"], "call": ["b-ref", "Phone line"] }[s.access] || ["b-ref", "Contact provider"];
     const contact = [s.url ? `<a href="${esc(s.url)}" target="_blank" rel="noopener">Website</a>` : "", s.phone ? esc(s.phone) : "", s.email ? esc(s.email) : ""].filter(Boolean).join(" · ");
     return `<article class="card" id="c${s.id}" data-id="${s.id}">
-      <div class="row1"><span class="badge ${A[0]}">${A[1]}</span><span class="chipr">${r.d != null ? `<span class="chip dist">${r.d < .1 ? "<0.1" : r.d.toFixed(1)} mi${s.approx ? " approx." : ""}</span>` : ""}${s.cost ? `<span class="chip">${esc(s.cost)}</span>` : ""}</span></div>
+      <div class="row1"><span class="badge ${A[0]}">${A[1]}</span><span class="chipr">${r.d != null ? `<span class="chip dist">${r.d < .1 ? "<0.1" : r.d.toFixed(1)} mi${s.approx ? " approx." : ""}</span>` : ""}${s.cost ? `<span class="chip">${esc(s.cost)}</span>` : ""}${copyBtn(s)}</span></div>
       <h2>${esc(s.name)}</h2>
       ${kindTag(s)}<div class="meta">${esc(s.provider)} · ${esc(s.type)}${s._sf.length ? " · " + s._sf.map(cap).map(esc).join(", ") : ""}</div>
       <div class="next"><div class="lab">Next</div><div class="val ${r.nx.cls}">${esc(r.nx.txt)}</div></div>
@@ -1666,6 +1686,47 @@ function shortNext(s, occ, now) {
     : o.st.toLocaleDateString("en-GB", { day: "numeric", month: "short" });
   return day + (s._times ? " " + fmtT(s._times.s) : " (no set time)") + (o.bank ? " (bank hol.)" : "");
 }
+/* ---------- Copy details ---------- */
+// Plain text for a text message, email or case notes: the regular pattern rather than the next date, so it stays right
+const COPY_ICON = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>';
+const copyBtn = (s, when) => `<button type="button" class="copy" data-copy="${s.id}"${when ? ` data-when="${esc(when)}"` : ""} aria-label="Copy details" data-tip="Copy details">${COPY_ICON}</button>`;
+const ampm = t => { const [h, m] = t.split(":").map(Number); return `${h % 12 || 12}${m ? ":" + String(m).padStart(2, "0") : ""}${h < 12 ? "am" : "pm"}`; };
+function copyWhen(s) {
+  const allDay = /^00:00-23:5\d$/.test(s.times || "");
+  let tm = allDay ? "24 hours" : /^\d\d:\d\d(-\d\d:\d\d)?$/.test(s.times || "") ? s.times.split("-").map(ampm).join("–") : (s.times || "");
+  let days = (s.days || "").split(";").map(x => x.trim()).filter(Boolean).join(", ");
+  if (/^mon-sun$/i.test(days) && !s.frequency) { if (allDay) return "24/7"; days = ""; tm = "Every day" + (tm ? ", " + tm : ""); }
+  const f = (s.frequency || "").trim(), hasDay = /\b(mon|tue|wed|thu|fri|sat|sun)/i.test(f);
+  let when = "";
+  if (f && !/^see /i.test(f)) when = hasDay ? f : cap(f) + (days ? ", " + days : "");
+  else if (days) when = (/-/.test(days) ? "" : "Every ") + days;
+  else if (s.dates) when = "Dates: " + split(s.dates).slice(0, 3).map(d => /^\d{4}-\d\d-\d\d$/.test(d) ? new Date(d + "T12:00").toLocaleDateString("en-GB", { day: "numeric", month: "short" }) : d).join(", ") + (split(s.dates).length > 3 ? "…" : "");
+  return [when, tm].filter(Boolean).join(", ");
+}
+function copyText(s, when) {
+  const ACC = { "drop in": "Just turn up", "sign up": "Contact to join", "book": "Book first", "referral": "Needs a referral" }[s.access];
+  const modes = split(s.mode), inPerson = modes.includes("in-person");
+  const how = !inPerson && modes.length ? modes.map(m => m === "phone" ? "Phone" : m === "online" ? "Online" : m).join(" or ") : "";
+  return [
+    s.name + (s.provider && s.provider !== s.name ? ` (${s.provider})` : ""),
+    [when || copyWhen(s), how, ACC, s.cost, s.eligibility].filter(Boolean).join(" · "),
+    inPerson ? [s.address, [s.town, s.postcode].filter(Boolean).join(" ")].filter(Boolean).join(", ") : "",
+    [s.phone, s.email, s.url].filter(Boolean).join(" · "),
+  ].filter(Boolean).join("\n");
+}
+function copyToClipboard(txt) {
+  if (navigator.clipboard && window.isSecureContext) return navigator.clipboard.writeText(txt).catch(() => copyFallback(txt));
+  copyFallback(txt);
+}
+function copyFallback(txt) {
+  const ta = document.createElement("textarea"); ta.value = txt; ta.setAttribute("readonly", ""); ta.style.cssText = "position:fixed;top:-1000px;opacity:0";
+  document.body.appendChild(ta); ta.select(); try { document.execCommand("copy"); } catch (_) {} ta.remove();
+}
+document.addEventListener("click", e => {
+  const b = e.target.closest && e.target.closest(".copy"); if (!b) return;
+  e.preventDefault(); e.stopPropagation();
+  const s = ALL.find(x => String(x.id) === b.dataset.copy); if (s) copyToClipboard(copyText(s, b.dataset.when));
+});
 function renderTalk() {
   if (LIVE_ONLY && !ALL.length) { panelMessage(liveMsg); return; }
   const now = new Date(), sup = $("t-support").value, onlyOpen = $("t-open").checked, area = $("t-area").value;
@@ -1676,7 +1737,7 @@ function renderTalk() {
     const modes = split(s.mode).filter(m => m !== "in-person").map(m => m === "phone" ? "Phone" : "Online").sort((a, b) => a === "Phone" ? -1 : b === "Phone" ? 1 : 0).join(" · ");
     const reach = s.phone ? (/^text/i.test(s.phone) ? esc(s.phone) : `<a href="tel:${esc(s.phone.split(" (")[0].split(" or ")[0].replace(/\s/g, ""))}">${esc(s.phone)}</a>`) : s.email ? `<a href="mailto:${esc(s.email)}">${esc(s.email)}</a>` : "";
     return `<article class="tcard">
-      <div class="row1"><span class="mode">${modes} · ${s.area === "national" ? "UK-wide" : "Local"}</span><span class="openp ${st.open ? "yes" : st.when || "no"}">${esc(st.txt)}</span></div>
+      <div class="row1"><span class="mode">${modes} · ${s.area === "national" ? "UK-wide" : "Local"}</span><span class="chipr"><span class="openp ${st.open ? "yes" : st.when || "no"}">${esc(st.txt)}</span>${copyBtn(s)}</span></div>
       <h3>${esc(s.name)}</h3>
       ${reach ? `<div class="reach${s.phone ? "" : " email"}">${reach}</div>` : ""}
       <p class="desc" style="-webkit-line-clamp:3">${esc(s.description)}</p>
@@ -1713,7 +1774,7 @@ function renderCourses() {
   if (canJoin) rows = rows.filter(r => r.ci.join);
   rows.sort((a, b) => (b.ci.join - a.ci.join) || (a.ci.order - b.ci.order));
   const card = ({ s, ci }) => `<article class="tcard">
-      <div class="row1"><span class="mode">${split(s.mode).includes("online") ? "Online" : esc(s.town || "In person")}</span><span class="openp ${ci.join ? "yes" : "no"}">${esc(ci.status)}</span></div>
+      <div class="row1"><span class="mode">${split(s.mode).includes("online") ? "Online" : esc(s.town || "In person")}</span><span class="chipr"><span class="openp ${ci.join ? "yes" : "no"}">${esc(ci.status)}</span>${copyBtn(s, ci.when)}</span></div>
       <h3>${esc(s.name)}</h3>
       <div class="meta" style="margin:0;color:var(--ink);font-weight:600">${esc(ci.when)}</div>
       <p class="desc" style="-webkit-line-clamp:3">${esc(s.description)}</p>
@@ -1772,7 +1833,7 @@ function renderAbout() {
     </section>
     </div></div>
     <p class="small">Service information belongs to the providers listed. Map data © <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap</a> contributors, © <a href="https://carto.com/attributions" target="_blank" rel="noopener">CARTO</a>.</p>
-    <p class="small" id="site-version">Version: test 2026-11-07 09:47${typeof window.assistRelayVersion === "function" ? window.assistRelayVersion() : ""}</p>
+    <p class="small" id="site-version">Version: test 2026-11-07 10:04${typeof window.assistRelayVersion === "function" ? window.assistRelayVersion() : ""}</p>
   </article>`;
 }
 let tab = "talk";
@@ -1788,6 +1849,9 @@ function setSiteTab(t) {
   try { localStorage.setItem("ss-tab", t); } catch (e) {}
 }
 for (const k of SITE_TABS) $("tab-" + k).onclick = () => setSiteTab(k);
+{ const nav = document.querySelector(".sitetabs");
+  const edge = () => nav.classList.toggle("more", nav.scrollLeft + nav.clientWidth < nav.scrollWidth - 2);
+  nav.addEventListener("scroll", edge, { passive: true }); addEventListener("resize", edge); setTimeout(edge, 0); }
 $("c-support").onchange = renderCourses; $("c-fmt").onchange = renderCourses; $("c-book").onchange = renderCourses;
 $("t-support").onchange = renderTalk; $("t-open").onchange = renderTalk; $("t-area").onchange = renderTalk;
 
@@ -1822,7 +1886,7 @@ $("list").addEventListener("mouseover", e => { const c = e.target.closest(".card
   const m = c && markers[c.dataset.id]; if (m) m.getElement()?.firstElementChild?.classList.add("hot"); });
 $("list").addEventListener("click", e => {
   if (e.target.closest("#show-month")) { $("f-when").value = "month"; fitPending = true; render(); return; }
-  if (e.target.closest("a")) return; const c = e.target.closest(".card"); if (!c) return; c.classList.toggle("open");
+  if (e.target.closest("a, .copy")) return; const c = e.target.closest(".card"); if (!c) return; c.classList.toggle("open");
   const m = markers[c.dataset.id]; if (m && map && mapVisible()) { map.flyTo(m.getLatLng(), Math.max(map.getZoom(), 15), { duration: .5 }); m.openTooltip(); } });
 function setTab(t) { $("main").classList.toggle("show-map", t === "map"); $("t-list").setAttribute("aria-pressed", t === "list"); $("t-map").setAttribute("aria-pressed", t === "map");
   if (t === "map" && map) setTimeout(() => { map.invalidateSize(); fitPending = true; render(); }, 30); }
@@ -1912,7 +1976,7 @@ setInterval(() => { if (!ALL.length) return; tab === "talk" ? renderTalk() : tab
    this page only remembers it for the current browser session. */
 (() => {
 const WORKER_URL = "https://signposting-assist.c-r-williams0109.workers.dev";
-const PAGE_VERSION = "test 2026-11-07 09:47";
+const PAGE_VERSION = "test 2026-11-07 10:04";
 let relayVersion = "";
 // The version line is at the bottom of the About tab: "Version: test 2026-11-06 11:30 · Assist relay 2026-11-06 11:07"
 window.assistRelayVersion = () => relayVersion ? ` · Assist relay ${relayVersion}` : "";
