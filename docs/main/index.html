@@ -832,7 +832,7 @@ h1 { font-family: var(--serif); color: var(--b900); font-size: 26px; margin: 0; 
 .copy:focus-visible::after { opacity: 1; }
 /* After a click: a brief "Copied" acknowledgement, shown on touch screens too */
 .copy.copied { border-color: var(--b500); background: var(--b50); }
-.copy.copied::after { content: "Copied ✓"; opacity: 1; background: var(--b700); }
+.copy.copied::after { content: "Copied"; opacity: 1; }
 .mode { font-size: 10px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: var(--b700); }
 @media (max-width: 899px) { .tabs { display: inline-flex; } }
 
@@ -1843,7 +1843,7 @@ function renderAbout() {
     </section>
     </div></div>
     <p class="small">Service information belongs to the providers listed. Map data © <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap</a> contributors, © <a href="https://carto.com/attributions" target="_blank" rel="noopener">CARTO</a>.</p>
-    <p class="small" id="site-version">Version: main 2026-11-07 13:36${typeof window.assistRelayVersion === "function" ? window.assistRelayVersion() : ""}</p>
+    <p class="small" id="site-version">Version: main 2026-11-07 13:45${typeof window.assistRelayVersion === "function" ? window.assistRelayVersion() : ""}</p>
   </article>`;
 }
 let tab = "talk";
@@ -1986,7 +1986,7 @@ setInterval(() => { if (!ALL.length) return; tab === "talk" ? renderTalk() : tab
    this page only remembers it for the current browser session. */
 (() => {
 const WORKER_URL = "https://signposting-assist.c-r-williams0109.workers.dev";
-const PAGE_VERSION = "main 2026-11-07 13:36";
+const PAGE_VERSION = "main 2026-11-07 13:45";
 let relayVersion = "";
 // The version line is at the bottom of the About tab: "Version: test 2026-11-06 11:30 · Assist relay 2026-11-06 11:07"
 window.assistRelayVersion = () => relayVersion ? ` · Assist relay ${relayVersion}` : "";
