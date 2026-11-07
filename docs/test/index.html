@@ -1772,7 +1772,7 @@ function renderAbout() {
     </section>
     </div></div>
     <p class="small">Service information belongs to the providers listed. Map data © <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap</a> contributors, © <a href="https://carto.com/attributions" target="_blank" rel="noopener">CARTO</a>.</p>
-    <p class="small" id="site-version">Version: test 2026-11-06 14:00${typeof window.assistRelayVersion === "function" ? window.assistRelayVersion() : ""}</p>
+    <p class="small" id="site-version">Version: test 2026-11-07 09:47${typeof window.assistRelayVersion === "function" ? window.assistRelayVersion() : ""}</p>
   </article>`;
 }
 let tab = "talk";
@@ -1872,8 +1872,13 @@ function recordsFromCSV(text) {
   return { recs };
 }
 function applyRecords(recs) {  // (also refreshes the About counts)
+  const keepTown = $("f-town").value, keepOrigin = origin;   // a place chosen while the live sheet was loading
   prepare(recs);
-  origin = null; sortBy = "soon"; fitPending = true; $("f-town").value = "";
+  fitPending = true;
+  if (keepOrigin && (keepTown === "__pt" || PLACE[keepTown])) {
+    if (keepTown === "__pt") setPtLabel(keepOrigin.label === "your location" ? "Your location" : "Point on map");
+    $("f-town").value = keepTown; origin = keepOrigin;
+  } else { $("f-town").value = ""; origin = null; sortBy = "soon"; }
   setSiteTab(tab);
 }
 function showSource(txt) { const el = $("datasrc"); el.textContent = txt; el.hidden = !txt; }
@@ -1907,7 +1912,7 @@ setInterval(() => { if (!ALL.length) return; tab === "talk" ? renderTalk() : tab
    this page only remembers it for the current browser session. */
 (() => {
 const WORKER_URL = "https://signposting-assist.c-r-williams0109.workers.dev";
-const PAGE_VERSION = "test 2026-11-06 14:00";
+const PAGE_VERSION = "test 2026-11-07 09:47";
 let relayVersion = "";
 // The version line is at the bottom of the About tab: "Version: test 2026-11-06 11:30 · Assist relay 2026-11-06 11:07"
 window.assistRelayVersion = () => relayVersion ? ` · Assist relay ${relayVersion}` : "";
@@ -1983,7 +1988,7 @@ document.addEventListener("click", e => {
 
 // ---- set up the form ----
 function note(t) { $a("a-err").textContent = t; $a("a-err").hidden = !t; }
-function busy(on, t) { $a("a-status").hidden = !on; $a("a-statusText").textContent = t || "Thinking..."; $a("a-ask").disabled = on; }
+function busy(on, t) { $a("a-status").hidden = !on; $a("a-statusText").textContent = t || "Thinking..."; $a("a-ask").disabled = on || webBusy; }   // also stays off while an online search runs
 
 // ---- where: the same places, distances and "Support for" as the In person tab, shared between the two tabs ----
 // place = { kind: "place" | "pt" | "remote" | "", name, lat, lon, label }. Only a rounded point is ever sent.
@@ -2242,7 +2247,7 @@ function webBar(r) {
 async function searchWeb() {
   const r = lastResult; if (!r || webBusy) return;
   const q = scrub(r.search_for || (r.core_needs || []).join(" ") + " support " + (r.place || "Somerset")).text;
-  webBusy = true; r.search_for = q; show(r, true);
+  webBusy = true; $a("a-ask").disabled = true; r.search_for = q; show(r, true);   // one request at a time: wait for the search
   let web;
   try {
     const res = await fetch(WORKER_URL.replace(/\/$/, "") + "/web", { method: "POST", headers: { "Content-Type": "application/json", "X-Access-Code": code },
@@ -2251,7 +2256,7 @@ async function searchWeb() {
     const d = await res.json().catch(() => ({ error: "bad_answer" }));
     web = d.error ? { items: [], keep: null, query: q, error: d.error === "busy" ? "The online search is busy; try again in a minute." : d.error === "rate_limited" ? ERRORS.rate_limited : "The online search didn't work this time." } : { items: d.items || [], keep: d.keep || null, note: d.note, query: d.query || q };
   } catch { web = { items: [], keep: null, query: q, error: "Couldn't reach the online search." }; }
-  webBusy = false;
+  webBusy = false; $a("a-ask").disabled = false;
   if (lastResult !== r) return;          // a newer request has replaced these results
   r.web = web; show(r, true);
 }
