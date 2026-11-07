@@ -15,14 +15,15 @@
  *   ANTHROPIC_API_KEY  (Secret)  your key from console.anthropic.com
  *   ACCESS_CODE        (Secret)  the code you give to people trying the demo
  *   SHEET_CSV_URL      (Text)    the sheet's published CSV link
- *   ALLOWED_ORIGIN     (Text)    https://chris010970.github.io
+ *   ALLOWED_ORIGIN     (Text)    the site's address, or several separated by commas, e.g.
+ *                                 https://signpostingsomerset.org.uk,https://chris010970.github.io
  *   MODEL              (Text, optional)  defaults to claude-sonnet-5-5
  *
  * Nothing the user types is stored or logged by this Worker.
  */
 
 const TOWNS = {"Axbridge": [51.2866, -2.8188], "Berrow": [51.268, -3.007], "Bishops Lydeard": [51.06, -3.187], "Brean": [51.293, -3.012], "Bridgwater": [51.1279, -3.0036], "Bruton": [51.1118, -2.4532], "Burnham-on-Sea": [51.2384, -2.9972], "Castle Cary": [51.089, -2.513], "Chard": [50.8722, -2.9616], "Cheddar": [51.2771, -2.7781], "Cotford St Luke": [51.042, -3.177], "Creech St Michael": [51.025, -3.035], "Crewkerne": [50.884, -2.795], "Dulverton": [51.04, -3.55], "Frome": [51.2283, -2.3218], "Glastonbury": [51.1486, -2.7145], "Highbridge": [51.2187, -2.9727], "Ilminster": [50.9265, -2.9112], "Langport": [51.038, -2.828], "Minehead": [51.2041, -3.4794], "North Petherton": [51.093, -3.013], "Porlock": [51.208, -3.595], "Shepton Mallet": [51.1906, -2.5462], "Somerton": [51.055, -2.734], "South Petherton": [50.948, -2.81], "Stoke St Gregory": [51.04, -2.935], "Street": [51.1268, -2.7393], "Taunton": [51.015, -3.103], "Watchet": [51.181, -3.33], "Wellington": [50.9787, -3.2263], "Wells": [51.2093, -2.6474], "West Huntspill": [51.198, -2.99], "Williton": [51.162, -3.322], "Wincanton": [51.056, -2.41], "Wiveliscombe": [51.041, -3.312], "Woolavington": [51.168, -2.94], "Yeovil": [50.9421, -2.633], "Cannington": [51.15, -3.064], "Coleford": [51.239, -2.444], "Drayton": [51.006, -2.836], "Dunster": [51.183, -3.444], "East Huntspill": [51.2, -2.96], "Evercreech": [51.148, -2.502], "Galmington": [51.011, -3.122], "Keinton Mandeville": [51.068, -2.645], "Lisieux Way": [51.018, -3.075], "Long Load": [50.997, -2.756], "Long Sutton": [51.023, -2.758], "Martock": [50.97, -2.768], "Merriott": [50.905, -2.795], "Milborne Port": [50.966, -2.462], "Milverton": [51.026, -3.257], "Mudford": [50.968, -2.611], "Oake": [51.024, -3.199], "Oakhill": [51.226, -2.522], "Queen Camel": [51.022, -2.582], "Staplegrove": [51.033, -3.12], "Stogursey": [51.18, -3.14], "West Monkton": [51.04, -3.06], "Weston-super-Mare": [51.346, -2.977], "Edington": [51.162, -2.885], "Ruishton": [51.017, -3.055], "Steart": [51.203, -3.046], "Stoke-sub-Hamdon": [50.953, -2.749], "Wedmore": [51.227, -2.811], "Westhay": [51.183, -2.783], "Nailsea": [51.432, -2.757], "Backwell": [51.411, -2.732], "Bath": [51.381, -2.359], "Batheaston": [51.405, -2.318], "Chew Magna": [51.367, -2.609], "Chilcompton": [51.267, -2.511], "Keynsham": [51.414, -2.498], "Midsomer Norton": [51.284, -2.482], "Newton St Loe": [51.373, -2.43], "Radstock": [51.293, -2.448], "Saltford": [51.402, -2.457], "Sparkford": [51.034, -2.565], "Stanton Drew": [51.367, -2.577], "Tatworth": [50.852, -2.957], "Timberscombe": [51.168, -3.487], "Timsbury": [51.328, -2.478], "Tunley": [51.343, -2.45], "Norton St Philip": [51.3, -2.326], "Nunney": [51.21, -2.378], "Paulton": [51.307, -2.504], "Peasedown St John": [51.316, -2.43]};
-const VERSION = "2026-11-07 01:27";        // set when the worker is built; shown on the Assist tab
+const VERSION = "2026-11-07 12:04";        // set when the worker is built; shown on the Assist tab
 const DEFAULT_MODEL = "claude-sonnet-5-5";
 const MAX_PER_HOUR = 30;               // per visitor (best effort: counts reset when Cloudflare restarts the Worker)
 const RISK = /suicid|kill (my|him|her|them)sel|end (my|his|her|their) life|self[- ]?harm|cutting (my|him|her)|overdos|want(s|ed)? to die|no reason to live|better off dead/i;
@@ -67,7 +68,10 @@ const MAX_BAD_CODES = 10;              // wrong codes per visitor per hour
 
 export default {
   async fetch(request, env) {
-    const origin = env.ALLOWED_ORIGIN || "*";
+    // One or more allowed site addresses, comma-separated; the matching one is echoed back
+    const allowed = String(env.ALLOWED_ORIGIN || "").split(",").map(x => x.trim().replace(/\/$/, "")).filter(Boolean);
+    const from = request.headers.get("Origin") || "";
+    const origin = !allowed.length ? "*" : allowed.includes(from) ? from : allowed[0];
     const cors = {
       "Access-Control-Allow-Origin": origin,
       "Access-Control-Allow-Methods": "POST, OPTIONS",
@@ -79,7 +83,7 @@ export default {
 
     if (request.method === "OPTIONS") return new Response(null, { status: 204, headers: cors });
     if (request.method !== "POST") return reply({ error: "not_found" }, 404);
-    if (env.ALLOWED_ORIGIN && request.headers.get("Origin") !== env.ALLOWED_ORIGIN) return reply({ error: "forbidden" }, 403);
+    if (allowed.length && !allowed.includes(from)) return reply({ error: "forbidden" }, 403);
     // Wrong codes are limited per visitor, so the code can't be guessed by trying many (best effort, as below)
     const ip = request.headers.get("CF-Connecting-IP") || "?";
     const now = Date.now(), hour = 3600e3;
@@ -372,10 +376,18 @@ Find real, current services that fill what the plan is missing for the core need
 Then make ONE final plan of at most 10 items (as few as 2 or 3 if that's all that genuinely fits), choosing the best fits from the plan so far and what you found, judged in this order: meets the core need directly; usable by the person; fits their constraints; matches their readiness (an easy first step first); soonest and nearest. A directory service beats an online find that is equally good. Avoid duplicates.
 Rules:
 - Add at most 3 online finds. An online find may be a "First step" only if nothing in the plan so far meets the core need.
-- Only include an online find you saw on a web page in your searches, and give that page's URL (prefer the provider's own page). Never invent details: leave "when", "where" or "contact" as an empty string if the page doesn't say.
+- Only include an online find you saw on a web page in your searches, and give that page's URL (prefer the provider's own page). Never invent details: leave any field you can't confirm from the page as an empty string.
+- An online find must be a service the person can join, call or contact: not a directory or list of services, an article, or advice to read.
+- Fill each find in the same fields as the directory's records, so it can be shown the same way:
+  access: exactly one of "drop in", "sign up", "book", "referral", "call" (a phone or chat line is "call");
+  mode: one or more of "in-person", "phone", "online", separated by ";";
+  days: e.g. "Mon", "Tue;Thu", "Mon-Fri", "Mon-Sun"; times: 24-hour "HH:MM-HH:MM" (or "HH:MM"); frequency: empty if weekly, else e.g. "fortnightly", "2nd Wed of month";
+  address (venue and street, no town) and town only for in-person services; phone and email only if the page gives the organisation's own (never a volunteer's personal mobile or personal email);
+  cost: e.g. "Free", "£5"; eligibility: any condition, briefly; note: one short caveat from the page that matters before contacting them (such as a waiting list), else empty.
+  "what" says what it is and who it's for in plain words; don't put times, phone numbers or emails in "what", "why" or "note".
 - Never give addresses of crisis safe spaces or refuges. Write "why" without "he" or "she".
 Reply with only this JSON:
-{"keep": [{"n": 1, "step": "First step, Next step or When ready"}], "items": [{"name": "...", "what": "max 20 words", "when": "", "where": "", "contact": "phone, email or how to join", "url": "https://...", "step": "Next step", "why": "max 25 words"}], "note": "one sentence if nothing suitable was found online, else empty"}
+{"keep": [{"n": 1, "step": "First step, Next step or When ready"}], "items": [{"name": "...", "provider": "", "what": "max 20 words", "access": "", "mode": "", "days": "", "times": "", "frequency": "", "address": "", "town": "", "phone": "", "email": "", "cost": "", "eligibility": "", "note": "", "url": "https://...", "step": "Next step", "why": "max 25 words"}], "note": "one sentence if nothing suitable was found online, else empty"}
 "keep" lists the plan-so-far numbers to keep, in plan order.`;
   const tools = [{ type: "web_search_20250305", name: "web_search", max_uses: WEB_MAX,
     user_location: { type: "approximate", city: town.replace(/^a point about .* from /, ""), region: "England", country: "GB", timezone: "Europe/London" } }];
@@ -407,14 +419,40 @@ Reply with only this JSON:
   const text = content.filter(b => b.type === "text").map(b => b.text).join("");
   let out = {};
   try { out = JSON.parse(text.slice(text.indexOf("{"), text.lastIndexOf("}") + 1)); } catch { return reply({ items: [], keep: null, note: "The online search didn't return anything usable.", query }); }
+  // Online finds come from public web pages, which the search never connects to the person: the name-guessing in scrub()
+  // would mangle ordinary sentences there ("Anyone is welcome"), so free text only loses emails and phone numbers.
+  const plain = (v, n) => String(v || "").replace(/[\w.+-]+@[\w-]+\.[\w.-]+/g, "").replace(/(?:\+44[\s-]?\(?0?\)?|\(?\b0)\d[\d\s()-]{7,12}\d\b/g, "")
+    .replace(/[\r\n"`]/g, " ").replace(/\s{2,}/g, " ").replace(/\s+([.,;:])/g, "$1").trim().slice(0, n);
+  const pick = (v, allowed) => { const x = String(v || "").trim().toLowerCase(); return allowed.includes(x) ? x : ""; };
+  const MODES = ["in-person", "phone", "online"];
+  const DAY = "(?:Mon|Tue|Wed|Thu|Fri|Sat|Sun)";
+  const daysOk = v => { const d = String(v || "").trim(); return new RegExp(`^${DAY}(?:-${DAY})?(?:;${DAY}(?:-${DAY})?)*$`).test(d) ? d : ""; };
+  const timesOk = v => { const t = String(v || "").trim(); return /^\d\d:\d\d(?:-\d\d:\d\d)?$/.test(t) ? t : ""; };
+  // Organisation contacts only: no mobiles (likely a volunteer's own) and no personal email providers
+  const phoneOk = v => { const p = String(v || "").replace(/[^\d +()]/g, " ").replace(/\s+/g, " ").trim(); const d = p.replace(/\D/g, "");
+    return d.length >= 5 && d.length <= 13 && !/^(?:07|447)/.test(d) ? p.slice(0, 40) : ""; };
+  const emailOk = v => { const e = String(v || "").trim().toLowerCase();
+    return /^[\w.+-]+@[\w-]+\.[\w.-]+$/.test(e) && !/@(?:gmail|googlemail|hotmail|outlook|live|yahoo|icloud|me|aol|btinternet|sky|talktalk|virginmedia)\./.test(e) ? e.slice(0, 80) : ""; };
   const items = (Array.isArray(out.items) ? out.items : []).map(it => {
     let u = null; try { u = new URL(String(it.url)); if (!/^https?:$/.test(u.protocol)) u = null; } catch {}
     return { u, it };
-  }).filter(x => x.u && seen.has(x.u.hostname.replace(/^www\./, ""))).slice(0, 3).map(({ u, it }) => ({
-    name: clean(it.name, 120), what: clean(it.what, 200), when: clean(it.when, 160), where: clean(it.where, 200),
-    contact: String(it.contact || "").replace(/[\r\n"`]/g, " ").trim().slice(0, 200), url: u.href.slice(0, 400), source: u.hostname.replace(/^www\./, ""),
-    step: stepOf(it.step) || "Next step", why: clean(it.why, 250),
-  })).filter(x => x.name);
+  }).filter(x => x.u && seen.has(x.u.hostname.replace(/^www\./, ""))).map(({ u, it }) => {
+    const mode = String(it.mode || "").split(/[;,/]/).map(m => pick(m.replace(/^\s*in person\s*$/i, "in-person"), MODES)).filter((m, i, a) => m && a.indexOf(m) === i).join(";") || "online";
+    const inPerson = mode.includes("in-person");
+    const name = plain(it.name, 120);
+    const hidePlace = /safe ?space|refuge/i.test(name);
+    return {
+      name, provider: plain(it.provider, 120), what: plain(it.what, 200),
+      access: pick(it.access, ["drop in", "sign up", "book", "referral", "call"]), mode,
+      days: daysOk(it.days), times: timesOk(it.times), frequency: plain(it.frequency, 60),
+      address: inPerson && !hidePlace ? plain(it.address, 120) : "", town: inPerson ? plain(it.town, 60) : "",
+      phone: phoneOk(it.phone), email: emailOk(it.email), cost: plain(it.cost, 60), eligibility: plain(it.eligibility, 120), note: plain(it.note, 160),
+      url: u.href.slice(0, 400), source: u.hostname.replace(/^www\./, ""),
+      step: stepOf(it.step) || "Next step", why: plain(it.why, 250),
+    };
+  })
+  // Not good enough to show like a directory record: drop it. A find needs a known way to join, plus a phone, an email or set days.
+  .filter(x => x.name && x.what && x.access && (x.phone || x.email || x.days)).slice(0, 3);
 
   // The merged plan is checked here against fixed rules, whatever the model (or a web page it read) asked for:
   // - the directory's first steps stay, unless the directory doesn't cover the core need at all;
