@@ -830,6 +830,9 @@ h1 { font-family: var(--serif); color: var(--b900); font-size: 26px; margin: 0; 
 .copy::after { content: attr(data-tip); position: absolute; right: 0; top: calc(100% + 6px); z-index: 5; background: var(--ink); color: #fff; font: 600 12px var(--sans); padding: 4px 8px; border-radius: 6px; white-space: nowrap; opacity: 0; pointer-events: none; transition: opacity .1s; }
 @media (hover: hover) { .copy:hover::after { opacity: 1; } }
 .copy:focus-visible::after { opacity: 1; }
+/* After a click: a brief "Copied" acknowledgement, shown on touch screens too */
+.copy.copied { border-color: var(--b500); background: var(--b50); }
+.copy.copied::after { content: "Copied ✓"; opacity: 1; background: var(--b700); }
 .mode { font-size: 10px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: var(--b700); }
 @media (max-width: 899px) { .tabs { display: inline-flex; } }
 
@@ -1166,6 +1169,7 @@ footer.urgent p { color: #FEE2E2; }
       <h1><img class="logo" src="../assets/logo-signpost.webp" alt="" width="31" height="34">Signposting Somerset</h1>
       <p class="lede" id="lede"><span class="lg">Connecting people with local mental health and wellbeing support.</span><span class="sh">Local mental health and wellbeing support.</span></p>
       <p class="datasrc" id="datasrc" hidden></p>
+      <span id="copy-live" role="status" aria-live="polite" style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)"></span>
     </div>
     <nav class="sitetabs" role="tablist" aria-label="Kind of support">
       <span class="tgrp" role="presentation"><button type="button" role="tab" id="tab-near" aria-selected="false" aria-controls="panel-near">In person</button>
@@ -1729,7 +1733,10 @@ function copyFallback(txt) {
 document.addEventListener("click", e => {
   const b = e.target.closest && e.target.closest(".copy"); if (!b) return;
   e.preventDefault(); e.stopPropagation();
-  const s = ALL.find(x => String(x.id) === b.dataset.copy); if (s) copyToClipboard(copyText(s, b.dataset.when));
+  const s = ALL.find(x => String(x.id) === b.dataset.copy); if (!s) return;
+  copyToClipboard(copyText(s, b.dataset.when));
+  b.classList.add("copied"); clearTimeout(b._t); b._t = setTimeout(() => b.classList.remove("copied"), 1600);
+  const live = $("copy-live"); if (live) { live.textContent = ""; setTimeout(() => { live.textContent = `Copied details for ${s.name}`; }, 30); }
 });
 function renderTalk() {
   if (LIVE_ONLY && !ALL.length) { panelMessage(liveMsg); return; }
@@ -1836,7 +1843,7 @@ function renderAbout() {
     </section>
     </div></div>
     <p class="small">Service information belongs to the providers listed. Map data © <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap</a> contributors, © <a href="https://carto.com/attributions" target="_blank" rel="noopener">CARTO</a>.</p>
-    <p class="small" id="site-version">Version: main 2026-11-07 12:05${typeof window.assistRelayVersion === "function" ? window.assistRelayVersion() : ""}</p>
+    <p class="small" id="site-version">Version: main 2026-11-07 13:36${typeof window.assistRelayVersion === "function" ? window.assistRelayVersion() : ""}</p>
   </article>`;
 }
 let tab = "talk";
@@ -1979,7 +1986,7 @@ setInterval(() => { if (!ALL.length) return; tab === "talk" ? renderTalk() : tab
    this page only remembers it for the current browser session. */
 (() => {
 const WORKER_URL = "https://signposting-assist.c-r-williams0109.workers.dev";
-const PAGE_VERSION = "main 2026-11-07 12:05";
+const PAGE_VERSION = "main 2026-11-07 13:36";
 let relayVersion = "";
 // The version line is at the bottom of the About tab: "Version: test 2026-11-06 11:30 · Assist relay 2026-11-06 11:07"
 window.assistRelayVersion = () => relayVersion ? ` · Assist relay ${relayVersion}` : "";
@@ -1996,7 +2003,7 @@ window.assistAbout = () => `<section>
     </ul>
     ${code ? `<p><button type="button" class="btn ghost" id="a-forget">Lock Assist on this device</button></p>` : ""}
     </section>`;
-const SITE = "https://signpostingsomerset.org.uk/main/";   // the plan always points people to the public site
+const SITE = "https://signpostingsomerset.org.uk";   // the plan always points people to the public site
 const RISK = /suicid|kill (my|him|her|them)sel|end (my|his|her|their) life|self[- ]?harm|cutting (my|him|her)|overdos|want(s|ed)? to die|no reason to live|better off dead/i;
 const $a = id => document.getElementById(id);
 const e_ = s => String(s ?? "").replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
@@ -2473,7 +2480,11 @@ function plan() {
       const s = p.record, inPerson = (s.mode || "").includes("in-person");
       const when = whenText(s), where = inPerson ? [s.address, s.town, s.postcode].filter(Boolean).join(", ") : "";
       const how = [HOW[s.access] || s.access, s.cost].filter(Boolean).join(". ");
-      const lines = [when && where ? `${when}, ${where}` : when || where, how, s.note].filter(Boolean);
+      // Not in person: say how to take part, so a plan line is never just a time with no place
+      const modes = (s.mode || "").split(";").map(m => m.trim());
+      const remoteHow = inPerson ? "" : [modes.includes("online") && "online", modes.includes("phone") && "by phone"].filter(Boolean).join(" or ").replace(/^./, c => c.toUpperCase());
+      const whereT = where || remoteHow;
+      const lines = [when && whereT ? `${when}, ${whereT}` : when || whereT, how, s.note].filter(Boolean);
       const contactH = [s.phone && `<a href="tel:${e_(telOf(s))}">${e_(s.phone)}</a>`, s.email && `<a href="mailto:${e_(s.email)}">${e_(s.email)}</a>`].filter(Boolean).join(" · ");
       const contactT = [s.phone, s.email].filter(Boolean).join(" · ");
       const name = (isUrl(s.url) ? `<a href="${e_(s.url)}"><b>${e_(s.name)}</b></a>` : `<b>${e_(s.name)}</b>`) + (p.web ? ` <i style="font-size:12px">(found online, not checked)</i>` : "");
