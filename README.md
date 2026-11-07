@@ -6,13 +6,15 @@
 
 👉 **https://signpostingsomerset.org.uk**
 
+Somerset has a wealth of local support: peer groups, drop-ins, walking groups, carers' groups, and help with money, housing and food. But it's scattered across dozens of websites, timetables, newsletters, flyers and Facebook pages, often out of date and missing the details that matter. Support workers end up relying on memory or a long search in the middle of a conversation with someone who needs help now. Signposting Somerset brings it together in one place, checked and kept current, so that question can be answered in seconds.
+
 ---
 
 ### 🗺️ The directory
 
 **A checked directory of local mental health and wellbeing support:** crisis support, peer groups, activities, practical help with money, housing and food, and one-to-one support, in person, by phone and online.
 
-- **Over 750 services from more than 200 providers,** each checked against the provider's own information and dated.
+- **Over 750 services from more than 200 providers.** Each is checked against the provider's own published information (website, timetable or leaflet) and dated, and some details have also been confirmed directly with the provider. Times can change between checks, so the date shown is when it was last checked.
 - **What's on, not just who exists:** the next session for every service, worked out for you, on a map and in a list.
 - **Search by need, place and time,** within a few miles of any town or point on the map.
 - **Phone and online support** in its own tab, including helplines open right now, and **courses** with set dates.
@@ -35,17 +37,7 @@ The **Assist** tab turns a short description of someone's situation into a suppo
 
 ---
 
-### 📋 What testing has taught us
-
-Assist has been tested on realistic, multi-need scenarios (for example: gambling debts with suicidal thoughts; first-episode psychosis; low mood after a stroke; perinatal OCD; a male victim of domestic abuse) and compared, blind, with ChatGPT given the same prompts.
-
-- **Choices were good; gaps were mostly in the data.** Where Assist lost marks, it was usually because a record was incomplete (no times, no phone), not because it picked the wrong service. Fixing records improved results more than changing the AI.
-- **Fewer misleading suggestions.** ChatGPT (Pro) found slightly more options, but about 1 in 5 of its suggestions couldn't be found or were contradicted by the provider. Assist's suggestions come from checked records: about 1 in 20 were misleading, both data errors since corrected. Counting misleading suggestions against each, Assist scored about 2.9 useful suggestions per request against ChatGPT's 2.25.
-- **The directory is the product.** Assist is a helpful layer on top, but only as good as the records underneath. The most valuable work is keeping the data complete and current, and gaps found during testing are added to the directory after checking.
-
----
-
-**Demo version.** Every service is checked against the provider's own information, but services change: please confirm with the service before attending.
+**Demo version.** Services are checked against providers' own published information, but they change: please confirm with the service before attending.
 
 Spotted something out of date, or know a service that should be listed? [**Suggest a change**](https://docs.google.com/forms/d/e/1FAIpQLSf8NCl7EpGkgKNACUMDJEFzToJnoQp_xs7Fj0E9z4o2pLiqOQ/viewform).
 
