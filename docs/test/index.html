@@ -1844,7 +1844,7 @@ function renderAbout() {
     </section>
     </div></div>
     <p class="small">Service information belongs to the providers listed. Map data © <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap</a> contributors, © <a href="https://carto.com/attributions" target="_blank" rel="noopener">CARTO</a>.</p>
-    <p class="small" id="site-version">Version: test 2026-11-08 20:57${typeof window.assistRelayVersion === "function" ? window.assistRelayVersion() : ""}</p>
+    <p class="small" id="site-version">Version: test 2026-11-08 21:06${typeof window.assistRelayVersion === "function" ? window.assistRelayVersion() : ""}</p>
   </article>`;
 }
 let tab = "talk";
@@ -1987,7 +1987,7 @@ setInterval(() => { if (!ALL.length) return; tab === "talk" ? renderTalk() : tab
    this page only remembers it for the current browser session. */
 (() => {
 const WORKER_URL = "https://signposting-assist.c-r-williams0109.workers.dev";
-const PAGE_VERSION = "test 2026-11-08 20:57";
+const PAGE_VERSION = "test 2026-11-08 21:06";
 let relayVersion = "";
 // The version line is at the bottom of the About tab: "Version: test 2026-11-06 11:30 · Assist relay 2026-11-06 11:07"
 window.assistRelayVersion = () => relayVersion ? ` · Assist relay ${relayVersion}` : "";
@@ -2330,7 +2330,7 @@ function show(r, keepScroll) {
   // Test page only: how long each step took, to measure speed changes
   if (/\/test\//.test(location.pathname) && sc.timing) {
     const t = sc.timing, sec = ms => ms !== undefined ? (ms / 1000).toFixed(1) + "s" : "-";
-    m += `<p class="a-scope">Timing: total ${sec(t.total_ms)} · AI ${sec(t.plan_ms)}: first output after ${sec(t.first_block_ms)}, writing started ${sec(t.text_start_ms)} · ${t.plan_in || "?"} tokens in, ${t.plan_out || "?"} out (${t.text_chars || 0} characters of answer${t.thinking_chars ? `, ${t.thinking_chars} of thinking` : ""}; ${e_(t.blocks || "")}) · ${e_(t.model || "")}</p>`;
+    m += `<p class="a-scope">Timing: total ${sec(t.total_ms)} · AI ${sec(t.plan_ms)}: first output after ${sec(t.first_block_ms)}, writing started ${sec(t.text_start_ms)} · ${t.plan_in || "?"} tokens in, ${t.plan_out || "?"} out (${t.text_chars || 0} characters of answer${t.thinking_chars ? `, ${t.thinking_chars} of thinking` : ""}; ${e_(t.blocks || "")}) · ${e_(t.model || "")} (${e_(t.settings || "defaults")})</p>`;
   }
   const side = lastPicks.length ? `<aside class="a-preview" aria-label="Support plan"><div class="a-pv-label">Support plan</div><div class="a-pv-body">${plan().html}</div><p class="a-pv-hint">Copy it into an email or letter, share it by text, or print it.</p></aside>` : "";
   $a("a-out").innerHTML = `<div class="a-results"><div class="a-maincol">${m}</div>${side}</div>`;
