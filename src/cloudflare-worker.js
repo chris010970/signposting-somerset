@@ -23,7 +23,7 @@
  */
 
 const TOWNS = {"Axbridge": [51.2866, -2.8188], "Berrow": [51.268, -3.007], "Bishops Lydeard": [51.06, -3.187], "Brean": [51.293, -3.012], "Bridgwater": [51.1279, -3.0036], "Bruton": [51.1118, -2.4532], "Burnham-on-Sea": [51.2384, -2.9972], "Castle Cary": [51.089, -2.513], "Chard": [50.8722, -2.9616], "Cheddar": [51.2771, -2.7781], "Cotford St Luke": [51.042, -3.177], "Creech St Michael": [51.025, -3.035], "Crewkerne": [50.884, -2.795], "Dulverton": [51.04, -3.55], "Frome": [51.2283, -2.3218], "Glastonbury": [51.1486, -2.7145], "Highbridge": [51.2187, -2.9727], "Ilminster": [50.9265, -2.9112], "Langport": [51.038, -2.828], "Minehead": [51.2041, -3.4794], "North Petherton": [51.093, -3.013], "Porlock": [51.208, -3.595], "Shepton Mallet": [51.1906, -2.5462], "Somerton": [51.055, -2.734], "South Petherton": [50.948, -2.81], "Stoke St Gregory": [51.04, -2.935], "Street": [51.1268, -2.7393], "Taunton": [51.015, -3.103], "Watchet": [51.181, -3.33], "Wellington": [50.9787, -3.2263], "Wells": [51.2093, -2.6474], "West Huntspill": [51.198, -2.99], "Williton": [51.162, -3.322], "Wincanton": [51.056, -2.41], "Wiveliscombe": [51.041, -3.312], "Woolavington": [51.168, -2.94], "Yeovil": [50.9421, -2.633], "Cannington": [51.15, -3.064], "Coleford": [51.239, -2.444], "Drayton": [51.006, -2.836], "Dunster": [51.183, -3.444], "East Huntspill": [51.2, -2.96], "Evercreech": [51.148, -2.502], "Galmington": [51.011, -3.122], "Keinton Mandeville": [51.068, -2.645], "Lisieux Way": [51.018, -3.075], "Long Load": [50.997, -2.756], "Long Sutton": [51.023, -2.758], "Martock": [50.97, -2.768], "Merriott": [50.905, -2.795], "Milborne Port": [50.966, -2.462], "Milverton": [51.026, -3.257], "Mudford": [50.968, -2.611], "Oake": [51.024, -3.199], "Oakhill": [51.226, -2.522], "Queen Camel": [51.022, -2.582], "Staplegrove": [51.033, -3.12], "Stogursey": [51.18, -3.14], "West Monkton": [51.04, -3.06], "Weston-super-Mare": [51.346, -2.977], "Edington": [51.162, -2.885], "Ruishton": [51.017, -3.055], "Steart": [51.203, -3.046], "Stoke-sub-Hamdon": [50.953, -2.749], "Wedmore": [51.227, -2.811], "Westhay": [51.183, -2.783], "Nailsea": [51.432, -2.757], "Backwell": [51.411, -2.732], "Bath": [51.381, -2.359], "Batheaston": [51.405, -2.318], "Chew Magna": [51.367, -2.609], "Chilcompton": [51.267, -2.511], "Keynsham": [51.414, -2.498], "Midsomer Norton": [51.284, -2.482], "Newton St Loe": [51.373, -2.43], "Radstock": [51.293, -2.448], "Saltford": [51.402, -2.457], "Sparkford": [51.034, -2.565], "Stanton Drew": [51.367, -2.577], "Tatworth": [50.852, -2.957], "Timberscombe": [51.168, -3.487], "Timsbury": [51.328, -2.478], "Tunley": [51.343, -2.45], "Norton St Philip": [51.3, -2.326], "Nunney": [51.21, -2.378], "Paulton": [51.307, -2.504], "Peasedown St John": [51.316, -2.43]};
-const VERSION = "2026-11-08 20:56";        // set when the worker is built; shown on the Assist tab
+const VERSION = "2026-11-08 21:06";        // set when the worker is built; shown on the Assist tab
 const DEFAULT_MODEL = "claude-sonnet-5-5";
 const MAX_PER_HOUR = 30;               // per visitor (best effort: counts reset when Cloudflare restarts the Worker)
 const RISK = /suicid|kill (my|him|her|them)sel|end (my|his|her|their) life|self[- ]?harm|cutting (my|him|her)|overdos|want(s|ed)? to die|no reason to live|better off dead/i;
@@ -199,6 +199,17 @@ export default {
 };
 
 // ---------- the AI call ----------
+// Optional settings in Cloudflare, to trade thinking time for speed. Unset = the model's defaults.
+//   THINKING = off     -> no thinking before the answer ("between_tools"; Assist uses no tools)
+//   EFFORT   = low | medium | high
+function aiOptions(env) {
+  const o = {};
+  if (String(env.THINKING || "").toLowerCase() === "off") o.thinking = { type: "between_tools" };
+  const effort = String(env.EFFORT || "").toLowerCase();
+  if (["low", "medium", "high"].includes(effort)) o.output_config = { effort };
+  return o;
+}
+
 // Always streamed from Anthropic, so we know when it starts thinking and writing (for progress messages
 // and timings). The text is collected and only used once complete.
 async function askClaude(env, prompt, timing, progress) {
@@ -208,7 +219,7 @@ async function askClaude(env, prompt, timing, progress) {
     r = await fetch("https://api.anthropic.com/v1/messages", {
       method: "POST",
       headers: { "x-api-key": env.ANTHROPIC_API_KEY, "anthropic-version": "2023-06-01", "content-type": "application/json" },
-      body: JSON.stringify({ model: env.MODEL || DEFAULT_MODEL, max_tokens: 3000, stream: true, messages: [{ role: "user", content: prompt }] }),
+      body: JSON.stringify({ model: env.MODEL || DEFAULT_MODEL, max_tokens: 3000, stream: true, messages: [{ role: "user", content: prompt }], ...aiOptions(env) }),
       signal: AbortSignal.timeout(60000),
     });
   } catch (e) { console.log("Claude API call failed", String(e)); return { error: "ai_error", detail: "Couldn't reach the AI service" }; }
@@ -258,6 +269,7 @@ async function askClaude(env, prompt, timing, progress) {
   timing.text_chars = text.length;
   timing.thinking_chars = thinkingChars;
   timing.blocks = blocks.join(",");
+  timing.settings = [env.THINKING && `thinking ${env.THINKING}`, env.EFFORT && `effort ${env.EFFORT}`].filter(Boolean).join(", ") || "defaults";
   return { text };
 }
 
