@@ -23,7 +23,7 @@
  */
 
 const TOWNS = {"Axbridge": [51.2866, -2.8188], "Berrow": [51.268, -3.007], "Bishops Lydeard": [51.06, -3.187], "Brean": [51.293, -3.012], "Bridgwater": [51.1279, -3.0036], "Bruton": [51.1118, -2.4532], "Burnham-on-Sea": [51.2384, -2.9972], "Castle Cary": [51.089, -2.513], "Chard": [50.8722, -2.9616], "Cheddar": [51.2771, -2.7781], "Cotford St Luke": [51.042, -3.177], "Creech St Michael": [51.025, -3.035], "Crewkerne": [50.884, -2.795], "Dulverton": [51.04, -3.55], "Frome": [51.2283, -2.3218], "Glastonbury": [51.1486, -2.7145], "Highbridge": [51.2187, -2.9727], "Ilminster": [50.9265, -2.9112], "Langport": [51.038, -2.828], "Minehead": [51.2041, -3.4794], "North Petherton": [51.093, -3.013], "Porlock": [51.208, -3.595], "Shepton Mallet": [51.1906, -2.5462], "Somerton": [51.055, -2.734], "South Petherton": [50.948, -2.81], "Stoke St Gregory": [51.04, -2.935], "Street": [51.1268, -2.7393], "Taunton": [51.015, -3.103], "Watchet": [51.181, -3.33], "Wellington": [50.9787, -3.2263], "Wells": [51.2093, -2.6474], "West Huntspill": [51.198, -2.99], "Williton": [51.162, -3.322], "Wincanton": [51.056, -2.41], "Wiveliscombe": [51.041, -3.312], "Woolavington": [51.168, -2.94], "Yeovil": [50.9421, -2.633], "Cannington": [51.15, -3.064], "Coleford": [51.239, -2.444], "Drayton": [51.006, -2.836], "Dunster": [51.183, -3.444], "East Huntspill": [51.2, -2.96], "Evercreech": [51.148, -2.502], "Galmington": [51.011, -3.122], "Keinton Mandeville": [51.068, -2.645], "Lisieux Way": [51.018, -3.075], "Long Load": [50.997, -2.756], "Long Sutton": [51.023, -2.758], "Martock": [50.97, -2.768], "Merriott": [50.905, -2.795], "Milborne Port": [50.966, -2.462], "Milverton": [51.026, -3.257], "Mudford": [50.968, -2.611], "Oake": [51.024, -3.199], "Oakhill": [51.226, -2.522], "Queen Camel": [51.022, -2.582], "Staplegrove": [51.033, -3.12], "Stogursey": [51.18, -3.14], "West Monkton": [51.04, -3.06], "Weston-super-Mare": [51.346, -2.977], "Edington": [51.162, -2.885], "Ruishton": [51.017, -3.055], "Steart": [51.203, -3.046], "Stoke-sub-Hamdon": [50.953, -2.749], "Wedmore": [51.227, -2.811], "Westhay": [51.183, -2.783], "Nailsea": [51.432, -2.757], "Backwell": [51.411, -2.732], "Bath": [51.381, -2.359], "Batheaston": [51.405, -2.318], "Chew Magna": [51.367, -2.609], "Chilcompton": [51.267, -2.511], "Keynsham": [51.414, -2.498], "Midsomer Norton": [51.284, -2.482], "Newton St Loe": [51.373, -2.43], "Radstock": [51.293, -2.448], "Saltford": [51.402, -2.457], "Sparkford": [51.034, -2.565], "Stanton Drew": [51.367, -2.577], "Tatworth": [50.852, -2.957], "Timberscombe": [51.168, -3.487], "Timsbury": [51.328, -2.478], "Tunley": [51.343, -2.45], "Norton St Philip": [51.3, -2.326], "Nunney": [51.21, -2.378], "Paulton": [51.307, -2.504], "Peasedown St John": [51.316, -2.43]};
-const VERSION = "2026-11-08 20:41";        // set when the worker is built; shown on the Assist tab
+const VERSION = "2026-11-08 20:56";        // set when the worker is built; shown on the Assist tab
 const DEFAULT_MODEL = "claude-sonnet-5-5";
 const MAX_PER_HOUR = 30;               // per visitor (best effort: counts reset when Cloudflare restarts the Worker)
 const RISK = /suicid|kill (my|him|her|them)sel|end (my|his|her|their) life|self[- ]?harm|cutting (my|him|her)|overdos|want(s|ed)? to die|no reason to live|better off dead/i;
@@ -142,59 +142,124 @@ export default {
 
     const prompt = buildPrompt(need, followups, previous, place, cands);
     timing.prompt_chars = prompt.length;
-    let text;
-    const tPlan = Date.now();
-    try {
-      const r = await fetch("https://api.anthropic.com/v1/messages", {
-        method: "POST",
-        headers: { "x-api-key": env.ANTHROPIC_API_KEY, "anthropic-version": "2023-06-01", "content-type": "application/json" },
-        body: JSON.stringify({ model: env.MODEL || DEFAULT_MODEL, max_tokens: 3000, messages: [{ role: "user", content: prompt }] }),
-        signal: AbortSignal.timeout(60000),
-      });
-      if (r.status === 429 || r.status === 529) return reply({ error: "busy" }, 503);
-      if (!r.ok) {
-        // Pass on the AI service's own error message (never contains the key or the user's text)
-        let detail = "";
-        try { const e = await r.json(); detail = String(e?.error?.message || e?.error?.type || "").slice(0, 300); } catch {}
-        console.log("Claude API error", r.status, detail);
-        return reply({ error: "ai_error", status: r.status, detail }, 502);
-      }
-      const data = await r.json();
-      text = (data.content || []).filter(b => b.type === "text").map(b => b.text).join("");
-      timing.plan_ms = Date.now() - tPlan;
-      timing.plan_in = data.usage?.input_tokens || 0;
-      timing.plan_out = data.usage?.output_tokens || 0;
+    timing.model = env.MODEL || DEFAULT_MODEL;
+
+    // Turn the AI's text into the plan the page shows. Only real records from the list we sent are kept.
+    const finish = (text) => {
+      let out;
+      try { out = JSON.parse(text.slice(text.indexOf("{"), text.lastIndexOf("}") + 1)); } catch { console.log("Unreadable answer, length", text.length); return { error: "bad_answer" }; }
+      const byId = new Map(cands.map(c => [c.id, c]));
+      const picks = (out.off_topic && !riskWords ? [] : Array.isArray(out.picks) ? out.picks : [])
+        .map(p => ({ step: String(p.step || "Next step"), why: String(p.why || "").slice(0, 400), c: byId.get(Number(p.id)) }))
+        .filter(p => p.c)
+        .map(p => ({ step: p.step, why: p.why, distance: p.c.d === null ? null : Math.round(p.c.d * 10) / 10, record: publicRecord(p.c.s) }));
+      return {
+        off_topic: !!out.off_topic && !riskWords,
+        reading: String(out.reading || "").slice(0, 600),
+        safety: String(out.safety || "").slice(0, 400),
+        core_needs: (Array.isArray(out.core_needs) ? out.core_needs : []).map(x => String(x).slice(0, 60)).slice(0, 3),
+        core_covered: ["yes", "partly", "no"].includes(String(out.core_covered).toLowerCase()) ? String(out.core_covered).toLowerCase() : "partly",
+        search_for: String(out.search_for || "").slice(0, 120),
+        constraints: String(out.constraints || "").slice(0, 160),
+        place: placeName,
+        risk: !!out.risk || riskWords,
+        picks,
+        gaps: String(out.gaps || "").slice(0, 400),
+        questions: (Array.isArray(out.questions) ? out.questions : []).map(q => String(q).slice(0, 250)).slice(0, 2),
+        scope,
+      };
+    };
+    const run = async (progress) => {
+      const ai = await askClaude(env, prompt, timing, progress);
       timing.total_ms = Date.now() - t0;
-      timing.model = env.MODEL || DEFAULT_MODEL;
       console.log(JSON.stringify({ assist_timing: timing, candidates: cands.length }));
-    } catch (e) { console.log("Claude API call failed", String(e)); return reply({ error: "ai_error", detail: "Couldn't reach the AI service" }, 502); }
+      return ai.error ? ai : finish(ai.text);
+    };
 
-    let out;
-    try { out = JSON.parse(text.slice(text.indexOf("{"), text.lastIndexOf("}") + 1)); } catch { console.log("Unreadable answer, length", text.length); return reply({ error: "bad_answer" }, 502); }
-
-    // Keep only picks that are real records from the list we sent
-    const byId = new Map(cands.map(c => [c.id, c]));
-    const picks = (out.off_topic && !riskWords ? [] : Array.isArray(out.picks) ? out.picks : [])
-      .map(p => ({ step: String(p.step || "Next step"), why: String(p.why || "").slice(0, 400), c: byId.get(Number(p.id)) }))
-      .filter(p => p.c)
-      .map(p => ({ step: p.step, why: p.why, distance: p.c.d === null ? null : Math.round(p.c.d * 10) / 10, record: publicRecord(p.c.s) }));
-    return reply({
-      off_topic: !!out.off_topic && !riskWords,
-      reading: String(out.reading || "").slice(0, 600),
-      safety: String(out.safety || "").slice(0, 400),
-      core_needs: (Array.isArray(out.core_needs) ? out.core_needs : []).map(x => String(x).slice(0, 60)).slice(0, 3),
-      core_covered: ["yes", "partly", "no"].includes(String(out.core_covered).toLowerCase()) ? String(out.core_covered).toLowerCase() : "partly",
-      search_for: String(out.search_for || "").slice(0, 120),
-      constraints: String(out.constraints || "").slice(0, 160),
-      place: placeName,
-      risk: !!out.risk || riskWords,
-      picks,
-      gaps: String(out.gaps || "").slice(0, 400),
-      questions: (Array.isArray(out.questions) ? out.questions : []).map(q => String(q).slice(0, 250)).slice(0, 2),
-      scope,
-    });
+    // Pages that ask for it get progress messages as the AI works, then the finished plan as the last line.
+    // The plan itself is never sent in pieces: it's checked and sent whole, as before.
+    if (body.stream === true) {
+      const { readable, writable } = new TransformStream();
+      const w = writable.getWriter(), enc = new TextEncoder();
+      const send = o => w.write(enc.encode(JSON.stringify({ ...o, version: VERSION }) + "\n")).catch(() => {});
+      (async () => {
+        try {
+          send({ stage: "reading", services: cands.length });
+          const res = await run(st => send(st));
+          await send(res.error ? res : { done: true, result: res });
+        } catch (e) { console.log("stream failed", String(e)); await send({ error: "ai_error", detail: "Couldn't reach the AI service" }); }
+        finally { w.close().catch(() => {}); }
+      })();
+      return new Response(readable, { headers: { ...cors, "Content-Type": "application/x-ndjson", "Cache-Control": "no-store" } });
+    }
+    const res = await run(() => {});
+    if (res.error) return reply(res, res.error === "busy" ? 503 : 502);
+    return reply(res);
   },
 };
+
+// ---------- the AI call ----------
+// Always streamed from Anthropic, so we know when it starts thinking and writing (for progress messages
+// and timings). The text is collected and only used once complete.
+async function askClaude(env, prompt, timing, progress) {
+  const t = Date.now();
+  let r;
+  try {
+    r = await fetch("https://api.anthropic.com/v1/messages", {
+      method: "POST",
+      headers: { "x-api-key": env.ANTHROPIC_API_KEY, "anthropic-version": "2023-06-01", "content-type": "application/json" },
+      body: JSON.stringify({ model: env.MODEL || DEFAULT_MODEL, max_tokens: 3000, stream: true, messages: [{ role: "user", content: prompt }] }),
+      signal: AbortSignal.timeout(60000),
+    });
+  } catch (e) { console.log("Claude API call failed", String(e)); return { error: "ai_error", detail: "Couldn't reach the AI service" }; }
+  if (r.status === 429 || r.status === 529) return { error: "busy" };
+  if (!r.ok) {
+    // Pass on the AI service's own error message (never contains the key or the user's text)
+    let detail = "";
+    try { const e = await r.json(); detail = String(e?.error?.message || e?.error?.type || "").slice(0, 300); } catch {}
+    console.log("Claude API error", r.status, detail);
+    return { error: "ai_error", status: r.status, detail };
+  }
+  let text = "", thinkingChars = 0, picks = 0, buf = "", kind = "";
+  const blocks = [];
+  const reader = r.body.getReader(), dec = new TextDecoder();
+  try {
+    for (;;) {
+      const { done, value } = await reader.read();
+      if (done) break;
+      buf += dec.decode(value, { stream: true });
+      let i;
+      while ((i = buf.indexOf("\n")) >= 0) {
+        const line = buf.slice(0, i).trim(); buf = buf.slice(i + 1);
+        if (!line.startsWith("data:")) continue;
+        let ev; try { ev = JSON.parse(line.slice(5)); } catch { continue; }
+        if (ev.type === "message_start") timing.plan_in = ev.message?.usage?.input_tokens || 0;
+        else if (ev.type === "content_block_start") {
+          kind = ev.content_block?.type || "";
+          blocks.push(kind);
+          if (timing.first_block_ms === undefined) timing.first_block_ms = Date.now() - t;
+          if (kind === "thinking") progress({ stage: "thinking" });
+          if (kind === "text") { timing.text_start_ms = Date.now() - t; progress({ stage: "writing", picks: 0 }); }
+        } else if (ev.type === "content_block_delta") {
+          if (ev.delta?.type === "text_delta") {
+            text += ev.delta.text;
+            const n = (text.match(/"id"\s*:/g) || []).length;
+            if (n > picks) { picks = n; progress({ stage: "writing", picks }); }
+          } else if (ev.delta?.type === "thinking_delta") thinkingChars += (ev.delta.thinking || "").length;
+        } else if (ev.type === "message_delta") timing.plan_out = ev.usage?.output_tokens || timing.plan_out;
+        else if (ev.type === "error") {
+          console.log("Claude stream error", JSON.stringify(ev.error || {}));
+          return { error: ev.error?.type === "overloaded_error" ? "busy" : "ai_error", detail: String(ev.error?.message || "").slice(0, 300) };
+        }
+      }
+    }
+  } catch (e) { console.log("Claude stream broke", String(e)); return { error: "ai_error", detail: "The AI service stopped part-way" }; }
+  timing.plan_ms = Date.now() - t;
+  timing.text_chars = text.length;
+  timing.thinking_chars = thinkingChars;
+  timing.blocks = blocks.join(",");
+  return { text };
+}
 
 // ---------- records ----------
 async function records(env) {
