@@ -1109,11 +1109,12 @@ footer.urgent p { color: #FEE2E2; }
 /* Support for matches its width on the In person tab (first of its 1 : 1.3 columns); Where takes the rest */
 #hdr-assist .qs > #aq-support { flex: 0 0 calc((100% - var(--lastdd, 25%) - var(--endcol, 168px) - 30px) / 2.3); }
 #hdr-assist .qs > #aq-where { flex: 1 1 0; }
-#hdr-assist .qs > .toggle { flex: 0 0 var(--endcol, 168px); white-space: nowrap; }
-@media (max-width: 899px) { #hdr-assist .qs { flex-direction: column; } #hdr-assist .qs > .q, #hdr-assist .qs > #aq-where, #hdr-assist .qs > .toggle { flex: none; min-width: 0; } }
+#hdr-assist .qs > .toggle, #hdr-assist .qs > #aq-remote { flex: 0 0 var(--endcol, 168px); white-space: nowrap; }
+@media (max-width: 899px) { #hdr-assist .qs { flex-direction: column; } #hdr-assist .qs > .q, #hdr-assist .qs > #aq-where, #hdr-assist .qs > .toggle, #hdr-assist .qs > #aq-remote { flex: none; min-width: 0; } }
 
 #hdr-assist.a-locked .qs { display: none; }
-#hdr-assist #aq-remote.a-off { opacity: .5; cursor: default; }
+#hdr-assist #aq-where.a-off { opacity: .5; }
+#hdr-assist #aq-where.a-off select, #hdr-assist #aq-where.a-off button { cursor: default; }
 
 /* the picks on the small map: numbered pins that match the cards (pin-shaped, so they don't read as the step numbers) */
 .a-pin { display: grid; place-items: center; width: 26px; height: 26px; border-radius: 50% 50% 50% 0; transform: rotate(-45deg); background: var(--pc, #64748B); border: 2px solid #fff; box-shadow: 0 1px 4px rgba(0,0,0,.35); cursor: pointer; }
@@ -1200,7 +1201,7 @@ footer.urgent p { color: #FEE2E2; }
           <select id="a-rad" aria-label="Distance"><option value="2">within 2 miles</option><option value="5">within 5 miles</option><option value="10" selected>within 10 miles</option><option value="20">within 20 miles</option></select>
         </div>
       </div>
-      <label class="toggle" id="aq-remote" title="Leave unticked to include phone and online support too"><input type="checkbox" id="a-inperson"> In person only</label>
+      <div class="q" id="aq-remote"><label for="a-mode">3. How?</label><select id="a-mode"><option value="either" selected>All services</option><option value="inperson">In person</option><option value="remote">Phone or online</option></select></div>
     </div>
     </div>
     <div id="hdr-near" hidden>
@@ -1843,7 +1844,7 @@ function renderAbout() {
     </section>
     </div></div>
     <p class="small">Service information belongs to the providers listed. Map data © <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap</a> contributors, © <a href="https://carto.com/attributions" target="_blank" rel="noopener">CARTO</a>.</p>
-    <p class="small" id="site-version">Version: test 2026-11-07 13:45${typeof window.assistRelayVersion === "function" ? window.assistRelayVersion() : ""}</p>
+    <p class="small" id="site-version">Version: test 2026-11-08 20:41${typeof window.assistRelayVersion === "function" ? window.assistRelayVersion() : ""}</p>
   </article>`;
 }
 let tab = "talk";
@@ -1986,7 +1987,7 @@ setInterval(() => { if (!ALL.length) return; tab === "talk" ? renderTalk() : tab
    this page only remembers it for the current browser session. */
 (() => {
 const WORKER_URL = "https://signposting-assist.c-r-williams0109.workers.dev";
-const PAGE_VERSION = "test 2026-11-07 13:45";
+const PAGE_VERSION = "test 2026-11-08 20:41";
 let relayVersion = "";
 // The version line is at the bottom of the About tab: "Version: test 2026-11-06 11:30 · Assist relay 2026-11-06 11:07"
 window.assistRelayVersion = () => relayVersion ? ` · Assist relay ${relayVersion}` : "";
@@ -2065,11 +2066,11 @@ function note(t) { $a("a-err").textContent = t; $a("a-err").hidden = !t; }
 function busy(on, t) { $a("a-status").hidden = !on; $a("a-statusText").textContent = t || "Thinking..."; $a("a-ask").disabled = on || webBusy; }   // also stays off while an online search runs
 
 // ---- where: the same places, distances and "Support for" as the In person tab, shared between the two tabs ----
-// place = { kind: "place" | "pt" | "remote" | "", name, lat, lon, label }. Only a rounded point is ever sent.
+// place = { kind: "place" | "pt" | "", name, lat, lon, label }. Only a rounded point is ever sent.
 const round2 = x => Math.round(x * 100) / 100;          // about 1 km
 const MILE = 1609.34;
 let place = { kind: "" };
-$a("a-town").innerHTML = '<option value="">Choose a place…</option><option value="__remote">No place: phone and online only</option><option value="__pt" hidden>Point on the map</option>'
+$a("a-town").innerHTML = '<option value="">Choose a place…</option><option value="__pt" hidden>Point on the map</option>'
   + PLACES.map(([g, ps]) => `<optgroup label="${e_(g)}">${ps.map(([n]) => `<option value="${e_(n)}">${e_(n)}</option>`).join("")}</optgroup>`).join("");
 function nearest(p) {
   let best = null, bd = 1e9;
@@ -2080,23 +2081,28 @@ function setPlace(p) {
   place = p; clearPins();                                      // the pins belonged to the old place
   const sel = $a("a-town"), ptOpt = sel.querySelector('option[value="__pt"]');
   if (p.kind === "pt") { ptOpt.hidden = false; ptOpt.textContent = p.label; sel.value = "__pt"; }
-  else { ptOpt.hidden = true; sel.value = p.kind === "place" ? p.name : p.kind === "remote" ? "__remote" : ""; }
+  else { ptOpt.hidden = true; sel.value = p.kind === "place" ? p.name : ""; }
   $a("aq-where").classList.toggle("on", !!p.kind);
-  // "Phone and online only" as the place can't also be "In person only"
-  const ip = $a("a-inperson"); ip.disabled = p.kind === "remote";
-  if (ip.disabled && ip.checked) { ip.checked = false; $a("aq-remote").classList.remove("on"); }
-  $a("aq-remote").classList.toggle("a-off", ip.disabled);
   syncMap(); pushToMain();
 }
 const placeByName = n => PLACE[n] ? { kind: "place", name: n, lat: PLACE[n][0], lon: PLACE[n][1] } : null;
 $a("a-town").addEventListener("change", e => {
   const v = e.target.value;
   if (v === "__pt") return;                                   // already set by the map or location button
-  setPlace(v === "__remote" ? { kind: "remote" } : placeByName(v) || { kind: "" });
+  setPlace(placeByName(v) || { kind: "" });
 });
 $a("a-rad").addEventListener("change", () => { syncMap(); pushToMain(); });
 $a("a-support").addEventListener("change", () => { $a("aq-support").classList.toggle("on", !!$a("a-support").value); pushToMain(); });
-$a("a-inperson").addEventListener("change", () => $a("aq-remote").classList.toggle("on", $a("a-inperson").checked));
+// 3. How? All services (default), in person only, or phone/online only. Phone or online needs no place or distance.
+const mode = () => $a("a-mode").value;
+function syncMode() {
+  const remoteOnly = mode() === "remote";
+  for (const id of ["a-town", "a-rad", "a-uselocation"]) $a(id).disabled = remoteOnly;
+  $a("aq-where").classList.toggle("a-off", remoteOnly);
+  $a("aq-remote").classList.toggle("on", mode() !== "either");
+}
+$a("a-mode").addEventListener("change", syncMode);
+syncMode();
 
 // Shared with In person: what's chosen on one tab is there on the other
 function pushToMain() {
@@ -2118,7 +2124,7 @@ function pullFromMain() {
   const t = $a("f-town").value;
   if (origin && PLACE[t]) place = placeByName(t);
   else if (origin) place = { kind: "pt", lat: round2(origin.lat), lon: round2(origin.lon), label: origin.label === "your location" ? "Your location" : "Point on the map (" + nearest([origin.lat, origin.lon]) + ")" };
-  else if (place.kind !== "remote") place = { kind: "" };
+  else place = { kind: "" };
   setPlace(place);
 }
 
@@ -2220,9 +2226,9 @@ $a("a-form").onsubmit = e => {
   const need = $a("a-need").value.trim();
   if (!need) return note("Describe the need first.");
   if (need.replace(/[^a-z]/gi, "").length < 12 || !/[aeiou]/i.test(need)) return note("Please describe the person's situation in a few words, e.g. what's going on and what might help.");
-  if (!place.kind) return note("Choose a place above or click the map first.");
-  state = { need, radius: +$a("a-rad").value, remote: !$a("a-inperson").checked, support: $a("a-support").value, online: onlineOn(), followups: [], previous: [] };
-  if (place.kind === "remote") state.town = "__remote";
+  if (mode() !== "remote" && !place.kind) return note("Choose a place above or click the map first.");
+  state = { need, radius: +$a("a-rad").value, remote: mode() !== "inperson", support: $a("a-support").value, online: onlineOn(), followups: [], previous: [] };
+  if (mode() === "remote") state.town = "__remote";
   else { state.town = "__pt"; state.lat = round2(place.lat); state.lon = round2(place.lon); }
   run();
 };
@@ -2296,6 +2302,11 @@ function show(r, keepScroll) {
   m += webBar(r);
   if (r.questions?.length) m += `<div class="a-qs"><b>Questions that might help</b><ul>${r.questions.map(q => `<li>${e_(q)}</li>`).join("")}</ul></div>`;
   m += `<p class="a-scope">Chose from ${sc.total} of ${sc.records} services: ${[sc.near ? `${sc.near} in person ${e_(sc.place)}` : "", sc.remote ? `${sc.remote} phone or online` : ""].filter(Boolean).join(" and ")}.</p>`;
+  // Test page only: how long each step took, to measure speed changes
+  if (/\/test\//.test(location.pathname) && sc.timing) {
+    const t = sc.timing, sec = ms => ms ? (ms / 1000).toFixed(1) + "s" : "-";
+    m += `<p class="a-scope">Timing: total ${sec(t.total_ms)} · AI ${sec(t.plan_ms)} (${t.plan_in || "?"} tokens in, ${t.plan_out || "?"} out) · ${e_(t.model || "")}</p>`;
+  }
   const side = lastPicks.length ? `<aside class="a-preview" aria-label="Support plan"><div class="a-pv-label">Support plan</div><div class="a-pv-body">${plan().html}</div><p class="a-pv-hint">Copy it into an email or letter, share it by text, or print it.</p></aside>` : "";
   $a("a-out").innerHTML = `<div class="a-results"><div class="a-maincol">${m}</div>${side}</div>`;
   $a("a-out").hidden = false;
