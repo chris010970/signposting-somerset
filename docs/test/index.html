@@ -1257,7 +1257,7 @@ footer.urgent p { color: #FEE2E2; }
   <form class="a-card a-form" id="a-form"><div class="a-formgrid">
     <div class="a-formmain">
       <div class="a-compose">
-      <label class="a-ttl" for="a-need">3. What's going on for them?</label>
+      <label class="a-ttl" for="a-need">4. What's going on for them?</label>
       <textarea id="a-need" maxlength="2000" aria-describedby="a-keytip" placeholder="Describe the need, not the person (no names or contact details).&#10;&#10;e.g. Feeling low since losing his job, hardly leaves the house, no car, not mornings."></textarea>
       <div class="a-go"><button type="button" class="a-mapbtn" id="a-mapbtn" aria-expanded="false" aria-controls="a-mapbox"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M15 4 9 2 3 4v18l6-2 6 2 6-2V2zm-1 15.6-4-1.3V4.4l4 1.3z"/></svg>Map</button><button type="button" class="a-online" id="a-online" aria-pressed="false" title="Also search online for anything the directory doesn't cover. Only a short search phrase and the nearest town are sent, never the description."><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c2.5 2.7 3.8 5.7 3.8 9s-1.3 6.3-3.8 9c-2.5-2.7-3.8-5.7-3.8-9S9.5 5.7 12 3z"/></svg>Search online</button><span class="a-keytip" id="a-keytip">Enter to send, Shift+Enter for a new line</span><button class="a-send" id="a-ask" type="submit" aria-label="Suggest support" title="Suggest support"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></button></div>
       </div>
@@ -1844,7 +1844,7 @@ function renderAbout() {
     </section>
     </div></div>
     <p class="small">Service information belongs to the providers listed. Map data © <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap</a> contributors, © <a href="https://carto.com/attributions" target="_blank" rel="noopener">CARTO</a>.</p>
-    <p class="small" id="site-version">Version: test 2026-11-08 20:41${typeof window.assistRelayVersion === "function" ? window.assistRelayVersion() : ""}</p>
+    <p class="small" id="site-version">Version: test 2026-11-08 20:57${typeof window.assistRelayVersion === "function" ? window.assistRelayVersion() : ""}</p>
   </article>`;
 }
 let tab = "talk";
@@ -1987,7 +1987,7 @@ setInterval(() => { if (!ALL.length) return; tab === "talk" ? renderTalk() : tab
    this page only remembers it for the current browser session. */
 (() => {
 const WORKER_URL = "https://signposting-assist.c-r-williams0109.workers.dev";
-const PAGE_VERSION = "test 2026-11-08 20:41";
+const PAGE_VERSION = "test 2026-11-08 20:57";
 let relayVersion = "";
 // The version line is at the bottom of the About tab: "Version: test 2026-11-06 11:30 · Assist relay 2026-11-06 11:07"
 window.assistRelayVersion = () => relayVersion ? ` · Assist relay ${relayVersion}` : "";
@@ -2242,6 +2242,31 @@ const ERRORS = {
   bad_town: "Please choose a town from the list.", bad_answer: "The answer came back in an unexpected shape. Please try again.",
   forbidden: "This page isn't allowed to use the relay.",
 };
+// The relay sends short progress lines while the AI works, then the finished plan as the last line.
+// Only the waiting message changes until then: the plan is shown whole, once it's complete and checked.
+// (An older relay sends the plan in one go; that still works.)
+async function readPlan(r) {
+  if (!(r.headers.get("Content-Type") || "").includes("ndjson") || !r.body) return r.json().catch(() => ({ error: "bad_answer" }));
+  const reader = r.body.getReader(), dec = new TextDecoder();
+  let buf = "", last = { error: "bad_answer" };
+  for (;;) {
+    const { done, value } = await reader.read();
+    if (value) buf += dec.decode(value, { stream: true });
+    let i;
+    while ((i = buf.indexOf("\n")) >= 0) {
+      const line = buf.slice(0, i).trim(); buf = buf.slice(i + 1);
+      if (!line) continue;
+      let m; try { m = JSON.parse(line); } catch { continue; }
+      if (m.done) last = { ...m.result, version: m.version };
+      else if (m.error) last = m;
+      else if (m.stage === "thinking") busy(true, "Thinking about what would help…");
+      else if (m.stage === "writing") busy(true, m.picks ? `Choosing services: ${m.picks} so far…` : "Choosing services…");
+    }
+    if (done) break;
+  }
+  return last;
+}
+
 async function run() {
   note(""); clearPins();
   // a new request replaces the old plan straight away, so an old plan is never mistaken for the answer
@@ -2250,8 +2275,8 @@ async function run() {
   const where = state.town === "__remote" ? "phone and online services" : `services within ${state.radius} miles of ${place.kind === "place" ? place.name : place.label.replace(/^Point on the map \((.*)\)$/, "$1")}`;
   busy(true, state.followups.length ? "Updating the suggestions…" : `Reading the need and looking through ${where}…`);
   try {
-    const r = await fetch(WORKER_URL, { method: "POST", headers: { "Content-Type": "application/json", "X-Access-Code": code }, body: JSON.stringify(scrubAll(state)) });
-    const data = await r.json().catch(() => ({ error: "bad_answer" }));
+    const r = await fetch(WORKER_URL, { method: "POST", headers: { "Content-Type": "application/json", "X-Access-Code": code }, body: JSON.stringify({ ...scrubAll(state), stream: true }) });
+    const data = await readPlan(r);
     showVersion(data.version);
     if (data.error) {
       if (data.error === "bad_code") { sess.set("assist-code", null); code = ""; showGate(ERRORS.bad_code); return; }
@@ -2304,8 +2329,8 @@ function show(r, keepScroll) {
   m += `<p class="a-scope">Chose from ${sc.total} of ${sc.records} services: ${[sc.near ? `${sc.near} in person ${e_(sc.place)}` : "", sc.remote ? `${sc.remote} phone or online` : ""].filter(Boolean).join(" and ")}.</p>`;
   // Test page only: how long each step took, to measure speed changes
   if (/\/test\//.test(location.pathname) && sc.timing) {
-    const t = sc.timing, sec = ms => ms ? (ms / 1000).toFixed(1) + "s" : "-";
-    m += `<p class="a-scope">Timing: total ${sec(t.total_ms)} · AI ${sec(t.plan_ms)} (${t.plan_in || "?"} tokens in, ${t.plan_out || "?"} out) · ${e_(t.model || "")}</p>`;
+    const t = sc.timing, sec = ms => ms !== undefined ? (ms / 1000).toFixed(1) + "s" : "-";
+    m += `<p class="a-scope">Timing: total ${sec(t.total_ms)} · AI ${sec(t.plan_ms)}: first output after ${sec(t.first_block_ms)}, writing started ${sec(t.text_start_ms)} · ${t.plan_in || "?"} tokens in, ${t.plan_out || "?"} out (${t.text_chars || 0} characters of answer${t.thinking_chars ? `, ${t.thinking_chars} of thinking` : ""}; ${e_(t.blocks || "")}) · ${e_(t.model || "")}</p>`;
   }
   const side = lastPicks.length ? `<aside class="a-preview" aria-label="Support plan"><div class="a-pv-label">Support plan</div><div class="a-pv-body">${plan().html}</div><p class="a-pv-hint">Copy it into an email or letter, share it by text, or print it.</p></aside>` : "";
   $a("a-out").innerHTML = `<div class="a-results"><div class="a-maincol">${m}</div>${side}</div>`;
