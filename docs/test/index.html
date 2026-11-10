@@ -779,6 +779,8 @@ h1 { font-family: var(--serif); color: var(--b900); font-size: 26px; margin: 0; 
 .aboutpage .stats { font-weight: 700; color: var(--b800); }
 .aboutpage .btn { display: inline-block; margin-top: 6px; background: var(--b700); color: #fff; text-decoration: none; font-weight: 700; padding: 10px 16px; border-radius: 10px; }
 .aboutpage .small { font-size: 13px; color: #78716C; }
+.aboutpage a:not(.btn) { color: var(--b700); text-decoration-color: var(--b200); text-underline-offset: 2px; }   /* same as Assist */
+.aboutpage a:not(.btn):hover { color: var(--b900); text-decoration-color: currentColor; }
 .sitetabs button { border: 0; background: none; padding: 9px 14px 10px; font-weight: 700; font-size: 14px; color: #78716C; cursor: pointer; border-bottom: 3px solid transparent; margin-bottom: -1px; }
 .sitetabs button[aria-selected="true"] { color: var(--b900); border-bottom-color: var(--b600); }
 /* Tabs in groups: Browse (In person, Phone and online, Courses) | Assist | About */
@@ -1866,7 +1868,7 @@ function renderAbout() {
     </section>
     </div></div>
     <p class="small">Service information belongs to the providers listed. Map data © <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap</a> contributors, © <a href="https://carto.com/attributions" target="_blank" rel="noopener">CARTO</a>.</p>
-    <p class="small" id="site-version">Version: test 2026-11-10 15:16${typeof window.assistRelayVersion === "function" ? window.assistRelayVersion() : ""}</p>
+    <p class="small" id="site-version">Version: test 2026-11-10 15:20${typeof window.assistRelayVersion === "function" ? window.assistRelayVersion() : ""}</p>
   </article>`;
 }
 let tab = "talk";
@@ -2009,7 +2011,7 @@ setInterval(() => { if (!ALL.length) return; tab === "talk" ? renderTalk() : tab
    this page only remembers it for the current browser session. */
 (() => {
 const WORKER_URL = "https://signposting-assist.c-r-williams0109.workers.dev";
-const PAGE_VERSION = "test 2026-11-10 15:16";
+const PAGE_VERSION = "test 2026-11-10 15:20";
 let relayVersion = "";
 // The version line is at the bottom of the About tab: "Version: test 2026-11-06 11:30 · Assist relay 2026-11-06 11:07"
 window.assistRelayVersion = () => relayVersion ? ` · Assist relay ${relayVersion}` : "";
