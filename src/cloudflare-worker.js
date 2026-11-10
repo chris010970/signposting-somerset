@@ -23,7 +23,7 @@
  */
 
 const TOWNS = {"Axbridge": [51.2866, -2.8188], "Berrow": [51.268, -3.007], "Bishops Lydeard": [51.06, -3.187], "Brean": [51.293, -3.012], "Bridgwater": [51.1279, -3.0036], "Bruton": [51.1118, -2.4532], "Burnham-on-Sea": [51.2384, -2.9972], "Castle Cary": [51.089, -2.513], "Chard": [50.8722, -2.9616], "Cheddar": [51.2771, -2.7781], "Cotford St Luke": [51.042, -3.177], "Creech St Michael": [51.025, -3.035], "Crewkerne": [50.884, -2.795], "Dulverton": [51.04, -3.55], "Frome": [51.2283, -2.3218], "Glastonbury": [51.1486, -2.7145], "Highbridge": [51.2187, -2.9727], "Ilminster": [50.9265, -2.9112], "Langport": [51.038, -2.828], "Minehead": [51.2041, -3.4794], "North Petherton": [51.093, -3.013], "Porlock": [51.208, -3.595], "Shepton Mallet": [51.1906, -2.5462], "Somerton": [51.055, -2.734], "South Petherton": [50.948, -2.81], "Stoke St Gregory": [51.04, -2.935], "Street": [51.1268, -2.7393], "Taunton": [51.015, -3.103], "Watchet": [51.181, -3.33], "Wellington": [50.9787, -3.2263], "Wells": [51.2093, -2.6474], "West Huntspill": [51.198, -2.99], "Williton": [51.162, -3.322], "Wincanton": [51.056, -2.41], "Wiveliscombe": [51.041, -3.312], "Woolavington": [51.168, -2.94], "Yeovil": [50.9421, -2.633], "Cannington": [51.15, -3.064], "Coleford": [51.239, -2.444], "Drayton": [51.006, -2.836], "Dunster": [51.183, -3.444], "East Huntspill": [51.2, -2.96], "Evercreech": [51.148, -2.502], "Galmington": [51.011, -3.122], "Keinton Mandeville": [51.068, -2.645], "Lisieux Way": [51.018, -3.075], "Long Load": [50.997, -2.756], "Long Sutton": [51.023, -2.758], "Martock": [50.97, -2.768], "Merriott": [50.905, -2.795], "Milborne Port": [50.966, -2.462], "Milverton": [51.026, -3.257], "Mudford": [50.968, -2.611], "Oake": [51.024, -3.199], "Oakhill": [51.226, -2.522], "Queen Camel": [51.022, -2.582], "Staplegrove": [51.033, -3.12], "Stogursey": [51.18, -3.14], "West Monkton": [51.04, -3.06], "Weston-super-Mare": [51.346, -2.977], "Edington": [51.162, -2.885], "Ruishton": [51.017, -3.055], "Steart": [51.203, -3.046], "Stoke-sub-Hamdon": [50.953, -2.749], "Wedmore": [51.227, -2.811], "Westhay": [51.183, -2.783], "Nailsea": [51.432, -2.757], "Backwell": [51.411, -2.732], "Bath": [51.381, -2.359], "Batheaston": [51.405, -2.318], "Chew Magna": [51.367, -2.609], "Chilcompton": [51.267, -2.511], "Keynsham": [51.414, -2.498], "Midsomer Norton": [51.284, -2.482], "Newton St Loe": [51.373, -2.43], "Radstock": [51.293, -2.448], "Saltford": [51.402, -2.457], "Sparkford": [51.034, -2.565], "Stanton Drew": [51.367, -2.577], "Tatworth": [50.852, -2.957], "Timberscombe": [51.168, -3.487], "Timsbury": [51.328, -2.478], "Tunley": [51.343, -2.45], "Norton St Philip": [51.3, -2.326], "Nunney": [51.21, -2.378], "Paulton": [51.307, -2.504], "Peasedown St John": [51.316, -2.43], "Ash": [50.981, -2.747], "Banwell": [51.329, -2.867], "Binegar": [51.242, -2.543], "Bleadon": [51.308, -2.947], "Cleeve": [51.392, -2.777], "Clevedon": [51.435, -2.854], "Congresbury": [51.373, -2.809], "Coxley": [51.187, -2.68], "Curry Rivel": [51.024, -2.87], "Flax Bourton": [51.421, -2.711], "Kenn": [51.415, -2.836], "Locking": [51.333, -2.915], "Long Ashton": [51.431, -2.666], "Lympsham": [51.297, -2.947], "Pill": [51.479, -2.685], "Portishead": [51.486, -2.766], "Sandford": [51.334, -2.823], "Shepton Montague": [51.085, -2.456], "Walton-in-Gordano": [51.455, -2.829], "Winscombe": [51.315, -2.833], "Worle": [51.358, -2.925], "Wrington": [51.362, -2.765], "Yatton": [51.384, -2.815]};
-const VERSION = "2026-11-09 23:15";        // set when the worker is built; shown on the Assist tab
+const VERSION = "2026-11-10 11:13";        // set when the worker is built; shown on the Assist tab
 const DEFAULT_MODEL = "claude-sonnet-5-5";
 const MAX_PER_HOUR = 30;               // per visitor (best effort: counts reset when Cloudflare restarts the Worker)
 const RISK = /suicid|kill (my|him|her|them)sel|end (my|his|her|their) life|self[- ]?harm|cutting (my|him|her)|overdos|want(s|ed)? to die|no reason to live|better off dead/i;
@@ -149,7 +149,7 @@ export default {
     // Turn the AI's text into the plan the page shows. Only real records from the list we sent are kept.
     const finish = (text) => {
       let out;
-      try { out = JSON.parse(text.slice(text.indexOf("{"), text.lastIndexOf("}") + 1)); } catch { console.log("Unreadable answer, length", text.length); return { error: "bad_answer" }; }
+      try { out = JSON.parse(text.slice(text.indexOf("{"), text.lastIndexOf("}") + 1)); } catch { console.log("Unreadable answer, length", text.length, "stop", timing.stop); return { error: "bad_answer", detail: timing.stop === "max_tokens" ? "The plan ran out of room" : "" }; }
       const byId = new Map(cands.map(c => [c.id, c]));
       const picks = (out.off_topic && !riskWords ? [] : Array.isArray(out.picks) ? out.picks : [])
         .map(p => ({ step: String(p.step || "Next step"), why: String(p.why || "").slice(0, 400), c: byId.get(Number(p.id)) }))
@@ -221,7 +221,7 @@ async function askClaude(env, prompt, timing, progress) {
     r = await fetch("https://api.anthropic.com/v1/messages", {
       method: "POST",
       headers: { "x-api-key": env.ANTHROPIC_API_KEY, "anthropic-version": "2023-06-01", "content-type": "application/json" },
-      body: JSON.stringify({ model: env.MODEL || DEFAULT_MODEL, max_tokens: 3000, stream: true, messages: [{ role: "user", content: prompt }], ...aiOptions(env) }),
+      body: JSON.stringify({ model: env.MODEL || DEFAULT_MODEL, max_tokens: 8000, stream: true, messages: [{ role: "user", content: prompt }], ...aiOptions(env) }),
       signal: AbortSignal.timeout(60000),
     });
   } catch (e) { console.log("Claude API call failed", String(e)); return { error: "ai_error", detail: "Couldn't reach the AI service" }; }
@@ -259,7 +259,7 @@ async function askClaude(env, prompt, timing, progress) {
             const n = (text.match(/"id"\s*:/g) || []).length;
             if (n > picks) { picks = n; progress({ stage: "writing", picks }); }
           } else if (ev.delta?.type === "thinking_delta") thinkingChars += (ev.delta.thinking || "").length;
-        } else if (ev.type === "message_delta") timing.plan_out = ev.usage?.output_tokens || timing.plan_out;
+        } else if (ev.type === "message_delta") { timing.plan_out = ev.usage?.output_tokens || timing.plan_out; if (ev.delta?.stop_reason) timing.stop = ev.delta.stop_reason; }
         else if (ev.type === "error") {
           console.log("Claude stream error", JSON.stringify(ev.error || {}));
           return { error: ev.error?.type === "overloaded_error" ? "busy" : "ai_error", detail: String(ev.error?.message || "").slice(0, 300) };
@@ -390,12 +390,12 @@ function candidates(recs, origin, radius, remote) {
   recs.forEach((s, id) => {
     if (s.dates && !futureDates(s).length) return;          // finished
     const inPerson = s.mode.includes("in-person");
-    const isRemote = /phone|online/.test(s.mode) && (s.area === "national" || s.area === "Somerset" || !s.area);
+    const isRemote = /phone|online/.test(s.mode);   // any area: Assist checks eligibility (e.g. "North Somerset residents only")
     let d = null;
     if (origin && inPerson) { const p = pos(s); if (p) d = miles(origin, p); }
     if (d !== null && d <= radius) out.push({ id, s, d });
     else if (remote && isRemote) out.push({ id, s, d: null });   // phone/online, or in person elsewhere but also offered by phone/online
-    else if (origin && inPerson && !pos(s) && s.area === "Somerset") out.push({ id, s, d: null, wide: true });   // county-wide service, no fixed venue
+    else if (origin && inPerson && !pos(s) && s.area && s.area !== "national") out.push({ id, s, d: null, wide: true });   // area-wide service, no fixed venue
   });
   return out;
 }
@@ -406,7 +406,7 @@ function buildPrompt(need, followups, previous, place, cands) {
   const clock = ukNow();
   const line = c => {
     const s = c.s;
-    const where = c.d !== null ? `${s.town} (${c.d.toFixed(1)} mi)` : c.wide ? "across Somerset (venues vary: contact to find the nearest)" : s.mode.replace(/;/g, ", ");
+    const where = c.d !== null ? `${s.town} (${c.d.toFixed(1)} mi)` : c.wide ? `across ${s.area === "Somerset" ? "Somerset" : s.area} (venues vary: contact to find the nearest)` : s.mode.replace(/;/g, ", ");
     return [c.id, s.name, s.provider || "-", s.type, s.access, s.support_for, s.who, when(s) || "-", nextSession(s, clock) || "-", where, s.cost || "-", s.description, s.eligibility || "-"].join(" | ");
   };
   const refine = followups.length
