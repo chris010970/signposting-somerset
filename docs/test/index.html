@@ -898,6 +898,7 @@ main { flex: 1; min-height: 0; display: grid; grid-template-columns: minmax(0, 4
 .who em { font-style: normal; color: #92400E; }
 .foot { font-size: 12px; color: #78716C; border-top: 1px solid #F5F5F4; padding-top: 8px; display: grid; gap: 3px; }
 .foot a { color: var(--b700); }
+a.copy.dirs { text-decoration: none; }
 .approx { color: #A8A29E; }
 .morehint { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 8px 12px; margin: 14px 0 6px; padding: 12px 14px; border: 1px dashed var(--line); border-radius: 12px; background: var(--white); font-size: 14px; color: var(--muted); }
 .morehint b { color: inherit; }
@@ -1535,9 +1536,10 @@ function render() {
     (checkRows.length ? ` · ${checkRows.length} need times checking` : "");
   const card = r => {
     const s = r.s, A = { "drop in": ["b-drop", "Just turn up"], "sign up": ["b-sign", "Contact to join"], "book": ["b-book", "Book first"], "referral": ["b-ref", "Needs a referral"], "call": ["b-ref", "Phone line"] }[s.access] || ["b-ref", "Contact provider"];
-    const contact = [s.url ? `<a href="${esc(s.url)}" target="_blank" rel="noopener">Website</a>` : "", s.phone ? esc(s.phone) : "", s.email ? esc(s.email) : ""].filter(Boolean).join(" · ");
+    const contact = [s.url ? `<a href="${esc(s.url)}" target="_blank" rel="noopener">Website</a>` : "", telLink(s.phone), s.email ? `<a href="mailto:${esc(s.email.split(";")[0].trim())}">${esc(s.email)}</a>` : ""].filter(Boolean).join(" · ");
+    const dir = directionsLink(s);
     return `<article class="card" id="c${s.id}" data-id="${s.id}">
-      <div class="row1"><span class="badge ${A[0]}">${A[1]}</span><span class="chipr">${r.d != null ? `<span class="chip dist">${r.d < .1 ? "<0.1" : r.d.toFixed(1)} mi${s.approx ? " approx." : ""}</span>` : ""}${s.cost ? `<span class="chip">${esc(s.cost)}</span>` : ""}${copyBtn(s)}</span></div>
+      <div class="row1"><span class="badge ${A[0]}">${A[1]}</span><span class="chipr">${r.d != null ? `<span class="chip dist">${r.d < .1 ? "<0.1" : r.d.toFixed(1)} mi${s.approx ? " approx." : ""}</span>` : ""}${s.cost ? `<span class="chip">${esc(s.cost)}</span>` : ""}${dir}${copyBtn(s)}</span></div>
       <h2>${esc(s.name)}</h2>
       ${kindTag(s)}<div class="meta">${esc(s.provider)} · ${esc(s.type)}${s._sf.length ? " · " + s._sf.map(cap).map(esc).join(", ") : ""}</div>
       <div class="next"><div class="lab">Next</div><div class="val ${r.nx.cls}">${esc(r.nx.txt)}</div></div>
@@ -1723,6 +1725,26 @@ function copyText(s, when) {
     [s.phone, s.email, s.url].filter(Boolean).join(" · "),
   ].filter(Boolean).join("\n");
 }
+// Tap-to-call: the first number in the field ("01234 567890 or 0800..." -> 01234567890); texts and non-numbers stay plain
+function telLink(phone) {
+  if (!phone) return "";
+  const n = phone.split(" (")[0].split(" or ")[0].split(";")[0].replace(/[^\d+]/g, "");
+  return /^text/i.test(phone) || n.length < 5 ? esc(phone) : `<a href="tel:${n}">${esc(phone)}</a>`;
+}
+// Directions in the phone's own maps app: Apple Maps on iPhone/iPad, Google Maps everywhere else.
+// Only for a real venue location, never for town-centre (approx.) points or services without an address.
+const DIR_ICON = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polygon points="3 11 22 2 13 21 11 13 3 11"/></svg>';
+const IOS = /iPhone|iPad|iPod/.test(navigator.userAgent) || (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1);
+// Shared with the Assist tab. Needs a postcode: records without one are placed at a town centre or meet in varying places.
+function dirHref(s) {
+  if (!s || s.approx || isNaN(s.lat) || isNaN(s.lon) || !s.postcode) return "";
+  const ll = `${(+s.lat).toFixed(6)},${(+s.lon).toFixed(6)}`;
+  return IOS ? `https://maps.apple.com/?daddr=${ll}` : `https://www.google.com/maps/dir/?api=1&destination=${ll}`;
+}
+function directionsLink(s) {
+  const href = dirHref(s); if (!href) return "";
+  return `<a class="copy dirs" href="${href}" target="_blank" rel="noopener" aria-label="Directions to ${esc(s.name)}" data-tip="Directions">${DIR_ICON}</a>`;
+}
 function copyToClipboard(txt) {
   if (navigator.clipboard && window.isSecureContext) return navigator.clipboard.writeText(txt).catch(() => copyFallback(txt));
   copyFallback(txt);
@@ -1844,7 +1866,7 @@ function renderAbout() {
     </section>
     </div></div>
     <p class="small">Service information belongs to the providers listed. Map data © <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap</a> contributors, © <a href="https://carto.com/attributions" target="_blank" rel="noopener">CARTO</a>.</p>
-    <p class="small" id="site-version">Version: test 2026-11-09 23:15${typeof window.assistRelayVersion === "function" ? window.assistRelayVersion() : ""}</p>
+    <p class="small" id="site-version">Version: test 2026-11-10 14:41${typeof window.assistRelayVersion === "function" ? window.assistRelayVersion() : ""}</p>
   </article>`;
 }
 let tab = "talk";
@@ -1987,7 +2009,7 @@ setInterval(() => { if (!ALL.length) return; tab === "talk" ? renderTalk() : tab
    this page only remembers it for the current browser session. */
 (() => {
 const WORKER_URL = "https://signposting-assist.c-r-williams0109.workers.dev";
-const PAGE_VERSION = "test 2026-11-09 23:15";
+const PAGE_VERSION = "test 2026-11-10 14:41";
 let relayVersion = "";
 // The version line is at the bottom of the About tab: "Version: test 2026-11-06 11:30 · Assist relay 2026-11-06 11:07"
 window.assistRelayVersion = () => relayVersion ? ` · Assist relay ${relayVersion}` : "";
@@ -2443,6 +2465,7 @@ const ICON = {
   web: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14 3h7v7h-2V6.4l-9.3 9.3-1.4-1.4L17.6 5H14zM5 5h6v2H6v11h11v-5h2v6a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V6a1 1 0 0 1 1-1z"/></svg>',
   person: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3a4.5 4.5 0 1 1 0 9 4.5 4.5 0 0 1 0-9zm0 11c4.4 0 8 2.2 8 5v2H4v-2c0-2.8 3.6-5 8-5z"/></svg>',
   cost: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14.5 3A5.5 5.5 0 0 1 20 8.5h-2A3.5 3.5 0 0 0 14.5 5 3.5 3.5 0 0 0 11 8.5V11h5v2h-5v4h8v2H6v-2h3v-4H6v-2h3V8.5A5.5 5.5 0 0 1 14.5 3z"/></svg>',
+  dirs: '<svg viewBox="0 0 24 24" aria-hidden="true" style="fill:none;stroke:currentColor;stroke-width:2.2;stroke-linejoin:round"><polygon points="3 11 22 2 13 21 11 13 3 11"/></svg>',
   mail: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 5h18a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1V6a1 1 0 0 1 1-1zm1 3.2V17h16V8.2l-8 5-8-5zM5.2 7 12 11.3 18.8 7z"/></svg>',
 };
 function actions(s) {
@@ -2453,6 +2476,8 @@ function actions(s) {
     const label = text ? `Text ${num}` : s.phone.split(" (")[0].split(" or ")[0];
     a.push(`<a class="a-act" href="${text ? "sms:" : "tel:"}${e_(num)}">${ICON.phone}${e_(label)}</a>`);
   }
+  const pp = pinPos(s), dh = pp && typeof dirHref === "function" ? dirHref({ ...pp, postcode: s.postcode }) : "";
+  if (dh) a.push(`<a class="a-act" href="${e_(dh)}" target="_blank" rel="noopener" aria-label="Directions to ${e_(s.name)}">${ICON.dirs}Directions</a>`);
   if (isUrl(s.url)) a.push(`<a class="a-act" href="${e_(s.url)}" target="_blank" rel="noopener">${ICON.web}Website</a>`);
   else if (s.email) a.push(`<a class="a-act" href="mailto:${e_(s.email)}">${ICON.mail}Email</a>`);
   return a.join("");
