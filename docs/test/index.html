@@ -1754,7 +1754,7 @@ function copyFallback(txt) {
   document.body.appendChild(ta); ta.select(); try { document.execCommand("copy"); } catch (_) {} ta.remove();
 }
 document.addEventListener("click", e => {
-  const b = e.target.closest && e.target.closest(".copy"); if (!b) return;
+  const b = e.target.closest && e.target.closest("button.copy"); if (!b) return;
   e.preventDefault(); e.stopPropagation();
   const s = ALL.find(x => String(x.id) === b.dataset.copy); if (!s) return;
   copyToClipboard(copyText(s, b.dataset.when));
@@ -1866,7 +1866,7 @@ function renderAbout() {
     </section>
     </div></div>
     <p class="small">Service information belongs to the providers listed. Map data © <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap</a> contributors, © <a href="https://carto.com/attributions" target="_blank" rel="noopener">CARTO</a>.</p>
-    <p class="small" id="site-version">Version: test 2026-11-10 14:41${typeof window.assistRelayVersion === "function" ? window.assistRelayVersion() : ""}</p>
+    <p class="small" id="site-version">Version: test 2026-11-10 15:16${typeof window.assistRelayVersion === "function" ? window.assistRelayVersion() : ""}</p>
   </article>`;
 }
 let tab = "talk";
@@ -2009,7 +2009,7 @@ setInterval(() => { if (!ALL.length) return; tab === "talk" ? renderTalk() : tab
    this page only remembers it for the current browser session. */
 (() => {
 const WORKER_URL = "https://signposting-assist.c-r-williams0109.workers.dev";
-const PAGE_VERSION = "test 2026-11-10 14:41";
+const PAGE_VERSION = "test 2026-11-10 15:16";
 let relayVersion = "";
 // The version line is at the bottom of the About tab: "Version: test 2026-11-06 11:30 · Assist relay 2026-11-06 11:07"
 window.assistRelayVersion = () => relayVersion ? ` · Assist relay ${relayVersion}` : "";
