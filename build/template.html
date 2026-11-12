@@ -460,10 +460,11 @@ function runsOn(s, d) {
 function occurrences(s, from, days) {
   if (s._kind !== "dated") return [];
   const out = [], t = s._times;
+  const noTimeEnd = split(s.mode).includes("in-person") ? 1080 : 1439;   // in person with no time: assume it's over by 6pm
   for (let i = 0; i < days; i++) {
     const d = addDays(dayStart(from), i);
     if (!runsOn(s, d)) continue;
-    const st = new Date(d.getTime() + (t ? t.s : 0) * 60000), en = new Date(d.getTime() + (t ? (t.e ?? t.s + 90) : 1439) * 60000);
+    const st = new Date(d.getTime() + (t ? t.s : 0) * 60000), en = new Date(d.getTime() + (t ? (t.e ?? t.s + 90) : noTimeEnd) * 60000);
     out.push({ st, en, bank: BANK.has(iso(d)), timed: !!t });
   }
   return out;

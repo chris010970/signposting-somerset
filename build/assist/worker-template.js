@@ -343,7 +343,7 @@ function nextSession(s, now) {
   }
   const days = daysSet(s.days), parts = String(s.dates || "").split(";").map(x => x.trim()).filter(Boolean);
   const list = new Set(parts.filter(p => !p.includes(" to "))), ranges = parts.filter(p => p.includes(" to ")).map(p => p.split(" to "));
-  const end = t ? (t[3] ? +t[3] * 60 + +t[4] : +t[1] * 60 + +t[2] + 90) : 1439;
+  const end = t ? (t[3] ? +t[3] * 60 + +t[4] : +t[1] * 60 + +t[2] + 90) : /in-person/.test(s.mode || "") ? 1080 : 1439;   // in person, no time: over by 6pm
   for (let i = 0; i < 70; i++) {
     const d = now.day + i * 864e5, dt = new Date(d), wd = dt.getUTCDay();
     if (i === 0 && now.mins >= end) continue;
