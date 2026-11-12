@@ -49,7 +49,8 @@ def md(s, p):
         lines += [f"**Safety:** {p['safety']}", ""]
     for i, k in enumerate(p.get("picks", []), 1):
         rec = k.get("record", {})
-        where = f"{k['distance']} mi" if k.get("distance") is not None else "phone/online or area-wide"
+        where = (f"{k['distance']} mi" if k.get("distance") is not None
+                 else rec.get("town") if "in-person" in rec.get("mode", "") and rec.get("town") else "phone/online or area-wide")
         when = " ".join(x for x in [rec.get("days", ""), rec.get("times", ""), rec.get("frequency", "")] if x)
         lines.append(f"{i}. **{rec.get('name', '?')}** ({k.get('step', '')}; {where}; {when or 'no time'})  ")
         lines.append(f"   {k.get('why', '')}")
