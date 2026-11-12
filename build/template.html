@@ -473,6 +473,8 @@ const fmtT = m => `${String(Math.floor(m / 60)).padStart(2, "0")}:${String(m % 6
 function nextText(s, now) {
   if (s._kind === "website") return { cls: "chk", txt: "Times vary: see website" };
   if (s._kind === "appointment") return { cls: "chk", txt: "By appointment" };
+  // Booked, phoned or referred with no set time: there's no session to turn up to, so give the days instead of a next date
+  if (!s._times && s.days && ["book", "call", "referral"].includes(s.access) && !/group|community|course|volunteering/i.test(s.type || "")) return { cls: "chk", txt: `By appointment · ${s.days.replace(/;/g, ", ").replace(/-/g, "–")}` };
   if (s._kind === "check") return { cls: "chk", txt: `Check dates${s.frequency ? ` (${s.frequency})` : ""}${s.days ? ` · ${s.days} ${s.times}` : ""}` };
   const o = occurrences(s, now, 70).find(x => x.en > now);
   if (!o) return { cls: "chk", txt: "No upcoming dates" };

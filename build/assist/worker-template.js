@@ -336,6 +336,7 @@ function nthOk(t, freq) {   // "2nd Tue of month", "1st and 3rd Wed of month", "
 function nextSession(s, now) {
   const f = (s.frequency || "").toLowerCase(), t = (s.times || "").match(/^(\d\d):(\d\d)(?:-(\d\d):(\d\d))?$/);
   if (/^mon-sun$/i.test(s.days) && s.times === "00:00-23:59") return "any time";
+  if (!t && s.days && /^(book|call|referral)$/.test(s.access || "") && !/group|community|course|volunteering/i.test(s.type || "")) return `by appointment (${s.days})`;
   if (!s.dates) {
     if (f === "see website") return "see website";
     if (!s.days) return "";
