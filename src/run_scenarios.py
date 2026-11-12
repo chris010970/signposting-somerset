@@ -14,8 +14,8 @@ Usage:
   python run_scenarios.py --all                                  # all 73 (about 2.5 hours, see cost note)
 
 Each plan costs roughly 8-12p of Anthropic credit (the prompt is bigger now the sheet has ~950 records),
-so all 73 is about 6-9 pounds. The worker allows 30 plans an hour per visitor, so the script waits
-2 minutes between plans. Results: plans-<date>.json (everything) and plans-<date>.md (readable).
+so all 73 is about 6-9 pounds. The worker allows 30 plans an hour from one computer, so up to 28 plans
+run straight through; for more, the script waits about 2 minutes between plans. Results: plans-<date>.json (everything) and plans-<date>.md (readable).
 """
 import argparse, json, os, sys, time
 from datetime import datetime
@@ -63,7 +63,7 @@ def main():
     ap.add_argument("--ids", help="comma-separated, e.g. S25,S26")
     ap.add_argument("--all", action="store_true")
     ap.add_argument("--list", action="store_true")
-    ap.add_argument("--wait", type=int, default=120, help="seconds between plans (rate limit is 30/hour)")
+    ap.add_argument("--wait", type=int, default=None, help="seconds between plans (default: none for up to 28 plans, 125s for more)")
     a = ap.parse_args()
     S = load(a.scenarios)
     if a.list:
@@ -76,6 +76,8 @@ def main():
     code = os.environ.get("ASSIST_CODE")
     if not code:
         sys.exit("Set ASSIST_CODE first (see the top of this file).")
+    if a.wait is None:
+        a.wait = 0 if len(pick) <= 28 else 125
     stamp = datetime.now().strftime("%Y-%m-%d-%H%M")
     jpath, mpath = f"plans-{stamp}.json", f"plans-{stamp}.md"
     results = {}

@@ -1288,7 +1288,7 @@ footer.urgent p { color: #FEE2E2; }
   <div class="a-alert" id="a-crisis" hidden>
     <h2>This sounds like it may need urgent support</h2>
     <p>If someone is at risk right now, call 999. For urgent mental health help, call NHS 111 and choose option 2. They can also talk to Samaritans or Mindline any time.</p>
-    <div class="a-lines"><a href="tel:999">999</a><a href="tel:111">NHS 111, option 2</a><a href="tel:116123">Samaritans 116 123</a><a href="tel:08001381692">Mindline 0800 138 1692</a></div>
+    <div class="a-lines"><a href="tel:999">999</a><a href="tel:111">NHS 111, option 2</a><a href="tel:116123">Samaritans 116 123</a></div>
   </div>
 
   <p class="a-scrubnote" id="a-scrubnote" hidden></p>
@@ -1309,8 +1309,8 @@ footer.urgent p { color: #FEE2E2; }
 
 <footer class="help gut" id="help">
   <div class="inner">
-    <div><h4 id="help-title">Always available: 24/7 helplines</h4><p>Free listening support when someone needs to talk right now.</p></div>
-    <div class="lines"><a class="line" href="tel:08001381692" aria-label="Call Mindline on 0800 138 1692">Mindline<span class="num">: 0800 138 1692</span></a><a class="line ghost" href="tel:116123" aria-label="Call Samaritans on 116 123">Samaritans<span class="num">: 116 123</span></a></div>
+    <div><h4 id="help-title">Always available: 24/7 helpline</h4><p>Free listening support when someone needs to talk right now.</p></div>
+    <div class="lines"><a class="line" href="tel:116123" aria-label="Call Samaritans on 116 123">Samaritans<span class="num">: 116 123</span></a></div>
   </div>
 </footer>
 
@@ -1882,7 +1882,7 @@ function renderAbout() {
     </section>
     </div></div>
     <p class="small">Service information belongs to the providers listed. Map data © <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap</a> contributors, © <a href="https://carto.com/attributions" target="_blank" rel="noopener">CARTO</a>.</p>
-    <p class="small" id="site-version">Version: main 2026-11-10 16:44${typeof window.assistRelayVersion === "function" ? window.assistRelayVersion() : ""}</p>
+    <p class="small" id="site-version">Version: main 2026-11-12 05:30${typeof window.assistRelayVersion === "function" ? window.assistRelayVersion() : ""}</p>
   </article>`;
 }
 let tab = "talk";
@@ -2012,7 +2012,7 @@ if (SHEET_CSV_URL) {
       console.error("Sheet load error", e);
       if (LIVE_ONLY) {
         showSource("");
-        panelMessage(liveMsg = `<strong>Services can't be loaded right now.</strong><br>Please <a href="" onclick="location.reload();return false">try again</a> in a moment. If you need to talk to someone now, call Mindline on <a href="tel:08001381692">0800 138 1692</a> or Samaritans on <a href="tel:116123">116 123</a>.<br><small style="color:#78716C">Technical detail: ${esc(String(e && e.message || e))}</small>`);
+        panelMessage(liveMsg = `<strong>Services can't be loaded right now.</strong><br>Please <a href="" onclick="location.reload();return false">try again</a> in a moment. If you need to talk to someone now, call Samaritans on <a href="tel:116123">116 123</a>.<br><small style="color:#78716C">Technical detail: ${esc(String(e && e.message || e))}</small>`);
       } else showSource(`Couldn't reach the shared sheet, so this is the saved copy from ${BUILT}.`);
     });
 }
@@ -2025,7 +2025,7 @@ setInterval(() => { if (!ALL.length) return; tab === "talk" ? renderTalk() : tab
    this page only remembers it for the current browser session. */
 (() => {
 const WORKER_URL = "https://signposting-assist.c-r-williams0109.workers.dev";
-const PAGE_VERSION = "main 2026-11-10 16:44";
+const PAGE_VERSION = "main 2026-11-12 05:30";
 let relayVersion = "";
 // The version line is at the bottom of the About tab: "Version: test 2026-11-06 11:30 · Assist relay 2026-11-06 11:07"
 window.assistRelayVersion = () => relayVersion ? ` · Assist relay ${relayVersion}` : "";
@@ -2542,7 +2542,7 @@ function card(p) {
 
 // ---- the plan: a short summary to give to the person (email, text, print) ----
 const STEP_TITLE = { "First step": "A good place to start", "Next step": "Next", "When ready": "When you feel ready" };
-const FOOT = "Please check with the service before going, as details can change. Anything marked \"found online\" hasn't been checked by Signposting Somerset. If things get worse, call Mindline any time on 0800 138 1692 (free), or 999 in an emergency.";
+const FOOT = "Please check with the service before going, as details can change. Anything marked \"found online\" hasn't been checked by Signposting Somerset. If things get worse, call Samaritans any time on 116 123 (free), or 999 in an emergency.";
 function plan() {
   let html = `<h3 style="margin:0 0 6px">Things that might help</h3>`, text = "Things that might help\n";
   const safety = lastResult?.safety;
