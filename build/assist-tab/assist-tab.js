@@ -277,6 +277,7 @@ let lastPicks = [];
 const STEPS = ["First step", "Next step", "When ready"];
 const normStep = s => STEPS.find(x => x.toLowerCase() === String(s).toLowerCase()) || "Next step";
 const HOW = { "drop in": "Just turn up", "sign up": "Contact to join", "book": "Book first", "referral": "Needs a referral", "call": "Phone line" };
+const how_ = s => s.access === "call" && /group|community|course|volunteering/i.test(s.type || "") ? "Call first" : (HOW[s.access] || s.access);   // groups you phone before joining aren't phone lines
 const HOWCLS = { "drop in": "ab-drop", "sign up": "ab-sign", "book": "ab-book", "referral": "ab-ref", "call": "ab-ref" };
 
 let lastResult = null;
@@ -458,7 +459,7 @@ function card(p) {
     ? `<span class="a-m">${ICON.place}${e_(p.distance !== null && s.address ? `${p.distance} mi` : s.town)}</span>`
     : `<span class="a-m">${mode.includes("phone") ? ICON.phone : ""}${mode.includes("online") ? ICON.online : ""}${e_(mode.replace(/;/g, " / ").replace("phone", "Phone").replace("online", "Online"))}</span>`;
   const badges = (p.web ? `<span class="a-webtag">Found online, not checked</span>` : "") +
-    (s.access ? `<span class="a-badge ${HOWCLS[s.access] || "ab-ref"}">${e_(HOW[s.access] || s.access)}</span>` : "") +
+    (s.access ? `<span class="a-badge ${HOWCLS[s.access] || "ab-ref"}">${e_(how_(s))}</span>` : "") +
     `<span class="a-chip dist">${modeBit}</span>` + (s.cost ? `<span class="a-chip">${e_(s.cost)}</span>` : "");
   return `<details class="a-pick${p.web ? " a-webpick" : ""}" id="a-pick-${p.n}">
     <summary>
@@ -503,7 +504,7 @@ function plan() {
       n++;
       const s = p.record, inPerson = (s.mode || "").includes("in-person");
       const when = whenText(s), where = inPerson ? [s.address, s.town, s.postcode].filter(Boolean).join(", ") : "";
-      const how = [HOW[s.access] || s.access, s.cost].filter(Boolean).join(". ");
+      const how = [how_(s), s.cost].filter(Boolean).join(". ");
       // Not in person: say how to take part, so a plan line is never just a time with no place
       const modes = (s.mode || "").split(";").map(m => m.trim());
       const remoteHow = inPerson ? "" : [modes.includes("online") && "online", modes.includes("phone") && "by phone"].filter(Boolean).join(" or ").replace(/^./, c => c.toUpperCase());

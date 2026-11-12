@@ -1553,7 +1553,7 @@ function render() {
     (sup ? ` for <strong>${esc(cap(sup))}</strong>` : "") + (origin ? (rad ? ` within ${rad} miles of ${esc(origin.label)}` : ` by distance from ${esc(origin.label)}`) : "") +
     (checkRows.length ? ` · ${checkRows.length} need times checking` : "");
   const card = r => {
-    const s = r.s, A = { "drop in": ["b-drop", "Just turn up"], "sign up": ["b-sign", "Contact to join"], "book": ["b-book", "Book first"], "referral": ["b-ref", "Needs a referral"], "call": ["b-ref", "Phone line"] }[s.access] || ["b-ref", "Contact provider"];
+    const s = r.s, A = { "drop in": ["b-drop", "Just turn up"], "sign up": ["b-sign", "Contact to join"], "book": ["b-book", "Book first"], "referral": ["b-ref", "Needs a referral"], "call": ["b-ref", /group|community|course|volunteering/i.test(s.type || "") ? "Call first" : "Phone line"] }[s.access] || ["b-ref", "Contact provider"];
     const contact = [s.url ? `<a href="${esc(s.url)}" target="_blank" rel="noopener">Website</a>` : "", telLink(s.phone), s.email ? `<a href="mailto:${esc(s.email.split(";")[0].trim())}">${esc(s.email)}</a>` : ""].filter(Boolean).join(" · ");
     const dir = directionsLink(s);
     return `<article class="card" id="c${s.id}" data-id="${s.id}">
@@ -1884,7 +1884,7 @@ function renderAbout() {
     </section>
     </div></div>
     <p class="small">Service information belongs to the providers listed. Map data © <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap</a> contributors, © <a href="https://carto.com/attributions" target="_blank" rel="noopener">CARTO</a>.</p>
-    <p class="small" id="site-version">Version: test 2026-11-12 20:03${typeof window.assistRelayVersion === "function" ? window.assistRelayVersion() : ""}</p>
+    <p class="small" id="site-version">Version: test 2026-11-12 20:22${typeof window.assistRelayVersion === "function" ? window.assistRelayVersion() : ""}</p>
   </article>`;
 }
 let tab = "talk";
@@ -2027,7 +2027,7 @@ setInterval(() => { if (!ALL.length) return; tab === "talk" ? renderTalk() : tab
    this page only remembers it for the current browser session. */
 (() => {
 const WORKER_URL = "https://signposting-assist.c-r-williams0109.workers.dev";
-const PAGE_VERSION = "test 2026-11-12 20:03";
+const PAGE_VERSION = "test 2026-11-12 20:22";
 let relayVersion = "";
 // The version line is at the bottom of the About tab: "Version: test 2026-11-06 11:30 · Assist relay 2026-11-06 11:07"
 window.assistRelayVersion = () => relayVersion ? ` · Assist relay ${relayVersion}` : "";
@@ -2332,6 +2332,7 @@ let lastPicks = [];
 const STEPS = ["First step", "Next step", "When ready"];
 const normStep = s => STEPS.find(x => x.toLowerCase() === String(s).toLowerCase()) || "Next step";
 const HOW = { "drop in": "Just turn up", "sign up": "Contact to join", "book": "Book first", "referral": "Needs a referral", "call": "Phone line" };
+const how_ = s => s.access === "call" && /group|community|course|volunteering/i.test(s.type || "") ? "Call first" : (HOW[s.access] || s.access);   // groups you phone before joining aren't phone lines
 const HOWCLS = { "drop in": "ab-drop", "sign up": "ab-sign", "book": "ab-book", "referral": "ab-ref", "call": "ab-ref" };
 
 let lastResult = null;
@@ -2513,7 +2514,7 @@ function card(p) {
     ? `<span class="a-m">${ICON.place}${e_(p.distance !== null && s.address ? `${p.distance} mi` : s.town)}</span>`
     : `<span class="a-m">${mode.includes("phone") ? ICON.phone : ""}${mode.includes("online") ? ICON.online : ""}${e_(mode.replace(/;/g, " / ").replace("phone", "Phone").replace("online", "Online"))}</span>`;
   const badges = (p.web ? `<span class="a-webtag">Found online, not checked</span>` : "") +
-    (s.access ? `<span class="a-badge ${HOWCLS[s.access] || "ab-ref"}">${e_(HOW[s.access] || s.access)}</span>` : "") +
+    (s.access ? `<span class="a-badge ${HOWCLS[s.access] || "ab-ref"}">${e_(how_(s))}</span>` : "") +
     `<span class="a-chip dist">${modeBit}</span>` + (s.cost ? `<span class="a-chip">${e_(s.cost)}</span>` : "");
   return `<details class="a-pick${p.web ? " a-webpick" : ""}" id="a-pick-${p.n}">
     <summary>
@@ -2558,7 +2559,7 @@ function plan() {
       n++;
       const s = p.record, inPerson = (s.mode || "").includes("in-person");
       const when = whenText(s), where = inPerson ? [s.address, s.town, s.postcode].filter(Boolean).join(", ") : "";
-      const how = [HOW[s.access] || s.access, s.cost].filter(Boolean).join(". ");
+      const how = [how_(s), s.cost].filter(Boolean).join(". ");
       // Not in person: say how to take part, so a plan line is never just a time with no place
       const modes = (s.mode || "").split(";").map(m => m.trim());
       const remoteHow = inPerson ? "" : [modes.includes("online") && "online", modes.includes("phone") && "by phone"].filter(Boolean).join(" or ").replace(/^./, c => c.toUpperCase());

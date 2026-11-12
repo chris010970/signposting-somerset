@@ -619,7 +619,7 @@ function render() {
     (sup ? ` for <strong>${esc(cap(sup))}</strong>` : "") + (origin ? (rad ? ` within ${rad} miles of ${esc(origin.label)}` : ` by distance from ${esc(origin.label)}`) : "") +
     (checkRows.length ? ` · ${checkRows.length} need times checking` : "");
   const card = r => {
-    const s = r.s, A = { "drop in": ["b-drop", "Just turn up"], "sign up": ["b-sign", "Contact to join"], "book": ["b-book", "Book first"], "referral": ["b-ref", "Needs a referral"], "call": ["b-ref", "Phone line"] }[s.access] || ["b-ref", "Contact provider"];
+    const s = r.s, A = { "drop in": ["b-drop", "Just turn up"], "sign up": ["b-sign", "Contact to join"], "book": ["b-book", "Book first"], "referral": ["b-ref", "Needs a referral"], "call": ["b-ref", /group|community|course|volunteering/i.test(s.type || "") ? "Call first" : "Phone line"] }[s.access] || ["b-ref", "Contact provider"];
     const contact = [s.url ? `<a href="${esc(s.url)}" target="_blank" rel="noopener">Website</a>` : "", telLink(s.phone), s.email ? `<a href="mailto:${esc(s.email.split(";")[0].trim())}">${esc(s.email)}</a>` : ""].filter(Boolean).join(" · ");
     const dir = directionsLink(s);
     return `<article class="card" id="c${s.id}" data-id="${s.id}">
