@@ -1,0 +1,26 @@
+# Signposting Somerset: files Git should ignore.
+
+# Build outputs (made by build/build_all.py and build/build_assist.py).
+# Copy what you need into docs/ and src/ instead of committing these.
+build/github/
+build/index.html
+build/signposting-somerset.html
+build/signposting-somerset-trial.html
+build/assist/cloudflare-worker.js
+
+# Python
+__pycache__/
+*.pyc
+
+# Never commit secrets (the Assist access code and API key live only in Cloudflare)
+.env
+*.env
+*secret*
+*.key
+
+# OS and editor clutter
+.DS_Store
+Thumbs.db
+desktop.ini
+.vscode/
+.idea/
