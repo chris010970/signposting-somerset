@@ -1,0 +1,162 @@
+{
+ "scenarios": [
+  {
+   "id": "S3",
+   "town": "Keynsham",
+   "area": "Bath and North East Somerset",
+   "lat": 51.4166,
+   "lon": -2.4998,
+   "persp": "individual",
+   "need_id": "eating",
+   "theme": "eating difficulties",
+   "need": "I think my eating has got out of control. I've been restricting and then bingeing and I'm scared to tell anyone.",
+   "plan_q": "I live in Keynsham, Bath and North East Somerset. I think my eating has got out of control. I've been restricting and then bingeing and I'm scared to tell anyone. Can you put together a support plan for me: a good place to start, then next steps, then things for when I feel ready? For each suggestion give what it is, when it runs, where it is, how to join or contact it, and why it suits me.",
+   "radius_miles": 10,
+   "src": "run5/scenarios.json"
+  },
+  {
+   "id": "S5",
+   "town": "Paulton",
+   "area": "Bath and North East Somerset",
+   "lat": 51.306,
+   "lon": -2.5022,
+   "persp": "individual",
+   "need_id": "young-lgbt",
+   "theme": "young people / LGBTQ+",
+   "need": "I'm 17 and gay and I don't really know anyone like me round here. I feel really alone and down a lot.",
+   "plan_q": "I live in Paulton, Bath and North East Somerset. I'm 17 and gay and I don't really know anyone like me round here. I feel really alone and down a lot. Can you put together a support plan for me: a good place to start, then next steps, then things for when I feel ready? For each suggestion give what it is, when it runs, where it is, how to join or contact it, and why it suits me.",
+   "radius_miles": 10,
+   "src": "run5/scenarios.json"
+  },
+  {
+   "id": "S6",
+   "town": "Tunley",
+   "area": "Bath and North East Somerset",
+   "lat": 51.3338,
+   "lon": -2.438,
+   "persp": "worker",
+   "need_id": "homeless",
+   "theme": "homelessness",
+   "need": "Man in his 20s, sofa surfing, low mood, needs daytime support and practical help.",
+   "plan_q": "I'm a mental health support worker in Tunley, Bath and North East Somerset. Man in his 20s, sofa surfing, low mood, needs daytime support and practical help. Can you put together a support plan I can give to this person: a good place to start, then next steps, then things for when they feel ready? For each suggestion give what it is, when it runs, where it is, how to join or contact it, and why it suits them.",
+   "radius_miles": 10,
+   "src": "run5/scenarios.json"
+  },
+  {
+   "id": "S4b",
+   "town": "Bath",
+   "area": "Somerset",
+   "lat": 51.3811,
+   "lon": -2.359,
+   "persp": "worker",
+   "need_id": "autism",
+   "theme": "autism / ADHD",
+   "need": "Newly diagnosed autistic adult with ADHD, burnt out, wants to meet other neurodivergent adults. Relies on buses.",
+   "plan_q": "I'm a mental health support worker in Shepton Mallet, Somerset. Newly diagnosed autistic adult with ADHD, burnt out, wants to meet other neurodivergent adults. Relies on buses. Can you put together a support plan I can give to this person: a good place to start, then next steps, then things for when they feel ready? For each suggestion give what it is, when it runs, where it is, how to join or contact it, and why it suits them.",
+   "radius_miles": 10,
+   "src": "run5/scenarios.json"
+  },
+  {
+   "id": "S7b",
+   "town": "Bath",
+   "area": "North Somerset",
+   "lat": 51.3811,
+   "lon": -2.359,
+   "persp": "worker",
+   "need_id": "refugee",
+   "theme": "refugees / language",
+   "need": "Ukrainian mother with limited English, lonely and low, here with her daughter.",
+   "plan_q": "I'm a mental health support worker in Weston-super-Mare, North Somerset. Ukrainian mother with limited English, lonely and low, here with her daughter. Can you put together a support plan I can give to this person: a good place to start, then next steps, then things for when they feel ready? For each suggestion give what it is, when it runs, where it is, how to join or contact it, and why it suits them.",
+   "radius_miles": 10,
+   "src": "run5/scenarios.json"
+  },
+  {
+   "id": "S9b",
+   "town": "Bath",
+   "area": "Somerset",
+   "lat": 51.3811,
+   "lon": -2.359,
+   "persp": "worker",
+   "need_id": "ocd",
+   "theme": "OCD",
+   "need": "Client with severe OCD, checking for hours, wants treatment and support.",
+   "plan_q": "I'm a mental health support worker in Ilminster, Somerset. Client with severe OCD, checking for hours, wants treatment and support. Can you put together a support plan I can give to this person: a good place to start, then next steps, then things for when they feel ready? For each suggestion give what it is, when it runs, where it is, how to join or contact it, and why it suits them.",
+   "radius_miles": 10,
+   "src": "run5/scenarios.json"
+  },
+  {
+   "id": "S10b",
+   "town": "Bath",
+   "area": "Somerset",
+   "lat": 51.3811,
+   "lon": -2.359,
+   "persp": "individual",
+   "need_id": "prison",
+   "theme": "prison leavers",
+   "need": "I came out of prison last month. I'm trying to stay out of trouble but I'm lonely and I've got nothing to do.",
+   "plan_q": "I live in Nunney, Somerset. I came out of prison last month. I'm trying to stay out of trouble but I'm lonely and I've got nothing to do. Can you put together a support plan for me: a good place to start, then next steps, then things for when I feel ready? For each suggestion give what it is, when it runs, where it is, how to join or contact it, and why it suits me.",
+   "radius_miles": 10,
+   "src": "run5/scenarios.json"
+  },
+  {
+   "id": "A1b",
+   "type": "A: local discovery",
+   "town": "Bath",
+   "lat": 51.3811,
+   "lon": -2.359,
+   "need": "Near Bath. Client: woman with long-term pain wanting something gentle to get moving. Relies on buses.",
+   "category": "gentle activity",
+   "time_constraint": "none (prefer within 7 days)",
+   "hard_time": false,
+   "travel": "relies on buses",
+   "radius_miles": 10,
+   "keywords": [
+    "walking",
+    "exercise"
+   ],
+   "dir_category": "be active",
+   "ask": "I'm a support worker in Somerset. Near Wellington. Client: woman with long-term pain wanting something gentle to get moving. Relies on buses. Please suggest up to five local options near Wellington, with the day, time, place and how to join for each.",
+   "src": "run7/scenarios.json"
+  },
+  {
+   "id": "A2b",
+   "type": "A: local discovery",
+   "town": "Bath",
+   "lat": 51.3811,
+   "lon": -2.359,
+   "need": "Near Bath. Client: man in his 60s who won't do 'talking' groups but likes practical, hands-on things. Relies on buses. Needs something this coming week, any day.",
+   "category": "practical",
+   "time_constraint": "this coming week, any day",
+   "hard_time": false,
+   "travel": "relies on buses",
+   "radius_miles": 10,
+   "keywords": [
+    "men's shed",
+    "practical"
+   ],
+   "dir_category": "connect",
+   "ask": "I'm a support worker in Somerset. Near Wincanton. Client: man in his 60s who won't do 'talking' groups but likes practical, hands-on things. Relies on buses. Needs something this coming week, any day. Please suggest up to five local options near Wincanton, with the day, time, place and how to join for each.",
+   "src": "run7/scenarios.json"
+  },
+  {
+   "id": "A4b",
+   "type": "A: local discovery",
+   "town": "Bath",
+   "lat": 51.3811,
+   "lon": -2.359,
+   "need": "Near Bath. Client: woman in her 40s, low mood, would like a friendly drop-in to chat. Can drive. Needs something this coming week, any day.",
+   "category": "drop-in",
+   "time_constraint": "this coming week, any day",
+   "hard_time": false,
+   "travel": "can drive",
+   "radius_miles": 10,
+   "keywords": [
+    "wellbeing",
+    "coffee"
+   ],
+   "dir_category": "connect",
+   "ask": "I'm a support worker in Somerset. Near Crewkerne. Client: woman in her 40s, low mood, would like a friendly drop-in to chat. Can drive. Needs something this coming week, any day. Please suggest up to five local options near Crewkerne, with the day, time, place and how to join for each.",
+   "src": "run7/scenarios.json"
+  }
+ ]
+}
