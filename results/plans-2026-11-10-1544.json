@@ -1,0 +1,1571 @@
+{
+ "S17": {
+  "scenario": {
+   "id": "S17",
+   "town": "Cheddar",
+   "radius_miles": 10,
+   "travel": "can drive",
+   "need": "A mum in her 30s has OCD: checking and intrusive thoughts that have got much worse since her second baby was born four months ago. She's embarrassed to tell anyone and hasn't mentioned it to her health visitor. She can drive. What support is there for her?",
+   "lat": 51.2771,
+   "lon": -2.7781,
+   "src": "run10/scenarios.json"
+  },
+  "plan": {
+   "off_topic": false,
+   "reading": "A mum four months postpartum whose OCD has got worse, and who feels embarrassed and hasn't told anyone. Intrusive thoughts and checking are common after birth and treatable. I've started with private, low-pressure routes (phone, WhatsApp, online, text) before formal treatment, and she can drive to anything local.",
+   "safety": "",
+   "core_needs": [
+    "OCD (checking, intrusive thoughts)",
+    "perinatal mental health support",
+    "feeling able to tell someone"
+   ],
+   "core_covered": "partly",
+   "search_for": "perinatal OCD specialist CBT therapy near Cheddar Somerset",
+   "constraints": "baby of four months; can drive; embarrassed to disclose so prefers private routes",
+   "place": "Cheddar",
+   "risk": false,
+   "picks": [
+    {
+     "step": "First step",
+     "why": "Trained volunteers support parents with perinatal mental illness by WhatsApp or a booked call-back. She can say it quietly, without face-to-face disclosure, and be understood.",
+     "distance": null,
+     "record": {
+      "name": "PANDAS Foundation WhatsApp and call-back support",
+      "provider": "PANDAS Foundation",
+      "type": "One-to-one support",
+      "access": "call",
+      "support_for": "low mood;anxiety",
+      "mode": "phone;online",
+      "url": "https://pandasfoundation.org.uk/our-services/",
+      "description": "Trained volunteers support parents and carers affected by perinatal mental illness. WhatsApp or book a call-back.",
+      "who": "new families;women",
+      "days": "Mon-Fri",
+      "times": "09:00-17:00",
+      "phone": "WhatsApp 07903 508334",
+      "cost": "Free",
+      "last_checked": "06/11/2026"
+     }
+    },
+    {
+     "step": "First step",
+     "why": "OCD-specific peer group on Zoom, so she can hear from others who share this and have the same thoughts. Free, from home with the baby. A Tuesday evening group also runs weekly.",
+     "distance": null,
+     "record": {
+      "name": "OCD-UK Open Support Group (Thursday morning)",
+      "provider": "OCD-UK",
+      "type": "Peer group",
+      "access": "sign up",
+      "support_for": "anxiety",
+      "mode": "online",
+      "url": "https://www.ocduk.org/support-groups/online/",
+      "description": "Zoom peer support for people with OCD and their family, friends or partners. Register for each meeting.",
+      "who": "adults",
+      "eligibility": "18+; UK residents only; free Zoom account needed",
+      "days": "Thu",
+      "times": "10:15-11:45",
+      "email": "groups@ocduk.org",
+      "cost": "Free",
+      "last_checked": "06/11/2026"
+     }
+    },
+    {
+     "step": "Next step",
+     "why": "NHS CBT for anxiety is a recognised route into OCD treatment. She can self-refer online, with no need to tell the health visitor first. Needs a Somerset GP; check OCD is accepted.",
+     "distance": null,
+     "record": {
+      "name": "NHS Somerset Talking Therapies",
+      "provider": "Somerset NHS Foundation Trust",
+      "type": "Counselling or therapy",
+      "access": "sign up",
+      "support_for": "low mood;anxiety",
+      "mode": "phone;online",
+      "url": "https://www.somersetft.nhs.uk/somerset-talking-therapies/online-referral-form/",
+      "description": "NHS CBT and counselling for anxiety, low mood and PTSD. Refer yourself online. Employment advisers for people in therapy.",
+      "who": "adults;young people",
+      "eligibility": "16+ and registered with a Somerset GP (not North Somerset). Not for psychosis, eating disorders or bereavement in the last 6 months",
+      "frequency": "see website",
+      "phone": "0300 323 0033",
+      "cost": "Free (NHS)",
+      "last_checked": "07/11/2026"
+     }
+    },
+    {
+     "step": "Next step",
+     "why": "Confidential text service with health visitors, so she can mention what's happening in writing and at her own pace, rather than saying it aloud.",
+     "distance": null,
+     "record": {
+      "name": "ChatHealth 0-5 (Somerset health visitors)",
+      "provider": "Somerset Council Health Visiting Team",
+      "type": "One-to-one support",
+      "access": "call",
+      "support_for": "connect",
+      "mode": "phone",
+      "url": "https://www.somerset.gov.uk/send/chathealth-0-5-2/",
+      "description": "Confidential text advice from health visitors for parents and carers of under-5s. UK mobiles only. Not for emergencies.",
+      "who": "new families;women",
+      "eligibility": "Somerset Council area only",
+      "days": "Mon-Fri",
+      "times": "09:00-17:00",
+      "phone": "Text 07480 635514",
+      "last_checked": "06/11/2026"
+     }
+    },
+    {
+     "step": "Next step",
+     "why": "Specialist NHS perinatal service for a baby under 2. It can't be self-referred; her GP or health visitor would refer once she's ready to share.",
+     "distance": null,
+     "record": {
+      "name": "Somerset Perinatal and Maternal Mental Health Service",
+      "provider": "Somerset NHS Foundation Trust",
+      "type": "Counselling or therapy",
+      "access": "referral",
+      "support_for": "low mood;anxiety",
+      "mode": "in-person;online",
+      "url": "https://www.somersetft.nhs.uk/perinatal-mental-health/",
+      "description": "NHS care for moderate to severe mental illness, birth trauma or baby loss, in pregnancy and to age 2. No self-referral.",
+      "who": "new families;women",
+      "eligibility": "Registered with a Somerset GP; pregnant, planning a pregnancy with a previous serious mental illness or baby under 2. Referral by GP, midwife, health visitor or other professional",
+      "days": "Mon-Fri",
+      "times": "09:00-17:00",
+      "phone": "01278 454185",
+      "last_checked": "06/11/2026"
+     }
+    },
+    {
+     "step": "When ready",
+     "why": "Relaxed baby-and-toddler drop-in in Wells with hot drinks. A gentle way to meet other parents and get out of the house, with no need to talk about OCD.",
+     "distance": 7.7,
+     "record": {
+      "name": "And Baby Came Too (St Thomas Wells)",
+      "provider": "St Thomas Church Wells",
+      "type": "Community",
+      "access": "drop in",
+      "support_for": "connect",
+      "mode": "in-person",
+      "url": "https://www.stthomaswells.co.uk/regular-activities-and-getting-involved/",
+      "description": "Group for pre-school children and their adults: toys, books, hot drinks and a story or song to finish.",
+      "who": "new families",
+      "days": "Wed",
+      "times": "09:30-11:00",
+      "address": "Church Hall, St Thomas Church, St Thomas Street",
+      "town": "Wells",
+      "postcode": "BA5 2UZ",
+      "cost": "Free (donations welcome)",
+      "last_checked": "04/11/2026"
+     }
+    }
+   ],
+   "gaps": "Nothing on the list is a local specialist OCD or perinatal-OCD therapy service. Talking Therapies and the perinatal team are the closest NHS routes, and both depend on her GP registration or a referral.",
+   "questions": [
+    "Is she registered with a Somerset GP, and would she be comfortable with the GP or health visitor being told if you went with her?",
+    "Would daytimes or evenings suit her best, given the baby's routine?"
+   ],
+   "scope": {
+    "place": "within 10 miles of Cheddar (Somerset Council area)",
+    "total": 330,
+    "near": 172,
+    "remote": 158,
+    "records": 947,
+    "timing": {
+     "prompt_chars": 114330,
+     "model": "claude-sonnet-5-5",
+     "plan_in": 48081,
+     "first_block_ms": 980,
+     "text_start_ms": 12053,
+     "plan_out": 2253,
+     "stop": "end_turn",
+     "plan_ms": 18355,
+     "text_chars": 2386,
+     "thinking_chars": 0,
+     "blocks": "thinking,text",
+     "settings": "defaults",
+     "total_ms": 18355
+    }
+   },
+   "version": "2026-11-10 11:13",
+   "_seconds": 20.3,
+   "_status": 200
+  }
+ },
+ "S3": {
+  "scenario": {
+   "id": "S3",
+   "town": "Keynsham",
+   "area": "Bath and North East Somerset",
+   "lat": 51.4166,
+   "lon": -2.4998,
+   "persp": "individual",
+   "need_id": "eating",
+   "theme": "eating difficulties",
+   "need": "I think my eating has got out of control. I've been restricting and then bingeing and I'm scared to tell anyone.",
+   "plan_q": "I live in Keynsham, Bath and North East Somerset. I think my eating has got out of control. I've been restricting and then bingeing and I'm scared to tell anyone. Can you put together a support plan for me: a good place to start, then next steps, then things for when I feel ready? For each suggestion give what it is, when it runs, where it is, how to join or contact it, and why it suits me.",
+   "radius_miles": 10,
+   "src": "run5/scenarios.json"
+  },
+  "plan": {
+   "off_topic": false,
+   "reading": "The person has described restricting and bingeing and is frightened to tell anyone, so they need a private, low-pressure first step into specialist eating disorder support. I started with phone and online contact, then moved to peer groups and counselling. Somerset-only NHS therapy options are left out because this is B&NES and they exclude eating disorders.",
+   "safety": "",
+   "core_needs": [
+    "restricting and bingeing (eating disorder support)",
+    "a safe, non-judgemental first conversation"
+   ],
+   "core_covered": "yes",
+   "search_for": "NHS adult community eating disorder service self-referral or GP route Keynsham Bath and North East Somerset",
+   "constraints": "scared to tell anyone; likely prefers private phone, email or online contact first",
+   "place": "Keynsham",
+   "risk": false,
+   "picks": [
+    {
+     "step": "First step",
+     "why": "Open now. Beat is a specialist eating disorder helpline with phone, email or webchat, so the person can talk to someone without face-to-face contact or having told anyone yet.",
+     "distance": null,
+     "record": {
+      "name": "Beat Eating Disorder Helpline",
+      "provider": "Beat",
+      "type": "One-to-one support",
+      "access": "call",
+      "support_for": "eating disorders",
+      "mode": "phone;online",
+      "url": "https://www.beateatingdisorders.org.uk/get-information-and-support/get-help-for-myself/support-now/",
+      "description": "For anyone affected by an eating disorder, any age, including family and friends. Phone, email or webchat.",
+      "who": "anyone",
+      "eligibility": "UK only",
+      "days": "Mon-Fri",
+      "times": "15:00-20:00",
+      "phone": "0808 801 0677",
+      "email": "help@beateatingdisorders.org.uk",
+      "cost": "Free",
+      "last_checked": "06/11/2026"
+     }
+    },
+    {
+     "step": "First step",
+     "why": "SWEDA's free first-step appointment is made by phone. It leads into their other eating disorder support and can be done by phone or online.",
+     "distance": null,
+     "record": {
+      "name": "SWEDA Support and Guidance",
+      "provider": "SWEDA",
+      "type": "One-to-one support",
+      "access": "call",
+      "support_for": "eating disorders",
+      "mode": "in-person;phone;online",
+      "url": "https://swedauk.org/services/for-adults/support-and-guidance",
+      "description": "First step for people with an eating disorder or caring for someone: call for a free appointment. Not an emergency line.",
+      "who": "adults;carers",
+      "days": "Mon-Fri",
+      "times": "08:00-20:00",
+      "address": "The Coach House, Harvest Court, Park Road",
+      "town": "Shepton Mallet",
+      "postcode": "BA4 5BS",
+      "phone": "01749 343344",
+      "cost": "Free",
+      "last_checked": "06/11/2026"
+     }
+    },
+    {
+     "step": "Next step",
+     "why": "An evening listening line for when the worry feels loudest. It is still to come this evening if the person would rather call after the day is over.",
+     "distance": null,
+     "record": {
+      "name": "Eating Disorders Helpline (Tuesday evening)",
+      "provider": "SWEDA",
+      "type": "One-to-one support",
+      "access": "call",
+      "support_for": "eating disorders",
+      "mode": "phone",
+      "url": "https://swedauk.org/services/for-adults/sweda-mindline-helpline",
+      "description": "Support for anyone affected by eating disorders",
+      "who": "adults;carers",
+      "days": "Tue",
+      "times": "20:00-23:00",
+      "phone": "0300 330 5464",
+      "last_checked": "26/10/2026"
+     }
+    },
+    {
+     "step": "Next step",
+     "why": "A pro-recovery peer group in Bath where the person can meet others who understand bingeing and restricting. They need to email first, which keeps the first contact low-pressure.",
+     "distance": 6.4,
+     "record": {
+      "name": "Eating Disorder Support Group (Focus Bath)",
+      "provider": "Focus Counselling",
+      "type": "Peer group",
+      "access": "sign up",
+      "support_for": "eating disorders",
+      "mode": "in-person;online",
+      "url": "https://www.focusbath.com/support-groups",
+      "description": "Confidential, pro-recovery peer support for adults with eating disorders, alternating online and in person.",
+      "who": "adults",
+      "eligibility": "18+; email first",
+      "days": "Thu",
+      "times": "19:00-20:00",
+      "address": "Focus Bath, 36 Gay Street",
+      "town": "Bath",
+      "postcode": "BA1 2NT",
+      "email": "EDSG@focusbath.com",
+      "cost": "Free (donations welcome)",
+      "last_checked": "07/11/2026"
+     }
+    },
+    {
+     "step": "Next step",
+     "why": "A small online group that welcomes people who only think they might have an eating disorder, so they can listen first. It starts with an intro call with a SWEDA worker.",
+     "distance": null,
+     "record": {
+      "name": "SWEDA Online Support Group",
+      "provider": "SWEDA",
+      "type": "Peer group",
+      "access": "book",
+      "support_for": "eating disorders",
+      "mode": "online",
+      "url": "https://swedauk.org/services/for-adults/support-groups",
+      "description": "Zoom self-help group for anyone with, or who thinks they have, an eating disorder, or in recovery.",
+      "who": "adults",
+      "eligibility": "Book a space in advance (numbers limited). New to SWEDA: free intro call with a support worker first",
+      "days": "Wed",
+      "times": "19:00-20:00",
+      "frequency": "3rd and last Wed of month",
+      "phone": "01749 343344",
+      "last_checked": "06/11/2026"
+     }
+    },
+    {
+     "step": "When ready",
+     "why": "Specialist counselling after an assessment, with a sliding-scale fee. It suits someone who wants regular one-to-one therapy once they feel ready to talk.",
+     "distance": null,
+     "record": {
+      "name": "Eating Disorders Counselling Services",
+      "provider": "SWEDA",
+      "type": "Counselling or therapy",
+      "access": "referral",
+      "support_for": "eating disorders",
+      "mode": "in-person;phone",
+      "url": "https://swedauk.org/services/for-adults/counselling",
+      "description": "Specialist counselling supporting individuals with eating disorders accessible via assessment",
+      "who": "adults;carers",
+      "address": "The Coach House, Harvest Court, Park Road",
+      "town": "Shepton Mallet",
+      "postcode": "BA4 5BS",
+      "phone": "01749 343344",
+      "cost": "£25 assessment; then £10-£35 per session (sliding scale)",
+      "last_checked": "25/10/2026"
+     }
+    }
+   ],
+   "gaps": "The list has no NHS eating disorder assessment service for B&NES; a GP is the usual route, and the person may need support to book that appointment.",
+   "questions": [
+    "Would they feel more comfortable starting with a webchat or email rather than a phone call?",
+    "Would they like you to go with them or help them if they decide to see their GP?"
+   ],
+   "scope": {
+    "place": "within 10 miles of Keynsham (Bath and North East Somerset)",
+    "total": 239,
+    "near": 79,
+    "remote": 160,
+    "records": 947,
+    "timing": {
+     "prompt_chars": 84861,
+     "model": "claude-sonnet-5-5",
+     "plan_in": 34675,
+     "first_block_ms": 839,
+     "text_start_ms": 8680,
+     "plan_out": 1791,
+     "stop": "end_turn",
+     "plan_ms": 14810,
+     "text_chars": 2382,
+     "thinking_chars": 0,
+     "blocks": "thinking,text",
+     "settings": "defaults",
+     "total_ms": 14810
+    }
+   },
+   "version": "2026-11-10 11:13",
+   "_seconds": 16.7,
+   "_status": 200
+  }
+ },
+ "S5": {
+  "scenario": {
+   "id": "S5",
+   "town": "Paulton",
+   "area": "Bath and North East Somerset",
+   "lat": 51.306,
+   "lon": -2.5022,
+   "persp": "individual",
+   "need_id": "young-lgbt",
+   "theme": "young people / LGBTQ+",
+   "need": "I'm 17 and gay and I don't really know anyone like me round here. I feel really alone and down a lot.",
+   "plan_q": "I live in Paulton, Bath and North East Somerset. I'm 17 and gay and I don't really know anyone like me round here. I feel really alone and down a lot. Can you put together a support plan for me: a good place to start, then next steps, then things for when I feel ready? For each suggestion give what it is, when it runs, where it is, how to join or contact it, and why it suits me.",
+   "radius_miles": 10,
+   "src": "run5/scenarios.json"
+  },
+  "plan": {
+   "off_topic": false,
+   "reading": "A 17-year-old who feels isolated and low and wants to meet other LGBTQ+ people. The plan starts with LGBTQ+ youth and helpline support, then youth-only groups and counselling for under-18s. Adult-only and 18+ services are left out.",
+   "safety": "",
+   "core_needs": [
+    "Connecting with other LGBTQ+ young people",
+    "Low mood and loneliness"
+   ],
+   "core_covered": "yes",
+   "search_for": "LGBTQ+ youth group for under-18s near Paulton Bath and North East Somerset",
+   "constraints": "Aged 17; probably relies on parents or buses; may prefer phone or online first",
+   "place": "Paulton",
+   "risk": false,
+   "picks": [
+    {
+     "step": "First step",
+     "why": "LGBTQ+ youth support for under-25s, with one-to-one support and peer groups, in person or online. This is the best match for meeting people like them. Check their home area is covered.",
+     "distance": null,
+     "record": {
+      "name": "2BU Somerset (LGBTQ+ young people)",
+      "provider": "2BU Somerset",
+      "type": "Peer group",
+      "access": "call",
+      "support_for": "connect;anxiety;low mood",
+      "mode": "phone;online",
+      "url": "http://www.2bu-somerset.co.uk/",
+      "description": "LGBTQ+ support for young people up to 25: one-to-one support and peer groups, in person and online.",
+      "who": "young people;LGBTQ+",
+      "eligibility": "Up to 25, living in Somerset",
+      "phone": "07799 136552",
+      "last_checked": "07/11/2026"
+     }
+    },
+    {
+     "step": "First step",
+     "why": "Confidential LGBTQ+ listening line, open this evening. A way to talk to someone who understands without needing to go anywhere or join a group.",
+     "distance": null,
+     "record": {
+      "name": "Switchboard LGBT+ Helpline",
+      "provider": "Switchboard",
+      "type": "One-to-one support",
+      "access": "call",
+      "support_for": "crisis prevention",
+      "mode": "phone;online",
+      "url": "https://switchboard.lgbt/",
+      "description": "Confidential listening and information for LGBTQ+ people anywhere in the country. Phone, webchat or email.",
+      "who": "LGBTQ+",
+      "days": "Mon-Sun",
+      "times": "10:00-22:00",
+      "phone": "0800 0119 100",
+      "email": "hello@switchboard.lgbt",
+      "last_checked": "06/11/2026"
+     }
+    },
+    {
+     "step": "Next step",
+     "why": "Safe, inclusive youth group for 13-17s to meet people and build confidence. It is not LGBTQ+-specific but is a gentle way to make friends. Sign up first.",
+     "distance": 8.1,
+     "record": {
+      "name": "Heads Up Youth Group",
+      "provider": "Heads Up Somerset",
+      "type": "Activity group",
+      "access": "sign up",
+      "support_for": "connect;keep learning",
+      "mode": "in-person",
+      "url": "https://www.headsupsomerset.org.uk/heads-up-youth-group/",
+      "description": "Safe, inclusive space where young people (13-17) can connect, build confidence, and develop life skills.",
+      "who": "young people",
+      "eligibility": "Ages 13-17",
+      "days": "Mon",
+      "times": "18:00-20:00",
+      "address": "Upper Breach, South Horrington",
+      "town": "Wells",
+      "postcode": "BA5 3QG",
+      "phone": "07943 336470",
+      "email": "traceyrobinson@youngsomerset.org.uk",
+      "last_checked": "25/10/2026"
+     }
+    },
+    {
+     "step": "Next step",
+     "why": "Drop-in with counsellors for 13-19s feeling low or anxious. A low-pressure chance to talk to someone, with no appointment. Term time only.",
+     "distance": 9.5,
+     "record": {
+      "name": "Young Persons Wellbeing Drop-in (Frome)",
+      "provider": "Focus Counselling and The Good Heart",
+      "type": "Peer group",
+      "access": "drop in",
+      "support_for": "low mood;anxiety",
+      "mode": "in-person",
+      "url": "https://www.focusbath.com/support-groups",
+      "description": "Safe, confidential drop-in with counsellors for 13-19-year-olds struggling with anxiety, low mood or bullying.",
+      "who": "young people",
+      "eligibility": "Ages 13-19; term time only",
+      "days": "Thu",
+      "times": "15:30-17:00",
+      "address": "The Good Heart, 7 Palmer Street",
+      "town": "Frome",
+      "postcode": "BA11 1DS",
+      "phone": "01373 485051",
+      "email": "office@focusbath.com",
+      "last_checked": "07/11/2026"
+     }
+    },
+    {
+     "step": "Next step",
+     "why": "Affordable counselling for 15-18s dealing with low mood or loneliness. Free if needed, and they can self-refer.",
+     "distance": 9.4,
+     "record": {
+      "name": "You-th Space counselling (Frome)",
+      "provider": "Wessex Counselling Service",
+      "type": "Counselling or therapy",
+      "access": "sign up",
+      "support_for": "low mood;anxiety",
+      "mode": "in-person",
+      "url": "http://wessexcp.co.uk/youthspace.php",
+      "description": "Affordable counselling for 15-18-year-olds facing anxiety, low mood or loneliness. Free for those who need it.",
+      "who": "young people",
+      "eligibility": "Ages 15-18; self-referral",
+      "town": "Frome",
+      "phone": "01373 453355",
+      "cost": "Donation; free if needed",
+      "last_checked": "07/11/2026"
+     }
+    },
+    {
+     "step": "Next step",
+     "why": "Bath Mind runs groups across B&NES, including for 16-25s, and they can self-refer online. A local option for meeting people close to home.",
+     "distance": null,
+     "record": {
+      "name": "Bath Mind Wellbeing Groups",
+      "provider": "Bath Mind",
+      "type": "Peer group",
+      "access": "sign up",
+      "support_for": "connect;low mood;anxiety",
+      "mode": "in-person",
+      "url": "https://www.bathmind.org.uk/our-services/wellbeing-groups/",
+      "description": "Groups across B&NES (crafts, gardening, food, football, walks, Radstock group, 16-25s). Self-refer online.",
+      "who": "anyone",
+      "frequency": "see website",
+      "email": "wellbeing@bathmind.org.uk",
+      "last_checked": "04/11/2026"
+     }
+    },
+    {
+     "step": "When ready",
+     "why": "Free anonymous online chat and counselling for young people. Easy to try from home if they would rather start privately.",
+     "distance": null,
+     "record": {
+      "name": "Kooth (Somerset)",
+      "provider": "Kooth",
+      "type": "Counselling or therapy",
+      "access": "sign up",
+      "support_for": "low mood;anxiety",
+      "mode": "online",
+      "url": "https://www.somerset.gov.uk/send/kooth/",
+      "description": "Free, anonymous online counselling, chat and self-help for young people. No referral needed.",
+      "who": "young people",
+      "eligibility": "Young people in Somerset (check the age range when you sign up)",
+      "cost": "Free",
+      "last_checked": "06/11/2026"
+     }
+    }
+   ],
+   "gaps": "There is no LGBTQ+ youth group on the list specifically for under-18s in B&NES, so it is worth searching for one. 2BU only covers Somerset, so check it works for where they live.",
+   "questions": [
+    "Which town or village do they live in, and can they get to Wells or Frome?",
+    "Would they rather start by talking to someone by phone or online, or go to a group in person?"
+   ],
+   "scope": {
+    "place": "within 10 miles of Paulton (Bath and North East Somerset)",
+    "total": 346,
+    "near": 193,
+    "remote": 153,
+    "records": 947,
+    "timing": {
+     "prompt_chars": 117775,
+     "model": "claude-sonnet-5-5",
+     "plan_in": 49369,
+     "first_block_ms": 871,
+     "text_start_ms": 8500,
+     "plan_out": 1862,
+     "stop": "end_turn",
+     "plan_ms": 14043,
+     "text_chars": 2290,
+     "thinking_chars": 0,
+     "blocks": "thinking,text",
+     "settings": "defaults",
+     "total_ms": 14043
+    }
+   },
+   "version": "2026-11-10 11:13",
+   "_seconds": 15.8,
+   "_status": 200
+  }
+ },
+ "S6": {
+  "scenario": {
+   "id": "S6",
+   "town": "Tunley",
+   "area": "Bath and North East Somerset",
+   "lat": 51.3338,
+   "lon": -2.438,
+   "persp": "worker",
+   "need_id": "homeless",
+   "theme": "homelessness",
+   "need": "Man in his 20s, sofa surfing, low mood, needs daytime support and practical help.",
+   "plan_q": "I'm a mental health support worker in Tunley, Bath and North East Somerset. Man in his 20s, sofa surfing, low mood, needs daytime support and practical help. Can you put together a support plan I can give to this person: a good place to start, then next steps, then things for when they feel ready? For each suggestion give what it is, when it runs, where it is, how to join or contact it, and why it suits them.",
+   "radius_miles": 10,
+   "src": "run5/scenarios.json"
+  },
+  "plan": {
+   "off_topic": false,
+   "reading": "A man in his 20s with low mood who is sofa surfing, so effectively homeless, and who wants daytime help with practical things. Tunley is in B&NES, so I left out services limited to the Somerset Council area. I put housing advice first, then gentle daytime activities and practical support.",
+   "safety": "",
+   "core_needs": [
+    "insecure housing (sofa surfing)",
+    "low mood",
+    "practical help in the daytime"
+   ],
+   "core_covered": "partly",
+   "search_for": "Bath and North East Somerset council homelessness housing advice for sofa surfers and NHS talking therapies Bath",
+   "constraints": "daytime only; no stable home; likely limited money; probably relies on buses or lifts",
+   "place": "Tunley",
+   "risk": false,
+   "picks": [
+    {
+     "step": "First step",
+     "why": "National housing helpline that can advise on sofa surfing and homelessness options. Still open this evening, so he can call today, ideally with his worker beside him.",
+     "distance": null,
+     "record": {
+      "name": "Shelter Emergency Helpline",
+      "provider": "Shelter",
+      "type": "Practical support",
+      "access": "call",
+      "support_for": "housing",
+      "mode": "phone",
+      "url": "https://england.shelter.org.uk/",
+      "description": "Free helpline for anyone struggling with a housing problem or homelessness.",
+      "who": "anyone",
+      "days": "Mon-Fri",
+      "times": "08:00-18:00",
+      "phone": "0808 800 4444",
+      "cost": "Free",
+      "last_checked": "25/10/2026"
+     }
+    },
+    {
+     "step": "First step",
+     "why": "Bath Mind runs groups across B&NES, including one for 16-25s. He can self-refer online and pick a low-pressure activity like walks or crafts for low mood.",
+     "distance": null,
+     "record": {
+      "name": "Bath Mind Wellbeing Groups",
+      "provider": "Bath Mind",
+      "type": "Peer group",
+      "access": "sign up",
+      "support_for": "connect;low mood;anxiety",
+      "mode": "in-person",
+      "url": "https://www.bathmind.org.uk/our-services/wellbeing-groups/",
+      "description": "Groups across B&NES (crafts, gardening, food, football, walks, Radstock group, 16-25s). Self-refer online.",
+      "who": "anyone",
+      "frequency": "see website",
+      "email": "wellbeing@bathmind.org.uk",
+      "last_checked": "04/11/2026"
+     }
+    },
+    {
+     "step": "Next step",
+     "why": "Free nature programme with mindfulness, crafts and park work for low mood, with a free lunch. Self-referral is possible and transport can be arranged, which helps if he has no money or car.",
+     "distance": 4.9,
+     "record": {
+      "name": "Roots to Wellbeing (Your Park, Weston)",
+      "provider": "Your Park Bristol & Bath",
+      "type": "Course",
+      "access": "sign up",
+      "support_for": "take notice;low mood;anxiety",
+      "mode": "in-person",
+      "url": "https://yourpark.org.uk/rootstowellbeing",
+      "description": "18-week nature programme: mindfulness, crafts and park work, with a free lunch. Transport can be arranged.",
+      "who": "adults",
+      "eligibility": "18+; self-referral or GP/professional referral",
+      "days": "Wed",
+      "times": "10:30-13:00",
+      "address": "Meet at Weston Hub",
+      "town": "Bath",
+      "postcode": "BA1 4EH",
+      "phone": "07510 659215",
+      "email": "roots@yourpark.org.uk",
+      "cost": "Free lunch",
+      "last_checked": "04/11/2026"
+     }
+    },
+    {
+     "step": "Next step",
+     "why": "Daytime farm volunteering aimed at mild to moderate mental health difficulties. Side-by-side outdoor work gives routine and purpose without needing to talk much. Places are limited, so apply online soon.",
+     "distance": 3.7,
+     "record": {
+      "name": "Volunteering for Mental Wellbeing (Bath City Farm)",
+      "provider": "Bath City Farm",
+      "type": "Volunteering",
+      "access": "sign up",
+      "support_for": "giving;take notice;low mood",
+      "mode": "in-person",
+      "url": "https://www.bathcityfarm.org.uk/for-adults/",
+      "description": "Horticulture and animal care volunteering for people with mild to moderate mental health issues. Limited places.",
+      "who": "adults",
+      "eligibility": "Mild to moderate mental health issues; apply online (sometimes a waiting list)",
+      "days": "Mon;Wed",
+      "times": "10:00-15:00",
+      "address": "Bath City Farm, Kelston View",
+      "town": "Bath",
+      "postcode": "BA2 1NW",
+      "phone": "01225 481269",
+      "email": "info@bathcityfarm.org.uk",
+      "last_checked": "04/11/2026"
+     }
+    },
+    {
+     "step": "Next step",
+     "why": "Free advice on housing, benefits and employment, which can help with sofa surfing and money. Booking is needed and it is in Frome, so check travel first.",
+     "distance": 8.6,
+     "record": {
+      "name": "Citizens Advice Drop-in (Frome Community Hub)",
+      "provider": "Citizens Advice Mendip",
+      "type": "Practical support",
+      "access": "book",
+      "support_for": "finances;housing",
+      "mode": "in-person",
+      "url": "https://www.frometowncouncil.gov.uk/our-community/the-town-hall/frome-community-hub/",
+      "description": "Free, confidential advice on benefits, employment, housing and relationships. Level access, lift.",
+      "who": "anyone",
+      "days": "Mon",
+      "times": "10:00-13:00",
+      "address": "Frome Community Hub, Frome Town Hall, Christchurch Street West",
+      "town": "Frome",
+      "postcode": "BA11 1EB",
+      "phone": "01373 465757",
+      "email": "info@frometowncouncil.gov.uk",
+      "cost": "Free",
+      "last_checked": "25/10/2026"
+     }
+    },
+    {
+     "step": "Next step",
+     "why": "Free three-course lunch plus a Food Club, so a practical help with food and a friendly daytime place to meet people without any pressure.",
+     "distance": 4.9,
+     "record": {
+      "name": "Weston Welcome Cafe and Food Club",
+      "provider": "All Saints Weston / Weston Hub",
+      "type": "Community",
+      "access": "drop in",
+      "support_for": "food;connect",
+      "mode": "in-person",
+      "url": "https://westonhub.org.uk",
+      "description": "Free three-course lunch, and choose what you need from the Food Club.",
+      "who": "anyone",
+      "days": "Mon",
+      "times": "12:00-14:00",
+      "address": "Weston Hub",
+      "town": "Bath",
+      "postcode": "BA1 4EH",
+      "phone": "07470 262372",
+      "email": "welcomecafe@allsaintsweston.org.uk",
+      "cost": "Free lunch",
+      "last_checked": "04/11/2026"
+     }
+    },
+    {
+     "step": "When ready",
+     "why": "Free gardening group for low mood in the Walled Garden. Usually by referral, so he or his worker should phone for a chat first. A steady weekly commitment.",
+     "distance": 3.6,
+     "record": {
+      "name": "Grow for Life Thursday (Walled Garden)",
+      "provider": "Grow for Life",
+      "type": "Activity group",
+      "access": "sign up",
+      "support_for": "take notice;low mood;anxiety",
+      "mode": "in-person",
+      "url": "https://www.growforlife.org.uk/garden-with-us",
+      "description": "Gardening in the Walled Garden and orchard: veg, flowers, fruit and a share of the harvest. 12 sessions.",
+      "who": "adults",
+      "eligibility": "18+. Usually referred by a GP, mental health worker or other professional; or call for a chat first",
+      "days": "Thu",
+      "times": "10:30-13:30",
+      "address": "Walled Garden, off Farm Lane",
+      "town": "Newton St Loe",
+      "postcode": "BA2 9BZ",
+      "phone": "07729 906223",
+      "email": "info@growforlife.org.uk",
+      "cost": "Free",
+      "last_checked": "04/11/2026"
+     }
+    },
+    {
+     "step": "When ready",
+     "why": "Free drop-in yoga for men with mental health problems, with no booking and all abilities welcome. A gentle way to be active alongside other men.",
+     "distance": 5.1,
+     "record": {
+      "name": "Sport in Mind Men's Yoga (Bath)",
+      "provider": "Sport in Mind",
+      "type": "Activity group",
+      "access": "drop in",
+      "support_for": "be active;low mood",
+      "mode": "in-person",
+      "url": "https://www.sportinmind.org/Listing/Category/adult-programme",
+      "description": "Free yoga for men experiencing mental health problems, all abilities. Just turn up.",
+      "who": "men",
+      "eligibility": "17+ with mental health problems",
+      "days": "Mon",
+      "times": "14:00-15:00",
+      "address": "YMCA, Broad Street Place",
+      "town": "Bath",
+      "postcode": "BA1 5LH",
+      "phone": "07365 241989",
+      "email": "emma.powell@sportinmind.org",
+      "cost": "Free",
+      "last_checked": "04/11/2026"
+     }
+    }
+   ],
+   "gaps": "The list has no B&NES council homelessness service or B&NES NHS talking therapies, and no day centre for people who are sofa surfing.",
+   "questions": [
+    "Is he claiming Universal Credit or other benefits, and how long can he stay where he is now?",
+    "Would he rather start with something outdoors and hands-on, or with a phone or online chat?"
+   ],
+   "scope": {
+    "place": "within 10 miles of Tunley (Bath and North East Somerset)",
+    "total": 287,
+    "near": 130,
+    "remote": 157,
+    "records": 947,
+    "timing": {
+     "prompt_chars": 99419,
+     "model": "claude-sonnet-5-5",
+     "plan_in": 41134,
+     "first_block_ms": 1697,
+     "text_start_ms": 17224,
+     "plan_out": 3153,
+     "stop": "end_turn",
+     "plan_ms": 23871,
+     "text_chars": 2736,
+     "thinking_chars": 0,
+     "blocks": "thinking,text",
+     "settings": "defaults",
+     "total_ms": 23871
+    }
+   },
+   "version": "2026-11-10 11:13",
+   "_seconds": 25.7,
+   "_status": 200
+  }
+ },
+ "S7": {
+  "scenario": {
+   "id": "S7",
+   "town": "Weston-super-Mare",
+   "area": "North Somerset",
+   "lat": 51.3341,
+   "lon": -2.97,
+   "persp": "worker",
+   "need_id": "refugee",
+   "theme": "refugees / language",
+   "need": "Ukrainian mother with limited English, lonely and low, here with her daughter.",
+   "plan_q": "I'm a mental health support worker in Weston-super-Mare, North Somerset. Ukrainian mother with limited English, lonely and low, here with her daughter. Can you put together a support plan I can give to this person: a good place to start, then next steps, then things for when they feel ready? For each suggestion give what it is, when it runs, where it is, how to join or contact it, and why it suits them.",
+   "radius_miles": 10,
+   "src": "run5/scenarios.json"
+  },
+  "plan": {
+   "off_topic": false,
+   "reading": "A Ukrainian mother with limited English who is lonely and low. Language is probably the main barrier to joining groups, so I've started with relaxed drop-ins and side-by-side activities close to Weston, then added NHS support for low mood.",
+   "safety": "",
+   "core_needs": [
+    "loneliness and isolation",
+    "low mood",
+    "limited English"
+   ],
+   "core_covered": "partly",
+   "search_for": "Ukrainian community support group and English classes (ESOL) for refugees Weston-super-Mare",
+   "constraints": "limited English; may be looking after her daughter; likely needs nearby, low-pressure options",
+   "place": "a point about 1 mile from Weston-super-Mare",
+   "risk": false,
+   "picks": [
+    {
+     "step": "First step",
+     "why": "A warm drop-in space run by Race Equality North Somerset, about a mile away. No need to book or talk much. Worth asking whether they have language support or know of Ukrainian groups.",
+     "distance": 1.3,
+     "record": {
+      "name": "Community Living Room: Race Equality North Somerset",
+      "provider": "Race Equality North Somerset (RENS)",
+      "type": "Community",
+      "access": "drop in",
+      "support_for": "connect",
+      "mode": "in-person",
+      "url": "https://www.n-somerset.gov.uk/my-services/north-somerset-together/community-living-rooms-north-somerset",
+      "description": "Community living room: a warm, welcoming space to sit, chat and stay warm. Just drop in.",
+      "who": "anyone",
+      "days": "Mon-Fri",
+      "times": "12:00-17:00",
+      "address": "12 Orchard Place",
+      "town": "Weston-super-Mare",
+      "postcode": "BS23 1QP",
+      "phone": "07848 898199",
+      "last_checked": "09/11/2026"
+     }
+    },
+    {
+     "step": "First step",
+     "why": "Informal coffee morning close by with toast and cake. It's easy to drop in, there's no pressure to speak much, and the worker could go along too.",
+     "distance": 0.8,
+     "record": {
+      "name": "Coffee Morning (Oldmixon Community Hub)",
+      "provider": "Alliance Homes Community Hubs",
+      "type": "Community",
+      "access": "drop in",
+      "support_for": "connect",
+      "mode": "in-person",
+      "url": "https://www.alliancehomes.org.uk/your-neighbourhood/community-hubs/",
+      "description": "Weekly coffee morning: refreshments, toast, cake, fruit and WiFi. Just drop in.",
+      "who": "anyone",
+      "days": "Mon;Wed",
+      "times": "10:00-12:00",
+      "address": "Oldmixon Community Hub, 7 Aller Parade, Oldmixon",
+      "town": "Weston-super-Mare",
+      "postcode": "BS24 9DD",
+      "phone": "03000 120120",
+      "email": "communityhubs@alliancehomes.org.uk",
+      "last_checked": "09/11/2026"
+     }
+    },
+    {
+     "step": "Next step",
+     "why": "Board games and crafts let people connect without needing much English. Drop-in, and soup is cheap if she wants it.",
+     "distance": 0.8,
+     "record": {
+      "name": "Social Group (Oldmixon Community Hub)",
+      "provider": "Alliance Homes Community Hubs",
+      "type": "Activity group",
+      "access": "drop in",
+      "support_for": "connect",
+      "mode": "in-person",
+      "url": "https://www.alliancehomes.org.uk/your-neighbourhood/community-hubs/",
+      "description": "Weekly social group with board games and arts and crafts. Soup and a roll £1.50 if you want it.",
+      "who": "anyone",
+      "days": "Tue",
+      "times": "11:00-14:00",
+      "address": "Oldmixon Community Hub, 7 Aller Parade, Oldmixon",
+      "town": "Weston-super-Mare",
+      "postcode": "BS24 9DD",
+      "phone": "03000 120120",
+      "email": "communityhubs@alliancehomes.org.uk",
+      "last_checked": "09/11/2026"
+     }
+    },
+    {
+     "step": "Next step",
+     "why": "A craft group with tea and cake for adults who are lonely or struggling with mental health. Doing something side by side suits limited English. Drop-in, ages 21+.",
+     "distance": 0.3,
+     "record": {
+      "name": "CrafTea and Coffee (Friends Together, Weston-super-Mare)",
+      "provider": "Friends Together",
+      "type": "Peer group",
+      "access": "drop in",
+      "support_for": "connect;low mood;anxiety",
+      "mode": "in-person",
+      "description": "Weekly social craft group with tea, coffee and cake for adults with invisible disabilities, mental health needs or loneliness.",
+      "who": "adults",
+      "eligibility": "21+",
+      "days": "Tue",
+      "times": "13:00-16:00",
+      "address": "The Hub, 3 Loxton Road",
+      "town": "Weston-super-Mare",
+      "postcode": "BS23 4QX",
+      "phone": "07944 564405",
+      "email": "weston@f2g.org.uk",
+      "last_checked": "09/11/2026"
+     }
+    },
+    {
+     "step": "Next step",
+     "why": "Free creative sessions ending with a short mindfulness practice, nearby. Activity-based, so less reliant on English. Booking is essential, and it welcomes carers.",
+     "distance": 0.2,
+     "record": {
+      "name": "Creativity for Wellbeing (Weston-super-Mare)",
+      "provider": "Second Step",
+      "type": "Activity group",
+      "access": "sign up",
+      "support_for": "connect;keep learning",
+      "mode": "in-person",
+      "url": "https://www.second-step.co.uk/wellbeing-colleges/north-somerset-wellbeing/",
+      "description": "Creative group activities ending with a short mindfulness practice. No groups 22 Dec to 6 Jan.",
+      "who": "adults",
+      "eligibility": "18+ living in North Somerset or registered with a North Somerset GP, and their carers. Booking essential",
+      "days": "Mon",
+      "times": "14:00-15:30",
+      "address": "For All Healthy Living Centre, 68 Lonsdale Avenue",
+      "town": "Weston-super-Mare",
+      "postcode": "BS23 3SJ",
+      "phone": "Text 07520 661482",
+      "email": "NSWellbeing@second-step.co.uk",
+      "cost": "Free",
+      "last_checked": "27/10/2026"
+     }
+    },
+    {
+     "step": "Next step",
+     "why": "Outdoor gardening with tea and biscuits. A gentle, practical way to meet people and get fresh air with little talking needed.",
+     "distance": 0.5,
+     "record": {
+      "name": "Coleridge Road Community Gardens",
+      "provider": "Alliance Homes Community Hubs",
+      "type": "Activity group",
+      "access": "drop in",
+      "support_for": "be active;take notice;connect",
+      "mode": "in-person",
+      "url": "https://www.alliancehomes.org.uk/your-neighbourhood/community-hubs/",
+      "description": "Outdoor community garden: grow flowers, fruit and veg, help with repairs, tea and biscuits.",
+      "who": "anyone",
+      "eligibility": "Tue 10:00-12:30; Thu 12:30-16:00",
+      "days": "Tue;Thu",
+      "address": "Coleridge Road Community Gardens (between nos 65 and 67), Coleridge Road",
+      "town": "Weston-super-Mare",
+      "postcode": "BS23 3UJ",
+      "phone": "03000 120120",
+      "email": "communityhubs@alliancehomes.org.uk",
+      "last_checked": "09/11/2026"
+     }
+    },
+    {
+     "step": "Next step",
+     "why": "NHS talking therapy for low mood that she can self-refer to by phone or online, with no GP referral. Ask about interpreter or language support when referring.",
+     "distance": null,
+     "record": {
+      "name": "NHS Talking Therapies (Bristol, North Somerset and South Gloucestershire)",
+      "provider": "Vita Health Group (VitaMinds)",
+      "type": "Counselling or therapy",
+      "access": "sign up",
+      "support_for": "low mood;anxiety",
+      "mode": "phone;online",
+      "url": "https://www.vitahealthgroup.co.uk/nhs-services/nhs-mental-health/bristol-north-somerset-and-south-gloucestershire/",
+      "description": "NHS CBT, counselling and courses for anxiety and low mood. Refer yourself online or by phone. Menopause and job support too.",
+      "who": "adults",
+      "eligibility": "16+, registered with a GP in Bristol, North Somerset or South Gloucestershire. No GP referral needed. Mon-Wed 8am-8pm, Thu-Fri 8am-5pm",
+      "days": "Mon-Fri",
+      "times": "08:00-20:00",
+      "phone": "0333 200 1893",
+      "cost": "Free",
+      "last_checked": "10/11/2026"
+     }
+    },
+    {
+     "step": "When ready",
+     "why": "A Mind group tackling loneliness and building coping skills. It's discussion-based, so it may suit her better once her English or confidence has grown. Confirm the venue with Mind.",
+     "distance": 1.4,
+     "record": {
+      "name": "Weston-super-Mare Wellbeing Friends Group",
+      "provider": "Mind in Somerset",
+      "type": "Peer group",
+      "access": "sign up",
+      "support_for": "connect;keep learning",
+      "mode": "in-person",
+      "url": "https://www.mindinsomerset.org.uk/our-services/peer-support/yeovil-and-bridgwater-wellbeing-friends-groups/",
+      "description": "Tackling loneliness, building life skills and coping strategies. Confirm venue with Mind.",
+      "who": "adults",
+      "days": "Wed",
+      "times": "12:00-14:00",
+      "address": "Mind in Somerset Weston hub, Unit 3, The Sovereign, High Street",
+      "town": "Weston-super-Mare",
+      "postcode": "BS23 1HL",
+      "email": "info@mindinsomerset.org.uk",
+      "last_checked": "25/10/2026"
+     }
+    }
+   ],
+   "gaps": "Nothing on the list is specifically for Ukrainian or refugee families or for learning English, and none of the services mention interpreters.",
+   "questions": [
+    "How old is her daughter, and would she come along to a group or drop-in?",
+    "Is she able to read or use a phone in English, or would a translation app or interpreter help?"
+   ],
+   "scope": {
+    "place": "within 10 miles of a point about 1 mile from Weston-super-Mare (North Somerset)",
+    "total": 268,
+    "near": 108,
+    "remote": 160,
+    "records": 947,
+    "timing": {
+     "prompt_chars": 93948,
+     "model": "claude-sonnet-5-5",
+     "plan_in": 38941,
+     "first_block_ms": 813,
+     "text_start_ms": 12919,
+     "plan_out": 2428,
+     "stop": "end_turn",
+     "plan_ms": 19501,
+     "text_chars": 2571,
+     "thinking_chars": 0,
+     "blocks": "thinking,text",
+     "settings": "defaults",
+     "total_ms": 19501
+    }
+   },
+   "version": "2026-11-10 11:13",
+   "_seconds": 20.1,
+   "_status": 200
+  }
+ },
+ "S8": {
+  "scenario": {
+   "id": "S8",
+   "town": "Weston-super-Mare",
+   "area": "North Somerset",
+   "lat": 51.3341,
+   "lon": -2.97,
+   "persp": "worker",
+   "need_id": "voices",
+   "theme": "psychosis / hearing voices",
+   "need": "Man under secondary care who hears voices would like peer support with others who have similar experiences. Works weekdays, so weekends only.",
+   "plan_q": "I'm a mental health support worker in Weston-super-Mare, North Somerset. Man under secondary care who hears voices would like peer support with others who have similar experiences. Works weekdays, so weekends only. Can you put together a support plan I can give to this person: a good place to start, then next steps, then things for when they feel ready? For each suggestion give what it is, when it runs, where it is, how to join or contact it, and why it suits them.",
+   "radius_miles": 10,
+   "src": "run5/scenarios.json"
+  },
+  "plan": {
+   "off_topic": false,
+   "reading": "He hears voices, is under secondary care and wants peer support from others with the same experience, and can only manage weekends. Hearing Voices Network groups are the direct match, so I built the plan around them. The listed groups all run on weekdays, so the plan is online only.",
+   "safety": "",
+   "core_needs": [
+    "peer support for hearing voices",
+    "weekend availability only"
+   ],
+   "core_covered": "partly",
+   "search_for": "weekend hearing voices peer support group Weston-super-Mare",
+   "constraints": "works weekdays; weekends only; online likely easiest",
+   "place": "a point about 1 mile from Weston-super-Mare",
+   "risk": false,
+   "picks": [
+    {
+     "step": "First step",
+     "why": "Online forum run by and for people who hear voices, with no fixed session times, so he can join at weekends or whenever suits. Register to join.",
+     "distance": null,
+     "record": {
+      "name": "Hearing Voices Network Online Forum",
+      "provider": "Hearing Voices Network",
+      "type": "Peer group",
+      "access": "sign up",
+      "support_for": "hearing voices",
+      "mode": "online",
+      "url": "https://forum.hearing-voices.org/",
+      "description": "Peer forum for people who hear voices, see visions or similar, with a space for family and friends. Register to join.",
+      "who": "anyone",
+      "last_checked": "06/11/2026"
+     }
+    },
+    {
+     "step": "Next step",
+     "why": "Live online voice-hearers' group on Zoom, open UK-wide. It meets on a weekday evening, so it only works if he can join after work. Email first for the link.",
+     "distance": null,
+     "record": {
+      "name": "Talking Sense Hearing Voices Group (online)",
+      "provider": "Hearing Voices Network (listed group)",
+      "type": "Peer group",
+      "access": "sign up",
+      "support_for": "hearing voices",
+      "mode": "online",
+      "url": "https://www.hearing-voices.org/hearing-voices-groups/find-a-group/",
+      "description": "Online peer group for people who hear voices, held on Zoom. Email first to get the link.",
+      "who": "adults",
+      "eligibility": "People who hear voices; UK-wide. Email first to receive the Zoom link.",
+      "days": "Thu",
+      "times": "19:30",
+      "frequency": "1st and 3rd Thu of month",
+      "last_checked": "06/11/2026"
+     }
+    },
+    {
+     "step": "When ready",
+     "why": "Online national group for people who hear voices, meeting on Monday late afternoon. It is a weekday, so it may clash with work. Contact the facilitators for access.",
+     "distance": null,
+     "record": {
+      "name": "Online Hearing Voices Group (national)",
+      "provider": "Hearing Voices Network (listed group)",
+      "type": "Peer group",
+      "access": "sign up",
+      "support_for": "hearing voices",
+      "mode": "online",
+      "url": "https://www.hearing-voices.org/hearing-voices-groups/find-a-group/",
+      "description": "Online peer group for people who hear voices, open to people across the UK. Contact the facilitators for access.",
+      "who": "adults",
+      "eligibility": "Open to people across the UK who hear voices; contact facilitators for access.",
+      "days": "Mon",
+      "times": "17:30-19:00",
+      "last_checked": "06/11/2026"
+     }
+    }
+   ],
+   "gaps": "None of the listed hearing voices groups meet at weekends. The Mind in Somerset group is for Somerset Council residents only and meets on a weekday afternoon, so it is left out.",
+   "questions": [
+    "Could he join an online group on a weekday evening after work, or is it weekends only?",
+    "Is he comfortable using Zoom or a forum, or would he prefer to meet in person?"
+   ],
+   "scope": {
+    "place": "within 10 miles of a point about 1 mile from Weston-super-Mare (North Somerset)",
+    "total": 268,
+    "near": 108,
+    "remote": 160,
+    "records": 947,
+    "timing": {
+     "prompt_chars": 94013,
+     "model": "claude-sonnet-5-5",
+     "plan_in": 38965,
+     "first_block_ms": 947,
+     "text_start_ms": 9384,
+     "plan_out": 1578,
+     "stop": "end_turn",
+     "plan_ms": 13276,
+     "text_chars": 1589,
+     "thinking_chars": 0,
+     "blocks": "thinking,text",
+     "settings": "defaults",
+     "total_ms": 13276
+    }
+   },
+   "version": "2026-11-10 11:13",
+   "_seconds": 14.9,
+   "_status": 200
+  }
+ },
+ "B3": {
+  "scenario": {
+   "id": "B3",
+   "type": "B: support planning",
+   "town": "Cheddar",
+   "lat": 51.277,
+   "lon": -2.778,
+   "need": "Near Cheddar. Client new to the area, anxious, wants to meet people but finds groups daunting. Can drive.",
+   "category": "anxiety / new to area",
+   "time_constraint": "none (prefer within 7 days)",
+   "hard_time": false,
+   "travel": "can drive",
+   "radius_miles": 10,
+   "keywords": [
+    "social",
+    "coffee"
+   ],
+   "dir_category": "connect",
+   "ask": "I'm a support worker in Somerset. Near Cheddar. Client new to the area, anxious, wants to meet people but finds groups daunting. Can drive. Please suggest up to five local options near Cheddar, with the day, time, place and how to join for each.",
+   "src": "run7/scenarios.json"
+  },
+  "plan": {
+   "off_topic": false,
+   "reading": "The person is new to the area, lonely and anxious about groups, so I've built a gentle ladder. It starts with a one-to-one chat and a cameras-off online drop-in, then moves to small, informal local drop-ins and side-by-side activities. Age and gender aren't stated, so I've avoided age- or gender-limited groups.",
+   "safety": "",
+   "core_needs": [
+    "Making friends in a new area",
+    "Anxiety about groups"
+   ],
+   "core_covered": "yes",
+   "search_for": "befriending or small friendly social groups for newcomers with social anxiety near Cheddar",
+   "constraints": "Can drive; anxious in groups; new to area",
+   "place": "Cheddar",
+   "risk": false,
+   "picks": [
+    {
+     "step": "First step",
+     "why": "Only 1.7 miles away. A quiet chat with a local Village Agent about loneliness and settling in, with no group to face, who can point to friendly local things.",
+     "distance": 1.7,
+     "record": {
+      "name": "Talking Café Axbridge",
+      "provider": "Thrive",
+      "type": "Advocacy",
+      "access": "drop in",
+      "support_for": "connect;finances;housing",
+      "mode": "in-person",
+      "url": "https://thrivesomerset.org.uk/help-advice/",
+      "description": "Meet your local Village Agent, who can advocate and help with health, money, housing or loneliness.",
+      "who": "anyone",
+      "days": "Mon",
+      "times": "10:30-12:30",
+      "address": "St John's Baptist Church",
+      "town": "Axbridge",
+      "postcode": "BS26 2AP",
+      "phone": "01823 331222",
+      "last_checked": "25/10/2026"
+     }
+    },
+    {
+     "step": "First step",
+     "why": "Low-pressure Zoom drop-in where cameras off is fine. Lets them meet people and hear about local events from home before trying anything in person.",
+     "distance": null,
+     "record": {
+      "name": "Pathways Online Drop-in (WATCH)",
+      "provider": "WATCH CIO",
+      "type": "Peer group",
+      "access": "sign up",
+      "support_for": "connect",
+      "mode": "online",
+      "url": "https://openmentalhealth.org.uk/omh-workshops-from-watch-online/",
+      "description": "Low-pressure Zoom drop-in: cameras off is fine. Chat about interests and hear about local events.",
+      "who": "adults",
+      "eligibility": "Somerset Council area only",
+      "days": "Tue",
+      "times": "10:00-12:00",
+      "email": "info@watchproject.org.uk",
+      "last_checked": "27/10/2026"
+     }
+    },
+    {
+     "step": "Next step",
+     "why": "Small, friendly winter warm space 3.8 miles away with soup and company. Nothing to join or sign up for; they can just turn up and chat.",
+     "distance": 3.8,
+     "record": {
+      "name": "Warm in Wedmore",
+      "provider": "Wedmore community volunteers",
+      "type": "Community",
+      "access": "drop in",
+      "support_for": "connect;food",
+      "mode": "in-person",
+      "url": "https://www.theisleofwedmore.net/warm-in-wedmore-2/",
+      "description": "Winter warm space with friendly company and home-made soup; Christmas break. Help with transport available.",
+      "who": "anyone",
+      "days": "Wed;Thu",
+      "times": "10:00-14:00",
+      "address": "Masonic Hall, Church Street",
+      "town": "Wedmore",
+      "postcode": "BS28 4AB",
+      "phone": "01934 806299 (Wedmore Good Neighbours, for transport)",
+      "last_checked": "27/10/2026"
+     }
+    },
+    {
+     "step": "Next step",
+     "why": "Slow-paced gardening in small groups for people feeling isolated. Working side by side means less pressure to make conversation. Runs Tuesdays too.",
+     "distance": 9.6,
+     "record": {
+      "name": "Growing Happiness Garden (Glastonbury, Wed)",
+      "provider": "Avalon Allsorts / Somerset Community Food",
+      "type": "Activity group",
+      "access": "drop in",
+      "support_for": "be active;connect;take notice;low mood",
+      "mode": "in-person",
+      "url": "https://somersetcommunityfood.org.uk/projects/growing-happiness-allotment-project",
+      "description": "Slow-grow gardening in small groups, open to all, including people feeling isolated or with mental health issues.",
+      "who": "anyone",
+      "days": "Wed",
+      "times": "12:00-15:00",
+      "address": "Secret Garden, United Reformed Church, High Street (side entrance up the alleyway)",
+      "town": "Glastonbury",
+      "postcode": "BA6 9DZ",
+      "last_checked": "07/11/2026"
+     }
+    },
+    {
+     "step": "Next step",
+     "why": "Free drop-in walk close by. Walking side by side makes talking easier. New walkers arrive 15 minutes early to register, so they won't be left alone.",
+     "distance": 3.3,
+     "record": {
+      "name": "Health Walk: Winscombe",
+      "provider": "Better Health North Somerset",
+      "type": "Activity group",
+      "access": "drop in",
+      "support_for": "be active;connect",
+      "mode": "in-person",
+      "url": "https://www.betterhealthns.co.uk/information/healthwalks/",
+      "description": "Fortnightly walk. New walkers arrive 15 minutes early to register. Assistance dogs only.",
+      "who": "anyone",
+      "days": "Tue",
+      "times": "11:00",
+      "frequency": "fortnightly",
+      "dates": "2026-11-10;2026-11-24;2026-12-08;2026-12-22",
+      "address": "Woodborough Inn, Sandford Road",
+      "town": "Winscombe",
+      "postcode": "BS25 1HD",
+      "phone": "01275 882730",
+      "email": "winscombehealthwalks@gmail.com; GetActive@n-somerset.gov.uk",
+      "cost": "Free",
+      "last_checked": "08/11/2026"
+     }
+    },
+    {
+     "step": "Next step",
+     "why": "Supportive online group covering anxiety and confidence, with coping strategies. A way to meet people from home and build confidence for in-person groups.",
+     "distance": null,
+     "record": {
+      "name": "Wellbeing Friends Online Group",
+      "provider": "Mind in Somerset",
+      "type": "Peer group",
+      "access": "sign up",
+      "support_for": "connect;keep learning",
+      "mode": "online",
+      "url": "https://www.mindinsomerset.org.uk/our-services/peer-support/wellbeing-friends-online-group/",
+      "description": "Supportive online group learning coping strategies: relaxation, sleep, stress, anxiety and confidence.",
+      "who": "adults",
+      "eligibility": "Somerset Council area only",
+      "days": "Wed",
+      "times": "11:00-13:00",
+      "phone": "01823 334906",
+      "email": "info@mindinsomerset.org.uk",
+      "last_checked": "25/10/2026"
+     }
+    },
+    {
+     "step": "When ready",
+     "why": "A calm, held space run for mental wellbeing, with volunteer listeners, artist-led activities and sofas. Runs on Tuesdays and suits someone who finds ordinary groups daunting.",
+     "distance": 9.9,
+     "record": {
+      "name": "The Snug",
+      "provider": "Glastonbury Mental Health",
+      "type": "Community",
+      "access": "drop in",
+      "support_for": "connect",
+      "mode": "in-person",
+      "url": "https://glastonburymentalhealth.org/the-snug/",
+      "description": "A safe, held space supporting mental wellbeing: artist-led activities, volunteer listeners, ambient music, sofas and refreshments. 18+.",
+      "who": "adults",
+      "eligibility": "18+",
+      "days": "Tue",
+      "times": "15:00-18:00",
+      "address": "Red Brick Building Events Space, Morland Road",
+      "town": "Glastonbury",
+      "postcode": "BA6 9FT",
+      "cost": "Free",
+      "last_checked": "26/10/2026"
+     }
+    },
+    {
+     "step": "When ready",
+     "why": "NHS CBT and counselling for anxiety if the worry about groups persists. Needs registration with a Somerset GP, which they may need to arrange as they're new to the area.",
+     "distance": null,
+     "record": {
+      "name": "NHS Somerset Talking Therapies",
+      "provider": "Somerset NHS Foundation Trust",
+      "type": "Counselling or therapy",
+      "access": "sign up",
+      "support_for": "low mood;anxiety",
+      "mode": "phone;online",
+      "url": "https://www.somersetft.nhs.uk/somerset-talking-therapies/online-referral-form/",
+      "description": "NHS CBT and counselling for anxiety, low mood and PTSD. Refer yourself online. Employment advisers for people in therapy.",
+      "who": "adults;young people",
+      "eligibility": "16+ and registered with a Somerset GP (not North Somerset). Not for psychosis, eating disorders or bereavement in the last 6 months",
+      "frequency": "see website",
+      "phone": "0300 323 0033",
+      "cost": "Free (NHS)",
+      "last_checked": "07/11/2026"
+     }
+    }
+   ],
+   "gaps": "Nothing on the list is a dedicated befriending or social-anxiety group near Cheddar, so most options involve travelling to Wedmore, Wells or Glastonbury.",
+   "questions": [
+    "Are they registered with a GP in Somerset yet?",
+    "Would they prefer to start with something online, or with a one-to-one chat first?"
+   ],
+   "scope": {
+    "place": "within 10 miles of Cheddar (Somerset Council area)",
+    "total": 330,
+    "near": 172,
+    "remote": 158,
+    "records": 947,
+    "timing": {
+     "prompt_chars": 114177,
+     "model": "claude-sonnet-5-5",
+     "plan_in": 48047,
+     "first_block_ms": 762,
+     "text_start_ms": 12601,
+     "plan_out": 2412,
+     "stop": "end_turn",
+     "plan_ms": 19241,
+     "text_chars": 2558,
+     "thinking_chars": 0,
+     "blocks": "thinking,text",
+     "settings": "defaults",
+     "total_ms": 19241
+    }
+   },
+   "version": "2026-11-10 11:13",
+   "_seconds": 21.4,
+   "_status": 200
+  }
+ },
+ "C3": {
+  "scenario": {
+   "id": "C3",
+   "type": "A: local discovery",
+   "town": "Brean",
+   "lat": 51.293,
+   "lon": -3.012,
+   "need": "Near Brean. Client: woman who'd like a choir or singing group. No car, can walk a short way. Needs something tomorrow.",
+   "time_constraint": "tomorrow",
+   "hard_time": true,
+   "travel": "no car, can walk a short way",
+   "radius_miles": 2,
+   "dir_category": "connect",
+   "keywords": [
+    "singing",
+    "choir"
+   ],
+   "ask": "I'm a support worker in Somerset. Near Brean. Client: woman who'd like a choir or singing group. No car, can walk a short way. Needs something tomorrow. Please suggest up to five local options near Brean, with the day, time, place and how to join for each.",
+   "src": "run8/scenarios.json"
+  },
+  "plan": {
+   "off_topic": false,
+   "reading": "A woman near Brean wants a choir or singing group, can only walk a short way and wants something tomorrow. Nothing on the list is a choir or singing group, so I haven't padded the plan with unrelated groups.",
+   "safety": "",
+   "core_needs": [
+    "choir or singing group",
+    "within short walking distance",
+    "something tomorrow"
+   ],
+   "core_covered": "no",
+   "search_for": "community choir or singing group near Brean Burnham-on-Sea",
+   "constraints": "no car; short walk only; wants something tomorrow",
+   "place": "Brean",
+   "risk": false,
+   "picks": [
+    {
+     "step": "When ready",
+     "why": "This is a short walk away in Brean. The local Village Agent may know of choirs or singing groups nearby, including ones she could get to on foot. It runs the following Thursday, not tomorrow.",
+     "distance": 0.5,
+     "record": {
+      "name": "Talking Café Brean",
+      "provider": "Thrive",
+      "type": "Advocacy",
+      "access": "drop in",
+      "support_for": "connect;finances;housing",
+      "mode": "in-person",
+      "url": "https://thrivesomerset.org.uk/help-advice/",
+      "description": "Meet your local Village Agent, who can advocate and help with health, money, housing or loneliness.",
+      "who": "anyone",
+      "days": "Thu",
+      "times": "13:00-15:00",
+      "frequency": "3rd Thu of month",
+      "address": "Brean Village Hall",
+      "town": "Brean",
+      "postcode": "TA8 2SF",
+      "phone": "01823 331222",
+      "last_checked": "25/10/2026"
+     }
+    }
+   ],
+   "gaps": "The list has no choir or singing group in or near Brean, and nothing singing-related on tomorrow. A web search or a call to the local library or parish council may turn up a community choir.",
+   "questions": [
+    "Would she try an online singing group if no local one is within walking distance?",
+    "Is she looking for singing mainly for enjoyment, or also for company or wellbeing support?"
+   ],
+   "scope": {
+    "place": "within 2 miles of Brean (Somerset Council area)",
+    "total": 164,
+    "near": 3,
+    "remote": 161,
+    "records": 947,
+    "timing": {
+     "prompt_chars": 61350,
+     "model": "claude-sonnet-5-5",
+     "plan_in": 24023,
+     "first_block_ms": 1266,
+     "text_start_ms": 8377,
+     "plan_out": 1326,
+     "stop": "end_turn",
+     "plan_ms": 11403,
+     "text_chars": 1177,
+     "thinking_chars": 0,
+     "blocks": "thinking,text",
+     "settings": "defaults",
+     "total_ms": 11403
+    }
+   },
+   "version": "2026-11-10 11:13",
+   "_seconds": 13.4,
+   "_status": 200
+  }
+ }
+}

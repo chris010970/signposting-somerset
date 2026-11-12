@@ -1,0 +1,393 @@
+{
+ "S20": {
+  "scenario": {
+   "id": "S20",
+   "town": "Yeovil",
+   "radius_miles": 5,
+   "travel": "relies on buses",
+   "need": "I'm supporting a girl of 17 who has been self-harming and is very anxious about going back to college. She doesn't want her mum to know the details. She relies on buses. What's available for her?",
+   "lat": 50.941,
+   "lon": -2.633,
+   "src": "run11/scenarios.json"
+  },
+  "plan": {
+   "off_topic": false,
+   "reading": "A 17-year-old girl who is self-harming and anxious about college, wants privacy from her mum and relies on buses. I put confidential, free options she can use herself first (online or phone, no travel), then young people's mental health services she can self-refer to or request herself.",
+   "safety": "If you feel you might seriously hurt yourself, call 999. You can also talk to Childline on 0800 1111 or Samaritans on 116 123 any time, day or night, or tell an adult you trust.",
+   "core_needs": [
+    "self-harm support",
+    "anxiety about returning to college",
+    "confidential support she can access herself"
+   ],
+   "core_covered": "partly",
+   "search_for": "college wellbeing counsellor self-harm support for 16-18s Yeovil",
+   "constraints": "relies on buses; wants confidentiality from parent; aged 17",
+   "place": "Yeovil",
+   "risk": true,
+   "picks": [
+    {
+     "step": "First step",
+     "why": "Free, anonymous online counselling and chat for young people. She can use it privately on her own phone, with no travel and no referral, and it suits anxiety and low mood.",
+     "distance": null,
+     "record": {
+      "name": "Kooth (Somerset)",
+      "provider": "Kooth",
+      "type": "Counselling or therapy",
+      "access": "sign up",
+      "support_for": "low mood;anxiety",
+      "mode": "online",
+      "url": "https://www.somerset.gov.uk/send/kooth/",
+      "description": "Free, anonymous online counselling, chat and self-help for young people. No referral needed.",
+      "who": "young people",
+      "eligibility": "Young people in Somerset (check the age range when you sign up)",
+      "cost": "Free",
+      "last_checked": "06/11/2026"
+     }
+    },
+    {
+     "step": "First step",
+     "why": "Confidential support for under-19s by phone or online chat, any time of day or night. Calls don't show on phone bills, which helps her privacy, and it covers self-harm worries.",
+     "distance": null,
+     "record": {
+      "name": "Childline",
+      "provider": "NSPCC",
+      "type": "One-to-one support",
+      "access": "call",
+      "support_for": "crisis prevention",
+      "mode": "phone;online",
+      "url": "https://www.childline.org.uk/",
+      "description": "Confidential support for anyone under 19 about anything, by phone or 1-2-1 chat online. Calls don't show on phone bills.",
+      "who": "young people",
+      "eligibility": "Under 19",
+      "days": "Mon-Sun",
+      "times": "00:00-23:59",
+      "phone": "0800 1111",
+      "cost": "Free",
+      "last_checked": "06/11/2026"
+     }
+    },
+    {
+     "step": "Next step",
+     "why": "NHS service for young people's mental health. At 16-17 she can refer herself online, so her mum isn't needed. It is the proper route for self-harm and anxiety.",
+     "distance": null,
+     "record": {
+      "name": "Somerset CAMHS Single Point of Access",
+      "provider": "Somerset NHS Foundation Trust",
+      "type": "Counselling or therapy",
+      "access": "referral",
+      "support_for": "low mood;anxiety",
+      "mode": "phone;online",
+      "url": "https://www.somersetft.nhs.uk/camhs/spa/",
+      "description": "NHS front door to children and young people's mental health services. Professionals refer; 16-17s can refer themselves.",
+      "who": "young people",
+      "eligibility": "Referral by GP, school or other professional. Young people aged 16-17 can self-refer (online form); parents cannot refer. Somerset Council area only",
+      "days": "Mon-Fri",
+      "times": "09:00-16:30",
+      "phone": "0300 124 5012",
+      "last_checked": "06/11/2026"
+     }
+    },
+    {
+     "step": "Next step",
+     "why": "Free one-to-one evening support for 13-18s who are struggling, in Yeovil, so no long bus journey. Up to four appointments, giving her a safe space to talk about self-harm.",
+     "distance": null,
+     "record": {
+      "name": "Youth SAFE Space (Yeovil)",
+      "provider": "Mind in Somerset",
+      "type": "One-to-one support",
+      "access": "book",
+      "support_for": "crisis prevention",
+      "mode": "in-person;online",
+      "url": "https://www.mindinsomerset.org.uk/our-services/young-people/youth-safe-space/",
+      "description": "Evening one-to-one support for 13-18s who are struggling: Tue, Wed, Fri, Sat. Location given on booking.",
+      "who": "young people",
+      "eligibility": "Aged 13 to 18. Up to four appointments over two months",
+      "town": "Yeovil",
+      "phone": "01823 276892",
+      "last_checked": "27/10/2026"
+     }
+    },
+    {
+     "step": "Next step",
+     "why": "Early help for anxiety and low mood, at school or locally. At 13+ she can ask for support herself, which could help with the worry about returning to college.",
+     "distance": null,
+     "record": {
+      "name": "Young Somerset Community Wellbeing Service",
+      "provider": "Young Somerset",
+      "type": "One-to-one support",
+      "access": "referral",
+      "support_for": "low mood;anxiety",
+      "mode": "in-person",
+      "url": "https://www.youngsomerset.org.uk/mental-health-and-wellbeing-support/community-wellbeing-service/",
+      "description": "Early help for mild to moderate anxiety, low mood or distress, at school or locally. Venue confirmed once referred.",
+      "who": "young people",
+      "eligibility": "Ages 5-18 (up to 25 with additional needs). Young people 13+ can request support themselves; parents, carers or professionals for younger children. Somerset Council area only",
+      "phone": "01278 722100",
+      "email": "wellbeing@youngsomerset.org.uk",
+      "last_checked": "06/11/2026"
+     }
+    },
+    {
+     "step": "Next step",
+     "why": "Peer mentoring for 16-25s in Somerset, one-to-one or in groups, by phone or in person. It's a friendly, lower-pressure way to build confidence and cope with anxiety.",
+     "distance": null,
+     "record": {
+      "name": "We've Got This: young people's peer mentoring",
+      "provider": "Somerset Activity and Sports Partnership (SASP)",
+      "type": "One-to-one support",
+      "access": "call",
+      "support_for": "low mood;anxiety;be active;connect",
+      "mode": "in-person;phone",
+      "url": "https://www.sasp.co.uk/weve-got-this",
+      "description": "Group and one-to-one peer mentoring for 16-25-year-olds in Somerset who want support with their mental health.",
+      "who": "young people",
+      "eligibility": "Ages 16-25, living in Somerset",
+      "phone": "07458 301514 (call or text)",
+      "email": "ldyke@sasp.co.uk",
+      "cost": "Free",
+      "last_checked": "07/11/2026"
+     }
+    }
+   ],
+   "gaps": "Nothing on the list is specific to college, such as a college wellbeing team or counsellor, which could help with the return to college. Evening bus times may limit in-person sessions.",
+   "questions": [
+    "Does she have a GP or a college wellbeing or pastoral team she trusts and would be willing to talk to?",
+    "Would she prefer talking by phone or online, or meeting someone in person in Yeovil, and are evenings workable on the buses?"
+   ],
+   "scope": {
+    "place": "within 5 miles of Yeovil (Somerset Council area)",
+    "total": 232,
+    "near": 43,
+    "remote": 189,
+    "records": 1031,
+    "timing": {
+     "prompt_chars": 83786,
+     "model": "claude-sonnet-5-5",
+     "plan_in": 33438,
+     "first_block_ms": 794,
+     "text_start_ms": 7745,
+     "plan_out": 1837,
+     "stop": "end_turn",
+     "plan_ms": 13946,
+     "text_chars": 2563,
+     "thinking_chars": 0,
+     "blocks": "thinking,text",
+     "settings": "defaults",
+     "total_ms": 13946
+    }
+   },
+   "version": "2026-11-12 07:11",
+   "_seconds": 15.3,
+   "_status": 200
+  }
+ },
+ "S23": {
+  "scenario": {
+   "id": "S23",
+   "town": "Shepton Mallet",
+   "radius_miles": 10,
+   "travel": "can drive",
+   "need": "A mum in her 50s whose son died by suicide six months ago. She's not sleeping, can't face friends, and says general bereavement groups \"don't understand\". She can drive. What support is there?",
+   "lat": 51.19,
+   "lon": -2.546,
+   "src": "run11/scenarios.json"
+  },
+  "plan": {
+   "off_topic": false,
+   "reading": "A mum whose son died by suicide six months ago, now isolated and not sleeping. She wants support from people who share that experience, so I put suicide-bereavement services first and kept the wider wellbeing options gentle and low-pressure.",
+   "safety": "If the pain ever feels too much, Samaritans are there any time on 116 123, and in immediate danger call 999. You don't have to be at crisis point to call.",
+   "core_needs": [
+    "bereavement by suicide",
+    "sleep difficulties",
+    "isolation and withdrawal"
+   ],
+   "core_covered": "yes",
+   "search_for": "sleep support for people grieving a bereavement Shepton Mallet",
+   "constraints": "can drive; avoids friends and general groups; poor sleep",
+   "place": "Shepton Mallet",
+   "risk": true,
+   "picks": [
+    {
+     "step": "First step",
+     "why": "A free 24/7 helpline, with support workers and counselling, for people affected by a death by suicide. She can self-refer, and it is available at night when she can't sleep.",
+     "distance": null,
+     "record": {
+      "name": "Somerset Suicide Bereavement Support Service",
+      "provider": "Mind in Somerset",
+      "type": "One-to-one support",
+      "access": "call",
+      "support_for": "bereavement;crisis prevention",
+      "mode": "phone",
+      "url": "https://www.mindinsomerset.org.uk/our-services/somerset-suicide-bereavement-support-service/",
+      "description": "Free 24/7 helpline, support workers and counselling for anyone 14+ affected by a death by suicide.",
+      "who": "anyone",
+      "eligibility": "Ages 14+ in Somerset; self-referral accepted. Somerset Council area only",
+      "days": "Mon-Sun",
+      "times": "00:00-23:59",
+      "phone": "0300 330 5463",
+      "email": "bereaved@mindinsomerset.org.uk",
+      "cost": "Free",
+      "last_checked": "07/11/2026"
+     }
+    },
+    {
+     "step": "First step",
+     "why": "A local peer group led by staff with lived experience of suicide loss, so she is with people who understand. Self-referral lets her ask about venue and dates first.",
+     "distance": null,
+     "record": {
+      "name": "Speak Their Name Group (Mendip)",
+      "provider": "Mind in Somerset",
+      "type": "Peer group",
+      "access": "sign up",
+      "support_for": "bereavement",
+      "mode": "in-person",
+      "url": "https://www.mindinsomerset.org.uk/our-services/somerset-suicide-bereavement-support-service/somerset-suicide-bereavement-peer-support-groups/",
+      "description": "Peer support after loss by suicide, led by staff with lived experience. Self-refer. Venue confirmed on registration.",
+      "who": "anyone",
+      "frequency": "monthly (dates vary)",
+      "town": "Shepton Mallet",
+      "email": "bereaved@mindinsomerset.org.uk",
+      "last_checked": "26/10/2026"
+     }
+    },
+    {
+     "step": "Next step",
+     "why": "An online forum for adults bereaved by suicide. She can read or post at any hour, including sleepless nights, without facing anyone in person.",
+     "distance": null,
+     "record": {
+      "name": "SoBS Online Forum",
+      "provider": "Survivors of Bereavement by Suicide (SoBS)",
+      "type": "Peer group",
+      "access": "sign up",
+      "support_for": "bereavement",
+      "mode": "online",
+      "url": "https://uksobs.com/",
+      "description": "Online peer support forum for people bereaved by suicide. Apply online; approved within a couple of days.",
+      "who": "adults",
+      "eligibility": "18+",
+      "cost": "Free",
+      "last_checked": "08/11/2026"
+     }
+    },
+    {
+     "step": "Next step",
+     "why": "A Zoom group for people bereaved by suicide, run by trained volunteers who have been through it. She can join from home, and email or call first for the link.",
+     "distance": null,
+     "record": {
+      "name": "SoBS National Virtual Support Group",
+      "provider": "Survivors of Bereavement by Suicide (SoBS)",
+      "type": "Peer group",
+      "access": "sign up",
+      "support_for": "bereavement",
+      "mode": "online",
+      "url": "https://uksobs.com/",
+      "description": "Zoom peer group for people bereaved by suicide, led by trained volunteers. Ask for the link.",
+      "who": "anyone",
+      "eligibility": "Email or call for the Zoom link before the meeting",
+      "days": "Tue",
+      "frequency": "3rd Tue of month",
+      "email": "national.zoom@uksobs.org",
+      "cost": "Free",
+      "last_checked": "08/11/2026"
+     }
+    },
+    {
+     "step": "Next step",
+     "why": "A listening line and email support from volunteers who are themselves bereaved by suicide. It is not counselling, but it is a gentle way to talk to someone who understands.",
+     "distance": null,
+     "record": {
+      "name": "SoBS Supportline and Email Support",
+      "provider": "Survivors of Bereavement by Suicide (SoBS)",
+      "type": "One-to-one support",
+      "access": "call",
+      "support_for": "bereavement",
+      "mode": "phone;online",
+      "url": "https://uksobs.com/",
+      "description": "Listening line and email support from trained volunteers bereaved by suicide. Not counselling; calls time-limited.",
+      "who": "anyone",
+      "phone": "0300 111 5065",
+      "email": "email.support@uksobs.org",
+      "cost": "Free",
+      "last_checked": "08/11/2026"
+     }
+    },
+    {
+     "step": "When ready",
+     "why": "A nature walk for adults bereaved by suicide with no need to talk. It suits someone not ready for a sit-down group, and she can drive to the venue.",
+     "distance": null,
+     "record": {
+      "name": "Suicide Bereavement Peer Walk",
+      "provider": "Mind in Somerset",
+      "type": "Peer group",
+      "access": "sign up",
+      "support_for": "bereavement;take notice",
+      "mode": "in-person",
+      "url": "https://www.mindinsomerset.org.uk/our-services/somerset-suicide-bereavement-support-service/somerset-suicide-bereavement-peer-support-groups/",
+      "description": "Seasonal nature walk for adults bereaved by suicide; no need to talk. Self-refer first. Venue confirmed on registration.",
+      "who": "adults",
+      "eligibility": "Somerset Council area only",
+      "frequency": "dates vary",
+      "email": "bereaved@mindinsomerset.org.uk",
+      "last_checked": "26/10/2026"
+     }
+    },
+    {
+     "step": "When ready",
+     "why": "A gentle, short, flat walk in Shepton Mallet with no pressure to talk. Fresh air and light activity can help low mood and sleep, and it is free to join.",
+     "distance": 0.2,
+     "record": {
+      "name": "Health Walk: Shepton Mallet Tuesday",
+      "provider": "Somerset Activity and Sports Partnership",
+      "type": "Activity group",
+      "access": "sign up",
+      "support_for": "be active",
+      "mode": "in-person",
+      "url": "https://www.sasp.co.uk/health-walks",
+      "description": "Beginner: under 1 mile, flat. Starts 10:15. With Health Connections Mendip. Park at Tesco.",
+      "who": "anyone",
+      "eligibility": "Register (free) with SASP before your first walk",
+      "days": "Tue",
+      "times": "10:00",
+      "address": "Collett Park, off Park Road (meet by the cafe and toilets)",
+      "town": "Shepton Mallet",
+      "postcode": "BA4 5EG",
+      "phone": "01823 653990",
+      "email": "walks@sasp.co.uk",
+      "cost": "Free",
+      "last_checked": "26/10/2026"
+     }
+    }
+   ],
+   "gaps": "Nothing on the list is aimed specifically at sleep problems after bereavement, so her GP is worth a conversation. NHS Somerset Talking Therapies excludes bereavement in the last 6 months, so she should check whether she now qualifies.",
+   "questions": [
+    "Would she prefer talking by phone or online first, or meeting people in person?",
+    "Has she spoken to her GP about the sleep problems?"
+   ],
+   "scope": {
+    "place": "within 10 miles of Shepton Mallet (Somerset Council area)",
+    "total": 356,
+    "near": 167,
+    "remote": 189,
+    "records": 1031,
+    "timing": {
+     "prompt_chars": 123109,
+     "model": "claude-sonnet-5-5",
+     "plan_in": 50912,
+     "first_block_ms": 1929,
+     "text_start_ms": 9497,
+     "plan_out": 1880,
+     "stop": "end_turn",
+     "plan_ms": 16164,
+     "text_chars": 2566,
+     "thinking_chars": 0,
+     "blocks": "thinking,text",
+     "settings": "defaults",
+     "total_ms": 16164
+    }
+   },
+   "version": "2026-11-12 07:11",
+   "_seconds": 17.4,
+   "_status": 200
+  }
+ }
+}

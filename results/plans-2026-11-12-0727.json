@@ -1,0 +1,1742 @@
+{
+ "S13": {
+  "scenario": {
+   "id": "S13",
+   "town": "Bridgwater",
+   "radius_miles": 10,
+   "travel": "relies on buses",
+   "need": "Young man, 20, recently discharged from hospital after a first episode of psychosis. He lives with his nan, has lost touch with his friends and has nothing to do during the day. He's on medication and seeing the community team, but he's bored and low. He relies on buses. What's out there for him?",
+   "lat": 51.1279,
+   "lon": -3.0036,
+   "src": "run10/scenarios.json"
+  },
+  "plan": {
+   "off_topic": false,
+   "reading": "A 20-year-old man in recovery after a first psychosis episode, with low mood, isolation and empty days. He is already on medication and with the community team. I chose peer support from people with lived experience, then gentle low-pressure Bridgwater drop-ins that are walkable or an easy bus ride.",
+   "safety": "",
+   "core_needs": [
+    "recovery and peer support after first psychosis episode",
+    "isolation and nothing to do in the day",
+    "low mood"
+   ],
+   "core_covered": "partly",
+   "search_for": "early intervention in psychosis recovery support, education and work help for young people Bridgwater",
+   "constraints": "relies on buses; free during the day; living with his nan",
+   "place": "Bridgwater",
+   "risk": false,
+   "picks": [
+    {
+     "step": "First step",
+     "why": "Free one-to-one peer mentoring from people with lived experience of serious mental illness, by phone or in person. It speaks directly to his situation and needs no group.",
+     "distance": null,
+     "record": {
+      "name": "Somerset Peer Connections",
+      "provider": "Rethink Mental Illness / Open Mental Health",
+      "type": "One-to-one support",
+      "access": "call",
+      "support_for": "connect",
+      "mode": "in-person;phone",
+      "url": "https://rethink.org/help-in-your-area/services/community-support/somerset-peer-connections/",
+      "description": "Free one-to-one peer mentoring from people with lived experience, for adults with a serious mental illness.",
+      "who": "adults",
+      "eligibility": "18+, Somerset, serious mental illness (diagnosed or not). Somerset Council area only",
+      "phone": "0800 138 1692",
+      "email": "peerconnections@rethink.org",
+      "cost": "Free",
+      "last_checked": "04/11/2026"
+     }
+    },
+    {
+     "step": "First step",
+     "why": "Relaxed Friday coffee morning at the Bridgwater Wellbeing Hub, with no booking or referral. Easy to go with his worker, and it gives him a place to go in the day.",
+     "distance": 0.1,
+     "record": {
+      "name": "Coffee Morning Drop-in (Bridgwater Wellbeing Hub)",
+      "provider": "Open Mental Health",
+      "type": "Community",
+      "access": "drop in",
+      "support_for": "connect",
+      "mode": "in-person",
+      "url": "https://openmentalhealth.org.uk/inside-bridgwaters-omh-coffee-morning-drop-in/",
+      "description": "Friday coffee morning at the Wellbeing Hub: just turn up. On the last Friday of the month the group goes on an outing.",
+      "who": "adults",
+      "eligibility": "Aged 18 and over; no referral or booking needed",
+      "days": "Fri",
+      "times": "10:00-12:00",
+      "address": "Wellbeing Hub, 2 Fore Street",
+      "town": "Bridgwater",
+      "postcode": "TA6 3NF",
+      "phone": "01823 276892",
+      "email": "info@openmentalhealth.org.uk",
+      "cost": "Free",
+      "last_checked": "07/11/2026"
+     }
+    },
+    {
+     "step": "Next step",
+     "why": "Peer mentoring for 16-25s with their mental health, one-to-one or in groups, with an activity element. It suits his age and could help him get moving again.",
+     "distance": null,
+     "record": {
+      "name": "We've Got This: young people's peer mentoring",
+      "provider": "Somerset Activity and Sports Partnership (SASP)",
+      "type": "One-to-one support",
+      "access": "call",
+      "support_for": "low mood;anxiety;be active;connect",
+      "mode": "in-person;phone",
+      "url": "https://www.sasp.co.uk/weve-got-this",
+      "description": "Group and one-to-one peer mentoring for 16-25-year-olds in Somerset who want support with their mental health.",
+      "who": "young people",
+      "eligibility": "Ages 16-25, living in Somerset",
+      "phone": "07458 301514 (call or text)",
+      "email": "ldyke@sasp.co.uk",
+      "cost": "Free",
+      "last_checked": "07/11/2026"
+     }
+    },
+    {
+     "step": "Next step",
+     "why": "Relaxed gaming drop-in for adults with mental ill-health, with no pressure to join in. It suits a young man who may be nervous of talking groups.",
+     "distance": 0.3,
+     "record": {
+      "name": "GameChanger (Bridgwater)",
+      "provider": "Love Community CIC",
+      "type": "Activity group",
+      "access": "drop in",
+      "support_for": "connect",
+      "mode": "in-person",
+      "url": "https://lovecommunitycic.co.uk/projects/",
+      "description": "Relaxed gaming and social session, including movement games. Just turn up; no pressure to join in.",
+      "who": "adults",
+      "eligibility": "18+. For autistic, learning disabled or neurodiverse adults, and people with mental ill-health",
+      "days": "Tue",
+      "times": "13:00-15:30",
+      "address": "The Engine Room, Bridgwater Town Hall, 50-52 High Street",
+      "town": "Bridgwater",
+      "postcode": "TA6 3BL",
+      "cost": "Free",
+      "last_checked": "27/10/2026"
+     }
+    },
+    {
+     "step": "Next step",
+     "why": "Drop-in in Bridgwater centre for people with poor mental health: activities and meeting others in a similar situation. Free to attend and easy to reach.",
+     "distance": 0.1,
+     "record": {
+      "name": "Bridgwater Community Day",
+      "provider": "Mind in Somerset",
+      "type": "Peer group",
+      "access": "drop in",
+      "support_for": "connect",
+      "mode": "in-person",
+      "url": "https://www.mindinsomerset.org.uk/our-services/peer-support/bridgwater-community-day/",
+      "description": "Drop-in for anyone experiencing poor mental health: group activities, meeting others in a similar situation, and advice and support.",
+      "who": "adults",
+      "days": "Tue",
+      "times": "14:00-16:00",
+      "address": "Wellbeing Hub, 2 Fore Street",
+      "town": "Bridgwater",
+      "postcode": "TA6 3NF",
+      "phone": "01823 334906",
+      "email": "info@mindinsomerset.org.uk",
+      "last_checked": "25/10/2026"
+     }
+    },
+    {
+     "step": "Next step",
+     "why": "Men's group for connecting and trying new things, so he can meet other men his own age. His worker can nominate him through the OMH portal.",
+     "distance": 0.5,
+     "record": {
+      "name": "Unbreakable Men (Bridgwater)",
+      "provider": "Somerset Activity and Sports Partnership",
+      "type": "Peer group",
+      "access": "sign up",
+      "support_for": "connect",
+      "mode": "in-person",
+      "url": "https://www.sasp.co.uk/unbreakable-men",
+      "description": "A welcoming community for men to connect, try new things and support their mental wellbeing. All abilities.",
+      "who": "men",
+      "eligibility": "18+. Sign up via the OMH portal; professionals can nominate",
+      "days": "Wed",
+      "times": "13:30-14:30",
+      "address": "YMCA Bridgwater, Friarn Avenue",
+      "town": "Bridgwater",
+      "postcode": "TA6 3RF",
+      "phone": "07599 654672",
+      "email": "Degginton@sasp.co.uk",
+      "last_checked": "26/10/2026"
+     }
+    },
+    {
+     "step": "When ready",
+     "why": "Peer group for people who experience hallucinations. Only worth it if he hears voices or sees things, and it needs a referral, perhaps through his community team.",
+     "distance": 0.3,
+     "record": {
+      "name": "Hearing Voices Group Bridgwater",
+      "provider": "Mind in Somerset",
+      "type": "Peer group",
+      "access": "referral",
+      "support_for": "hearing voices",
+      "mode": "in-person",
+      "url": "https://www.mindinsomerset.org.uk/our-services/peer-support/hearing-voices-group/",
+      "description": "Peer support for people who experience any form of hallucination. Referral required. Venue confirmed once referred.",
+      "who": "adults",
+      "days": "Tue",
+      "times": "11:30-13:00",
+      "town": "Bridgwater",
+      "email": "hearingvoices@mindinsomerset.org.uk",
+      "last_checked": "25/10/2026"
+     }
+    },
+    {
+     "step": "When ready",
+     "why": "Free, friendly men's shed with craft work and cuppas, where he can drop in on several weekdays. It gives him a side-by-side activity and some daytime routine, though it may attract older men.",
+     "distance": 0.4,
+     "record": {
+      "name": "Bridgwater Men's Shed (SLAM Shed)",
+      "provider": "SLAM Shed",
+      "type": "Community",
+      "access": "drop in",
+      "support_for": "connect;keep learning",
+      "mode": "in-person",
+      "url": "https://www.slamshed.org",
+      "description": "Men's shed with craft work, unlimited cuppas and a friendly chat in the snug. Visitors welcome.",
+      "who": "men",
+      "days": "Tue;Wed;Thu",
+      "times": "10:00-15:00",
+      "address": "The Canal Workshop, Canal View, Old Taunton Road",
+      "town": "Bridgwater",
+      "postcode": "TA6 3NS",
+      "cost": "Free",
+      "last_checked": "04/11/2026"
+     }
+    }
+   ],
+   "gaps": "Nothing on the list is specific to early psychosis recovery or to getting back into college, work or volunteering, and there is no help with bus travel.",
+   "questions": [
+    "Does he hear voices or see things at the moment, and would he want a group for that?",
+    "What did he enjoy before he became unwell (gaming, sport, music, making things)?"
+   ],
+   "scope": {
+    "place": "within 10 miles of Bridgwater (Somerset Council area)",
+    "total": 344,
+    "near": 155,
+    "remote": 189,
+    "records": 1031,
+    "timing": {
+     "prompt_chars": 119405,
+     "model": "claude-sonnet-5-5",
+     "plan_in": 49383,
+     "first_block_ms": 833,
+     "text_start_ms": 13391,
+     "plan_out": 2609,
+     "stop": "end_turn",
+     "plan_ms": 20125,
+     "text_chars": 2715,
+     "thinking_chars": 0,
+     "blocks": "thinking,text",
+     "settings": "defaults",
+     "total_ms": 20125
+    }
+   },
+   "version": "2026-11-12 07:11",
+   "_seconds": 21.3,
+   "_status": 200
+  }
+ },
+ "S16": {
+  "scenario": {
+   "id": "S16",
+   "town": "Watchet",
+   "radius_miles": 2,
+   "travel": "no car, can walk a short way",
+   "need": "My client is a man in his 40s who has been sleeping rough on and off in Watchet and is drinking heavily. He says he wants help but \"doesn't do offices\" and gets anxious around officials. He can walk around town. What would you recommend?",
+   "lat": 51.181,
+   "lon": -3.33,
+   "src": "run10/scenarios.json"
+  },
+  "plan": {
+   "off_topic": false,
+   "reading": "He's sleeping rough and drinking heavily, wants help, but avoids offices and officials. I've put phone and walk-in options first, in Watchet or nearby, with alcohol support and housing covered before general wellbeing.",
+   "safety": "If you drink heavily every day, please don't stop suddenly, because withdrawal can be dangerous. The drug and alcohol service or a GP can help you cut down safely.",
+   "core_needs": [
+    "cutting down heavy drinking safely",
+    "rough sleeping and housing",
+    "low-pressure support without offices or officials"
+   ],
+   "core_covered": "partly",
+   "search_for": "outreach alcohol and homelessness support for rough sleepers Watchet",
+   "constraints": "walks locally; avoids offices; anxious around officials; sleeping rough",
+   "place": "Watchet",
+   "risk": false,
+   "picks": [
+    {
+     "step": "First step",
+     "why": "Free confidential alcohol help by phone, so no office visit. The worker can sit with him while he calls, or call first. Covers safe cutting down.",
+     "distance": null,
+     "record": {
+      "name": "Somerset Drug and Alcohol Service (SDAS)",
+      "provider": "Turning Point",
+      "type": "One-to-one support",
+      "access": "call",
+      "support_for": "addiction",
+      "mode": "phone",
+      "url": "https://www.turning-point.co.uk/services/somerset",
+      "description": "Free, confidential help for anyone affected by their own or someone else's drug or alcohol use.",
+      "who": "anyone",
+      "eligibility": "Somerset Council area only",
+      "days": "Mon-Sun",
+      "times": "00:00-23:59",
+      "phone": "0300 303 8788",
+      "email": "sdas@turning-point.co.uk",
+      "cost": "Free",
+      "last_checked": "27/10/2026"
+     }
+    },
+    {
+     "step": "First step",
+     "why": "Informal community meal in Watchet, a short walk away. A hot meal and a friendly face with no forms or officials, and an easy way to build trust.",
+     "distance": 0.1,
+     "record": {
+      "name": "The Sanctuary community meal (Watchet)",
+      "provider": "Watchet Baptist Church",
+      "type": "Community",
+      "access": "drop in",
+      "support_for": "food;connect",
+      "mode": "in-person",
+      "url": "https://watchetbaptist.org.uk/the-sanctuary",
+      "description": "Community meal at The Sanctuary, the Baptist church's town centre building in Watchet.",
+      "who": "anyone",
+      "days": "Fri",
+      "times": "17:00-18:30",
+      "address": "The Sanctuary, 38 Swain Street",
+      "town": "Watchet",
+      "postcode": "TA23 0AE",
+      "phone": "01984 248169",
+      "email": "admin@watchetbaptist.org.uk",
+      "last_checked": "07/11/2026"
+     }
+    },
+    {
+     "step": "Next step",
+     "why": "The worker can send an alert for him online, so local rough sleeping support can find him without him walking into an office.",
+     "distance": null,
+     "record": {
+      "name": "StreetLink",
+      "provider": "StreetLink",
+      "type": "Practical support",
+      "access": "call",
+      "support_for": "housing",
+      "mode": "phone;online",
+      "url": "https://www.streetlink.org.uk/",
+      "description": "Alert service to connect someone sleeping rough with local support; send an alert online, by app or by phone.",
+      "who": "anyone",
+      "eligibility": "For people aged 18+ sleeping rough in England or Wales; under 18s: call the police",
+      "phone": "0300 500 0914",
+      "last_checked": "07/11/2026"
+     }
+    },
+    {
+     "step": "Next step",
+     "why": "Phone advice on housing and rough sleeping, open any time. Useful for tonight's options. The worker can make the call alongside him if officials feel daunting.",
+     "distance": null,
+     "record": {
+      "name": "Somerset Council Homelessness Line",
+      "provider": "Somerset Council",
+      "type": "Practical support",
+      "access": "call",
+      "support_for": "housing",
+      "mode": "phone",
+      "url": "https://www.somerset.gov.uk/",
+      "description": "Advice to avoid homelessness. Nowhere safe tonight? Call now. Out of hours: 0300 123 2327.",
+      "who": "anyone",
+      "eligibility": "Somerset residents",
+      "days": "Mon-Sun",
+      "times": "00:00-23:59",
+      "phone": "0300 123 2224",
+      "cost": "Free",
+      "last_checked": "25/10/2026"
+     }
+    },
+    {
+     "step": "Next step",
+     "why": "Informal AA meeting in Williton, walkable. It asks for no registration and keeps no records, so it suits someone anxious around officials. A peer option alongside SDAS.",
+     "distance": 1.2,
+     "record": {
+      "name": "Alcoholics Anonymous: Williton Topic",
+      "provider": "Alcoholics Anonymous (Somerset Intergroup)",
+      "type": "Peer group",
+      "access": "drop in",
+      "support_for": "addiction",
+      "mode": "in-person",
+      "url": "https://www.alcoholics-anonymous.org.uk/intergroups/somerset-intergroup/",
+      "description": "Topic meeting. For anyone with a desire to stop drinking. AA keeps no records.",
+      "who": "anyone",
+      "days": "Sun",
+      "times": "19:00-20:00",
+      "address": "Community Centre, Danesborough View East",
+      "town": "Williton",
+      "postcode": "TA4 4SH",
+      "cost": "Free (optional collection)",
+      "last_checked": "06/11/2026"
+     }
+    },
+    {
+     "step": "Next step",
+     "why": "Drop-in with a Village Agent who can advocate on housing, health and money. A friendly, non-official way to get practical help sorted.",
+     "distance": 1.4,
+     "record": {
+      "name": "Talking Café Williton",
+      "provider": "Thrive",
+      "type": "Advocacy",
+      "access": "drop in",
+      "support_for": "connect;finances;housing",
+      "mode": "in-person",
+      "url": "https://thrivesomerset.org.uk/help-advice/",
+      "description": "Meet your local Village Agent, who can advocate and help with health, money, housing or loneliness.",
+      "who": "anyone",
+      "days": "Tue",
+      "times": "13:00-15:00",
+      "address": "The Pavilion, Killick Way",
+      "town": "Williton",
+      "postcode": "TA4 4QA",
+      "phone": "01823 331222",
+      "last_checked": "25/10/2026"
+     }
+    },
+    {
+     "step": "When ready",
+     "why": "Relaxed weekly drop-in at The Sanctuary in Watchet with refreshments and games. Good for gentle connection once he feels comfortable at the Friday meal.",
+     "distance": 0.1,
+     "record": {
+      "name": "Open House (The Sanctuary, Watchet)",
+      "provider": "Watchet Baptist Church",
+      "type": "Community",
+      "access": "drop in",
+      "support_for": "connect",
+      "mode": "in-person",
+      "url": "https://www.watchetbaptist.org.uk/",
+      "description": "Weekly afternoon drop-in for friendship, games and refreshments in a safe, welcoming place. All welcome.",
+      "who": "anyone",
+      "days": "Wed",
+      "times": "14:30-17:30",
+      "address": "The Sanctuary, 38 Swain Street",
+      "town": "Watchet",
+      "postcode": "TA23 0AE",
+      "email": "admin@watchetbaptist.org.uk",
+      "last_checked": "09/11/2026"
+     }
+    }
+   ],
+   "gaps": "Nothing on the list offers face-to-face alcohol outreach in Watchet itself. SDAS hubs need a call first and are not local, and nothing helps with registering with a GP.",
+   "questions": [
+    "How much and how often is he drinking, and has he ever had shakes or withdrawal when he stopped?",
+    "Has he ever served in the Armed Forces, or does he have a GP he can use?"
+   ],
+   "scope": {
+    "place": "within 2 miles of Watchet (Somerset Council area)",
+    "total": 208,
+    "near": 14,
+    "remote": 194,
+    "records": 1031,
+    "timing": {
+     "prompt_chars": 76693,
+     "model": "claude-sonnet-5-5",
+     "plan_in": 30150,
+     "first_block_ms": 1212,
+     "text_start_ms": 12957,
+     "plan_out": 2403,
+     "stop": "end_turn",
+     "plan_ms": 19284,
+     "text_chars": 2511,
+     "thinking_chars": 0,
+     "blocks": "thinking,text",
+     "settings": "defaults",
+     "total_ms": 19284
+    }
+   },
+   "version": "2026-11-12 07:11",
+   "_seconds": 20.6,
+   "_status": 200
+  }
+ },
+ "S20": {
+  "scenario": {
+   "id": "S20",
+   "town": "Yeovil",
+   "radius_miles": 5,
+   "travel": "relies on buses",
+   "need": "I'm supporting a girl of 17 who has been self-harming and is very anxious about going back to college. She doesn't want her mum to know the details. She relies on buses. What's available for her?",
+   "lat": 50.941,
+   "lon": -2.633,
+   "src": "run11/scenarios.json"
+  },
+  "plan": {
+   "off_topic": false,
+   "reading": "A 17-year-old who is self-harming and anxious about college, wants privacy from her mum, and relies on buses. I put confidential, youth-specific one-to-one and online support first, then local early-help and NHS routes she can self-refer to. Adult groups were left out because of age.",
+   "safety": "If you ever feel you might hurt yourself badly, call Samaritans any time on 116 123, or Childline on 0800 1111. Call 999 if you are in immediate danger. Telling one trusted adult, like a college tutor or GP, can also help.",
+   "core_needs": [
+    "self-harm support for a 17-year-old",
+    "anxiety about returning to college",
+    "confidential support without involving parent"
+   ],
+   "core_covered": "yes",
+   "search_for": "young people self-harm and anxiety support college wellbeing Yeovil",
+   "constraints": "relies on buses; under 18; wants privacy from parent",
+   "place": "Yeovil",
+   "risk": true,
+   "picks": [
+    {
+     "step": "First step",
+     "why": "Free, anonymous online counselling and chat for young people, with no referral. She can use it from home with no travel and without her mum needing details.",
+     "distance": null,
+     "record": {
+      "name": "Kooth (Somerset)",
+      "provider": "Kooth",
+      "type": "Counselling or therapy",
+      "access": "sign up",
+      "support_for": "low mood;anxiety",
+      "mode": "online",
+      "url": "https://www.somerset.gov.uk/send/kooth/",
+      "description": "Free, anonymous online counselling, chat and self-help for young people. No referral needed.",
+      "who": "young people",
+      "eligibility": "Young people in Somerset (check the age range when you sign up)",
+      "cost": "Free",
+      "last_checked": "06/11/2026"
+     }
+    },
+    {
+     "step": "First step",
+     "why": "One-to-one support for 13-18s who are struggling, in Yeovil. Book via the service. Check evening times against bus times home.",
+     "distance": 0.1,
+     "record": {
+      "name": "Youth SAFE Space (Yeovil)",
+      "provider": "Mind in Somerset",
+      "type": "One-to-one support",
+      "access": "book",
+      "support_for": "crisis prevention",
+      "mode": "in-person;online",
+      "url": "https://www.mindinsomerset.org.uk/our-services/young-people/youth-safe-space/",
+      "description": "Evening one-to-one support for 13-18s who are struggling: Tue, Wed, Fri, Sat. Location given on booking.",
+      "who": "young people",
+      "eligibility": "Aged 13 to 18. Up to four appointments over two months",
+      "town": "Yeovil",
+      "phone": "01823 276892",
+      "last_checked": "27/10/2026"
+     }
+    },
+    {
+     "step": "Next step",
+     "why": "Confidential for under-19s by phone or online chat, and calls don't show on phone bills. Useful for private talks or when things feel worse.",
+     "distance": null,
+     "record": {
+      "name": "Childline",
+      "provider": "NSPCC",
+      "type": "One-to-one support",
+      "access": "call",
+      "support_for": "crisis prevention",
+      "mode": "phone;online",
+      "url": "https://www.childline.org.uk/",
+      "description": "Confidential support for anyone under 19 about anything, by phone or 1-2-1 chat online. Calls don't show on phone bills.",
+      "who": "young people",
+      "eligibility": "Under 19",
+      "days": "Mon-Sun",
+      "times": "00:00-23:59",
+      "phone": "0800 1111",
+      "cost": "Free",
+      "last_checked": "06/11/2026"
+     }
+    },
+    {
+     "step": "Next step",
+     "why": "Early help for anxiety, low mood or distress, and at 13+ she can ask for support herself. It can be at school or locally, which may cut bus travel.",
+     "distance": null,
+     "record": {
+      "name": "Young Somerset Community Wellbeing Service",
+      "provider": "Young Somerset",
+      "type": "One-to-one support",
+      "access": "referral",
+      "support_for": "low mood;anxiety",
+      "mode": "in-person",
+      "url": "https://www.youngsomerset.org.uk/mental-health-and-wellbeing-support/community-wellbeing-service/",
+      "description": "Early help for mild to moderate anxiety, low mood or distress, at school or locally. Venue confirmed once referred.",
+      "who": "young people",
+      "eligibility": "Ages 5-18 (up to 25 with additional needs). Young people 13+ can request support themselves; parents, carers or professionals for younger children. Somerset Council area only",
+      "phone": "01278 722100",
+      "email": "wellbeing@youngsomerset.org.uk",
+      "last_checked": "06/11/2026"
+     }
+    },
+    {
+     "step": "Next step",
+     "why": "Peer mentoring for 16-25s about mental health, by phone or in person. A gentler way to talk to someone who has been through similar things.",
+     "distance": null,
+     "record": {
+      "name": "We've Got This: young people's peer mentoring",
+      "provider": "Somerset Activity and Sports Partnership (SASP)",
+      "type": "One-to-one support",
+      "access": "call",
+      "support_for": "low mood;anxiety;be active;connect",
+      "mode": "in-person;phone",
+      "url": "https://www.sasp.co.uk/weve-got-this",
+      "description": "Group and one-to-one peer mentoring for 16-25-year-olds in Somerset who want support with their mental health.",
+      "who": "young people",
+      "eligibility": "Ages 16-25, living in Somerset",
+      "phone": "07458 301514 (call or text)",
+      "email": "ldyke@sasp.co.uk",
+      "cost": "Free",
+      "last_checked": "07/11/2026"
+     }
+    },
+    {
+     "step": "Next step",
+     "why": "NHS young people's mental health service. At 16-17 she can self-refer online without her parent, which suits self-harm needing clinical support.",
+     "distance": null,
+     "record": {
+      "name": "Somerset CAMHS Single Point of Access",
+      "provider": "Somerset NHS Foundation Trust",
+      "type": "Counselling or therapy",
+      "access": "referral",
+      "support_for": "low mood;anxiety",
+      "mode": "phone;online",
+      "url": "https://www.somersetft.nhs.uk/camhs/spa/",
+      "description": "NHS front door to children and young people's mental health services. Professionals refer; 16-17s can refer themselves.",
+      "who": "young people",
+      "eligibility": "Referral by GP, school or other professional. Young people aged 16-17 can self-refer (online form); parents cannot refer. Somerset Council area only",
+      "days": "Mon-Fri",
+      "times": "09:00-16:30",
+      "phone": "0300 124 5012",
+      "last_checked": "06/11/2026"
+     }
+    },
+    {
+     "step": "When ready",
+     "why": "Free NHS CBT and counselling for anxiety, open from age 16 by online self-referral. Needs registration with a Somerset GP; may help with college anxiety.",
+     "distance": null,
+     "record": {
+      "name": "NHS Somerset Talking Therapies",
+      "provider": "Somerset NHS Foundation Trust",
+      "type": "Counselling or therapy",
+      "access": "sign up",
+      "support_for": "low mood;anxiety",
+      "mode": "phone;online",
+      "url": "https://www.somersetft.nhs.uk/somerset-talking-therapies/online-referral-form/",
+      "description": "NHS CBT and counselling for anxiety, low mood and PTSD. Refer yourself online. Employment advisers for people in therapy.",
+      "who": "adults;young people",
+      "eligibility": "16+ and registered with a Somerset GP (not North Somerset). Not for psychosis, eating disorders or bereavement in the last 6 months",
+      "frequency": "see website",
+      "phone": "0300 323 0033",
+      "cost": "Free (NHS)",
+      "last_checked": "07/11/2026"
+     }
+    }
+   ],
+   "gaps": "Nothing on the list is aimed specifically at college return anxiety, so her college's wellbeing or pastoral team is worth asking about.",
+   "questions": [
+    "Is she registered with a GP in Somerset, and would she be comfortable with her GP knowing?",
+    "Which evenings could she realistically get a bus home, if an appointment is after college?"
+   ],
+   "scope": {
+    "place": "within 5 miles of Yeovil (Somerset Council area)",
+    "total": 232,
+    "near": 43,
+    "remote": 189,
+    "records": 1031,
+    "timing": {
+     "prompt_chars": 83662,
+     "model": "claude-sonnet-5-5",
+     "plan_in": 33422,
+     "first_block_ms": 1036,
+     "text_start_ms": 8284,
+     "plan_out": 1828,
+     "stop": "end_turn",
+     "plan_ms": 14276,
+     "text_chars": 2574,
+     "thinking_chars": 0,
+     "blocks": "thinking,text",
+     "settings": "defaults",
+     "total_ms": 14276
+    }
+   },
+   "version": "2026-11-12 07:11",
+   "_seconds": 14.9,
+   "_status": 200
+  }
+ },
+ "S23": {
+  "scenario": {
+   "id": "S23",
+   "town": "Shepton Mallet",
+   "radius_miles": 10,
+   "travel": "can drive",
+   "need": "A mum in her 50s whose son died by suicide six months ago. She's not sleeping, can't face friends, and says general bereavement groups \"don't understand\". She can drive. What support is there?",
+   "lat": 51.19,
+   "lon": -2.546,
+   "src": "run11/scenarios.json"
+  },
+  "plan": {
+   "off_topic": false,
+   "reading": "She is six months into grief after her son's death by suicide, is sleeping badly, and is withdrawing from friends. She wants people who understand this specific loss, so I put suicide-bereavement services first, with phone and online options before in-person groups.",
+   "safety": "If the pain ever feels too much, you can call Samaritans free at any time on 116 123, or call 999 if you are in immediate danger.",
+   "core_needs": [
+    "bereavement after suicide of her son",
+    "sleep and isolation",
+    "peer support from people with the same loss"
+   ],
+   "core_covered": "yes",
+   "search_for": "support for bereaved parents after suicide Shepton Mallet",
+   "constraints": "can drive; avoiding friends; wants suicide-specific support",
+   "place": "Shepton Mallet",
+   "risk": true,
+   "picks": [
+    {
+     "step": "First step",
+     "why": "Free 24/7 phone line from Mind in Somerset for people affected by a death by suicide. It includes support workers and counselling, and she can self-refer, so no groups or friends are needed.",
+     "distance": null,
+     "record": {
+      "name": "Somerset Suicide Bereavement Support Service",
+      "provider": "Mind in Somerset",
+      "type": "One-to-one support",
+      "access": "call",
+      "support_for": "bereavement;crisis prevention",
+      "mode": "phone",
+      "url": "https://www.mindinsomerset.org.uk/our-services/somerset-suicide-bereavement-support-service/",
+      "description": "Free 24/7 helpline, support workers and counselling for anyone 14+ affected by a death by suicide.",
+      "who": "anyone",
+      "eligibility": "Ages 14+ in Somerset; self-referral accepted. Somerset Council area only",
+      "days": "Mon-Sun",
+      "times": "00:00-23:59",
+      "phone": "0300 330 5463",
+      "email": "bereaved@mindinsomerset.org.uk",
+      "cost": "Free",
+      "last_checked": "07/11/2026"
+     }
+    },
+    {
+     "step": "First step",
+     "why": "Listening line and email support from trained volunteers who are themselves bereaved by suicide. It can feel easier than a group, and she can reach out in her own time.",
+     "distance": null,
+     "record": {
+      "name": "SoBS Supportline and Email Support",
+      "provider": "Survivors of Bereavement by Suicide (SoBS)",
+      "type": "One-to-one support",
+      "access": "call",
+      "support_for": "bereavement",
+      "mode": "phone;online",
+      "url": "https://uksobs.com/",
+      "description": "Listening line and email support from trained volunteers bereaved by suicide. Not counselling; calls time-limited.",
+      "who": "anyone",
+      "phone": "0300 111 5065",
+      "email": "email.support@uksobs.org",
+      "cost": "Free",
+      "last_checked": "08/11/2026"
+     }
+    },
+    {
+     "step": "Next step",
+     "why": "Peer support after suicide loss in Shepton Mallet, led by staff with lived experience. It speaks to her feeling that general groups don't understand. She registers first and the venue is confirmed then.",
+     "distance": 0.1,
+     "record": {
+      "name": "Speak Their Name Group (Mendip)",
+      "provider": "Mind in Somerset",
+      "type": "Peer group",
+      "access": "sign up",
+      "support_for": "bereavement",
+      "mode": "in-person",
+      "url": "https://www.mindinsomerset.org.uk/our-services/somerset-suicide-bereavement-support-service/somerset-suicide-bereavement-peer-support-groups/",
+      "description": "Peer support after loss by suicide, led by staff with lived experience. Self-refer. Venue confirmed on registration.",
+      "who": "anyone",
+      "frequency": "monthly (dates vary)",
+      "town": "Shepton Mallet",
+      "email": "bereaved@mindinsomerset.org.uk",
+      "last_checked": "26/10/2026"
+     }
+    },
+    {
+     "step": "Next step",
+     "why": "Online group for people bereaved by suicide, so she can join from home. Cameras and sharing can be low-key at first. She asks for the link first.",
+     "distance": null,
+     "record": {
+      "name": "SoBS National Virtual Support Group",
+      "provider": "Survivors of Bereavement by Suicide (SoBS)",
+      "type": "Peer group",
+      "access": "sign up",
+      "support_for": "bereavement",
+      "mode": "online",
+      "url": "https://uksobs.com/",
+      "description": "Zoom peer group for people bereaved by suicide, led by trained volunteers. Ask for the link.",
+      "who": "anyone",
+      "eligibility": "Email or call for the Zoom link before the meeting",
+      "days": "Tue",
+      "frequency": "3rd Tue of month",
+      "email": "national.zoom@uksobs.org",
+      "cost": "Free",
+      "last_checked": "08/11/2026"
+     }
+    },
+    {
+     "step": "Next step",
+     "why": "Gentle nature walk for adults bereaved by suicide, with no need to talk. It is a side-by-side way to meet others who understand. She can drive and self-refers first.",
+     "distance": null,
+     "record": {
+      "name": "Suicide Bereavement Peer Walk",
+      "provider": "Mind in Somerset",
+      "type": "Peer group",
+      "access": "sign up",
+      "support_for": "bereavement;take notice",
+      "mode": "in-person",
+      "url": "https://www.mindinsomerset.org.uk/our-services/somerset-suicide-bereavement-support-service/somerset-suicide-bereavement-peer-support-groups/",
+      "description": "Seasonal nature walk for adults bereaved by suicide; no need to talk. Self-refer first. Venue confirmed on registration.",
+      "who": "adults",
+      "eligibility": "Somerset Council area only",
+      "frequency": "dates vary",
+      "email": "bereaved@mindinsomerset.org.uk",
+      "last_checked": "26/10/2026"
+     }
+    },
+    {
+     "step": "Next step",
+     "why": "Online forum for people bereaved by suicide, available whenever she is awake, including at night when sleep is hard. Approval takes a couple of days.",
+     "distance": null,
+     "record": {
+      "name": "SoBS Online Forum",
+      "provider": "Survivors of Bereavement by Suicide (SoBS)",
+      "type": "Peer group",
+      "access": "sign up",
+      "support_for": "bereavement",
+      "mode": "online",
+      "url": "https://uksobs.com/",
+      "description": "Online peer support forum for people bereaved by suicide. Apply online; approved within a couple of days.",
+      "who": "adults",
+      "eligibility": "18+",
+      "cost": "Free",
+      "last_checked": "08/11/2026"
+     }
+    },
+    {
+     "step": "When ready",
+     "why": "Supportive online group covering coping, relaxation and sleep, run from home. It is a general group, so it may suit once she has some specialist support in place.",
+     "distance": null,
+     "record": {
+      "name": "Wellbeing Friends Online Group",
+      "provider": "Mind in Somerset",
+      "type": "Peer group",
+      "access": "sign up",
+      "support_for": "connect;keep learning",
+      "mode": "online",
+      "url": "https://www.mindinsomerset.org.uk/our-services/peer-support/wellbeing-friends-online-group/",
+      "description": "Supportive online group learning coping strategies: relaxation, sleep, stress, anxiety and confidence.",
+      "who": "adults",
+      "eligibility": "Somerset Council area only",
+      "days": "Wed",
+      "times": "11:00-13:00",
+      "phone": "01823 334906",
+      "email": "info@mindinsomerset.org.uk",
+      "last_checked": "25/10/2026"
+     }
+    }
+   ],
+   "gaps": "Nothing on the list treats sleep problems directly, so a GP review is worth suggesting. NHS Talking Therapies excludes bereavement in the last 6 months, so ask the service whether she can now use it.",
+   "questions": [
+    "Does she have any thoughts of harming herself, or has she had any since her son died?",
+    "Would she prefer starting with a phone call or an online group, or meeting people in person?"
+   ],
+   "scope": {
+    "place": "within 10 miles of Shepton Mallet (Somerset Council area)",
+    "total": 356,
+    "near": 167,
+    "remote": 189,
+    "records": 1031,
+    "timing": {
+     "prompt_chars": 122985,
+     "model": "claude-sonnet-5-5",
+     "plan_in": 50896,
+     "first_block_ms": 1450,
+     "text_start_ms": 10787,
+     "plan_out": 2077,
+     "stop": "end_turn",
+     "plan_ms": 16790,
+     "text_chars": 2682,
+     "thinking_chars": 0,
+     "blocks": "thinking,text",
+     "settings": "defaults",
+     "total_ms": 16790
+    }
+   },
+   "version": "2026-11-12 07:11",
+   "_seconds": 18.4,
+   "_status": 200
+  }
+ },
+ "S28": {
+  "scenario": {
+   "id": "S28",
+   "town": "Weston-super-Mare",
+   "radius_miles": 5,
+   "travel": "walks",
+   "lat": 51.346,
+   "lon": -2.977,
+   "need": "A man in his 30s, discharged from a mental health ward two weeks ago after a crisis. He's drinking heavily again, behind on rent, and has a letter from his landlord. No family nearby. What should I point him towards?",
+   "src": "run12/scenarios.json"
+  },
+  "plan": {
+   "off_topic": false,
+   "reading": "He is two weeks out of hospital, drinking heavily again, and facing possible eviction. That makes alcohol support and urgent housing and money advice the priorities, with gentle mental health support alongside. Weston is in North Somerset, so I left out services that only cover the Somerset Council area.",
+   "safety": "If you drink heavily every day, please don't stop suddenly, as withdrawal can be dangerous. Cut down with WithYou or your GP. If things feel too much, call Samaritans any time on 116 123, or 999 if you are in immediate danger.",
+   "core_needs": [
+    "Heavy drinking after discharge",
+    "Rent arrears and eviction risk",
+    "Ongoing mental health support and isolation"
+   ],
+   "core_covered": "partly",
+   "search_for": "Citizens Advice North Somerset rent arrears housing advice Weston-super-Mare",
+   "constraints": "Lives in Weston-super-Mare; likely low money; no family nearby; may find it hard to get out",
+   "place": "Weston-super-Mare",
+   "risk": false,
+   "picks": [
+    {
+     "step": "First step",
+     "why": "He has a landlord letter and may be threatened with homelessness. The council can advise on his rights and options, and the worker can help him ring early this morning.",
+     "distance": null,
+     "record": {
+      "name": "North Somerset Council Housing Solutions",
+      "provider": "North Somerset Council",
+      "type": "Practical support",
+      "access": "call",
+      "support_for": "housing",
+      "mode": "phone",
+      "url": "https://www.n-somerset.gov.uk",
+      "description": "Council advice for people who are homeless or at risk of losing their home, and help to join the housing register.",
+      "who": "anyone",
+      "eligibility": "Homeless or threatened with homelessness. Out of hours emergency: 01454 615165. North Somerset residents only",
+      "days": "Mon-Fri",
+      "times": "08:45-17:00",
+      "phone": "01934 426330",
+      "email": "housing.advice@n-somerset.gov.uk",
+      "cost": "Free",
+      "last_checked": "10/11/2026"
+     }
+    },
+    {
+     "step": "First step",
+     "why": "Free local alcohol support in Weston that he can self-refer to online or by phone. It is the direct answer to his drinking, and a worker can sit with him while he refers.",
+     "distance": 0.2,
+     "record": {
+      "name": "WithYou North Somerset (drug and alcohol support)",
+      "provider": "WithYou",
+      "type": "One-to-one support",
+      "access": "sign up",
+      "support_for": "addiction",
+      "mode": "in-person;phone",
+      "url": "https://wearewithyou.org.uk/services/north-somerset",
+      "description": "Free support for adults with drug or alcohol use, and advice for people supporting someone. Refer yourself online or call.",
+      "who": "adults",
+      "eligibility": "18+ in North Somerset (separate service for young people)",
+      "address": "35 Boulevard",
+      "town": "Weston-super-Mare",
+      "postcode": "BS23 1PE",
+      "phone": "01934 427940",
+      "cost": "Free",
+      "last_checked": "10/11/2026"
+     }
+    },
+    {
+     "step": "Next step",
+     "why": "Free independent advice on the landlord letter, notice and rent arrears. A useful second opinion alongside the council.",
+     "distance": null,
+     "record": {
+      "name": "Shelter Emergency Helpline",
+      "provider": "Shelter",
+      "type": "Practical support",
+      "access": "call",
+      "support_for": "housing",
+      "mode": "phone",
+      "url": "https://england.shelter.org.uk/",
+      "description": "Free helpline for anyone struggling with a housing problem or homelessness.",
+      "who": "anyone",
+      "days": "Mon-Fri",
+      "times": "08:00-18:00",
+      "phone": "0808 800 4444",
+      "cost": "Free",
+      "last_checked": "25/10/2026"
+     }
+    },
+    {
+     "step": "Next step",
+     "why": "Free confidential debt advice by phone or webchat, with no cost, for dealing with the rent arrears and any other debts.",
+     "distance": null,
+     "record": {
+      "name": "National Debtline",
+      "provider": "National Debtline",
+      "type": "One-to-one support",
+      "access": "call",
+      "support_for": "finances",
+      "mode": "phone;online",
+      "url": "https://nationaldebtline.org/",
+      "description": "Free, confidential debt advice for England and Wales by phone or webchat.",
+      "who": "anyone",
+      "days": "Mon-Fri",
+      "times": "09:00-20:00",
+      "phone": "0808 808 4000",
+      "cost": "Free",
+      "last_checked": "27/10/2026"
+     }
+    },
+    {
+     "step": "Next step",
+     "why": "NHS talking therapies he can self-refer to without a GP, to support his mood after discharge. Worth raising his drinking when he refers.",
+     "distance": null,
+     "record": {
+      "name": "NHS Talking Therapies (Bristol, North Somerset and South Gloucestershire)",
+      "provider": "Vita Health Group (VitaMinds)",
+      "type": "Counselling or therapy",
+      "access": "sign up",
+      "support_for": "low mood;anxiety",
+      "mode": "phone;online",
+      "url": "https://www.vitahealthgroup.co.uk/nhs-services/nhs-mental-health/bristol-north-somerset-and-south-gloucestershire/",
+      "description": "NHS CBT, counselling and courses for anxiety and low mood. Refer yourself online or by phone. Menopause and job support too.",
+      "who": "adults",
+      "eligibility": "16+, registered with a GP in Bristol, North Somerset or South Gloucestershire. No GP referral needed. Mon-Wed 8am-8pm, Thu-Fri 8am-5pm",
+      "days": "Mon-Fri",
+      "times": "08:00-20:00",
+      "phone": "0333 200 1893",
+      "cost": "Free",
+      "last_checked": "10/11/2026"
+     }
+    },
+    {
+     "step": "Next step",
+     "why": "A free, no-booking walk for men's mental health. Side-by-side and low pressure, which helps when he has no family nearby.",
+     "distance": 1.1,
+     "record": {
+      "name": "Men Walking and Talking (Weston-super-Mare)",
+      "provider": "Men Walking and Talking",
+      "type": "Peer group",
+      "access": "drop in",
+      "support_for": "be active;connect",
+      "mode": "in-person",
+      "url": "https://www.menwalkingandtalking.co.uk/walks/weston-super-mare-walk/",
+      "description": "Free, relaxed walk for men's mental health: non-judgemental peer support. No need to book; just turn up.",
+      "who": "men",
+      "days": "Wed",
+      "times": "19:00-20:00",
+      "address": "Royal Sands Car Park beach hut, Marine Parade",
+      "town": "Weston-super-Mare",
+      "postcode": "BS23 4NH",
+      "email": "hello@mwat.co.uk",
+      "cost": "Free",
+      "last_checked": "25/10/2026"
+     }
+    },
+    {
+     "step": "When ready",
+     "why": "Online drop-in mutual-aid meetings he can try from home, to support cutting down or stopping drinking alongside WithYou.",
+     "distance": null,
+     "record": {
+      "name": "SMART Recovery online meetings",
+      "provider": "UK SMART Recovery",
+      "type": "Peer group",
+      "access": "drop in",
+      "support_for": "addiction",
+      "mode": "online",
+      "url": "https://smartrecovery.org.uk/meetings-online",
+      "description": "Online SMART Recovery mutual-aid meetings, incl. women-only. Some ask you to contact the facilitator first.",
+      "who": "adults",
+      "frequency": "see website",
+      "last_checked": "06/11/2026"
+     }
+    },
+    {
+     "step": "When ready",
+     "why": "A weekly drop-in space for men to talk, in Weston. It can build regular local connection once he feels steadier.",
+     "distance": 1.4,
+     "record": {
+      "name": "Men's Talk Club (Bournville Community Hub)",
+      "provider": "Alliance Homes Community Hubs",
+      "type": "Peer group",
+      "access": "drop in",
+      "support_for": "connect;low mood",
+      "mode": "in-person",
+      "url": "https://www.alliancehomes.org.uk/your-neighbourhood/community-hubs/",
+      "description": "Weekly supportive space for men to talk.",
+      "who": "men",
+      "days": "Wed",
+      "times": "17:00-19:00",
+      "address": "Bournville Community Hub, The Sub Station, St Andrews Parade, Bournville",
+      "town": "Weston-super-Mare",
+      "postcode": "BS23 3SS",
+      "phone": "03000 120120",
+      "email": "communityhubs@alliancehomes.org.uk",
+      "last_checked": "09/11/2026"
+     }
+    }
+   ],
+   "gaps": "The list has no local North Somerset service for rent arrears and eviction advice, and no follow-up service after hospital discharge. His GP or ward care team may be able to help with the second.",
+   "questions": [
+    "Does he have a GP or a named care coordinator from the ward he can contact?",
+    "Is he drinking every day, and does he have any thoughts of harming himself?"
+   ],
+   "scope": {
+    "place": "within 5 miles of Weston-super-Mare (North Somerset)",
+    "total": 246,
+    "near": 53,
+    "remote": 193,
+    "records": 1031,
+    "timing": {
+     "prompt_chars": 89090,
+     "model": "claude-sonnet-5-5",
+     "plan_in": 35844,
+     "first_block_ms": 1260,
+     "text_start_ms": 13828,
+     "plan_out": 2657,
+     "stop": "end_turn",
+     "plan_ms": 20062,
+     "text_chars": 2776,
+     "thinking_chars": 0,
+     "blocks": "thinking,text",
+     "settings": "defaults",
+     "total_ms": 20062
+    }
+   },
+   "version": "2026-11-12 07:11",
+   "_seconds": 21.9,
+   "_status": 200
+  }
+ },
+ "R10": {
+  "scenario": {
+   "id": "R10",
+   "town": "Williton",
+   "lat": 51.1614,
+   "lon": -3.3197,
+   "persp": "worker",
+   "need_id": "food",
+   "category": "food",
+   "need": "Family of four have run out of food until benefits are paid next week. Where can they get food? Weekday mornings suit best.",
+   "question": "I'm a mental health support worker in Williton, Somerset. Family of four have run out of food until benefits are paid next week. Where can they get food? Weekday mornings suit best. What's available locally? Please give specific options with days, times, places and how to join.",
+   "radius_miles": 10,
+   "src": "run2/scenarios.json"
+  },
+  "plan": {
+   "off_topic": false,
+   "reading": "A family of four has no food until benefits arrive next week, so this is an urgent practical need rather than a wellbeing one. I put food sources first, then money help, with weekday mornings in mind.",
+   "safety": "",
+   "core_needs": [
+    "emergency food for a family of four",
+    "short-term money gap until benefits are paid"
+   ],
+   "core_covered": "yes",
+   "search_for": "emergency food parcel foodbank referral Williton Somerset",
+   "constraints": "weekday mornings; no money for food until next week; transport unknown",
+   "place": "Williton",
+   "risk": false,
+   "picks": [
+    {
+     "step": "First step",
+     "why": "Nearest option, serving Williton and Watchet, and gives food and household items for families in need. Phone or email first to ask how to get a parcel for four this week.",
+     "distance": 1.5,
+     "record": {
+      "name": "Quantock Foodbank",
+      "provider": "The Quantock Foodbank",
+      "type": "Practical support",
+      "access": "call",
+      "support_for": "food",
+      "mode": "in-person",
+      "url": "https://www.livingbetter.org.uk/post/quantock-foodbank",
+      "description": "Food, toiletries and household items for people in need in Watchet, Williton and nearby. Call or email first.",
+      "who": "anyone",
+      "address": "The Annexe, Methodist Church, Harbour Road",
+      "town": "Watchet",
+      "postcode": "TA23 0AQ",
+      "phone": "07483 815122",
+      "email": "quantockfoodbank@gmail.com",
+      "last_checked": "04/11/2026"
+     }
+    },
+    {
+     "step": "First step",
+     "why": "Free frozen home-cooked meals with no sign-up or cost, so it is a quick back-up if the foodbank can't help straight away. Further away, so check transport.",
+     "distance": 8.2,
+     "record": {
+      "name": "Wivey Kitchen Community Freezer (Wiveliscombe)",
+      "provider": "Wivey Kitchen",
+      "type": "Practical support",
+      "access": "drop in",
+      "support_for": "food",
+      "mode": "in-person",
+      "url": "https://www.wiveykitchen.org/get-help",
+      "description": "Free frozen home-cooked meals; take what you need. Donations welcome.",
+      "who": "anyone",
+      "address": "St Andrew's Church, Church Street",
+      "town": "Wiveliscombe",
+      "postcode": "TA4 2LR",
+      "cost": "Free",
+      "last_checked": "04/11/2026"
+     }
+    },
+    {
+     "step": "Next step",
+     "why": "Free phone advice that can look at the benefit wait, other emergency help and the Crisis Payments route. Open weekdays, so it can be called this morning.",
+     "distance": null,
+     "record": {
+      "name": "Citizens Advice Somerset Adviceline",
+      "provider": "Citizens Advice Somerset",
+      "type": "Practical support",
+      "access": "call",
+      "support_for": "finances;housing",
+      "mode": "phone",
+      "url": "https://citizensadvicesomerset.org.uk/how-can-we-help/general-advice/advice-by-telephone/",
+      "description": "Free, confidential, impartial advice on almost any issue, incl. money and debt. Relay UK: dial 18001 first.",
+      "who": "anyone",
+      "eligibility": "Somerset Council area only",
+      "days": "Mon-Fri",
+      "times": "09:00-16:00",
+      "phone": "0808 278 7842",
+      "cost": "Free",
+      "last_checked": "06/11/2026"
+     }
+    },
+    {
+     "step": "Next step",
+     "why": "A one-off payment for essentials when an unexpected shortfall hits. It is income and savings tested and applied for online with evidence, so check eligibility first.",
+     "distance": null,
+     "record": {
+      "name": "Crisis Payments (Crisis & Resilience Fund)",
+      "provider": "Citizens Advice Somerset",
+      "type": "Practical support",
+      "access": "sign up",
+      "support_for": "finances",
+      "mode": "online",
+      "url": "https://casomerset.fundingconnect.com/crf-crisis-payments/apply",
+      "description": "One-off help if an unexpected financial shock leaves you unable to afford essentials. Apply online with evidence.",
+      "who": "anyone",
+      "eligibility": "Live in Somerset full time; on a means-tested benefit or low income; savings under £3,000. Somerset Council area only",
+      "last_checked": "27/10/2026"
+     }
+    },
+    {
+     "step": "Next step",
+     "why": "A Village Agent can advocate on money and food worries, and it runs this morning in the same town as the community freezer. Useful if they can get there.",
+     "distance": 8.2,
+     "record": {
+      "name": "Talking Café Wiveliscombe",
+      "provider": "Thrive",
+      "type": "Advocacy",
+      "access": "drop in",
+      "support_for": "connect;finances;housing",
+      "mode": "in-person",
+      "url": "https://thrivesomerset.org.uk/help-advice/",
+      "description": "Meet your local Village Agent, who can advocate and help with health, money, housing or loneliness.",
+      "who": "anyone",
+      "days": "Thu",
+      "times": "10:00-12:00",
+      "address": "St Andrew's Church, Church Street",
+      "town": "Wiveliscombe",
+      "postcode": "TA4 2LT",
+      "phone": "01823 331222",
+      "last_checked": "25/10/2026"
+     }
+    },
+    {
+     "step": "Next step",
+     "why": "A free community meal in Watchet that could cover one meal for the family. It runs in the evening, not the morning, so it only helps as an extra.",
+     "distance": 1.6,
+     "record": {
+      "name": "The Sanctuary community meal (Watchet)",
+      "provider": "Watchet Baptist Church",
+      "type": "Community",
+      "access": "drop in",
+      "support_for": "food;connect",
+      "mode": "in-person",
+      "url": "https://watchetbaptist.org.uk/the-sanctuary",
+      "description": "Community meal at The Sanctuary, the Baptist church's town centre building in Watchet.",
+      "who": "anyone",
+      "days": "Fri",
+      "times": "17:00-18:30",
+      "address": "The Sanctuary, 38 Swain Street",
+      "town": "Watchet",
+      "postcode": "TA23 0AE",
+      "phone": "01984 248169",
+      "email": "admin@watchetbaptist.org.uk",
+      "last_checked": "07/11/2026"
+     }
+    },
+    {
+     "step": "When ready",
+     "why": "A low-cost weekly food bag that could help once benefits arrive. Only for people living in Wiveliscombe or the 10 Parishes, and places are limited, so check eligibility first.",
+     "distance": 8.2,
+     "record": {
+      "name": "Wivey Kitchen Pantry",
+      "provider": "Wivey Kitchen",
+      "type": "Practical support",
+      "access": "sign up",
+      "support_for": "food",
+      "mode": "in-person",
+      "url": "https://www.wiveykitchen.org/wk-pantry",
+      "description": "Members' pantry: a bag worth up to £25 each week. Non-members can drop in to find out more.",
+      "who": "anyone",
+      "eligibility": "Live in Wiveliscombe or the 10 Parishes; 6-month membership, places limited",
+      "days": "Wed",
+      "times": "08:45-12:00",
+      "address": "School Room, St Andrew's Church, Church Street",
+      "town": "Wiveliscombe",
+      "postcode": "TA4 2LT",
+      "phone": "07587 488420",
+      "email": "info@wiveykitchen.org",
+      "cost": "£5 a week",
+      "last_checked": "04/11/2026"
+     }
+    }
+   ],
+   "gaps": "The foodbank lists no fixed opening times, so confirm by phone. No food service on the list is a confirmed weekday-morning session nearby apart from the community freezers, which have no listed hours.",
+   "questions": [
+    "Does the family have transport, or could someone get them to Watchet or Wiveliscombe?",
+    "Is the benefit payment delayed or just not due until next week, and do they live in or near Wiveliscombe?"
+   ],
+   "scope": {
+    "place": "within 10 miles of Williton (Somerset Council area)",
+    "total": 240,
+    "near": 47,
+    "remote": 193,
+    "records": 1031,
+    "timing": {
+     "prompt_chars": 86382,
+     "model": "claude-sonnet-5-5",
+     "plan_in": 34515,
+     "first_block_ms": 642,
+     "text_start_ms": 8441,
+     "plan_out": 1753,
+     "stop": "end_turn",
+     "plan_ms": 15009,
+     "text_chars": 2423,
+     "thinking_chars": 0,
+     "blocks": "thinking,text",
+     "settings": "defaults",
+     "total_ms": 15009
+    }
+   },
+   "version": "2026-11-12 07:11",
+   "_seconds": 16.2,
+   "_status": 200
+  }
+ },
+ "C16": {
+  "scenario": {
+   "id": "C16",
+   "type": "A: local discovery",
+   "town": "Timberscombe",
+   "lat": 51.168,
+   "lon": -3.487,
+   "need": "Near Timberscombe. Client: someone wanting to cut down their drinking, looking for a support group. No car, can walk a short way. Needs something this week.",
+   "time_constraint": "this week",
+   "hard_time": false,
+   "travel": "no car, can walk a short way",
+   "radius_miles": 2,
+   "dir_category": "addiction",
+   "keywords": [
+    "alcohol",
+    "drugs"
+   ],
+   "ask": "I'm a support worker in Somerset. Near Timberscombe. Client: someone wanting to cut down their drinking, looking for a support group. No car, can walk a short way. Needs something this week. Please suggest up to five local options near Timberscombe, with the day, time, place and how to join for each.",
+   "src": "run8/scenarios.json"
+  },
+  "plan": {
+   "off_topic": false,
+   "reading": "Someone near Timberscombe wants to cut down their drinking and is looking for a group, with no car and only short walks possible. I put alcohol-specific support first (phone and online, nothing to travel to), then a walkable local drop-in and a hybrid AA meeting.",
+   "safety": "If you drink heavily every day, please don't stop suddenly, as withdrawal can be dangerous. Cut down with advice from the drug and alcohol service or your GP.",
+   "core_needs": [
+    "cut down drinking",
+    "support group without a car"
+   ],
+   "core_covered": "partly",
+   "search_for": "alcohol support group Minehead West Somerset",
+   "constraints": "no car; short walks only; needs something this week; online or phone likely easiest",
+   "place": "Timberscombe",
+   "risk": false,
+   "picks": [
+    {
+     "step": "First step",
+     "why": "Free confidential phone support for anyone cutting down alcohol. No travel needed, and they can advise on safe reduction and on groups or local help.",
+     "distance": null,
+     "record": {
+      "name": "Somerset Drug and Alcohol Service (SDAS)",
+      "provider": "Turning Point",
+      "type": "One-to-one support",
+      "access": "call",
+      "support_for": "addiction",
+      "mode": "phone",
+      "url": "https://www.turning-point.co.uk/services/somerset",
+      "description": "Free, confidential help for anyone affected by their own or someone else's drug or alcohol use.",
+      "who": "anyone",
+      "eligibility": "Somerset Council area only",
+      "days": "Mon-Sun",
+      "times": "00:00-23:59",
+      "phone": "0300 303 8788",
+      "email": "sdas@turning-point.co.uk",
+      "cost": "Free",
+      "last_checked": "27/10/2026"
+     }
+    },
+    {
+     "step": "First step",
+     "why": "Online drop-in recovery meetings that suit someone wanting to cut down, not only stop. Can be joined from home, but needs a phone or computer, and some meetings ask you to contact the facilitator first.",
+     "distance": null,
+     "record": {
+      "name": "SMART Recovery online meetings",
+      "provider": "UK SMART Recovery",
+      "type": "Peer group",
+      "access": "drop in",
+      "support_for": "addiction",
+      "mode": "online",
+      "url": "https://smartrecovery.org.uk/meetings-online",
+      "description": "Online SMART Recovery mutual-aid meetings, incl. women-only. Some ask you to contact the facilitator first.",
+      "who": "adults",
+      "frequency": "see website",
+      "last_checked": "06/11/2026"
+     }
+    },
+    {
+     "step": "Next step",
+     "why": "A short walk away, with hot drinks and company and no pressure. It isn't an alcohol group, but it's an easy way to get out and meet people. Check it's running today.",
+     "distance": 0.2,
+     "record": {
+      "name": "Warm Welcome at St Petrock's (Timberscombe)",
+      "provider": "St Petrock's Church",
+      "type": "Community",
+      "access": "drop in",
+      "support_for": "connect",
+      "mode": "in-person",
+      "url": "https://timberscombevillage.com/church-services/",
+      "description": "Community drop-in with help-yourself hot drinks and squash. Accessible toilet. Thursdays in term time.",
+      "who": "anyone",
+      "days": "Thu",
+      "times": "10:00-12:00",
+      "dates": "2026-09-10 to 2026-12-17",
+      "address": "St Petrock's Church, Church Street",
+      "town": "Timberscombe",
+      "postcode": "TA24 7TP",
+      "cost": "Free",
+      "last_checked": "04/11/2026"
+     }
+    },
+    {
+     "step": "Next step",
+     "why": "A peer meeting for anyone wanting to stop drinking, with an online option so no travel is needed. It's next week rather than this week, and it's aimed at stopping, so see if it feels right.",
+     "distance": null,
+     "record": {
+      "name": "Alcoholics Anonymous: Taunton Share",
+      "provider": "Alcoholics Anonymous (Somerset Intergroup)",
+      "type": "Peer group",
+      "access": "drop in",
+      "support_for": "addiction",
+      "mode": "in-person;online",
+      "url": "https://www.alcoholics-anonymous.org.uk/intergroups/somerset-intergroup/",
+      "description": "Hybrid meeting (also online). For anyone with a desire to stop drinking. AA keeps no records.",
+      "who": "anyone",
+      "days": "Mon",
+      "times": "19:30-21:00",
+      "address": "The Albemarle Centre, Albemarle Road",
+      "town": "Taunton",
+      "postcode": "TA1 1BA",
+      "cost": "Free (optional collection)",
+      "last_checked": "06/11/2026"
+     }
+    }
+   ],
+   "gaps": "No in-person alcohol support group within walking distance of Timberscombe, and no alcohol group on the list that meets before the weekend. The in-person SDAS hubs are in Taunton and Yeovil, too far without a car.",
+   "questions": [
+    "Does the person have a phone, tablet or computer, and are they happy joining an online group?",
+    "Roughly how much and how often do they drink, for example every day?"
+   ],
+   "scope": {
+    "place": "within 2 miles of Timberscombe (Somerset Council area)",
+    "total": 195,
+    "near": 1,
+    "remote": 194,
+    "records": 1031,
+    "timing": {
+     "prompt_chars": 72658,
+     "model": "claude-sonnet-5-5",
+     "plan_in": 28356,
+     "first_block_ms": 1233,
+     "text_start_ms": 6609,
+     "plan_out": 1437,
+     "stop": "end_turn",
+     "plan_ms": 11916,
+     "text_chars": 2050,
+     "thinking_chars": 0,
+     "blocks": "thinking,text",
+     "settings": "defaults",
+     "total_ms": 11916
+    }
+   },
+   "version": "2026-11-12 07:11",
+   "_seconds": 13.1,
+   "_status": 200
+  }
+ },
+ "G1": {
+  "scenario": {
+   "id": "G1",
+   "town": "Glastonbury",
+   "radius_miles": 10,
+   "travel": "not stated",
+   "need": "I have a client who lives close to glastonbury and is striugglung with low mental health. He is struggling with his self-care regime and is binge eating / making himself sick. He has lost touch with his friends and is talking about taking his own life. What do you recommend in terms of services / community groups / activities to assist him",
+   "lat": 51.1486,
+   "lon": -2.7145,
+   "src": "run9/scenarios.json"
+  },
+  "plan": {
+   "off_topic": false,
+   "reading": "He is talking about taking his own life, has a likely eating disorder (binge eating and purging) and has lost contact with friends. So I put urgent risk support and specialist eating disorder help first, with gentle, low-pressure connection options around them.",
+   "safety": "If you feel you might act on thoughts of taking your life, call 999 or go to A&E. You can call Samaritans any time, day or night, on 116 123.",
+   "core_needs": [
+    "Suicidal thoughts: safety and crisis support",
+    "Binge eating and making himself sick",
+    "Isolation and low mood"
+   ],
+   "core_covered": "yes",
+   "search_for": "NHS adult eating disorder service Somerset GP referral Glastonbury",
+   "constraints": "Low motivation and self-care; withdrawn from friends; near Glastonbury, travel unknown; may prefer phone or low-pressure options",
+   "place": "Glastonbury",
+   "risk": true,
+   "picks": [
+    {
+     "step": "First step",
+     "why": "24/7 NHS mental health crisis line covering Somerset. He is talking about suicide, so this gives a quick assessment and can arrange home treatment. Best to call with him or help him call.",
+     "distance": null,
+     "record": {
+      "name": "NHS First Response Service (Somerset)",
+      "provider": "Somerset NHS Foundation Trust",
+      "type": "One-to-one support",
+      "access": "call",
+      "support_for": "crisis prevention",
+      "mode": "phone",
+      "url": "https://www.somersetft.nhs.uk/help-in-a-crisis/mental-health-crisis8/home-treatment-team7",
+      "description": "24/7 NHS mental health crisis line: quick assessment, and can arrange home treatment as an alternative to hospital.",
+      "who": "anyone",
+      "eligibility": "Somerset Council area only",
+      "days": "Mon-Sun",
+      "times": "00:00-23:59",
+      "phone": "0300 124 5016",
+      "last_checked": "27/10/2026"
+     }
+    },
+    {
+     "step": "First step",
+     "why": "A free phone call is an easy first contact for the binge eating and purging. SWEDA can arrange an appointment and explain the next steps. Not an emergency line.",
+     "distance": 7.5,
+     "record": {
+      "name": "SWEDA Support and Guidance",
+      "provider": "SWEDA",
+      "type": "One-to-one support",
+      "access": "call",
+      "support_for": "eating disorders",
+      "mode": "in-person;phone;online",
+      "url": "https://swedauk.org/services/for-adults/support-and-guidance",
+      "description": "First step for people with an eating disorder or caring for someone: call for a free appointment. Not an emergency line.",
+      "who": "adults;carers",
+      "days": "Mon-Fri",
+      "times": "08:00-20:00",
+      "address": "The Coach House, Harvest Court, Park Road",
+      "town": "Shepton Mallet",
+      "postcode": "BA4 5BS",
+      "phone": "01749 343344",
+      "cost": "Free",
+      "last_checked": "06/11/2026"
+     }
+    },
+    {
+     "step": "Next step",
+     "why": "24/7 listening and live chat. Can refer him on to home treatment or an evening Crisis Safe Space session by phone, which may suit him if leaving the house feels too hard.",
+     "distance": null,
+     "record": {
+      "name": "Mindline Somerset",
+      "provider": "Mind in Somerset",
+      "type": "One-to-one support",
+      "access": "call",
+      "support_for": "crisis prevention",
+      "mode": "phone",
+      "url": "https://www.mindinsomerset.org.uk/",
+      "description": "Confidential 24/7 emotional support helpline. Can refer on to home treatment or a Crisis Safe Space. Live chat too.",
+      "who": "anyone",
+      "eligibility": "Somerset Council area only",
+      "days": "Mon-Sun",
+      "times": "00:00-23:59",
+      "phone": "0800 138 1692 (freephone) or 01823 276892",
+      "cost": "Free",
+      "last_checked": "25/10/2026"
+     }
+    },
+    {
+     "step": "Next step",
+     "why": "Specialist eating disorder counselling after an assessment, in Shepton Mallet. A sliding scale keeps costs manageable. Needs a referral, so ask SWEDA about it when you call.",
+     "distance": 7.5,
+     "record": {
+      "name": "Eating Disorders Counselling Services",
+      "provider": "SWEDA",
+      "type": "Counselling or therapy",
+      "access": "referral",
+      "support_for": "eating disorders",
+      "mode": "in-person;phone",
+      "url": "https://swedauk.org/services/for-adults/counselling",
+      "description": "Specialist counselling supporting individuals with eating disorders accessible via assessment",
+      "who": "adults;carers",
+      "address": "The Coach House, Harvest Court, Park Road",
+      "town": "Shepton Mallet",
+      "postcode": "BA4 5BS",
+      "phone": "01749 343344",
+      "cost": "£25 assessment; then £10-£35 per session (sliding scale)",
+      "last_checked": "25/10/2026"
+     }
+    },
+    {
+     "step": "Next step",
+     "why": "Anonymous online chat group for binge eating, with no diagnosis needed. He can join from home, so it is a low-pressure way to meet others who understand. Check the dates first.",
+     "distance": null,
+     "record": {
+      "name": "Beat Binge Eating Disorder Online Support Group",
+      "provider": "Beat",
+      "type": "Peer group",
+      "access": "sign up",
+      "support_for": "eating disorders",
+      "mode": "online",
+      "url": "https://www.beateatingdisorders.org.uk/get-information-and-support/get-help-for-myself/support-now/online-support-groups/",
+      "description": "Anonymous, moderated chat group for anyone who has, or thinks they may have, binge eating disorder. No diagnosis needed.",
+      "who": "anyone",
+      "eligibility": "UK. Sign up to Beat's online services first",
+      "days": "Fri",
+      "times": "18:45-19:45",
+      "frequency": "weekly",
+      "cost": "Free",
+      "last_checked": "10/11/2026"
+     }
+    },
+    {
+     "step": "Next step",
+     "why": "Free, held space for mental wellbeing with volunteer listeners, sofas and refreshments, close to Glastonbury. Calmer than a busy café. Go with him the first time if that helps.",
+     "distance": 1.4,
+     "record": {
+      "name": "The Snug",
+      "provider": "Glastonbury Mental Health",
+      "type": "Community",
+      "access": "drop in",
+      "support_for": "connect",
+      "mode": "in-person",
+      "url": "https://glastonburymentalhealth.org/the-snug/",
+      "description": "A safe, held space supporting mental wellbeing: artist-led activities, volunteer listeners, ambient music, sofas and refreshments. 18+.",
+      "who": "adults",
+      "eligibility": "18+",
+      "days": "Tue",
+      "times": "15:00-18:00",
+      "address": "Red Brick Building Events Space, Morland Road",
+      "town": "Glastonbury",
+      "postcode": "BA6 9FT",
+      "cost": "Free",
+      "last_checked": "26/10/2026"
+     }
+    },
+    {
+     "step": "Next step",
+     "why": "Free informal café very close by, with no commitment. Staff can tell him about local groups and services, and he can stay as long as he likes.",
+     "distance": 0.4,
+     "record": {
+      "name": "Connection Café Glastonbury",
+      "provider": "West Mendip PCN",
+      "type": "Community",
+      "access": "drop in",
+      "support_for": "connect",
+      "mode": "in-person",
+      "url": "https://www.westmendippcn.co.uk/clinics-and-services/connection-cafe/",
+      "description": "Informal café to chat, meet people and find out about local groups and services. Stay as long as you like.",
+      "who": "anyone",
+      "days": "Thu",
+      "times": "14:00-16:00",
+      "address": "Festival Hall, St Dunstan's House Community Health and Wellbeing Centre, 1 Magdalene Street",
+      "town": "Glastonbury",
+      "postcode": "BA6 9EL",
+      "phone": "01458 553025",
+      "email": "somicb.westmendippcn@nhs.net",
+      "cost": "Free",
+      "last_checked": "25/10/2026"
+     }
+    },
+    {
+     "step": "When ready",
+     "why": "Free, relaxed men's mental health walk. Walking side by side means less pressure to talk, and it helps him rebuild friendships. No booking needed.",
+     "distance": 4.7,
+     "record": {
+      "name": "Men Walking and Talking (Wells)",
+      "provider": "Men Walking and Talking",
+      "type": "Peer group",
+      "access": "drop in",
+      "support_for": "be active;connect",
+      "mode": "in-person",
+      "url": "https://www.menwalkingandtalking.co.uk/walks/wells/",
+      "description": "Free, relaxed walk for men's mental health: non-judgemental peer support. No need to book; just turn up.",
+      "who": "men",
+      "days": "Tue",
+      "times": "19:00-20:00",
+      "address": "St Cuthbert's Church entrance, St Cuthbert Street",
+      "town": "Wells",
+      "postcode": "BA5 2AW",
+      "email": "hello@mwat.co.uk",
+      "cost": "Free",
+      "last_checked": "25/10/2026"
+     }
+    },
+    {
+     "step": "When ready",
+     "why": "Small, slow-paced gardening group in Glastonbury for people who feel isolated or have mental health difficulties. Doing something together side by side suits someone who has withdrawn.",
+     "distance": 0.2,
+     "record": {
+      "name": "Growing Happiness Garden (Glastonbury, Tue)",
+      "provider": "Avalon Allsorts / Somerset Community Food",
+      "type": "Activity group",
+      "access": "drop in",
+      "support_for": "be active;connect;take notice;low mood",
+      "mode": "in-person",
+      "url": "https://somersetcommunityfood.org.uk/projects/growing-happiness-allotment-project",
+      "description": "Slow-grow gardening in small groups, open to all, including people feeling isolated or with mental health issues.",
+      "who": "anyone",
+      "days": "Tue",
+      "times": "10:30-13:00",
+      "address": "Secret Garden, United Reformed Church, High Street (side entrance up the alleyway)",
+      "town": "Glastonbury",
+      "postcode": "BA6 9DZ",
+      "last_checked": "07/11/2026"
+     }
+    }
+   ],
+   "gaps": "No Somerset NHS adult eating disorder treatment service is listed beyond SWEDA, so his GP may need to help with referral and with a medical check on the effects of purging.",
+   "questions": [
+    "Is he safe right now, and does he have any plan or means to hurt himself?",
+    "Is he registered with a GP, and would he like help booking an appointment about the eating and low mood?"
+   ],
+   "scope": {
+    "place": "within 10 miles of Glastonbury (Somerset Council area)",
+    "total": 356,
+    "near": 167,
+    "remote": 189,
+    "records": 1031,
+    "timing": {
+     "prompt_chars": 122498,
+     "model": "claude-sonnet-5-5",
+     "plan_in": 50773,
+     "first_block_ms": 784,
+     "text_start_ms": 15182,
+     "plan_out": 2928,
+     "stop": "end_turn",
+     "plan_ms": 22876,
+     "text_chars": 3164,
+     "thinking_chars": 0,
+     "blocks": "thinking,text",
+     "settings": "defaults",
+     "total_ms": 22876
+    }
+   },
+   "version": "2026-11-12 07:11",
+   "_seconds": 23.3,
+   "_status": 200
+  }
+ }
+}
