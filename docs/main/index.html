@@ -1852,8 +1852,8 @@ function renderAbout() {
     <div class="acols"><div class="acol">
     <section>
     <h3>What it is</h3>
-    <p>One place to find local mental health and wellbeing support across Somerset: what's on, when and where, and whether someone can go.
-      It's built mainly for support workers and volunteers helping others find support, and anyone is welcome to use it.</p>
+    <p>One place to find local mental health and wellbeing support across Somerset, North Somerset and B&amp;NES: what's on, when and where, and whether someone can go.
+      It's built for support workers, volunteers and anyone looking for help, activities or community connections.</p>
     <p class="stats">${esc(stats)}</p>
     </section>
     <section>
@@ -1882,13 +1882,13 @@ function renderAbout() {
     </section>
     </div></div>
     <p class="small">Service information belongs to the providers listed. Map data © <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap</a> contributors, © <a href="https://carto.com/attributions" target="_blank" rel="noopener">CARTO</a>.</p>
-    <p class="small" id="site-version">Version: main 2026-11-12 05:30${typeof window.assistRelayVersion === "function" ? window.assistRelayVersion() : ""}</p>
+    <p class="small" id="site-version">Version: main 2026-11-12 06:49${typeof window.assistRelayVersion === "function" ? window.assistRelayVersion() : ""}</p>
   </article>`;
 }
 let tab = "talk";
 const SITE_TABS = ["talk", "near", "course", "about", "assist"];
 const LEDE = { talk: "Phone lines, text services and online groups: support you can reach from anywhere.",
-  near: "In-person mental health and wellbeing support across Somerset.", about: "What this is, how it's kept accurate, and how to suggest a change.", course: "Courses with a set programme and length, in person or online. Most need booking." };
+  near: "In-person mental health and wellbeing support across Somerset, North Somerset and B&NES.", about: "What this is, how it's kept accurate, and how to suggest a change.", course: "Courses with a set programme and length, in person or online. Most need booking." };
 function setSiteTab(t) {
   tab = t;
   try { $("tab-" + t).scrollIntoView({ block: "nearest", inline: "nearest" }); } catch (e) {}
@@ -2025,7 +2025,7 @@ setInterval(() => { if (!ALL.length) return; tab === "talk" ? renderTalk() : tab
    this page only remembers it for the current browser session. */
 (() => {
 const WORKER_URL = "https://signposting-assist.c-r-williams0109.workers.dev";
-const PAGE_VERSION = "main 2026-11-12 05:30";
+const PAGE_VERSION = "main 2026-11-12 06:49";
 let relayVersion = "";
 // The version line is at the bottom of the About tab: "Version: test 2026-11-06 11:30 · Assist relay 2026-11-06 11:07"
 window.assistRelayVersion = () => relayVersion ? ` · Assist relay ${relayVersion}` : "";
