@@ -1,0 +1,268 @@
+<title>Signposting Somerset Ask</title>
+<style>
+:root {
+  color-scheme: light;
+  --cream: #F9F9F7; --white: #FFFFFF; --ink: #1E293B; --muted: #57534E; --line: #E7E5E4;
+  --b50: #F2F6F4; --b100: #E1EBE5; --b200: #C2D6CA; --b500: #528368; --b600: #3D6C53; --b700: #2F5441; --b800: #234031; --b900: #1B3126;
+  --amber: #FBBF24; --urgent: #DC2626; --urgent-bg: #FEF2F2;
+  --sans: "Inter", "Segoe UI", system-ui, sans-serif; --serif: "Literata", Georgia, serif;
+}
+* { box-sizing: border-box; }
+[hidden] { display: none !important; }
+body { margin: 0; background: var(--cream); color: var(--ink); font-family: var(--sans); font-size: 15px; line-height: 1.5; }
+.gut { padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
+button, select, textarea, input { font: inherit; color: inherit; }
+:focus-visible { outline: 2px solid var(--b500); outline-offset: 2px; }
+a { color: var(--b700); }
+.crisis { background: #0F172A; color: #E7E5E4; padding-block: 7px; font-size: 13px; }
+.crisis b { color: var(--amber); text-transform: uppercase; letter-spacing: .08em; font-size: 11px; margin-right: 8px; }
+.crisis a { color: #fff; }
+header { background: var(--b800); color: #fff; padding-block: 22px 20px; }
+.wrap { max-width: 860px; margin: 0 auto; }
+h1 { font-family: var(--serif); font-weight: 600; font-size: 26px; margin: 0 0 4px; letter-spacing: -.01em; }
+h1 span { font-family: var(--sans); font-size: 12px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; background: var(--amber); color: var(--b900); padding: 2px 8px; border-radius: 999px; vertical-align: middle; margin-left: 8px; }
+.lede { margin: 0; color: var(--b100); max-width: 62ch; }
+main { padding-block: 20px 40px; }
+.card { background: var(--white); border: 1px solid var(--line); border-radius: 14px; padding: 18px; }
+label.h { display: block; font-weight: 700; margin-bottom: 6px; }
+textarea { width: 100%; min-height: 110px; resize: vertical; border: 1px solid var(--b200); border-radius: 10px; padding: 10px 12px; background: var(--white); }
+.hint { font-size: 13px; color: var(--muted); margin: 6px 0 0; }
+.examples { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 10px; }
+.examples button { border: 1px solid var(--b200); background: var(--b50); color: var(--b800); border-radius: 999px; padding: 4px 11px; font-size: 13px; cursor: pointer; text-align: left; }
+.row { display: flex; flex-wrap: wrap; gap: 12px 18px; align-items: end; margin-top: 16px; }
+.field { display: flex; flex-direction: column; gap: 4px; min-width: 0; }
+.field span { font-size: 13px; font-weight: 700; }
+select { border: 1px solid var(--b200); border-radius: 8px; padding: 8px 10px; background: var(--white); max-width: 100%; }
+.chk { display: flex; gap: 8px; align-items: center; font-size: 14px; padding-bottom: 8px; }
+.go { margin-left: auto; display: flex; gap: 8px; }
+.btn { border: 0; border-radius: 10px; padding: 10px 18px; font-weight: 700; cursor: pointer; background: var(--b700); color: #fff; }
+.btn:disabled { opacity: .55; cursor: default; }
+.btn.ghost { background: transparent; color: var(--b800); border: 1px solid var(--b200); }
+.status { margin: 18px 0 0; color: var(--muted); font-size: 14px; display: flex; gap: 10px; align-items: center; }
+.dot { width: 10px; height: 10px; border-radius: 50%; background: var(--b500); animation: pulse 1.1s ease-in-out infinite; flex: none; }
+@keyframes pulse { 50% { opacity: .25; } }
+.alert { border: 1px solid #FCA5A5; background: var(--urgent-bg); border-radius: 12px; padding: 14px 16px; margin-top: 18px; }
+.alert h2 { margin: 0 0 6px; font-size: 16px; color: #991B1B; }
+.alert p { margin: 0; }
+.alert .lines { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px; }
+.alert .lines a { background: var(--urgent); color: #fff; text-decoration: none; font-weight: 700; font-size: 13px; padding: 6px 12px; border-radius: 8px; }
+.reading { margin-top: 22px; }
+.reading h2, .res h2 { font-family: var(--serif); font-size: 19px; font-weight: 600; margin: 0 0 6px; }
+.reading p { margin: 0; max-width: 70ch; }
+.scope { font-size: 13px; color: var(--muted); margin-top: 6px; }
+.res { margin-top: 22px; }
+.step { margin-top: 16px; }
+.step h3 { font-size: 12px; text-transform: uppercase; letter-spacing: .08em; color: var(--b600); margin: 0 0 8px; }
+.svc { background: var(--white); border: 1px solid var(--line); border-left: 4px solid var(--b500); border-radius: 12px; padding: 14px 16px; margin-bottom: 10px; }
+.svc .why { background: var(--b50); border-radius: 8px; padding: 8px 10px; margin: 0 0 10px; font-size: 14px; color: var(--b900); }
+.svc .why b { color: var(--b700); }
+.svc h4 { margin: 0; font-size: 16px; }
+.svc .prov { color: var(--muted); font-size: 13px; }
+.svc .desc { margin: 6px 0; }
+.facts { display: grid; grid-template-columns: max-content 1fr; gap: 2px 12px; font-size: 13px; margin: 8px 0 0; }
+.facts dt { color: var(--muted); }
+.facts dd { margin: 0; overflow-wrap: anywhere; }
+.tags { display: flex; flex-wrap: wrap; gap: 5px; margin-top: 8px; }
+.tag { font-size: 12px; background: var(--b50); color: var(--b800); border-radius: 999px; padding: 2px 9px; }
+.gaps, .qs { margin-top: 18px; font-size: 14px; }
+.qs ul { margin: 6px 0 0; padding-left: 20px; }
+.note { margin-top: 26px; font-size: 13px; color: var(--muted); border-top: 1px solid var(--line); padding-top: 14px; }
+.err { margin-top: 18px; color: #991B1B; }
+@media (max-width: 560px) { .go { margin-left: 0; width: 100%; } .go .btn { flex: 1; } h1 { font-size: 22px; } }
+@media (prefers-reduced-motion: reduce) { .dot { animation: none; } }
+</style>
+
+<div class="crisis gut"><div class="wrap"><b>Crisis</b>Immediate danger or medical emergency: call <a href="tel:999">999</a> or NHS <a href="tel:111">111 (option 2)</a></div></div>
+
+<header class="gut"><div class="wrap">
+  <h1>Signposting Somerset <span>Prototype</span></h1>
+  <p class="lede">Describe what someone is going through. Claude suggests a few local services from the checked list, starting with gentle first steps, and says why each one might help.</p>
+</div></header>
+
+<main class="gut"><div class="wrap">
+  <form class="card" id="f">
+    <label class="h" for="need">What's going on for them?</label>
+    <textarea id="need" placeholder="e.g. Feeling very low since losing his job. Struggles to get out of bed, hardly leaves the house, misses having people around. No car."></textarea>
+    <p class="hint">Describe the need, not the person: please don't include names or anything that could identify them.</p>
+    <div class="examples" id="ex"></div>
+    <div class="row">
+      <label class="field"><span>Near</span><select id="town"></select></label>
+      <label class="field"><span>Within</span><select id="rad"><option value="3">3 miles</option><option value="5">5 miles</option><option value="8" selected>8 miles</option><option value="12">12 miles</option><option value="20">20 miles</option></select></label>
+      <label class="chk"><input type="checkbox" id="remote" checked> Include phone and online</label>
+      <div class="go"><button class="btn ghost" type="button" id="stop" hidden>Stop</button><button class="btn" id="ask" type="submit">Suggest support</button></div>
+    </div>
+  </form>
+
+  <div class="alert" id="crisis" hidden>
+    <h2>This sounds like it may need urgent support</h2>
+    <p>If someone is at risk right now, call 999. For urgent mental health help, call NHS 111 and choose option 2. They can also talk to Samaritans or Mindline any time.</p>
+    <div class="lines"><a href="tel:999">999</a><a href="tel:111">NHS 111, option 2</a><a href="tel:116123">Samaritans 116 123</a><a href="tel:08001381692">Mindline 0800 138 1692</a></div>
+  </div>
+
+  <p class="status" id="status" hidden><span class="dot"></span><span id="statusText">Thinking...</span></p>
+  <p class="err" id="err" hidden></p>
+  <section id="out" hidden></section>
+
+  <p class="note">Suggestions come only from the services listed on Signposting Somerset (<span id="count"></span> records). The AI chooses and explains, but every detail on a card is the checked record itself. Please confirm with the service before going. This is a prototype: use your own judgement, as always.</p>
+</div></main>
+
+<script>
+const DATA = /*DATA*/[];
+const TOWNS = /*TOWNS*/{};
+const EXAMPLES = [
+  "Low mood for months, lives alone, finds it hard to get out of bed and has stopped seeing friends.",
+  "Recently bereaved older woman, lonely, doesn't drive, a bit anxious about groups.",
+  "Young man, anxious and isolated, spends most days gaming, wants to feel useful.",
+  "Caring full-time for husband with dementia, exhausted, worried about money and heating bills.",
+];
+const $ = id => document.getElementById(id);
+const esc = s => String(s ?? "").replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+$("count").textContent = DATA.length;
+
+// ---- set up the form ----
+const towns = [...new Set(DATA.map(s => s.town).filter(t => TOWNS[t]))].sort();
+$("town").innerHTML = '<option value="">Choose a town…</option><option value="__remote">No town: phone and online only</option>' + towns.map(t => `<option>${esc(t)}</option>`).join("");
+EXAMPLES.forEach(e => { const b = document.createElement("button"); b.type = "button"; b.textContent = e; b.onclick = () => { $("need").value = e; $("need").focus(); }; $("ex").append(b); });
+try { const t = localStorage.getItem("ask-town"); if (t && [...$("town").options].some(o => o.value === t)) $("town").value = t; } catch {}
+
+// ---- data helpers ----
+const DAYS = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
+function miles(a, b) { const R = 3958.8, r = x => x * Math.PI / 180, dl = r(b[0] - a[0]), dn = r(b[1] - a[1]);
+  const h = Math.sin(dl / 2) ** 2 + Math.cos(r(a[0])) * Math.cos(r(b[0])) * Math.sin(dn / 2) ** 2; return 2 * R * Math.asin(Math.sqrt(h)); }
+function pos(s) { const la = parseFloat(s.lat), lo = parseFloat(s.lon); if (!isNaN(la) && !isNaN(lo)) return [la, lo]; return TOWNS[s.town] || null; }
+const today = new Date(); today.setHours(0, 0, 0, 0);
+function futureDates(s) { return (s.dates || "").split(";").map(d => d.trim()).filter(Boolean).map(d => d.split(" to ").pop()).filter(d => new Date(d) >= today); }
+function expired(s) { return s.dates && futureDates(s).length === 0; }
+function when(s) {
+  if (s.dates) { const f = futureDates(s); return f.length ? "Dates: " + f.slice(0, 4).join(", ") + (f.length > 4 ? "…" : "") + (s.times ? " " + s.times : "") : ""; }
+  const p = [s.days, s.times, s.frequency].filter(Boolean).join(" ");
+  return p || (s.mode.includes("in-person") ? "" : "");
+}
+const isRemote = s => /phone|online/.test(s.mode);
+
+function candidates(town, rad, remote) {
+  const out = [];
+  const origin = TOWNS[town];
+  DATA.forEach((s, id) => {
+    if (expired(s)) return;
+    let d = null;
+    if (origin && s.mode.includes("in-person")) { const p = pos(s); if (p) d = miles(origin, p); }
+    const near = d !== null && d <= rad;
+    const rem = remote && isRemote(s) && (s.area === "national" || s.area === "Somerset" || !s.area);
+    if (near || (rem && !s.mode.includes("in-person")) || (rem && !origin)) out.push({ id, s, d: near ? d : null });
+  });
+  return out;
+}
+function line(c) {
+  const s = c.s;
+  const where = c.d !== null ? `${s.town} (${c.d.toFixed(1)} mi)` : s.mode.includes("in-person") ? `${s.town} (${s.mode})` : s.mode;
+  return [c.id, s.name, s.type, s.access, s.support_for, s.who, when(s) || "-", where, s.cost || "-", s.description, s.eligibility || "-"].join(" | ");
+}
+
+// ---- crisis words: show routes straight away, before anything else ----
+const RISK = /suicid|kill (my|him|her|them)sel|end (my|his|her|their) life|self[- ]?harm|cutting (my|him|her)|overdos|want(s|ed)? to die|no reason to live|better off dead/i;
+
+// ---- ask ----
+let sample = null, ctl = null;
+(async () => { try { sample = await window.claude?.use("sample"); } catch {} if (!sample) note("AI suggestions work when this page is opened in Claude. Elsewhere, please use the main Signposting Somerset site."); })();
+function note(t) { $("err").textContent = t; $("err").hidden = false; }
+function busy(on, t) { $("status").hidden = !on; $("statusText").textContent = t || "Thinking..."; $("ask").disabled = on; $("stop").hidden = !on; }
+$("stop").onclick = () => ctl?.abort();
+
+$("f").onsubmit = async e => {
+  e.preventDefault();
+  $("err").hidden = true; $("out").hidden = true;
+  const need = $("need").value.trim(), town = $("town").value, rad = +$("rad").value, remote = $("remote").checked;
+  if (!need) { note("Describe the need first."); return; }
+  if (!town) { note("Choose a town, or 'phone and online only'."); return; }
+  try { localStorage.setItem("ask-town", town); } catch {}
+  $("crisis").hidden = !RISK.test(need);
+  if (!sample) { note("AI suggestions work when this page is opened in Claude."); return; }
+
+  const cands = candidates(town === "__remote" ? "" : town, rad, remote || town === "__remote");
+  const nNear = cands.filter(c => c.d !== null).length, nRem = cands.length - nNear;
+  const place = town === "__remote" ? "phone and online only" : `within ${rad} miles of ${town}`;
+  if (!cands.length) { note("No services found for that area. Try a wider distance or include phone and online."); return; }
+
+  const day = new Date().toLocaleDateString("en-GB", { weekday: "long", day: "numeric", month: "long", year: "numeric" });
+  const prompt = `You are helping a support worker or volunteer in Somerset, UK, find local mental health and wellbeing support for someone they are helping. Today is ${day}.
+
+THE NEED, as written by the worker (may be brief or incomplete):
+"""${need.slice(0, 2000)}"""
+
+WHERE: ${place}.
+
+SERVICES you may recommend. You may ONLY recommend services from this list, using their id. Each line is:
+id | name | type | access (drop in / sign up / book / referral / call) | support for | who it's for | when | where (distance) | cost | description | eligibility
+${cands.map(line).join("\n")}
+
+Think like an experienced social prescriber:
+- Work out what the need suggests about energy and motivation, confidence and anxiety about groups, isolation, money, transport, age, caring role, and whether specialist help is needed (e.g. bereavement, debt, dementia, drugs and alcohol) as well as everyday wellbeing.
+- Use the Five Ways to Wellbeing (connect, be active, take notice, keep learning, give) where they fit, but match the effort to the person. Someone who struggles to get out of bed needs a gentle, low-pressure first step (a phone call, a small drop-in, a café, a short gentle walk), not a demanding activity or a long course.
+- Respect eligibility and 'who it's for' strictly (age, gender, carers, referral needed). Prefer drop-in, free and nearer options when motivation, money or transport sound like barriers. Don't recommend crisis services unless the need suggests risk.
+- Build a ladder of 4 to 7 picks: "First step" (1-2, the easiest to do this week), "Next step" (1-3), "When ready" (0-2). If leaving the house sounds hard, include a phone or online option as a first step.
+- Never invent services or details. Your "why" must be consistent with the record and specific to this person; don't restate times or addresses (the card shows them).
+- If the need mentions suicidal thoughts, self-harm or immediate risk, set "risk" to true.
+
+Reply with only this JSON:
+{"reading": "1-2 sentences: what the need suggests and the approach you took", "risk": false, "picks": [{"id": 12, "step": "First step", "why": "max 30 words"}], "gaps": "one sentence on anything important the list doesn't cover, or empty string", "questions": ["up to 2 short questions the worker could ask the person to refine this"]}`;
+
+  ctl = new AbortController();
+  busy(true, `Reading the need and looking through ${cands.length} services (${place}${nRem && town !== "__remote" ? ", plus phone and online" : ""})…`);
+  try {
+    const r = await sample.json(prompt, { signal: ctl.signal, modelTier: "default" });
+    render(r, cands, place, nNear, nRem);
+  } catch (err) {
+    const msg = {
+      cancelled: "", not_granted: "Claude wasn't allowed for this page, so suggestions can't run here.",
+      sampling_disabled: "Claude isn't available on this account.", rate_limited: "Too many requests just now. Please try again in a little while.",
+      invalid_json: "The answer came back in an unexpected shape. Please try again.", refused: "Claude couldn't help with that wording. Try describing the need differently.",
+      session_expired: "Please sign in to Claude again.",
+    }[err?.code];
+    if (msg !== "") note(msg || "Something went wrong. Please try again.");
+  } finally { busy(false); }
+};
+
+function render(r, cands, place, nNear, nRem) {
+  const byId = new Map(cands.map(c => [c.id, c]));
+  const picks = (Array.isArray(r?.picks) ? r.picks : []).map(p => ({ ...p, c: byId.get(Number(p.id)) })).filter(p => p.c);
+  if (r?.risk) $("crisis").hidden = false;
+  const steps = ["First step", "Next step", "When ready"];
+  const groups = steps.map(st => [st, picks.filter(p => (p.step || "").toLowerCase() === st.toLowerCase())]);
+  const other = picks.filter(p => !steps.some(st => st.toLowerCase() === (p.step || "").toLowerCase()));
+  if (other.length) groups[1][1].push(...other);
+  let h = `<div class="reading"><h2>How Claude read this</h2><p>${esc(r?.reading || "")}</p>
+    <p class="scope">Chose from ${cands.length} services: ${nNear ? `${nNear} in person ${esc(place)}` : ""}${nNear && nRem ? " and " : ""}${nRem ? `${nRem} phone or online` : ""}.</p></div>`;
+  h += `<div class="res"><h2>Suggestions</h2>`;
+  if (!picks.length) h += `<p>No suitable services were found in the list for this need and area. Try a wider distance.</p>`;
+  for (const [st, list] of groups) if (list.length) h += `<div class="step"><h3>${st}</h3>${list.map(card).join("")}</div>`;
+  h += `</div>`;
+  if (r?.gaps) h += `<p class="gaps"><b>Not covered:</b> ${esc(r.gaps)}</p>`;
+  const qs = (Array.isArray(r?.questions) ? r.questions : []).filter(Boolean).slice(0, 2);
+  if (qs.length) h += `<div class="qs"><b>Questions that might help</b><ul>${qs.map(q => `<li>${esc(q)}</li>`).join("")}</ul></div>`;
+  $("out").innerHTML = h; $("out").hidden = false;
+  $("out").scrollIntoView({ behavior: "smooth", block: "start" });
+}
+
+function card(p) {
+  const s = p.c.s, w = when(s);
+  const where = [s.address, s.town, s.postcode].filter(Boolean).join(", ");
+  const dist = p.c.d !== null ? ` (${p.c.d.toFixed(1)} miles)` : "";
+  const contact = [s.phone && `<a href="tel:${esc(s.phone.split(" (")[0].split(" or ")[0].replace(/\s/g, ""))}">${esc(s.phone)}</a>`, s.email && `<a href="mailto:${esc(s.email)}">${esc(s.email)}</a>`].filter(Boolean).join(" · ");
+  const url = /^https?:\/\//.test(s.url) ? `<a href="${esc(s.url)}" target="_blank" rel="noopener">Website</a>` : "";
+  return `<article class="svc">
+    <p class="why"><b>Why:</b> ${esc(p.why)}</p>
+    <h4>${esc(s.name)}</h4><div class="prov">${esc(s.provider)} · ${esc(s.type)}</div>
+    <p class="desc">${esc(s.description)}</p>
+    <dl class="facts">
+      ${w ? `<dt>When</dt><dd>${esc(w)}</dd>` : ""}
+      ${s.mode.includes("in-person") && where ? `<dt>Where</dt><dd>${esc(where)}${dist}</dd>` : ""}
+      <dt>How</dt><dd>${esc(s.access)}${s.mode !== "in-person" ? " · " + esc(s.mode.replace(/;/g, ", ")) : ""}</dd>
+      ${s.cost ? `<dt>Cost</dt><dd>${esc(s.cost)}</dd>` : ""}
+      ${s.eligibility ? `<dt>Who</dt><dd>${esc(s.eligibility)}</dd>` : ""}
+      ${contact || url ? `<dt>Contact</dt><dd>${[contact, url].filter(Boolean).join(" · ")}</dd>` : ""}
+    </dl>
+    <div class="tags">${s.support_for.split(";").map(t => `<span class="tag">${esc(t)}</span>`).join("")}</div>
+  </article>`;
+}
+</script>

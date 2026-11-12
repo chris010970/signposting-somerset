@@ -1,0 +1,509 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex">
+<title>Signposting Somerset Assist</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Literata:opsz,wght@7..72,600;7..72,700&display=swap">
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2064%2064%22%3E%3Crect%20width%3D%2264%22%20height%3D%2264%22%20rx%3D%2214%22%20fill%3D%22%23F4EEDC%22%2F%3E%3Crect%20x%3D%2229%22%20y%3D%228%22%20width%3D%226%22%20height%3D%2248%22%20rx%3D%222%22%20fill%3D%22%233F5E36%22%2F%3E%3Cpath%20d%3D%22M10%2013h32l8%207-8%207H10z%22%20fill%3D%22%23D4884A%22%2F%3E%3Cpath%20d%3D%22M54%2032H22l-8%207%208%207h32z%22%20fill%3D%22%236A8F4C%22%2F%3E%3Crect%20x%3D%2220%22%20y%3D%2253%22%20width%3D%2224%22%20height%3D%225%22%20rx%3D%222.5%22%20fill%3D%22%233F5E36%22%2F%3E%3C%2Fsvg%3E">
+/*STYLE*/
+<style>
+.gate { max-width: 420px; }
+.gate input { width: 100%; border: 1px solid var(--b200); border-radius: 10px; padding: 10px 12px; background: var(--white); margin-top: 4px; }
+.gate .btn { margin-top: 12px; }
+.refine { margin-top: 22px; }
+.refine .rowr { display: flex; gap: 8px; margin-top: 6px; }
+.refine input { flex: 1; min-width: 0; border: 1px solid var(--b200); border-radius: 10px; padding: 10px 12px; background: var(--white); }
+.quick { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px; }
+.quick button { border: 1px solid var(--b200); background: var(--white); color: var(--b800); border-radius: 999px; padding: 4px 11px; font-size: 13px; cursor: pointer; }
+.trail { font-size: 13px; color: var(--muted); margin-top: 8px; }
+.trail span { background: var(--b50); border-radius: 6px; padding: 1px 7px; margin-right: 4px; display: inline-block; margin-top: 3px; }
+.topnote { margin: 8px 0 0; font-size: 13px; color: var(--b100); }
+.topnote a { color: #fff; }
+.linkbtn { background: none; border: 0; padding: 0; color: var(--b700); text-decoration: underline; cursor: pointer; font-size: 13px; }
+.reshead { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 8px; }
+.reshead h2 { margin: 0; }
+.planbar { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; }
+.btn.small { padding: 6px 12px; font-size: 13px; border-radius: 8px; }
+.copied { font-size: 13px; color: var(--b700); width: 100%; text-align: right; }
+.copied:empty { display: none; }
+details.pick { background: var(--white); border: 1px solid var(--line); border-left: 4px solid var(--b500); border-radius: 12px; margin-bottom: 8px; }
+details.pick summary { list-style: none; cursor: pointer; padding: 12px 40px 12px 14px; position: relative; display: flex; flex-direction: column; gap: 2px; }
+details.pick summary::-webkit-details-marker { display: none; }
+details.pick summary::after { content: ""; position: absolute; right: 16px; top: 18px; width: 8px; height: 8px; border-right: 2px solid var(--b600); border-bottom: 2px solid var(--b600); transform: rotate(45deg); transition: transform .15s; }
+details.pick[open] summary::after { transform: rotate(-135deg); top: 22px; }
+.pk-name { font-weight: 700; font-size: 16px; }
+.pk-facts { font-size: 13px; color: var(--muted); }
+.pk-why { font-size: 14px; color: var(--b900); margin-top: 2px; }
+.pk-body { padding: 0 14px 14px; border-top: 1px solid var(--line); margin-top: 0; padding-top: 10px; }
+/* results layout: one column; on wide screens a plan preview sits alongside */
+.results { display: block; }
+.maincol { min-width: 0; }
+.preview { display: none; }
+@media (min-width: 1100px) {
+  #crisis, #refine, .note, #err, #status { max-width: 760px; }
+  .results { display: grid; grid-template-columns: minmax(0, 760px) minmax(0, 1fr); gap: 32px; align-items: start; }
+  .preview { display: block; position: sticky; top: 16px; background: var(--white); border: 1px solid var(--line); border-radius: 14px; padding: 16px 18px; font-size: 14px; max-height: calc(100vh - 32px); overflow-y: auto; }
+  .pv-label { font-size: 12px; text-transform: uppercase; letter-spacing: .08em; color: var(--b600); font-weight: 700; margin-bottom: 8px; }
+  .pv-body h3 { font-family: var(--serif); font-size: 17px; }
+  .pv-hint { margin: 10px 0 0; font-size: 12px; color: var(--muted); border-top: 1px solid var(--line); padding-top: 8px; }
+}
+.readas { margin: 8px 0 0; font-size: 14px; color: var(--muted); max-width: 70ch; }
+.readas b { color: var(--b700); }
+.scope { margin-top: 14px; }
+/* the ladder */
+.ladder { list-style: none; margin: 16px 0 0; padding: 0 0 0 38px; position: relative; }
+.ladder::before { content: ""; position: absolute; left: 13px; top: 14px; bottom: 26px; width: 2px; background: var(--b200); }
+.rung { position: relative; margin: 0 0 14px; }
+.rung .rdot { position: absolute; left: -38px; top: 0; width: 28px; height: 28px; border-radius: 50%; background: var(--b700); color: #fff; font-weight: 700; font-size: 14px; display: grid; place-items: center; box-shadow: 0 0 0 4px var(--cream); }
+.rung h3 { font-size: 12px; text-transform: uppercase; letter-spacing: .08em; color: var(--b600); margin: 6px 0 8px; }
+/* rows */
+details.pick summary:focus { outline: none; }
+details.pick summary:focus-visible { outline: 2px solid var(--b500); outline-offset: -2px; border-radius: 12px; }
+.pk-facts { display: flex; flex-wrap: wrap; align-items: center; column-gap: 0; row-gap: 2px; }
+.pk-facts .sep { margin: 0 6px; color: var(--b200); }
+.pk-facts .m { display: inline-flex; align-items: center; gap: 3px; }
+.pk-facts svg, .act svg { width: 14px; height: 14px; fill: currentColor; flex: none; }
+.pk-acts { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px; }
+.pk-acts:empty { display: none; }
+.act { display: inline-flex; align-items: center; gap: 6px; font-size: 13px; font-weight: 700; text-decoration: none; color: var(--b800); background: var(--b50); border: 1px solid var(--b200); border-radius: 999px; padding: 4px 11px; }
+.act:hover { background: var(--b100); }
+.pk-body .prov { color: var(--muted); font-size: 13px; }
+.pk-body .desc { margin: 6px 0; }
+/* colours borrowed from the main site */
+.pk-name { font-family: var(--serif); font-size: 17px !important; color: var(--b900); line-height: 1.25; }
+.pk-badges { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; margin: 4px 0 2px; }
+.badge { display: inline-flex; align-items: center; gap: 6px; font-size: 12px; font-weight: 700; padding: 3px 9px; border-radius: 7px; border: 1px solid; }
+.b-drop { background: #D1FAE5; color: #064E3B; border-color: #A7F3D0; }
+.b-sign { background: #E0F2FE; color: #0C4A6E; border-color: #BAE6FD; }
+.b-book { background: #FEF3C7; color: #78350F; border-color: #FDE68A; }
+.b-ref { background: #F1F5F9; color: #1E293B; border-color: #CBD5E1; }
+.chip { display: inline-flex; align-items: center; font-size: 12px; font-weight: 600; color: #57534E; background: #F5F5F4; border: 1px solid var(--line); padding: 3px 8px; border-radius: 6px; }
+.chip.dist { color: var(--b800); background: var(--b50); border-color: var(--b100); }
+.chip .m { display: inline-flex; align-items: center; gap: 4px; }
+.chip svg { width: 13px; height: 13px; fill: currentColor; }
+.pk-when { font-size: 14px; color: var(--ink); font-weight: 600; margin-top: 4px; }
+.pk-when .lab { font-size: 10px; letter-spacing: .1em; text-transform: uppercase; font-weight: 700; color: var(--b700); margin-right: 8px; }
+.pk-why { background: rgba(242,246,244,.8); border: 1px solid var(--b100); border-radius: 10px; padding: 8px 10px; margin-top: 8px !important; }
+.pk-body .tags .tag { background: var(--b50); border: 1px solid var(--b100); }
+/* expanded details */
+.pk-body { background: linear-gradient(var(--b50), #fff 120px); border-radius: 0 0 12px 0; }
+.pb-prov { font-size: 12px; font-weight: 700; color: var(--b700); text-transform: uppercase; letter-spacing: .06em; display: flex; flex-wrap: wrap; gap: 4px 8px; align-items: center; }
+.pb-prov span { text-transform: none; letter-spacing: 0; font-weight: 600; color: var(--muted); background: #fff; border: 1px solid var(--line); border-radius: 999px; padding: 1px 8px; }
+.pb-desc { font-size: 15px; margin: 8px 0 12px; color: var(--ink); }
+.pb-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 8px; }
+.pb-tile { background: #fff; border: 1px solid var(--b100); border-radius: 10px; padding: 8px 10px; min-width: 0; }
+.pb-tile.wide { grid-column: 1 / -1; }
+.pb-tile.warn { background: #FFFBEB; border-color: #FDE68A; }
+.pb-tile.warn .pb-lab { color: #92400E; }
+.pb-lab { display: flex; align-items: center; gap: 5px; font-size: 10px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; color: var(--b700); margin-bottom: 3px; }
+.pb-lab svg { width: 13px; height: 13px; fill: currentColor; }
+.pb-val { font-size: 14px; overflow-wrap: anywhere; }
+.pb-val a { font-size: 13px; }
+.pb-foot { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 8px; margin-top: 12px; }
+.pb-tags { display: flex; flex-wrap: wrap; gap: 5px; }
+.pb-tags .tag { background: var(--b100); color: var(--b900); border: 0; font-weight: 600; }
+.pb-checked { font-size: 12px; color: var(--muted); }
+#printplan { display: none; }
+@media print {
+  body { background: #fff; }
+  body > *:not(main), main form, main .alert, main .status, main .err, #out, #refine, main .note { display: none !important; }
+  #app { display: block !important; }
+  #printplan { display: block !important; font-size: 13pt; color: #000; }
+  #printplan a { color: #000; }
+}
+/* Illustrated header, matching the main site */
+:root { --banner: url(/*BANNER*/); }
+header.ahead { position: relative; overflow: hidden; background: #fff; color: var(--ink); padding-block: 26px 22px; border-bottom: 1px solid var(--line); }
+header.ahead > .wrap { position: relative; z-index: 1; }
+header.ahead .illus { position: absolute; inset: 0; background: var(--banner) center 30% / cover no-repeat; }
+header.ahead .illus::after { content: ""; position: absolute; inset: 0; background: linear-gradient(to right, rgba(255,255,255,.95) 0, rgba(255,255,255,.85) 38%, rgba(255,255,255,0) 66%); }
+header.ahead h1 { color: var(--b900); font-size: 38px; line-height: 1.1; display: flex; align-items: center; flex-wrap: wrap; gap: 4px 10px; }
+header.ahead h1 .logo { width: 34px; height: 34px; flex: none; }
+header.ahead h1 span { margin-left: 4px; }
+header.ahead .lede { color: #57534E; max-width: 54ch; margin-top: 8px; }
+header.ahead .topnote { color: #78716C; }
+header.ahead .topnote a { color: var(--b700); }
+@media (max-width: 760px) {
+  header.ahead .illus { display: none; }
+  header.ahead h1 { font-size: 26px; } header.ahead h1 .logo { width: 26px; height: 26px; }
+}
+/* Exact match with the main site: crisis bar height, banner height and edges, content start */
+.crisis { line-height: normal; }
+@media (min-width: 761px) {
+  header.ahead { min-height: 245px !important; padding-block: 69px 0 !important; align-items: flex-start !important; box-sizing: border-box; }
+  main { padding-top: 37px !important; }
+}
+@media (min-width: 1432px) {
+  header.ahead .illus { left: calc(50% - 700px) !important; right: calc(50% - 700px) !important; background-position: right 30% !important;
+    -webkit-mask-image: linear-gradient(to left, transparent 0, #000 6%) !important; mask-image: linear-gradient(to left, transparent 0, #000 6%) !important; }
+}
+/* Match the main site: crisis bar, page width, header layout */
+.crisis { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
+.exit { background: #1E293B; color: #fff !important; border: 1px solid #334155; border-radius: 6px; padding: 5px 10px; font-size: 12px; font-weight: 600; text-decoration: none; white-space: nowrap; }
+.wrap { max-width: 1400px !important; }
+header.ahead { padding-block: 34px 26px; }
+@media (min-width: 761px) { header.ahead { min-height: 250px; display: flex; align-items: center; } header.ahead > .wrap { width: 100%; } }
+header.ahead .illus { left: max(0px, calc(50% - 716px)); right: max(0px, calc(50% - 716px)); background-position: right 30%; }
+/* Title identical to the main site */
+header.ahead h1 { font-size: 42px; font-weight: 700; line-height: 1.05; letter-spacing: -.01em; gap: 4px 10px; }
+header.ahead h1 .logo { width: 38px; height: 38px; }
+header.ahead h1 span { align-self: center; }
+@media (max-width: 760px) { header.ahead h1 { font-size: 26px; gap: 6px 8px; } header.ahead h1 .logo { width: 26px; height: 26px; } }
+header.ahead .lede { font-size: 16px; color: #78716C; max-width: 54ch; }
+header.ahead .illus { -webkit-mask-image: linear-gradient(to left, transparent 0, #000 5%); mask-image: linear-gradient(to left, transparent 0, #000 5%); }
+#app .note { max-width: none; }
+#f .row { flex-wrap: nowrap; }
+@media (max-width: 900px) { #f .row { flex-wrap: wrap; } }
+.placenote { font-size: 13px; color: var(--b900, #1B3126); background: #EEF4F0; border-radius: 8px; padding: 6px 10px; margin: 8px 0 0; }
+.scrubnote { font-size: 13px; color: #78350F; background: #FEF3C7; border-radius: 8px; padding: 6px 10px; margin: 10px 0 0; }
+</style>
+</head>
+<body>
+<div class="crisis gut">
+  <div><b>Crisis</b>Immediate danger or medical emergency: call <a href="tel:999">999</a> or NHS <a href="tel:111">111 (option 2)</a></div>
+  <a class="exit" href="https://www.bbc.co.uk/weather" rel="noopener">Quick exit</a>
+</div>
+
+<header class="gut ahead"><div class="illus" role="img" aria-label="Watercolour illustration: a path with map pins winding through Somerset fields towards Glastonbury Tor, people meeting and walking together, and a signpost"></div><div class="wrap">
+  <h1><svg class="logo" viewBox="0 0 32 32" aria-hidden="true"><path d="M15 6h2v21h-2z" fill="#3F5E36"/><path d="M8 9h13l3 2.5-3 2.5H8z" fill="#D4884A"/><path d="M24 16H11l-3 2.5 3 2.5h13z" fill="#6A8F4C"/><path d="M11 27h10" stroke="#3F5E36" stroke-width="2" stroke-linecap="round"/></svg>Signposting Somerset <span>Assist demo</span></h1>
+  <p class="lede">AI-assisted support planning for support workers and volunteers.</p>
+  <p class="topnote">Browse everything yourself on <a href="../">Signposting Somerset</a>.</p>
+</div></header>
+
+<main class="gut"><div class="wrap">
+
+  <form class="card gate" id="gate" hidden>
+    <label class="h" for="code">Access code</label>
+    <p class="hint" style="margin:0 0 4px">This demo is for invited support workers and volunteers.</p>
+    <input id="code" type="password" autocomplete="off">
+    <button class="btn" type="submit">Continue</button>
+    <p class="err" id="gateErr" hidden></p>
+  </form>
+
+  <div id="app" hidden>
+  <form class="card" id="f">
+    <label class="h" for="need">What's going on for them?</label>
+    <p class="hint" style="margin:-2px 0 8px">Describe what someone is going through. AI suggests a few local services from the checked list, starting with gentle first steps, and says why each might help.</p>
+    <textarea id="need" maxlength="2000" placeholder="e.g. Feeling very low since losing his job. Struggles to get out of bed, hardly leaves the house, misses having people around. No car."></textarea>
+    <p class="hint">Describe the need, not the person. Don't include names, addresses, phone numbers or dates of birth: obvious ones are removed automatically before anything is sent. You can mention a place and distance, e.g. "within 5 miles of Frome". The text goes to an AI service (Anthropic) to suggest support and isn't stored by this site.</p>
+    <p class="placenote" id="placenote" hidden></p>
+    <div class="examples" id="ex"></div>
+    <div class="row">
+      <label class="field"><span>Near</span><select id="town"></select></label>
+      <label class="field"><span>Within</span><select id="rad"><option value="3">3 miles</option><option value="5">5 miles</option><option value="8" selected>8 miles</option><option value="10">10 miles</option><option value="12">12 miles</option><option value="20">20 miles</option></select></label>
+      <label class="chk"><input type="checkbox" id="remote" checked> Include phone and online</label>
+      <div class="go"><button class="btn" id="ask" type="submit">Suggest support</button></div>
+    </div>
+  </form>
+
+  <div class="alert" id="crisis" hidden>
+    <h2>This sounds like it may need urgent support</h2>
+    <p>If someone is at risk right now, call 999. For urgent mental health help, call NHS 111 and choose option 2. They can also talk to Samaritans or Mindline any time.</p>
+    <div class="lines"><a href="tel:999">999</a><a href="tel:111">NHS 111, option 2</a><a href="tel:116123">Samaritans 116 123</a><a href="tel:08001381692">Mindline 0800 138 1692</a></div>
+  </div>
+
+  <p class="scrubnote" id="scrubnote" hidden></p>
+  <p class="status" id="status" hidden><span class="dot"></span><span id="statusText">Thinking...</span></p>
+  <p class="err" id="err" hidden></p>
+  <section id="out" hidden></section>
+  <div id="printplan"></div>
+
+  <form class="refine card" id="refine" hidden>
+    <label class="h" for="more">Not quite right? Tell it more</label>
+    <div class="rowr"><input id="more" maxlength="300" placeholder="e.g. he won't go to groups, weekends only"><button class="btn" type="submit" id="moreBtn">Update</button></div>
+    <div class="quick" id="quick"></div>
+    <div class="trail" id="trail"></div>
+  </form>
+
+  <p class="note">Suggestions come only from the services listed on Signposting Somerset. The AI chooses and explains, but every detail on a card comes from the checked record itself. Please confirm with the service before going. This is a demo: use your own judgement, as always. <button class="linkbtn" id="forget" type="button">Forget access code on this device</button></p>
+  </div>
+</div></main>
+
+<script>
+const WORKER_URL = "/*WORKER_URL*/";
+const TOWN_NAMES = /*TOWN_NAMES*/[];
+const EXAMPLES = [
+  "Low mood for months, lives alone, finds it hard to get out of bed and has stopped seeing friends.",
+  "Recently bereaved older woman, lonely, doesn't drive, a bit anxious about groups.",
+  "Young man, anxious and isolated, spends most days gaming, wants to feel useful.",
+  "Caring full-time for husband with dementia, exhausted, worried about money and heating bills.",
+];
+const QUICK = ["No groups", "Weekends only", "Free only", "Nearer to home", "Start from home (phone or online)", "Something for a carer too"];
+const RISK = /suicid|kill (my|him|her|them)sel|end (my|his|her|their) life|self[- ]?harm|cutting (my|him|her)|overdos|want(s|ed)? to die|no reason to live|better off dead/i;
+const $ = id => document.getElementById(id);
+const esc = s => String(s ?? "").replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+const store = { get: k => { try { return localStorage.getItem(k); } catch { return null; } }, set: (k, v) => { try { v == null ? localStorage.removeItem(k) : localStorage.setItem(k, v); } catch {} } };
+
+let code = store.get("assist-code") || "";
+let state = null;   // { need, town, radius, remote, followups: [], previous: [] }
+
+// ---- set up ----
+$("town").innerHTML = '<option value="">Choose a town…</option><option value="__remote">No town: phone and online only</option>' + TOWN_NAMES.map(t => `<option>${esc(t)}</option>`).join("");
+{ const t = store.get("assist-town"); if (t && [...$("town").options].some(o => o.value === t)) $("town").value = t; }
+EXAMPLES.forEach(e => { const b = document.createElement("button"); b.type = "button"; b.textContent = e; b.onclick = () => { $("need").value = e; $("need").focus(); }; $("ex").append(b); });
+QUICK.forEach(q => { const b = document.createElement("button"); b.type = "button"; b.textContent = q; b.onclick = () => refine(q); $("quick").append(b); });
+function showApp() { $("gate").hidden = true; $("app").hidden = false; }
+function showGate(msg) { $("app").hidden = true; $("gate").hidden = false; $("gateErr").hidden = !msg; $("gateErr").textContent = msg || ""; $("code").focus(); }
+if (!WORKER_URL || WORKER_URL.startsWith("/*")) { document.querySelector("main .wrap").innerHTML = '<p class="err">This page isn\'t connected to its relay yet (WORKER_URL is empty).</p>'; }
+else if (code) showApp(); else showGate();
+$("gate").onsubmit = e => { e.preventDefault(); code = $("code").value.trim(); if (!code) return; store.set("assist-code", code); showApp(); };
+$("forget").onclick = () => { store.set("assist-code", null); code = ""; $("code").value = ""; showGate(); };
+
+function note(t) { $("err").textContent = t; $("err").hidden = !t; }
+function busy(on, t) { $("status").hidden = !on; $("statusText").textContent = t || "Thinking..."; $("ask").disabled = on; $("moreBtn").disabled = on; }
+
+// ---- place and distance from the description ----
+// Finds a known town or village and a distance ("within 5 miles", "10 mi") in the text and fills the boxes,
+// unless the worker has picked them by hand. Everything happens in the browser.
+let manualPlace = false, autoPlace = null;
+const TOWN_RX = [...TOWN_NAMES].sort((a, b) => b.length - a.length).map(t => [t, new RegExp(`(^|[^A-Za-z])${t.replace(/[.*+?^${}()|[\]\\]/g, "\\$&").replace(/-/g, "[- ]")}(?![A-Za-z])`)]);
+const RADS = [...$("rad").options].map(o => +o.value);
+function detectPlace(txt) {
+  let town = null, rad = null;
+  for (const [t, rx] of TOWN_RX) if (rx.test(txt)) { town = t; break; }
+  const m = txt.match(/(\d{1,2})\s*(?:miles?|mi)\b/i);
+  if (m) { const n = +m[1]; rad = RADS.reduce((a, b) => Math.abs(b - n) < Math.abs(a - n) ? b : a); }
+  if (/\b(phone|online)\s+only\b/i.test(txt)) town = "__remote";
+  return { town, rad };
+}
+function showPlace() {
+  const pn = $("placenote");
+  if (!autoPlace || manualPlace) { pn.hidden = true; return; }
+  const where = autoPlace.town === "__remote" ? "phone and online only" : `near ${autoPlace.town}${autoPlace.rad ? `, within ${autoPlace.rad} miles` : ""}`;
+  pn.innerHTML = `Found in the description: <b>${esc(where)}</b>. Not right? Change the boxes below.`; pn.hidden = false;
+}
+let placeTimer;
+$("need").addEventListener("input", () => { clearTimeout(placeTimer); placeTimer = setTimeout(() => {
+  const d = detectPlace($("need").value), prev = autoPlace || {};
+  autoPlace = d.town || d.rad ? d : null;
+  if (!manualPlace) {   // follow the text: set what's found, and undo anything set earlier that's no longer there
+    if (d.town) $("town").value = d.town; else if (prev.town) $("town").value = "";
+    if (d.rad) $("rad").value = String(d.rad); else if (prev.rad) $("rad").value = "8";
+  }
+  showPlace(); }, 300); });
+["town", "rad"].forEach(id => $(id).addEventListener("change", () => { manualPlace = true; showPlace(); }));
+
+// ---- remove identifying details before anything is sent ----
+function scrub(txt) {
+  const n = {};
+  const hit = (k, r) => { n[k] = (n[k] || 0) + 1; return r; };
+  let s = txt
+    .replace(/[\w.+-]+@[\w-]+\.[\w.-]+/g, () => hit("email address", "[email]"))
+    .replace(/(?:\+44\s?7\d{3}|\b07\d{3}|\+44\s?\d{3,4}|\b0\d{3,4})[\s-]?\d{3}[\s-]?\d{3,4}\b/g, () => hit("phone number", "[phone]"))
+    .replace(/\b\d{3}\s?\d{3}\s?\d{4}\b/g, () => hit("NHS or ID number", "[number]"))
+    .replace(/\b([A-Z]{1,2}\d[A-Z\d]?)\s?\d[A-Z]{2}\b/gi, (m, out) => hit("full postcode", out.toUpperCase()))
+    .replace(/\b\d{1,2}[\/.-]\d{1,2}[\/.-](?:19|20)?\d{2}\b/g, () => hit("date", "[date]"))
+    .replace(/\b(?:born(?: in)?|d\.?o\.?b\.?:?)\s*(?:(?:19|20)\d{2}|\d{1,2}(?:st|nd|rd|th)?\s+[A-Z][a-z]+(?:\s+(?:19|20)\d{2})?)/gi, () => hit("date of birth", "[date of birth]"))
+    .replace(/\b\d{1,4}[a-z]?,?\s+(?:[A-Z][a-z]+\s){1,3}(?:Road|Rd|Street|St|Lane|Ln|Avenue|Ave|Close|Drive|Dr|Way|Crescent|Place|Court|Gardens|Terrace|Hill|Row|Square|Walk)\b/g, () => hit("street address", "[address]"))
+    .replace(/\b(?:Mr|Mrs|Ms|Miss|Mx|Dr)\.?\s+[A-Z][a-z'-]+(?:\s+[A-Z][a-z'-]+)?/g, () => hit("name", "[name]"))
+    .replace(/\b(called|named|name is|name's|known as)\s+[A-Z][a-z'-]+(?:\s+[A-Z][a-z'-]+)?/gi, (m, w) => hit("name", `${w} [name]`));
+  return { text: s, removed: n };
+}
+function scrubAll(st) {
+  const tally = {}, add = r => Object.entries(r).forEach(([k, v]) => tally[k] = (tally[k] || 0) + v);
+  const a = scrub(st.need); add(a.removed);
+  const f = st.followups.map(x => { const r = scrub(x); add(r.removed); return r.text; });
+  const msg = Object.entries(tally).map(([k, v]) => `${v} ${k}${v > 1 ? "s" : ""}`).join(", ");
+  $("scrubnote").textContent = msg ? `Removed before sending: ${msg}.` : ""; $("scrubnote").hidden = !msg;
+  return { ...st, need: a.text, followups: f };
+}
+
+// ---- ask ----
+$("f").onsubmit = e => {
+  e.preventDefault();
+  const need = $("need").value.trim();
+  if (!need) return note("Describe the need first.");
+  if (!manualPlace) { const d = detectPlace(need); if (d.town) $("town").value = d.town; if (d.rad) $("rad").value = String(d.rad); }
+  const town = $("town").value;
+  if (!town) return note("Add a place to the description (for example \"near Frome\") or choose a town, or 'phone and online only'.");
+  store.set("assist-town", town);
+  state = { need, town, radius: +$("rad").value, remote: $("remote").checked, followups: [], previous: [] };
+  $("trail").innerHTML = "";
+  run();
+};
+$("refine").onsubmit = e => { e.preventDefault(); const v = $("more").value.trim(); if (v) refine(v); };
+function refine(text) {
+  if (!state) return;
+  state.followups = [...state.followups, text].slice(-5);
+  $("more").value = "";
+  $("trail").innerHTML = "So far: " + state.followups.map(f => `<span>${esc(f)}</span>`).join("");
+  run();
+}
+
+const ERRORS = {
+  bad_code: "That access code wasn't accepted.", rate_limited: "Too many requests from here in the last hour. Please try again later.",
+  busy: "The AI service is busy. Please try again in a minute.", sheet_unavailable: "The records couldn't be loaded just now. Please try again shortly.",
+  bad_town: "Please choose a town from the list.", bad_answer: "The answer came back in an unexpected shape. Please try again.",
+  forbidden: "This page isn't allowed to use the relay.",
+};
+async function run() {
+  note("");
+  $("crisis").hidden = !RISK.test([state.need, ...state.followups].join(" "));
+  const place = state.town === "__remote" ? "phone and online services" : `services within ${state.radius} miles of ${state.town}`;
+  busy(true, state.followups.length ? "Updating the suggestions…" : `Reading the need and looking through ${place}…`);
+  try {
+    const r = await fetch(WORKER_URL, { method: "POST", headers: { "Content-Type": "application/json", "X-Access-Code": code }, body: JSON.stringify(scrubAll(state)) });
+    const data = await r.json().catch(() => ({ error: "bad_answer" }));
+    if (data.error) {
+      if (data.error === "bad_code") { store.set("assist-code", null); code = ""; showGate(ERRORS.bad_code); return; }
+      if (data.error === "ai_error") return note("The AI service returned an error" + (data.status ? ` (${data.status})` : "") + (data.detail ? `: ${data.detail}` : "."));
+      return note(ERRORS[data.error] || `Something went wrong (${data.error}). Please try again.`);
+    }
+    render(data);
+  } catch { note("Couldn't reach the service. Check your connection and try again."); }
+  finally { busy(false); }
+}
+
+let lastPicks = [];
+const STEPS = ["First step", "Next step", "When ready"];
+const normStep = s => STEPS.find(x => x.toLowerCase() === String(s).toLowerCase()) || "Next step";
+const HOW = { "drop in": "Just turn up", "sign up": "Contact to join", "book": "Book first", "referral": "Needs a referral", "call": "Phone line" };
+const HOWCLS = { "drop in": "b-drop", "sign up": "b-sign", "book": "b-book", "referral": "b-ref", "call": "b-ref" };
+const SITE = "https://chris010970.github.io/signposting-somerset/";
+
+function render(r) {
+  if (r.risk) $("crisis").hidden = false;
+  state.previous = r.picks.map(p => p.record.name);
+  const sc = r.scope || {};
+  lastPicks = STEPS.flatMap(st => r.picks.filter(p => normStep(p.step) === st).map(p => ({ ...p, step: st })));
+  let m = `<div class="reshead"><h2>Suggestions</h2>`;
+  if (lastPicks.length) m += `<div class="planbar"><button type="button" class="btn small" id="copyPlan">Copy plan</button>${navigator.share ? `<button type="button" class="btn small ghost" id="sharePlan">Share</button>` : ""}<button type="button" class="btn small ghost" id="printPlan">Print</button><span class="copied" id="copied" role="status"></span></div>`;
+  m += `</div>`;
+  if (r.reading) m += `<p class="readas"><b>Read as:</b> ${esc(r.reading)}</p>`;
+  if (!lastPicks.length) m += `<p>No suitable services were found for this need and area. Try a wider distance.</p>`;
+  else {
+    m += `<ol class="ladder">`;
+    STEPS.forEach((st, i) => {
+      const list = lastPicks.filter(p => p.step === st); if (!list.length) return;
+      m += `<li class="rung"><span class="rdot" aria-hidden="true">${i + 1}</span><h3>${st}</h3>${list.map(card).join("")}</li>`;
+    });
+    m += `</ol>`;
+  }
+  if (r.gaps) m += `<p class="gaps"><b>Not covered:</b> ${esc(r.gaps)}</p>`;
+  if (r.questions?.length) m += `<div class="qs"><b>Questions that might help</b><ul>${r.questions.map(q => `<li>${esc(q)}</li>`).join("")}</ul></div>`;
+  m += `<p class="scope">Chose from ${sc.total} of ${sc.records} services: ${[sc.near ? `${sc.near} in person ${esc(sc.place)}` : "", sc.remote ? `${sc.remote} phone or online` : ""].filter(Boolean).join(" and ")}.</p>`;
+  const side = lastPicks.length ? `<aside class="preview" aria-label="Support plan"><div class="pv-label">Support plan</div><div class="pv-body">${plan().html}</div><p class="pv-hint">Copy it into an email or letter, share it by text, or print it.</p></aside>` : "";
+  $("out").innerHTML = `<div class="results"><div class="maincol">${m}</div>${side}</div>`;
+  $("out").hidden = false; $("refine").hidden = false;
+  if (lastPicks.length) {
+    $("copyPlan").onclick = copyPlan;
+    $("printPlan").onclick = () => { $("printplan").innerHTML = plan().html; window.print(); };
+    if ($("sharePlan")) $("sharePlan").onclick = () => navigator.share({ title: "Things that might help", text: plan().text }).catch(() => {});
+    $("out").querySelectorAll(".preview a").forEach(a => { a.target = "_blank"; a.rel = "noopener"; });
+  }
+  $("out").scrollIntoView({ behavior: "smooth", block: "start" });
+}
+function whenText(s) { return s.dates ? "Dates: " + s.dates.replace(/;/g, ", ") + (s.times ? " " + s.times : "") : [[(s.days || "").replace(/;/g, ", "), s.times].filter(Boolean).join(" "), s.frequency].filter(Boolean).join(", "); }
+const telOf = s => s.phone ? s.phone.split(" (")[0].split(" or ")[0].replace(/\s/g, "") : "";
+const isUrl = u => /^https?:\/\//.test(u || "");
+const ICON = {
+  phone: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6.6 10.8a15.1 15.1 0 0 0 6.6 6.6l2.2-2.2a1 1 0 0 1 1-.25 11.4 11.4 0 0 0 3.6.57 1 1 0 0 1 1 1V20a1 1 0 0 1-1 1A17 17 0 0 1 3 4a1 1 0 0 1 1-1h3.5a1 1 0 0 1 1 1c0 1.25.2 2.45.57 3.57a1 1 0 0 1-.25 1z"/></svg>',
+  online: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5h16a1 1 0 0 1 1 1v10a1 1 0 0 1-1 1h-6l1 2h2v2H7v-2h2l1-2H4a1 1 0 0 1-1-1V6a1 1 0 0 1 1-1zm1 2v8h14V7z"/></svg>',
+  place: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2a7 7 0 0 1 7 7c0 5-7 13-7 13S5 14 5 9a7 7 0 0 1 7-7zm0 4.5a2.5 2.5 0 1 0 0 5 2.5 2.5 0 0 0 0-5z"/></svg>',
+  web: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14 3h7v7h-2V6.4l-9.3 9.3-1.4-1.4L17.6 5H14zM5 5h6v2H6v11h11v-5h2v6a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V6a1 1 0 0 1 1-1z"/></svg>',
+  clock: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2a10 10 0 1 1 0 20 10 10 0 0 1 0-20zm0 2a8 8 0 1 0 0 16 8 8 0 0 0 0-16zm1 3v4.6l3.2 1.9-1 1.7L11 12.7V7z"/></svg>',
+  person: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3a4.5 4.5 0 1 1 0 9 4.5 4.5 0 0 1 0-9zm0 11c4.4 0 8 2.2 8 5v2H4v-2c0-2.8 3.6-5 8-5z"/></svg>',
+  cost: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14.5 3A5.5 5.5 0 0 1 20 8.5h-2A3.5 3.5 0 0 0 14.5 5 3.5 3.5 0 0 0 11 8.5V11h5v2h-5v4h8v2H6v-2h3v-4H6v-2h3V8.5A5.5 5.5 0 0 1 14.5 3z"/></svg>',
+  join: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M10 4h9a1 1 0 0 1 1 1v14a1 1 0 0 1-1 1h-9v-2h8V6h-8zm-.6 3.6L14 12l-4.6 4.4-1.4-1.4 2.2-2H3v-2h7.2L8 9z"/></svg>',
+  mail: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 5h18a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1V6a1 1 0 0 1 1-1zm1 3.2V17h16V8.2l-8 5-8-5zM5.2 7 12 11.3 18.8 7z"/></svg>',
+};
+function actions(s) {
+  const a = [];
+  if (s.phone) {
+    const text = /^text\s/i.test(s.phone);
+    const num = text ? s.phone.replace(/^text\s*/i, "").replace(/\s/g, "") : telOf(s);
+    const label = text ? `Text ${num}` : s.phone.split(" (")[0].split(" or ")[0];
+    a.push(`<a class="act" href="${text ? "sms:" : "tel:"}${esc(num)}">${ICON.phone}${esc(label)}</a>`);
+  }
+  if (isUrl(s.url)) a.push(`<a class="act" href="${esc(s.url)}" target="_blank" rel="noopener">${ICON.web}Website</a>`);
+  else if (s.email) a.push(`<a class="act" href="mailto:${esc(s.email)}">${ICON.mail}Email</a>`);
+  return a.join("");
+}
+const LABEL = { "hearing voices": "Psychosis and hearing voices", "crisis prevention": "Crisis support" };
+function niceDate(d) { const t = new Date(d + "T12:00:00"); return isNaN(t) ? d : t.toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric" }); }
+function tile(icon, label, html, cls = "") { return `<div class="pb-tile ${cls}"><div class="pb-lab">${ICON[icon] || ""}${label}</div><div class="pb-val">${html}</div></div>`; }
+function card(p) {
+  const s = p.record, w = whenText(s), mode = s.mode || "";
+  const inPerson = mode.includes("in-person");
+  const where = [s.address, s.town, s.postcode].filter(Boolean).join(", ");
+  const dist = p.distance !== null && s.address ? ` (${p.distance} miles)` : "";
+  const contact = [s.phone && `<a href="tel:${esc(telOf(s))}">${esc(s.phone)}</a>`, s.email && `<a href="mailto:${esc(s.email)}">${esc(s.email)}</a>`, isUrl(s.url) && `<a href="${esc(s.url)}" target="_blank" rel="noopener">Website</a>`].filter(Boolean).join(" · ");
+  const modeBit = inPerson
+    ? `<span class="m">${ICON.place}${esc(p.distance !== null && s.address ? `${p.distance} mi` : s.town)}</span>`
+    : `<span class="m">${mode.includes("phone") ? ICON.phone : ""}${mode.includes("online") ? ICON.online : ""}${esc(mode.replace(/;/g, " / ").replace("phone", "Phone").replace("online", "Online"))}</span>`;
+  const badges = `<span class="badge ${HOWCLS[s.access] || "b-ref"}">${esc(HOW[s.access] || s.access)}</span>` +
+    `<span class="chip dist">${modeBit}</span>` + (s.cost ? `<span class="chip">${esc(s.cost)}</span>` : "");
+  return `<details class="pick">
+    <summary>
+      <span class="pk-name">${esc(s.name)}</span>
+      <span class="pk-badges">${badges}</span>
+      ${w ? `<span class="pk-when"><span class="lab">When</span>${esc(w)}</span>` : ""}
+      <span class="pk-why">${esc(p.why)}</span>
+      <span class="pk-acts">${actions(s)}</span>
+    </summary>
+    <div class="pk-body">
+      <div class="pb-prov">${esc(s.provider)}<span>${esc(s.type)}</span></div>
+      <p class="pb-desc">${esc(s.description)}</p>
+      <div class="pb-grid">
+        ${inPerson && where ? tile("place", "Where", `${esc(where)}${dist}${s.address ? `<br><a href="https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(where)}" target="_blank" rel="noopener">Open in maps</a>` : ""}`) : ""}
+        ${!inPerson ? tile(mode.includes("phone") ? "phone" : "online", "How", esc(mode.replace(/;/g, ", ").replace("phone", "Phone").replace("online", "Online"))) : ""}
+        ${s.who || s.eligibility ? tile("person", "For", esc([s.who && s.who.replace(/;/g, ", "), s.eligibility].filter(Boolean).join(". ")), s.eligibility ? "warn" : "") : ""}
+        ${s.cost ? tile("cost", "Cost", esc(s.cost)) : ""}
+        ${contact ? tile("mail", "Contact", contact, "wide") : ""}
+      </div>
+      <div class="pb-foot">
+        <span class="pb-tags">${(s.support_for || "").split(";").filter(Boolean).map(t => `<span class="tag">${esc(LABEL[t] || t[0].toUpperCase() + t.slice(1))}</span>`).join("")}</span>
+        ${s.last_checked ? `<span class="pb-checked">Checked ${esc(niceDate(s.last_checked))}</span>` : ""}
+      </div>
+    </div>
+  </details>`;
+}
+
+// ---- the plan: a short summary to give to the person (email, text, print) ----
+const STEP_TITLE = { "First step": "A good place to start", "Next step": "Next", "When ready": "When you feel ready" };
+const FOOT = "Please check with the service before going, as details can change. If things get worse, call Mindline any time on 0800 138 1692 (free), or 999 in an emergency.";
+function plan() {
+  let html = `<h3 style="margin:0 0 6px">Things that might help</h3>`, text = "Things that might help\n";
+  let n = 0;
+  for (const st of STEPS) {
+    const list = lastPicks.filter(p => p.step === st); if (!list.length) continue;
+    html += `<p style="margin:12px 0 4px"><b>${STEP_TITLE[st]}</b></p><ol start="${n + 1}" style="margin:0;padding-left:22px">`;
+    text += `\n${STEP_TITLE[st]}\n`;
+    for (const p of list) {
+      n++;
+      const s = p.record, inPerson = (s.mode || "").includes("in-person");
+      const when = whenText(s), where = inPerson ? [s.address, s.town, s.postcode].filter(Boolean).join(", ") : "";
+      const how = [HOW[s.access] || s.access, s.cost].filter(Boolean).join(". ");
+      const lines = [when && where ? `${when}, ${where}` : when || where, how].filter(Boolean);
+      const contactH = [s.phone && `<a href="tel:${esc(telOf(s))}">${esc(s.phone)}</a>`, s.email && `<a href="mailto:${esc(s.email)}">${esc(s.email)}</a>`].filter(Boolean).join(" · ");
+      const contactT = [s.phone, s.email].filter(Boolean).join(" · ");
+      const name = isUrl(s.url) ? `<a href="${esc(s.url)}"><b>${esc(s.name)}</b></a>` : `<b>${esc(s.name)}</b>`;
+      html += `<li style="margin:0 0 8px">${name}<br>${lines.map(esc).join("<br>")}${contactH ? `<br>${contactH}` : ""}</li>`;
+      text += `${n}. ${s.name}\n` + lines.map(l => `   ${l}\n`).join("") + (contactT ? `   ${contactT}\n` : "") + (isUrl(s.url) ? `   ${s.url}\n` : "");
+    }
+    html += `</ol>`;
+  }
+  html += `<p style="margin:12px 0 4px"><i>${esc(FOOT)}</i></p><p style="margin:0;font-size:12px">From Signposting Somerset: <a href="${SITE}">${SITE}</a></p>`;
+  text += `\n${FOOT}\nFrom Signposting Somerset: ${SITE}\n`;
+  return { html, text };
+}
+async function copyPlan() {
+  const { html, text } = plan();
+  let ok = false;
+  try {
+    if (window.ClipboardItem && navigator.clipboard?.write) {
+      await navigator.clipboard.write([new ClipboardItem({ "text/html": new Blob([html], { type: "text/html" }), "text/plain": new Blob([text], { type: "text/plain" }) })]);
+      ok = true;
+    }
+  } catch {}
+  if (!ok) { try { await navigator.clipboard.writeText(text); ok = true; } catch {} }
+  $("copied").textContent = ok ? "Copied: paste into an email, letter or text." : "Couldn't copy on this device. Try Print instead.";
+  setTimeout(() => { if ($("copied")) $("copied").textContent = ""; }, 5000);
+}
+</script>
+</body>
+</html>

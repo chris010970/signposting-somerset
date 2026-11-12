@@ -1,0 +1,1086 @@
+<title>Signposting Somerset</title>
+<meta name="description" content="Discover mental health and wellbeing support across Somerset, North Somerset and B&amp;NES: what's on, when and where. Built for anyone looking for help, activities or community connections.">
+<!--ROBOTS-->
+<link rel="canonical" href="https://signpostingsomerset.org.uk/main/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Signposting Somerset">
+<meta property="og:title" content="Signposting Somerset">
+<meta property="og:description" content="Discover mental health and wellbeing support across Somerset, North Somerset and B&amp;NES: what's on, when and where. Built for anyone looking for help, activities or community connections.">
+<meta property="og:url" content="https://signpostingsomerset.org.uk/main/">
+<meta property="og:image" content="https://signpostingsomerset.org.uk/assets/share.png">
+<meta property="og:image:width" content="1200"><meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Signposting Somerset">
+<meta property="og:locale" content="en_GB">
+<meta name="twitter:card" content="summary_large_image">
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"WebSite","name":"Signposting Somerset","url":"https://signpostingsomerset.org.uk/","description":"Discover mental health and wellbeing support across Somerset, North Somerset and B&NES: what's on, when and where."}</script>
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2064%2064%22%3E%3Crect%20width%3D%2264%22%20height%3D%2264%22%20rx%3D%2214%22%20fill%3D%22%23F2F6F4%22%2F%3E%3Cellipse%20cx%3D%2232%22%20cy%3D%2256%22%20rx%3D%2217%22%20ry%3D%224.5%22%20fill%3D%22%23C2D6CA%22%2F%3E%3Crect%20x%3D%2227.5%22%20y%3D%227%22%20width%3D%229%22%20height%3D%2249%22%20rx%3D%222.5%22%20fill%3D%22%238B735A%22%20stroke%3D%22%234A3A2C%22%20stroke-width%3D%223%22%2F%3E%3Cpath%20d%3D%22M8%2017h38l11%2011-11%2011H8z%22%20fill%3D%22%23CEB69B%22%20stroke%3D%22%234A3A2C%22%20stroke-width%3D%223.5%22%20stroke-linejoin%3D%22round%22%2F%3E%3Cpath%20d%3D%22M13%2025h27M13%2031h20%22%20stroke%3D%22%23A88E72%22%20stroke-width%3D%222%22%20stroke-linecap%3D%22round%22%2F%3E%3C%2Fsvg%3E">
+<link rel="icon" type="image/png" sizes="192x192" href="../assets/icon-192.png">
+<link rel="apple-touch-icon" href="../assets/apple-touch-icon.png">
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Literata:opsz,wght@7..72,600;7..72,700&display=swap">
+<style>/*LEAFLET_CSS*/</style>
+<style>
+/* Layout: crisis bar, header with three questions, then list (left) and map (right); stacks with a List/Map toggle on phones. Single light theme to match the map tiles. */
+:root {
+  color-scheme: light;
+  --cream: #F9F9F7; --white: #FFFFFF; --ink: #1E293B; --muted: #57534E; --line: #E7E5E4;
+  --b50: #F2F6F4; --b100: #E1EBE5; --b200: #C2D6CA; --b500: #528368; --b600: #3D6C53; --b700: #2F5441; --b800: #234031; --b900: #1B3126;
+  --amber: #FBBF24; --urgent: #DC2626; --origin: #C2410C;
+  --sans: "Inter", "Segoe UI", system-ui, sans-serif; --serif: "Literata", Georgia, serif;
+}
+* { box-sizing: border-box; }
+[hidden] { display: none !important; }
+html, body { height: 100%; }
+body { margin: 0; background: var(--cream); color: var(--ink); font-family: var(--sans); font-size: 14px; display: flex; flex-direction: column; }
+.gut { padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
+button, select { font: inherit; }
+:focus-visible { outline: 2px solid var(--b500); outline-offset: 2px; }
+
+.crisis { background: #0F172A; color: #E7E5E4; padding-block: 7px; display: flex; align-items: center; justify-content: space-between; gap: 10px; font-size: 13px; }
+.crisis b { color: var(--amber); text-transform: uppercase; letter-spacing: .08em; font-size: 11px; margin-right: 8px; }
+.crisis a { color: #fff; }
+.exit { background: #1E293B; color: #fff; border: 1px solid #334155; border-radius: 6px; padding: 5px 10px; font-size: 12px; font-weight: 600; text-decoration: none; white-space: nowrap; }
+
+/* Header: slim, so the lists and plans get the room. A watercolour strip on the right (computers); text only on phones */
+:root { --strip: url("../assets/banner.webp"); }
+.hero { position: relative; display: flex; flex-direction: column; justify-content: center; margin-bottom: 2px; }
+@media (min-width: 761px) { .hero { padding-block: 8px 6px; } }
+.hero > :not(.illus) { position: relative; z-index: 1; max-width: min(48%, 680px); }
+.hero h1 { font-size: 24px; line-height: 1.1; display: flex; align-items: center; gap: 9px; }
+.hero h1 .logo { height: 34px; width: auto; flex: none; margin: -2px 0 -1px; }
+.hero .lede { font-size: 13.5px; color: #78716C; margin: 3px 0 2px; max-width: 60ch; }
+/* The tagline stays on one line: a shorter version on narrow screens */
+.hero .lede { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: none; }
+.hero .lede .sh { display: none; }
+@media (max-width: 560px) { .hero .lede .lg { display: none; } .hero .lede .sh { display: inline; } .hero .lede { font-size: clamp(12px, 3.6vw, 13.5px); } }
+.masthead { position: relative; }
+.masthead > :not(.illus) { position: relative; z-index: 1; }
+.masthead .illus { position: absolute; z-index: 0; top: -10px; bottom: -1px; left: calc(50% - 50vw); right: calc(50% - 50vw); background: var(--strip) right bottom / auto 100% no-repeat; }
+/* On wide screens, keep the strip to the same width as the content below, fading softly at its right edge */
+@media (min-width: 1432px) {
+  .masthead .illus { left: 0; right: 0;
+    -webkit-mask-image: linear-gradient(to left, transparent 0, #000 24px); mask-image: linear-gradient(to left, transparent 0, #000 24px); }
+}
+.masthead .sitetabs { margin-bottom: 0; }
+.masthead ~ [id^="hdr-"] { margin-top: 14px; }
+@media (max-width: 760px) {
+  .hero > :not(.illus) { max-width: none; }
+  .hero .lede { font-size: 13.5px; margin-bottom: 6px; }
+  .masthead .illus { display: none; }
+}
+.aboutpage { overflow: hidden; }
+header.top { position: relative; overflow: hidden; background: var(--white); border-bottom: 1px solid var(--line); padding-block: 10px 10px; }
+.inner { max-width: 1400px; margin: 0 auto; }
+h1 { font-family: var(--serif); color: var(--b900); font-size: 26px; margin: 0; }
+.lede { color: #78716C; margin: 2px 0 14px; }
+.datasrc { color: #78716C; font-size: 12px; margin: -10px 0 12px; }
+.qs { display: grid; grid-template-columns: 27% 33% minmax(0, 1fr) auto; gap: 10px; }
+@media (max-width: 899px) { .qs { grid-template-columns: 1fr; } }
+.q { background: var(--b50); border: 2px solid transparent; border-radius: 10px; padding: 5px 10px; min-width: 0; }
+.q.on { background: var(--white); border-color: var(--b500); }
+.q label, .q .lab { display: block; font-size: 10px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: var(--b700); margin: 0 0 2px 2px; }
+.q select { width: 100%; border: 0; background: transparent; font-weight: 600; color: var(--ink); padding: 2px 0; cursor: pointer; }
+.where { display: grid; grid-template-columns: 1fr auto auto; gap: 8px; align-items: center; }
+.where select#within { width: auto; }
+#q-where { position: relative; }
+.pointnote { position: absolute; right: 10px; top: 6px; max-width: 70%; font-size: 11px; line-height: 1.2; color: #9A3412; text-align: right; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.pointnote:empty { display: none; }
+.locbtn { display: grid; place-items: center; width: 26px; height: 26px; border: 1px solid #C9D6CE; border-radius: 50%; background: var(--white); color: var(--b700); cursor: pointer; padding: 0; }
+.locbtn:hover, .locbtn:focus-visible { border-color: var(--b500); background: var(--b50); }
+.locbtn svg { width: 14px; height: 14px; }
+.locbtn[disabled] { opacity: .5; cursor: progress; }
+.pointnote button { border: 0; background: none; color: var(--b700); text-decoration: underline; cursor: pointer; padding: 0; font-size: 11px; }
+.sumrow { display: flex; justify-content: space-between; align-items: center; gap: 10px; margin-top: 10px; padding-top: 8px; border-top: 1px solid #F5F5F4; flex-wrap: wrap; }
+/* Count line hidden on screen; still read out by screen readers when results change */
+.summary { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+.sumrow { margin: 0; padding: 0; border: 0; }
+.qs .sort .lab { font-size: 12px; color: var(--muted); }
+@media (min-width: 900px) {
+  .qs .sort { flex-direction: column; align-items: flex-start; justify-content: center; gap: 2px; background: var(--b50); border-radius: 10px; padding: 5px 10px; }
+  .qs .sort .lab { display: block; font-size: 10px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: var(--b700); margin: 0 0 2px 2px; }
+}
+.summary b { color: var(--ink); background: #F1F5F9; padding: 1px 6px; border-radius: 4px; }
+.sort { display: flex; gap: 6px; align-items: center; font-size: 12px; color: var(--muted); }
+.seg { display: inline-flex; background: #E7E5E4; border-radius: 8px; padding: 3px; }
+.seg button { border: 0; background: transparent; padding: 4px 10px; border-radius: 6px; font-size: 12px; font-weight: 600; color: #78716C; cursor: pointer; }
+.seg button[aria-pressed="true"] { background: var(--white); color: var(--b900); box-shadow: 0 1px 2px rgba(0,0,0,.08); }
+.seg button:disabled { opacity: .4; cursor: default; }
+.tabs { display: none; }
+.sitetabs { display: flex; gap: 4px; margin: 4px 0 14px; border-bottom: 1px solid var(--line); overflow-x: auto; scrollbar-width: none; }
+.sitetabs button { white-space: nowrap; }
+.sitetabs .sh { display: none; }
+#about.talk { max-width: 1432px; }  /* 1400 + gutters, so the card lines up with the title and tabs */
+.aboutpage { max-width: none; margin: 0; background: var(--white); border: 1px solid var(--line); border-radius: 16px; padding: 22px 24px; line-height: 1.55; }
+.aboutpage h2 { font-family: var(--serif); color: var(--b900); font-size: 22px; margin: 0 0 6px; }
+.aboutpage h3 { font-family: var(--serif); color: var(--b900); font-size: 17px; margin: 22px 0 6px; }
+.aboutpage p, .aboutpage ul { margin: 6px 0; color: #44403C; }
+.aboutpage ul { padding-left: 20px; }
+.aboutpage .note { background: #FFF7ED; border: 1px solid #FED7AA; border-radius: 12px; padding: 10px 14px; color: #7C2D12; margin: 12px 0 4px; }
+.aboutpage .note { max-width: none; }
+/* Two fixed columns (one on narrow screens), each a simple stack, so a short section doesn't leave a gap beside a long one.
+   Left: what it is, what's included, About Assist (with its lock button). Right: how it's kept accurate, suggest a change. */
+.aboutpage .acols { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 420px), 1fr)); gap: 0 48px; align-items: start; margin-top: 18px; }
+.aboutpage .acols section { max-width: 68ch; margin: 0 0 18px; }
+.aboutpage .acols section > h3:first-child { margin-top: 0; }
+.aboutpage .stats { font-weight: 700; color: var(--b800); }
+.aboutpage .btn { display: inline-block; margin-top: 6px; background: var(--b700); color: #fff; text-decoration: none; font-weight: 700; padding: 10px 16px; border-radius: 10px; }
+.aboutpage .small { font-size: 13px; color: #78716C; }
+.aboutpage a:not(.btn) { color: var(--b700); text-decoration-color: var(--b200); text-underline-offset: 2px; }   /* same as Assist */
+.aboutpage a:not(.btn):hover { color: var(--b900); text-decoration-color: currentColor; }
+.sitetabs button { border: 0; background: none; padding: 9px 14px 10px; font-weight: 700; font-size: 14px; color: #78716C; cursor: pointer; border-bottom: 3px solid transparent; margin-bottom: -1px; }
+.sitetabs button[aria-selected="true"] { color: var(--b900); border-bottom-color: var(--b600); }
+/* Tabs in groups: Browse (In person, Phone and online, Courses) | Assist | About */
+.sitetabs { align-items: flex-end; }
+.sitetabs .tgrp { display: inline-flex; align-items: flex-end; gap: 4px; position: relative; flex: none; }
+.sitetabs #tab-assist, .sitetabs #tab-about { margin-left: 6px; padding-left: 14px; position: relative; }
+.sitetabs #tab-assist::before, .sitetabs #tab-about::before { content: ""; position: absolute; left: 0; top: 10px; bottom: 12px; border-left: 1px solid var(--line); }
+.sitetabs #tab-about { font-weight: 600; }
+/* On narrow phones the last tab may not fit: fade the edge so it's clear the row scrolls */
+.sitetabs.more { -webkit-mask-image: linear-gradient(to right, #000 calc(100% - 36px), transparent); mask-image: linear-gradient(to right, #000 calc(100% - 36px), transparent); }
+@media (max-width: 420px) { .sitetabs { gap: 0; } .sitetabs .tgrp { gap: 0; } .sitetabs button { padding-inline: 5px; font-size: 13px; } .sitetabs #tab-assist, .sitetabs #tab-about { margin-left: 1px; padding-left: 7px; } .sitetabs #tab-assist { gap: 4px; } .sitetabs .lg { display: none; } .sitetabs .sh { display: inline; } }
+/* Phone and online / Courses bars: the dropdowns share the width evenly; the checkbox sits at the right, where Sort is on In person */
+.tq { display: flex; gap: 10px; align-items: stretch; }
+.tq > .q { flex: 1 1 0; min-width: 0; }
+.tq > div.q:last-of-type:not(:first-child) { flex: 0 0 var(--lastdd); }
+.tq > .toggle { flex: 0 0 var(--endcol); white-space: nowrap; }
+:root { --endcol: 168px; --lastdd: 25%; }  /* --lastdd: width of the rightmost dropdown on every tab */  /* width of Sort on In person, and of the checkbox on the other tabs */
+@media (min-width: 900px) { .qs { grid-template-columns: minmax(0, 1fr) minmax(0, 1.3fr) var(--lastdd) var(--endcol); } }
+@media (max-width: 899px) { .tq { flex-direction: column; } .tq > .q, .tq > div.q:last-of-type:not(:first-child), .tq > .toggle { flex: none; } }
+.toggle { display: flex; align-items: center; gap: 8px; background: var(--b50); border: 2px solid transparent; border-radius: 12px; padding: 8px 14px; font-weight: 600; cursor: pointer; }
+.toggle.on { background: var(--white); border-color: var(--b500); }
+#panel-talk { flex: 1; min-height: 0; overflow-y: auto; }
+.talk { max-width: 1400px; margin: 0 auto; padding-block: 14px 110px; }
+.tgrid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 12px; }
+.gh { font-family: var(--serif); color: var(--b900); font-size: 18px; margin: 20px 4px 10px; }
+.talk > .gh:first-child { margin-top: 0; }  /* first heading sits as close to the filters as the In person cards */
+.gh small { font-family: var(--sans); font-size: 12px; color: var(--muted); font-weight: 500; margin-left: 8px; }
+.tcard { background: var(--white); border-radius: 16px; padding: 14px 16px; box-shadow: 0 1px 2px rgba(0,0,0,.05); border: 1px solid var(--line); display: grid; grid-template-columns: minmax(0, 1fr); gap: 8px; align-content: start; min-width: 0; }
+.tcard h3 { overflow-wrap: anywhere; }
+.tcard h3 { font-family: var(--serif); color: var(--b900); font-size: 17px; margin: 0; }
+.reach { font-size: 18px; font-weight: 700; color: var(--b800); font-variant-numeric: tabular-nums; overflow-wrap: anywhere; }
+.reach.email { font-size: 15px; font-weight: 600; }
+.reach a { color: inherit; text-decoration: none; }
+.openp { display: inline-flex; align-items: center; gap: 6px; font-size: 12px; font-weight: 700; padding: 3px 9px; border-radius: 999px; }
+.openp.yes { background: #D1FAE5; color: #064E3B; } .openp.no { background: #F5F5F4; color: #57534E; }
+/* not open yet: later today = amber, this week = blue, further off stays grey */
+.openp.today { background: #FEF3C7; color: #78350F; } .openp.week { background: #E0ECF8; color: #1E3A5F; }
+.openp.today::before, .openp.week::before { content: ""; width: 7px; height: 7px; border-radius: 50%; border: 1.5px solid currentColor; box-sizing: border-box; }
+.openp.yes::before { content: ""; width: 7px; height: 7px; border-radius: 50%; background: #10B981; }
+.tcard .row1 { flex-wrap: nowrap; align-items: center; }
+.tcard .row1 .mode { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.tcard .row1 .openp { flex-shrink: 0; white-space: nowrap; }
+/* Copy details: a small icon on each card; copies plain text ready to paste into a message */
+.chipr { align-items: center; }
+.tcard .row1 .chipr { flex-shrink: 0; flex-wrap: nowrap; }
+.copy { position: relative; width: 28px; height: 28px; display: inline-grid; place-items: center; flex: none; border: 1px solid var(--line); border-radius: 8px; background: #fff; color: var(--b700); cursor: pointer; padding: 0; }
+.copy:hover, .copy:focus-visible { border-color: var(--b200); background: var(--b50); }
+.copy svg { width: 15px; height: 15px; }
+.copy::after { content: attr(data-tip); position: absolute; right: 0; top: calc(100% + 6px); z-index: 5; background: var(--ink); color: #fff; font: 600 12px var(--sans); padding: 4px 8px; border-radius: 6px; white-space: nowrap; opacity: 0; pointer-events: none; transition: opacity .1s; }
+@media (hover: hover) { .copy:hover::after { opacity: 1; } }
+.copy:focus-visible::after { opacity: 1; }
+/* After a click: a brief "Copied" acknowledgement, shown on touch screens too */
+.copy.copied { border-color: var(--b500); background: var(--b50); }
+.copy.copied::after { content: "Copied"; opacity: 1; }
+.mode { font-size: 10px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: var(--b700); }
+@media (max-width: 899px) { .tabs { display: inline-flex; } }
+
+main { flex: 1; min-height: 0; display: grid; grid-template-columns: minmax(0, 42%) minmax(0, 1fr); max-width: 1400px; width: 100%; margin: 0 auto var(--footh, 50px); }
+@media (max-width: 899px) { main { grid-template-columns: 1fr; } main.show-map #list { display: none; } main:not(.show-map) #mapwrap { display: none; } }
+#list { overflow-y: auto; padding: 14px 14px 90px; border-right: 1px solid var(--line); min-height: 0; }
+/* Line the list and map up with the header's edges (same 16px gutter and width) */
+@media (min-width: 900px) { main { max-width: 1432px; padding-inline: max(16px, env(safe-area-inset-left, 0px)); } #list { padding-left: 0; } }
+#mapwrap { position: relative; min-height: 360px; }
+#map { position: absolute; inset: 0; background: #EEF0EC; }
+.tilenote { position: absolute; left: 12px; bottom: 12px; z-index: 500; pointer-events: none; background: rgba(255,255,255,.95); border: 1px solid var(--line); border-radius: 8px; padding: 6px 10px; font-size: 12px; color: var(--muted); max-width: 70%; }
+
+.card { background: var(--white); border: 2px solid transparent; border-radius: 16px; padding: 14px 16px; margin-bottom: 12px; box-shadow: 0 1px 2px rgba(0,0,0,.05); cursor: pointer; transition: border-color .15s, box-shadow .15s; }
+.card:hover, .card.hot { border-color: var(--b200); box-shadow: 0 4px 10px rgba(0,0,0,.07); }
+.card.flash { border-color: var(--b500); }
+.row1 { display: flex; justify-content: space-between; gap: 8px; flex-wrap: wrap; margin-bottom: 8px; }
+.badge { display: inline-flex; align-items: center; gap: 6px; font-size: 12px; font-weight: 700; padding: 4px 9px; border-radius: 7px; border: 1px solid; }
+.b-drop { background: #D1FAE5; color: #064E3B; border-color: #A7F3D0; }
+.b-sign { background: #E0F2FE; color: #0C4A6E; border-color: #BAE6FD; }
+.b-book { background: #FEF3C7; color: #78350F; border-color: #FDE68A; }
+.b-ref { background: #F1F5F9; color: #1E293B; border-color: #CBD5E1; }
+.chipr { display: flex; gap: 6px; flex-wrap: wrap; }
+.chip { font-size: 10px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; color: #57534E; background: #F5F5F4; border: 1px solid var(--line); padding: 3px 7px; border-radius: 6px; }
+.chip.dist { color: var(--b800); background: var(--b50); border-color: var(--b100); text-transform: none; letter-spacing: 0; font-size: 11px; }
+.card h2 { font-family: var(--serif); color: var(--b900); font-size: 17px; line-height: 1.25; margin: 0 0 4px; text-wrap: balance; }
+.maplegend { padding: 8px 10px 6px !important; min-width: 230px; font-family: var(--sans); }
+.maplegend button { font-family: inherit; }
+.leaflet-container .leaflet-tooltip, .leaflet-container .leaflet-popup-content { font-family: var(--sans); }
+.maplegend b span { text-transform: none; letter-spacing: 0; font-weight: 500; color: #78716C; margin-left: 4px; }
+.maplegend button { display: flex; align-items: center; gap: 9px; width: 100%; background: none; border: 0; border-bottom: 1px solid #F5F5F4; padding: 5px 4px; margin: 0; border-radius: 6px; font-size: 13px; line-height: 1.25; color: var(--ink); cursor: pointer; text-align: left; }
+.maplegend button:last-child { border-bottom: 0; }
+.maplegend button:hover { background: var(--b50); }
+.maplegend button i { flex: none; width: 26px; height: 13px; border-radius: 4px; background: var(--c); border: 0; box-shadow: none; margin: 0; vertical-align: 0; }
+.maplegend .lt { display: flex; flex-direction: column; min-width: 0; }
+.maplegend .lt small { font-size: 11px; color: #78716C; white-space: nowrap; }
+.maplegend button em { margin-left: auto; padding-left: 10px; font-style: normal; font-size: 11px; color: #78716C; font-variant-numeric: tabular-nums; }
+.maplegend button[aria-pressed="false"] { color: #A8A29E; }
+.maplegend button.zero:not([aria-pressed="false"]) { color: #A8A29E; }
+.maplegend button[aria-pressed="false"] .lt { text-decoration: line-through; }
+.maplegend button[aria-pressed="false"] i { background: transparent; box-shadow: inset 0 0 0 1.5px #A8A29E; }
+.maplegend button.all { justify-content: center; color: var(--b700); font-weight: 700; text-decoration: underline; margin-top: 2px; }
+.maplegend button.lghead { border: 0; padding: 2px 2px 4px; margin: 0; gap: 6px; font-size: 10px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: var(--b700); }
+.maplegend button.lghead:hover { background: none; }
+.maplegend button.lghead span { text-transform: none; letter-spacing: 0; font-weight: 500; color: #78716C; }
+.maplegend button.lghead .dots { display: inline-flex; gap: 3px; text-transform: none; }
+.maplegend button.lghead .dots i { width: 9px; height: 9px; border-radius: 50%; }
+.maplegend button.lghead svg { margin-left: auto; width: 14px; height: 14px; flex: none; color: var(--b700); transition: transform .15s; }
+.maplegend.closed { min-width: 0; padding: 6px 10px !important; }
+.maplegend.closed button.lghead { padding: 2px; }
+.maplegend.closed button.lghead svg { transform: rotate(180deg); }
+@media (max-width: 700px) { .maplegend { min-width: 0; } .maplegend .lt small, .maplegend button em { display: none; } .maplegend button { padding: 3px 4px; font-size: 12px; } .maplegend button i { width: 18px; height: 10px; } }
+.kind { display: flex; align-items: center; gap: 6px; font-size: 11px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; color: #57534E; margin: 0 0 3px; }
+.kind i { width: 10px; height: 10px; border-radius: 50%; flex: none; box-shadow: 0 0 0 2px #fff, 0 0 0 3px rgba(0,0,0,.12); }
+.meta { font-size: 12px; color: var(--muted); font-weight: 500; margin-bottom: 10px; }
+.next { background: rgba(242,246,244,.7); border: 1px solid var(--b100); border-radius: 10px; padding: 8px 10px; margin-bottom: 10px; }
+.next .lab { font-size: 10px; letter-spacing: .1em; text-transform: uppercase; font-weight: 700; color: var(--b700); }
+.next .val { font-weight: 600; font-size: 14px; }
+.next .val.today { color: #047857; }
+.next .val.chk { color: #92400E; }
+.desc { font-size: 13px; color: #57534E; line-height: 1.5; margin: 0 0 8px; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+.card.open .desc { -webkit-line-clamp: unset; display: block; }
+.who { font-size: 12px; color: var(--ink); margin-bottom: 8px; }
+.who em { font-style: normal; color: #92400E; }
+.foot { font-size: 12px; color: #78716C; border-top: 1px solid #F5F5F4; padding-top: 8px; display: grid; gap: 3px; }
+.foot a { color: var(--b700); }
+a.copy.dirs { text-decoration: none; }
+.approx { color: #A8A29E; }
+.morehint { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 8px 12px; margin: 14px 0 6px; padding: 12px 14px; border: 1px dashed var(--line); border-radius: 12px; background: var(--white); font-size: 14px; color: var(--muted); }
+.morehint b { color: inherit; }
+.morehint button { font: inherit; font-size: 13px; font-weight: 600; padding: 6px 12px; border-radius: 999px; border: 1px solid var(--line); background: var(--white); cursor: pointer; }
+.morehint button:hover, .morehint button:focus-visible { border-color: currentColor; }
+.groupline { font-size: 11px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); margin: 18px 4px 8px; }
+.empty { background: var(--white); border: 1px solid var(--line); border-radius: 16px; padding: 28px; text-align: center; color: var(--muted); }
+
+.pin { width: 14px; height: 14px; border-radius: 50%; background: var(--b600); border: 2px solid #fff; box-shadow: 0 1px 3px rgba(0,0,0,.35); transition: transform .15s; }
+.pin.hot { transform: scale(1.6); box-shadow: 0 0 0 2px var(--b900), 0 1px 3px rgba(0,0,0,.35); }
+.cpin.area { width: 34px; height: 34px; font-size: 13px; }
+.cpin.area span { width: 24px; height: 24px; font-size: 12px; }
+.cpin { width: 28px; height: 28px; border-radius: 50%; background: var(--b700); color: #fff; border: 2px solid #fff; box-shadow: 0 1px 4px rgba(0,0,0,.35); display: grid; place-items: center; font-size: 12px; font-weight: 700; font-variant-numeric: tabular-nums; transition: transform .15s; cursor: pointer; }
+.cpin span { width: 18px; height: 18px; border-radius: 50%; background: #fff; color: var(--b900); display: grid; place-items: center; font-size: 11px; }
+.cpin.approx { opacity: .85; }
+.cpin.hot { transform: scale(1.3); box-shadow: 0 0 0 2px var(--b900), 0 1px 4px rgba(0,0,0,.35); }
+.plist-h { font-weight: 700; color: var(--b900); margin-bottom: 6px; font-size: 13px; }
+.plist ul { list-style: none; margin: 0; padding: 0; max-height: 220px; overflow-y: auto; display: grid; gap: 2px; }
+.plink { border: 0; background: none; padding: 4px 0; text-align: left; color: var(--b700); text-decoration: underline; cursor: pointer; font: 500 13px var(--sans); }
+.pin.approx { opacity: .7; border-style: dashed; }
+.maplegend { background: rgba(255,255,255,.95); border: 1px solid var(--line); border-radius: 8px; padding: 6px 9px; font-size: 11.5px; color: var(--ink); line-height: 1.6; box-shadow: 0 1px 3px rgba(0,0,0,.1); }
+.maplegend b { display: block; font-size: 10px; letter-spacing: .08em; text-transform: uppercase; color: var(--b700); }
+.maplegend i { display: inline-block; width: 10px; height: 10px; border-radius: 50%; margin-right: 6px; vertical-align: -1px; border: 1.5px solid #fff; box-shadow: 0 0 0 1px rgba(0,0,0,.15); }
+.opin { width: 16px; height: 16px; border-radius: 50%; background: var(--origin); border: 3px solid #fff; box-shadow: 0 0 0 2px var(--origin); }
+
+footer.help { position: fixed; left: 0; right: 0; bottom: 0; z-index: 1000; background: var(--b800); color: #fff; padding-block: 9px calc(9px + env(safe-area-inset-bottom, 0px)); transition: background .3s; }
+footer.help.urgent { background: var(--urgent); }
+footer .inner { display: flex; justify-content: space-between; align-items: center; gap: 10px; flex-wrap: wrap; }
+footer h4 { margin: 0; font-size: 13px; }
+footer p { margin: 1px 0 0; font-size: 11px; color: var(--b100); }
+footer.urgent p { color: #FEE2E2; }
+@media (max-width: 600px) {
+  footer.help { padding-block: 6px calc(6px + env(safe-area-inset-bottom, 0px)); }
+  footer .inner { flex-wrap: nowrap; gap: 8px; }
+  footer .inner > div:first-child { flex: 1; min-width: 0; }
+  footer h4 { font-size: 12px; line-height: 1.25; }
+  footer p, footer .line .num { display: none; }
+  footer .lines { flex-wrap: nowrap; gap: 6px; }
+  footer .line { padding: 6px 10px; }
+}
+.lines { display: flex; gap: 8px; flex-wrap: wrap; }
+.line { font-size: 12px; font-weight: 700; padding: 6px 12px; border-radius: 8px; background: #fff; color: var(--b900); text-decoration: none; white-space: nowrap; }
+.line.ghost { background: transparent; color: #fff; border: 1px solid rgba(255,255,255,.45); }
+@media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
+</style>
+
+<div class="crisis gut">
+  <div><b>Crisis</b>Immediate danger or medical emergency: call <a href="tel:999">999</a> or NHS <a href="tel:111">111 (option 2)</a></div>
+  <a class="exit" href="https://www.bbc.co.uk/weather" rel="noopener">Quick exit</a>
+</div>
+
+<header class="top gut">
+  <div class="inner">
+    <div class="masthead">
+      <div class="illus" role="img" aria-label="Watercolour illustration: a path with map pins winding through Somerset fields towards Glastonbury Tor, people meeting and walking together, and a signpost to drop-ins, peer support, advice and community"></div>
+    <div class="hero">
+      <h1><img class="logo" src="../assets/logo-signpost.webp" alt="" width="31" height="34">Signposting Somerset</h1>
+      <p class="lede" id="lede"><span class="lg">Connecting people with local mental health and wellbeing support.</span><span class="sh">Local mental health and wellbeing support.</span></p>
+      <p class="datasrc" id="datasrc" hidden></p>
+      <span id="copy-live" role="status" aria-live="polite" style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)"></span>
+    </div>
+    <nav class="sitetabs" role="tablist" aria-label="Kind of support">
+      <span class="tgrp" role="presentation"><button type="button" role="tab" id="tab-near" aria-selected="false" aria-controls="panel-near">In person</button>
+      <button type="button" role="tab" id="tab-talk" aria-selected="false" aria-controls="panel-talk"><span class="lg">Phone and online</span><span class="sh">Phone &amp; online</span></button>
+      <button type="button" role="tab" id="tab-course" aria-selected="false" aria-controls="panel-course">Courses</button></span>
+<!--ASSIST_TAB-->
+      <button type="button" role="tab" id="tab-about" aria-selected="false" aria-controls="panel-about">About</button>    </nav>
+    </div>
+    <div id="hdr-talk" class="tq">
+      <div class="q" id="q-tsupport"><label for="t-support">Support for</label><select id="t-support"></select></div>
+      <div class="q" id="q-tarea"><label for="t-area">Coverage</label><select id="t-area"><option value="">Local and UK-wide</option><option value="local">Local only</option><option value="national">UK-wide only</option></select></div>
+      <label class="toggle" id="q-open"><input type="checkbox" id="t-open"> Open now only</label>
+    </div>
+    <div id="hdr-course" class="tq" hidden>
+      <div class="q" id="q-csupport"><label for="c-support">Support for</label><select id="c-support"></select></div>
+      <div class="q" id="q-cfmt"><label for="c-fmt">Format</label><select id="c-fmt"><option value="">In person or online</option><option value="in-person">In person</option><option value="online">Online</option></select></div>
+      <label class="toggle" id="q-cbook"><input type="checkbox" id="c-book"> Can still join</label>
+    </div>
+    <div id="hdr-about" hidden></div>
+<!--ASSIST_HDR-->    <div id="hdr-near" hidden>
+    <div class="qs">
+      <div class="q" id="q-support"><label for="f-support">1. Support for</label>
+        <select id="f-support"></select></div>
+      <div class="q" id="q-where"><span class="lab">2. Where?</span>
+        <div class="where">
+          <select id="f-town" aria-label="Town"></select>
+          <button type="button" class="locbtn" id="uselocation" hidden aria-label="Use my location" title="Use my location (stays on your device: not stored or sent anywhere)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="7"/><circle cx="12" cy="12" r="2.5" fill="currentColor"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3"/></svg></button>
+          <select id="within" aria-label="Distance">
+            <option value="2">within 2 miles</option><option value="5">within 5 miles</option>
+            <option value="10" selected>within 10 miles</option><option value="20">within 20 miles</option><option value="0">any distance</option>
+          </select>
+        </div>
+        <div class="pointnote" id="pointnote"></div>
+      </div>
+      <div class="q" id="q-when"><label for="f-when">3. When? <span id="today" style="float:right;text-transform:none;letter-spacing:0;color:#78716C;font-weight:500"></span></label>
+        <select id="f-when">
+          <option value="any">Any time</option><option value="now">Open now (drop-ins)</option><option value="today">Today</option>
+          <option value="evening">This evening (after 5pm)</option><option value="tomorrow">Tomorrow</option>
+          <option value="weekend">This weekend</option><option value="week" selected>Next 7 days</option><option value="month">Next 4 weeks</option>
+        </select></div>
+      <div class="sort"><span class="lab">Sort</span>
+        <span class="seg"><button type="button" id="s-soon" aria-pressed="true">Soonest</button><button type="button" id="s-near" aria-pressed="false">Nearest</button></span>
+        <span class="seg tabs"><button type="button" id="t-list" aria-pressed="true">List</button><button type="button" id="t-map" aria-pressed="false">Map</button></span>
+      </div>
+    </div>
+    <div class="sumrow">
+      <div class="summary" id="summary" role="status" aria-live="polite"></div>
+    </div>
+    </div>
+  </div>
+</header>
+
+<section id="panel-talk" role="tabpanel" aria-labelledby="tab-talk"><div class="talk gut" id="talk"></div></section>
+<section id="panel-about" role="tabpanel" aria-labelledby="tab-about" hidden style="flex:1;min-height:0;overflow-y:auto"><div class="talk gut" id="about"></div></section>
+<section id="panel-course" role="tabpanel" aria-labelledby="tab-course" hidden style="flex:1;min-height:0;overflow-y:auto"><div class="talk gut" id="courses"></div></section>
+<!--ASSIST_PANEL--><div id="panel-near" role="tabpanel" aria-labelledby="tab-near" hidden style="flex:1;min-height:0;display:flex;flex-direction:column">
+
+<main id="main">
+  <section id="list" aria-live="polite"></section>
+  <div id="mapwrap"><div id="map" role="region" aria-label="Map of services"></div><div class="tilenote" id="tilenote" hidden>Map tiles can't load here, so only the pins show. They load normally when the page is opened from your computer or a website.</div></div>
+</main>
+</div>
+
+<footer class="help gut" id="help">
+  <div class="inner">
+    <div><h4 id="help-title">Always available: 24/7 helpline</h4><p>Free listening support when someone needs to talk right now.</p></div>
+    <div class="lines"><a class="line" href="tel:116123" aria-label="Call Samaritans on 116 123">Samaritans<span class="num">: 116 123</span></a></div>
+  </div>
+</footer>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.js"></script>
+<script>
+const DATA = /*DATA*/[];
+// Keep the map and list clear of the fixed helpline bar, whatever its height
+(() => { const f = document.getElementById("help"); const set = () => document.documentElement.style.setProperty("--footh", f.offsetHeight + "px");
+  set(); if (window.ResizeObserver) new ResizeObserver(set).observe(f); else addEventListener("resize", set); })();
+const TOWNS = /*TOWNS*/{};
+const APPROX_TOWNS = /*APPROX*/[];
+// Outline of the historic county (Somerset, North Somerset, Bath and North East Somerset), simplified from ONS boundaries
+const OUTLINE = /*OUTLINE*/null;
+/* Places in the "Where?" dropdown: fixed centre points. With "within 10 miles" these cover almost all of the county;
+   anywhere else is reached with the location button or by tapping the map. Joint entries sit between the two towns. */
+const PLACES = [
+  ["Somerset", [["Taunton", 51.015, -3.103], ["Yeovil", 50.942, -2.633], ["Bridgwater", 51.128, -3.003], ["Frome", 51.228, -2.322],
+    ["Wells", 51.209, -2.645], ["Glastonbury and Street", 51.137, -2.727], ["Burnham-on-Sea", 51.238, -2.997], ["Minehead", 51.204, -3.475],
+    ["Dulverton", 51.041, -3.551], ["Chard", 50.872, -2.964], ["Wincanton", 51.056, -2.410], ["Langport", 51.038, -2.828]]],
+  ["North Somerset", [["Weston-super-Mare", 51.346, -2.977], ["Nailsea and Clevedon", 51.435, -2.805]]],
+  ["Bath and North East Somerset", [["Bath", 51.381, -2.359], ["Midsomer Norton and Radstock", 51.288, -2.465]]]];
+const PLACE = Object.fromEntries(PLACES.flatMap(([, ps]) => ps.map(([n, la, lo]) => [n, [la, lo]])));
+const LIVE_ONLY = false;  // true in the GitHub version: no built-in copy, records come only from the sheet
+let liveMsg = "<strong>Loading services…</strong>";
+
+/* ---------- vocabularies ---------- */
+// Specialist: mental health, crisis, bereavement and other specific needs. Practical: housing, finances and life circumstances.
+// Everyday wellbeing: connection, activity, learning, mindfulness and community.
+const GROUPS = [["Specialist support", ["crisis prevention", "low mood", "anxiety", "bereavement", "hearing voices", "eating disorders", "long-term pain", "dementia", "addiction", "abuse", "caring for someone"]],
+  ["Practical help and support", ["housing", "finances", "food"]],
+  ["Everyday wellbeing", ["connect", "be active", "take notice", "keep learning", "giving"]]];
+const LABEL = { "hearing voices": "Psychosis and hearing voices", "crisis prevention": "Crisis support", "addiction": "Addiction (alcohol, drugs, gambling)", "abuse": "Abuse (domestic, child or adult)" };
+const cap = s => LABEL[s] || s[0].toUpperCase() + s.slice(1);
+const esc = s => String(s ?? "").replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+const split = s => (s || "").split(";").map(x => x.trim()).filter(Boolean);
+
+/* ---------- time logic ---------- */
+const DOW = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+const BANK = new Set(["2026-01-01","2026-04-03","2026-04-06","2026-05-04","2026-05-25","2026-08-31","2026-12-25","2026-12-28",
+  "2027-01-01","2027-03-26","2027-03-29","2027-05-03","2027-05-31","2027-08-30","2027-12-27","2027-12-28"]);
+const iso = d => `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
+const dayStart = d => new Date(d.getFullYear(), d.getMonth(), d.getDate());
+const addDays = (d, n) => new Date(d.getFullYear(), d.getMonth(), d.getDate() + n);
+function parseDays(str) {
+  const out = new Set();
+  for (const p of split(str)) {
+    const m = p.match(/^(\w{3})-(\w{3})$/);
+    if (m && DOW.includes(m[1]) && DOW.includes(m[2])) { let i = DOW.indexOf(m[1]); const j = DOW.indexOf(m[2]); for (;;) { out.add(i); if (i === j) break; i = (i + 1) % 7; } }
+    else if (DOW.includes(p)) out.add(DOW.indexOf(p));
+  }
+  return out;
+}
+function parseTimes(t) { const m = (t || "").match(/^(\d\d):(\d\d)(?:-(\d\d):(\d\d))?$/); return m ? { s: +m[1] * 60 + +m[2], e: m[3] ? +m[3] * 60 + +m[4] : null } : null; }
+function parseDates(str) {
+  const list = [], ranges = [];
+  for (const p of split(str)) { const r = p.match(/^(\d{4}-\d\d-\d\d) to (\d{4}-\d\d-\d\d)$/); if (r) ranges.push([r[1], r[2]]); else list.push(p); }
+  return { list: new Set(list), ranges, last: [...list, ...ranges.map(r => r[1])].sort().pop() };
+}
+const ORD = { "1st": 1, "2nd": 2, "3rd": 3, "4th": 4 };
+function nthOk(d, freq) {
+  const m = freq.match(/^((?:1st|2nd|3rd|4th|last)(?: and (?:1st|2nd|3rd|4th|last))?) (\w{3}) of month$/i);
+  if (!m) return null;
+  const n = Math.ceil(d.getDate() / 7), last = addDays(d, 7).getMonth() !== d.getMonth();
+  return m[1].split(" and ").some(w => w.toLowerCase() === "last" ? last : ORD[w.toLowerCase()] === n);
+}
+// Kind of schedule: dated (we can compute), check, website, appointment, ended
+function schedKind(s) {
+  const f = (s.frequency || "").toLowerCase();
+  if (s.dates) return s._dates.last && s._dates.last < iso(new Date()) ? "ended" : "dated";
+  if (f === "see website") return "website";
+  if (!s.days) return ["book", "referral"].includes(s.access) ? "appointment" : "check";
+  if (f === "fortnightly" || f.includes("dates vary")) return "check";
+  if (f && nthOk(new Date(), f) === null) return "check";
+  return "dated";
+}
+function runsOn(s, d) {
+  if (!s._days.has(d.getDay()) && s._days.size) return false;
+  if (s.dates) { const k = iso(d); return s._dates.list.has(k) || s._dates.ranges.some(([a, b]) => k >= a && k <= b); }
+  return s.frequency ? nthOk(d, s.frequency) === true : true;
+}
+// occurrences from `from` for `days` days
+function occurrences(s, from, days) {
+  if (s._kind !== "dated") return [];
+  const out = [], t = s._times;
+  for (let i = 0; i < days; i++) {
+    const d = addDays(dayStart(from), i);
+    if (!runsOn(s, d)) continue;
+    const st = new Date(d.getTime() + (t ? t.s : 0) * 60000), en = new Date(d.getTime() + (t ? (t.e ?? t.s + 90) : 1439) * 60000);
+    out.push({ st, en, bank: BANK.has(iso(d)), timed: !!t });
+  }
+  return out;
+}
+const fmtT = m => `${String(Math.floor(m / 60)).padStart(2, "0")}:${String(m % 60).padStart(2, "0")}`;
+function nextText(s, now) {
+  if (s._kind === "website") return { cls: "chk", txt: "Times vary: see website" };
+  if (s._kind === "appointment") return { cls: "chk", txt: "By appointment" };
+  if (s._kind === "check") return { cls: "chk", txt: `Check dates${s.frequency ? ` (${s.frequency})` : ""}${s.days ? ` · ${s.days} ${s.times}` : ""}` };
+  const o = occurrences(s, now, 70).find(x => x.en > now);
+  if (!o) return { cls: "chk", txt: "No upcoming dates" };
+  const d0 = dayStart(now), dd = Math.round((dayStart(o.st) - d0) / 864e5);
+  const day = dd === 0 ? "Today" : dd === 1 ? "Tomorrow" : o.st.toLocaleDateString("en-GB", { weekday: "short", day: "numeric", month: "short" });
+  const t = s._times ? `, ${fmtT(s._times.s)}${s._times.e != null ? "–" + fmtT(s._times.e) : ""}` : split(s.mode).includes("in-person") ? " (time not given: check)" : " (no set time)";
+  return { cls: dd === 0 ? "today" : "", txt: `${day}${t}${o.bank ? " (bank holiday: check it's running)" : ""}`, at: o.st };
+}
+
+/* ---------- distance ---------- */
+function miles(a, b) { const R = 3958.8, r = Math.PI / 180, dLa = (b.lat - a.lat) * r, dLo = (b.lon - a.lon) * r;
+  const h = Math.sin(dLa / 2) ** 2 + Math.cos(a.lat * r) * Math.cos(b.lat * r) * Math.sin(dLo / 2) ** 2; return 2 * R * Math.asin(Math.sqrt(h)); }
+
+/* ---------- controls ---------- */
+const $ = id => document.getElementById(id);
+const fs = $("f-support");
+const supportOptions = list => `<option value="">Anything</option>` + GROUPS.map(([g, vals]) => {
+  const v = vals.filter(x => list.some(s => s._sf.includes(x))); return v.length ? `<optgroup label="${g}">${v.map(x => `<option value="${x}">${esc(cap(x))}</option>`).join("")}</optgroup>` : ""; }).join("");
+
+/* ---------- prepare data (re-run when a different records file is loaded) ---------- */
+let ALL = [], C = [], S = [], T = [];
+function prepare(rows) {
+  ALL = rows.map((s, id) => {
+    let lat = parseFloat(s.lat), lon = parseFloat(s.lon), approx = false;
+    if (isNaN(lat) && TOWNS[s.town]) { [lat, lon] = TOWNS[s.town]; approx = true; }
+    const o = { ...s, id, _days: parseDays(s.days), _times: parseTimes(s.times), _dates: parseDates(s.dates), lat, lon, approx, _sf: split(s.support_for) };
+    o._kind = schedKind(o);
+    return o;
+  }).filter(s => s._kind !== "ended");
+  C = ALL.filter(s => s.type === "Course");
+  S = ALL.filter(s => s.type !== "Course" && split(s.mode).includes("in-person"));
+  T = ALL.filter(s => s.type !== "Course" && !split(s.mode).includes("in-person"));  // services with a place live on the In person tab
+  fs.innerHTML = supportOptions(S); $("t-support").innerHTML = supportOptions(T); $("c-support").innerHTML = supportOptions(C);
+  $("f-town").innerHTML = `<option value="">All of Somerset</option>` +
+    PLACES.map(([g, ps]) => `<optgroup label="${esc(g)}">` + [...ps].sort((x, y) => x[0].localeCompare(y[0])).map(([n]) => `<option>${esc(n)}</option>`).join("") + `</optgroup>`).join("") +
+    `<option value="__pt" hidden>Point on map</option>`;
+}
+prepare(DATA);
+// services at the same spot share one numbered pin (grouped in drawMap)
+const spotKey = s => s.lat.toFixed(4) + "," + s.lon.toFixed(4);
+$("today").textContent = new Date().toLocaleDateString("en-GB", { weekday: "short", day: "numeric", month: "short" });
+
+let origin = null, sortBy = "soon", fitPending = true, locMsg = "";
+
+/* ---------- map ---------- */
+let map = null, layer = null, ring = null, opin = null, markers = {};
+function initMap() {
+  if (map || !window.L) return;
+  map = L.map("map", { zoomControl: false, zoomSnap: 0.25, zoomDelta: 0.5 }).setView([51.1, -2.95], 9);
+  L.control.zoom({ position: "topright" }).addTo(map);
+  const legend = L.control({ position: "topleft" });
+  legend.onAdd = () => {
+    const d = L.DomUtil.create("div", "maplegend");
+    L.DomEvent.disableClickPropagation(d); L.DomEvent.disableScrollPropagation(d);   // clicks here mustn't set a search point
+    d.addEventListener("click", e => {
+      const b = e.target.closest("button"); if (!b) return;
+      if (b.dataset.k === "toggle") { legendOpen = !legendOpen; try { localStorage.setItem("keyOpen", legendOpen ? "1" : "0"); } catch (_) {} setTimeout(() => drawLegend(d), 0); return; }
+      if (b.dataset.k === "all") kindsOff.clear();
+      else { const k = +b.dataset.k; kindsOff.has(k) ? kindsOff.delete(k) : kindsOff.add(k); if (KINDS.every((_, i) => kindsOff.has(i) || !S.some(x => kindOf(x) === i))) kindsOff.clear(); }
+      setTimeout(() => render(), 0);   // redraw after the click finishes, so the map knows it came from the key
+    });
+    drawLegend(d); return d;
+  };
+  legend.addTo(map);
+  // CARTO basemaps need an API key (free tier). Light (Positron) first; if it fails, the Voyager URL CARTO supplied with the key.
+  const CARTO_KEY = "cb1_4v7b_1_0f5ea1a12b0919dd5e3cbbb7";
+  const TILE_URLS = [
+    "https://basemaps.cartocdn.com/rastertiles/light_all/{z}/{x}/{y}.png?key=" + CARTO_KEY,
+    "https://basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}.png?key=" + CARTO_KEY];
+  let failed = 0, which = 0;
+  const tiles = L.tileLayer(TILE_URLS[0], { maxZoom: 19,
+    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> &copy; <a href="https://carto.com/attributions">CARTO</a>' })
+    .on("tileerror", () => {
+      if (++failed < 4) return;
+      failed = 0;
+      if (++which < TILE_URLS.length) tiles.setUrl(TILE_URLS[which]); else $("tilenote").hidden = false;
+    }).addTo(map);
+  if (OUTLINE) try {
+    const rings = OUTLINE.coordinates.map(p => p[0].map(([x, y]) => [y, x]));
+    // light wash outside the county, then a dashed edge; neither takes clicks
+    L.polygon([[[60, -12], [60, 5], [48, 5], [48, -12]], ...rings], { stroke: false, fillColor: "#5B6B60", fillOpacity: .07, interactive: false }).addTo(map);
+    L.polygon(rings, { color: "#3D6C53", weight: 1.6, opacity: .7, dashArray: "6 5", fill: false, interactive: false }).addTo(map);
+    map.attributionControl.addAttribution("County outline: ONS, contains OS data © Crown copyright");
+  } catch (e) { console.error("Couldn't draw the county outline", e); }
+  layer = L.layerGroup().addTo(map);
+  map.on("zoomend", () => { if (lastDraw && !fitPending) drawMap(...lastDraw); });
+  map.on("click", e => { origin = { lat: e.latlng.lat, lon: e.latlng.lng, label: "the point on the map" }; setPtLabel("Point on map"); $("f-town").value = "__pt"; sortBy = "near"; fitPending = true; render(); });
+}
+
+/* ---------- render ---------- */
+function windowFor(v, now) {
+  const d0 = dayStart(now);
+  if (v === "today") return [now, addDays(d0, 1)];
+  if (v === "evening") return [new Date(Math.max(now, d0.getTime() + 17 * 3600e3)), addDays(d0, 1)];
+  if (v === "tomorrow") return [addDays(d0, 1), addDays(d0, 2)];
+  if (v === "weekend") { const dow = now.getDay(); const sat = dow === 0 ? addDays(d0, -1) : addDays(d0, 6 - dow); return [new Date(Math.max(now, sat)), addDays(sat, 2)]; }
+  if (v === "week") return [now, addDays(d0, 7)];
+  if (v === "month") return [now, addDays(d0, 28)];
+  return null;
+}
+function render() {
+  if (LIVE_ONLY && !ALL.length) { panelMessage(liveMsg); return; }
+  const now = new Date(), sup = fs.value, when = $("f-when").value, rad = +$("within").value;
+  ["support", "where", "when"].forEach(k => $("q-" + k).classList.toggle("on", k === "support" ? !!sup : k === "where" ? !!origin : when !== "week"));
+  $("within").disabled = !origin;
+  $("s-near").disabled = !origin; if (!origin && sortBy === "near") sortBy = "soon";
+  $("s-soon").setAttribute("aria-pressed", sortBy === "soon"); $("s-near").setAttribute("aria-pressed", sortBy === "near");
+  $("pointnote").textContent = locMsg;  // only short location messages; floats below the box so the filters never change height
+
+  const win = windowFor(when, now);
+  let rows = S.filter(s => !sup || s._sf.includes(sup)).map(s => {
+    const d = origin && !isNaN(s.lat) ? miles(origin, s) : null;
+    return { s, d, nx: nextText(s, now) };
+  });
+  if (origin && rad) rows = rows.filter(r => r.d != null && r.d <= rad);
+  let checkRows = [];
+  const base = rows;   // before the time filter: used to count what meets later in the month
+  if (when === "now") rows = rows.filter(r => r.s.access === "drop in" && occurrences(r.s, now, 1).some(o => o.timed && o.st <= now && o.en > now));
+  else if (win) {
+    checkRows = rows.filter(r => r.s._kind !== "dated");
+    rows = rows.filter(r => r.s._kind === "dated" && occurrences(r.s, win[0], Math.ceil((win[1] - dayStart(win[0])) / 864e5)).some(o => o.en > win[0] && o.st < win[1]));
+  } else { checkRows = rows.filter(r => !r.nx.at); rows = rows.filter(r => r.nx.at); }
+  // Counts for the map key follow every filter except the key itself
+  kindCounts = KINDS.map((_, i) => rows.filter(r => kindOf(r.s) === i).length + checkRows.filter(r => kindOf(r.s) === i).length);
+  if (kindsOff.size) { rows = rows.filter(r => !kindsOff.has(kindOf(r.s))); checkRows = checkRows.filter(r => !kindsOff.has(kindOf(r.s))); }
+  if (legendEl) drawLegend(legendEl);
+  const bySoon = (a, b) => (a.nx.at - b.nx.at) || ((a.d ?? 0) - (b.d ?? 0));
+  const byNear = (a, b) => ((a.d ?? 1e9) - (b.d ?? 1e9)) || ((a.nx.at ?? 9e15) - (b.nx.at ?? 9e15));
+  rows.sort(sortBy === "near" ? byNear : bySoon);
+  // "Next 7 days" hides monthly groups in the weeks they don't meet: count what meets in the following three weeks
+  let later = 0;
+  if (when === "week") {
+    const shown = new Set(rows.map(r => r.s.id)), wEnd = win[1], mEnd = addDays(dayStart(now), 28);
+    later = base.filter(r => r.s._kind === "dated" && !shown.has(r.s.id) && !kindsOff.has(kindOf(r.s)) &&
+      occurrences(r.s, wEnd, 21).some(o => o.st >= wEnd && o.st < mEnd)).length;
+  }
+  const moreLine = later ? `<div class="morehint"><span><b>${later}</b> more ${later === 1 ? "meets" : "meet"} later this month (many groups meet monthly).</span><button type="button" id="show-month">Show next 4 weeks</button></div>` : "";
+  checkRows.sort(origin ? byNear : (a, b) => a.s.name.localeCompare(b.s.name));
+
+  const total = rows.length + checkRows.length;
+  $("summary").innerHTML = `Showing <b>${total}</b> ${total === 1 ? "service" : "services"}` +
+    (sup ? ` for <strong>${esc(cap(sup))}</strong>` : "") + (origin ? (rad ? ` within ${rad} miles of ${esc(origin.label)}` : ` by distance from ${esc(origin.label)}`) : "") +
+    (checkRows.length ? ` · ${checkRows.length} need times checking` : "");
+  const card = r => {
+    const s = r.s, A = { "drop in": ["b-drop", "Just turn up"], "sign up": ["b-sign", "Contact to join"], "book": ["b-book", "Book first"], "referral": ["b-ref", "Needs a referral"], "call": ["b-ref", "Phone line"] }[s.access] || ["b-ref", "Contact provider"];
+    const contact = [s.url ? `<a href="${esc(s.url)}" target="_blank" rel="noopener">Website</a>` : "", telLink(s.phone), s.email ? `<a href="mailto:${esc(s.email.split(";")[0].trim())}">${esc(s.email)}</a>` : ""].filter(Boolean).join(" · ");
+    const dir = directionsLink(s);
+    return `<article class="card" id="c${s.id}" data-id="${s.id}">
+      <div class="row1"><span class="badge ${A[0]}">${A[1]}</span><span class="chipr">${r.d != null ? `<span class="chip dist">${r.d < .1 ? "<0.1" : r.d.toFixed(1)} mi${s.approx ? " approx." : ""}</span>` : ""}${s.cost ? `<span class="chip">${esc(s.cost)}</span>` : ""}${dir}${copyBtn(s)}</span></div>
+      <h2>${esc(s.name)}</h2>
+      ${kindTag(s)}<div class="meta">${esc(s.provider)} · ${esc(s.type)}${s._sf.length ? " · " + s._sf.map(cap).map(esc).join(", ") : ""}</div>
+      <div class="next"><div class="lab">Next</div><div class="val ${r.nx.cls}">${esc(r.nx.txt)}</div></div>
+      <p class="desc">${esc(s.description)}</p>
+      ${s.who || s.eligibility ? `<div class="who">For: ${esc(s.who)}${s.eligibility ? ` · <em>${esc(s.eligibility)}</em>` : ""}</div>` : ""}
+      <div class="foot"><span>${esc([s.address, s.town, s.postcode].filter(Boolean).join(", "))}${s.approx ? ` <span class="approx">(approx. location)</span>` : ""}</span>${contact ? `<span>${contact}</span>` : ""}</div>
+    </article>`;
+  };
+  $("list").innerHTML = !total ? (moreLine ? `<div class="empty"><strong>Nothing in the next 7 days</strong><br>But there are groups later this month.</div>` + moreLine
+      : `<div class="empty"><strong>No matches</strong><br>Try a wider distance or a different time, or use the 24/7 helplines below.</div>`) :
+    rows.map(card).join("") + moreLine + (checkRows.length ? `<div class="groupline">Times to check${win ? " (may also run then)" : ""}</div>` + checkRows.map(card).join("") : "");
+  $("help").classList.toggle("urgent", total <= 2);
+  $("help-title").textContent = total <= 2 ? "Nothing suitable right now? Talk to someone straight away" : "Always available: 24/7 helplines";
+  drawMap([...rows, ...checkRows], rad);
+}
+// Pin colours by kind of service (type), in five groups
+const KINDS = [
+  ["Activities", "#3F6FB0", ["Activity group", "Volunteering"]],
+  ["Groups and community", "#3A9488", ["Peer group", "Community"]],
+  ["Advice and practical help", "#D08A2E", ["Advocacy", "Practical support"]],
+  ["One-to-one and therapy", "#93549B", ["One-to-one support", "Counselling or therapy"]],
+  ["Courses", "#B5577A", ["Course"]],
+];
+const kindOf = s => KINDS.findIndex(k => k[2].includes(s.type));
+const pinCol = s => (KINDS[kindOf(s)] || [, "#64748B"])[1];
+// Map key doubles as a filter: tap a kind to hide or show it
+const kindsOff = new Set();
+let kindCounts = null, legendEl = null;
+// The key starts open on wider screens and folded on phones; a viewer's choice is remembered on their device
+let legendOpen = !matchMedia("(max-width: 700px)").matches;
+try { const v = localStorage.getItem("keyOpen"); if (v) legendOpen = v === "1"; } catch (_) {}
+function drawLegend(d) {
+  legendEl = d;
+  const has = KINDS.map((_, i) => S.some(x => kindOf(x) === i));      // kinds that ever appear on this map
+  const n = kindCounts || KINDS.map((_, i) => S.filter(x => kindOf(x) === i).length);
+  d.classList.toggle("closed", !legendOpen);
+  const chev = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 15l6-6 6 6"/></svg>`;
+  const head = `<button type="button" class="lghead" data-k="toggle" aria-expanded="${legendOpen}" title="${legendOpen ? "Hide the key" : "Show the key"}">What it is ` +
+    (legendOpen ? `<span>tap to filter</span>` : `<span class="dots">${KINDS.map((k, i) => has[i] && !kindsOff.has(i) ? `<i style="background:${k[1]}"></i>` : "").join("")}</span>${kindsOff.size ? `<span>· filtered</span>` : ""}`) + chev + `</button>`;
+  if (!legendOpen) { d.innerHTML = head; return; }
+  d.innerHTML = head + KINDS.map((k, i) => !has[i] ? "" : `<button type="button" data-k="${i}" aria-pressed="${!kindsOff.has(i)}">
+      <i style="--c:${k[1]}"></i><span class="lt">${esc(k[0])}<small>${esc(k[2].filter(t => S.some(x => x.type === t)).join(", "))}</small></span><em>${n[i]}</em></button>`.replace('<button type="button"', `<button type="button"${n[i] ? "" : ' class="zero"'}`)).join("") +
+    (kindsOff.size ? `<button type="button" class="all" data-k="all">Show all</button>` : "");
+}
+// The same colour on the card as on its map pin
+const kindTag = s => { const k = KINDS[kindOf(s)]; return k ? `<div class="kind"><i style="background:${k[1]}"></i>${esc(k[0])}</div>` : ""; };
+function clusterBg(g) {
+  const n = new Array(KINDS.length + 1).fill(0);
+  g.forEach(s => { const i = kindOf(s); n[i < 0 ? KINDS.length : i]++; });
+  const cols = [...KINDS.map(k => k[1]), "#64748B"];
+  let at = 0; const stops = [];
+  n.forEach((c, i) => { if (c) { const to = at + c / g.length * 360; stops.push(`${cols[i]} ${at}deg ${to}deg`); at = to; } });
+  return stops.length === 1 ? stops[0].split(" ")[0] : `conic-gradient(${stops.join(", ")})`;
+}
+let lastDraw = null;
+const AREA_ZOOM = 11, AREA_PX = 52;   // at zoom 11 or less, pins within ~52px merge into one numbered circle
+function areaClusters(groups) {
+  // Greedy merge of same-spot groups by on-screen distance; biggest spots seed the clusters
+  const z = map.getZoom(), cl = [];
+  [...groups.entries()].sort((a, b) => b[1].length - a[1].length).forEach(([k, g]) => {
+    const p = map.project([g[0].lat, g[0].lon], z);
+    const c = cl.find(c => c.p.distanceTo(p) < AREA_PX);
+    if (c) { c.spots.push([k, g]); c.n += g.length; } else cl.push({ p, spots: [[k, g]], n: g.length });
+  });
+  return cl;
+}
+function drawArea(c) {
+  const all = c.spots.flatMap(([, g]) => g);
+  const lat = all.reduce((a, s) => a + s.lat, 0) / all.length, lon = all.reduce((a, s) => a + s.lon, 0) / all.length;
+  const towns = {}; all.forEach(s => towns[s.town] = (towns[s.town] || 0) + 1);
+  const town = Object.entries(towns).sort((a, b) => b[1] - a[1])[0][0];
+  const b = L.latLngBounds(all.map(s => [s.lat, s.lon]));
+  const m = L.marker([lat, lon], { icon: L.divIcon({ className: "", html: `<div class="cpin area" style="background:${clusterBg(all)}"><span>${all.length}</span></div>`, iconSize: [34, 34], iconAnchor: [17, 17] }), title: `${all.length} services around ${town}` })
+    .bindTooltip(`<strong>${all.length} services</strong><br>around ${esc(town)} · click to zoom in`, { direction: "top", offset: [0, -14] })
+    .on("click", () => map.flyToBounds(b.pad(0.15), { maxZoom: AREA_ZOOM + 2, duration: .5 }));
+  m.addTo(layer); all.forEach(s => markers[s.id] = m);
+  return [lat, lon];
+}
+function drawMap(rows, rad) {
+  if (!map) return;
+  lastDraw = [rows, rad];
+  layer.clearLayers(); markers = {};
+  const pts = [];
+  const groups = new Map();
+  rows.forEach(({ s }) => { if (isNaN(s.lat)) return; const k = spotKey(s); if (!groups.has(k)) groups.set(k, []); groups.get(k).push(s); });
+  let spots = [...groups.entries()];
+  if (map.getZoom() <= AREA_ZOOM) {
+    spots = [];
+    for (const c of areaClusters(groups)) {
+      if (c.spots.length === 1) { spots.push(c.spots[0]); continue; }
+      try { drawArea(c); c.spots.forEach(([, g]) => pts.push([g[0].lat, g[0].lon])); }
+      catch (e) { console.error("Couldn't draw an area cluster", e); }
+    }
+  }
+  for (const [k, g] of spots) try {
+    const s0 = g[0], ll = [s0.lat, s0.lon], approx = g.every(s => s.approx);
+    let m;
+    if (g.length === 1) {
+      m = L.marker(ll, { icon: L.divIcon({ className: "", html: `<div class="pin${approx ? " approx" : ""}" data-k="${k}" style="background:${pinCol(s0)}"></div>`, iconSize: [14, 14], iconAnchor: [7, 7] }), title: s0.name })
+        .bindTooltip(`<strong>${esc(s0.name)}</strong><br>${esc(s0.town)}`, { direction: "top", offset: [0, -6] })
+        .on("click", () => showCard(s0.id));
+    } else {
+      const place = approx ? `${esc(s0.town)} (town centre)` : esc(s0.address || s0.town);
+      const list = g.map(s => `<li><button type="button" class="plink" data-id="${s.id}">${esc(s.name)}</button></li>`).join("");
+      m = L.marker(ll, { icon: L.divIcon({ className: "", html: `<div class="cpin${approx ? " approx" : ""}" data-k="${k}" style="background:${clusterBg(g)}"><span>${g.length}</span></div>`, iconSize: [28, 28], iconAnchor: [14, 14] }), title: `${g.length} services` })
+        .bindTooltip(`<strong>${g.length} services</strong><br>${place}`, { direction: "top", offset: [0, -12] })
+        .bindPopup(`<div class="plist"><div class="plist-h">${g.length} services · ${place}</div><ul>${list}</ul></div>`, { maxWidth: 280 });
+    }
+    m.addTo(layer);
+    g.forEach(s => markers[s.id] = m);
+    pts.push(ll);
+  } catch (e) { console.error("Couldn't draw a map pin for", g.map(s => s.name).join("; "), e); }
+  if (ring) { map.removeLayer(ring); ring = null; } if (opin) { map.removeLayer(opin); opin = null; }
+  if (origin) {
+    opin = L.marker([origin.lat, origin.lon], { icon: L.divIcon({ className: "", html: '<div class="opin"></div>', iconSize: [16, 16], iconAnchor: [8, 8] }), interactive: false }).addTo(map);
+    if (rad) ring = L.circle([origin.lat, origin.lon], { radius: rad * 1609.34, color: "#3D6C53", weight: 1.5, dashArray: "5 5", fillColor: "#3D6C53", fillOpacity: .06, interactive: false }).addTo(map);
+    pts.push([origin.lat, origin.lon]);
+  }
+  if (fitPending && mapVisible()) {
+    fitPending = false;
+    // Fit snugly, leaving room for the key on the left (when it's beside the pins rather than over them)
+    const key = document.querySelector(".maplegend"), kw = key && map.getSize().x > 700 ? key.offsetWidth + 20 : 0;
+    if (pts.length > 1) map.flyToBounds(L.latLngBounds(pts), { paddingTopLeft: [Math.min(kw, 120) || 30, 30], paddingBottomRight: [30, 30], maxZoom: 14, duration: .6 });
+    else if (pts.length === 1) map.flyTo(pts[0], 13, { duration: .6 });
+    else map.flyTo([51.1, -2.95], 9, { duration: .6 });
+  }
+}
+const mapVisible = () => $("map").offsetWidth > 0;
+function showCard(id) {
+  const c = $("c" + id); if (!c) return;
+  if (innerWidth < 900) setTab("list");
+  c.scrollIntoView({ behavior: "smooth", block: "center" }); c.classList.add("flash"); setTimeout(() => c.classList.remove("flash"), 1200);
+}
+$("map").addEventListener("click", e => { const b = e.target.closest(".plink"); if (b) { map && map.closePopup(); showCard(b.dataset.id); } });
+
+/* ---------- phone and online ---------- */
+function openState(s, now) {
+  if (!s.days && !s.dates && !s.phone && split(s.mode).includes("online")) return { txt: "No set hours", open: false };  // e.g. online application forms
+  if (s._kind !== "dated") return { txt: s._kind === "website" ? "Times vary: see website" : "Check times", open: false };
+  const allDay = s._days.size === 7 && s._times && s._times.s === 0 && s._times.e >= 1439;
+  if (allDay) return { txt: "Open 24/7", open: true };
+  const o = occurrences(s, now, 14), cur = o.find(x => x.st <= now && x.en > now);
+  // Online sessions and some phone lines run on set days with no set time: say so, and don't count them as "open now"
+  if (cur && !s._times) return { txt: "Today (no set time)", open: false, when: "today" };
+  if (cur) return { txt: s.mode.includes("phone") ? `Open now until ${fmtT(s._times.e ?? s._times.s)}` : "Happening now", open: true };
+  const nx = o.find(x => x.en > now), dd = nx ? Math.round((dayStart(nx.st) - dayStart(now)) / 864e5) : 99;
+  return { txt: (s.mode.includes("phone") ? "Opens " : "Next ") + shortNext(s, o, now), open: false, when: dd === 0 ? "today" : dd < 7 ? "week" : "" };
+}
+// Compact "when" for the status pill: "today 20:00", "Fri 20:00", "24 Nov 19:00"
+function shortNext(s, occ, now) {
+  const o = occ.find(x => x.en > now) || occurrences(s, now, 70).find(x => x.en > now);
+  if (!o) return "date to be confirmed";
+  const dd = Math.round((dayStart(o.st) - dayStart(now)) / 864e5);
+  const day = dd === 0 ? "today" : dd === 1 ? "tomorrow" : dd < 7 ? o.st.toLocaleDateString("en-GB", { weekday: "short" })
+    : o.st.toLocaleDateString("en-GB", { day: "numeric", month: "short" });
+  return day + (s._times ? " " + fmtT(s._times.s) : " (no set time)") + (o.bank ? " (bank hol.)" : "");
+}
+/* ---------- Copy details ---------- */
+// Plain text for a text message, email or case notes: the regular pattern rather than the next date, so it stays right
+const COPY_ICON = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>';
+const copyBtn = (s, when) => `<button type="button" class="copy" data-copy="${s.id}"${when ? ` data-when="${esc(when)}"` : ""} aria-label="Copy details" data-tip="Copy details">${COPY_ICON}</button>`;
+const ampm = t => { const [h, m] = t.split(":").map(Number); return `${h % 12 || 12}${m ? ":" + String(m).padStart(2, "0") : ""}${h < 12 ? "am" : "pm"}`; };
+function copyWhen(s) {
+  const allDay = /^00:00-23:5\d$/.test(s.times || "");
+  let tm = allDay ? "24 hours" : /^\d\d:\d\d(-\d\d:\d\d)?$/.test(s.times || "") ? s.times.split("-").map(ampm).join("–") : (s.times || "");
+  let days = (s.days || "").split(";").map(x => x.trim()).filter(Boolean).join(", ");
+  if (/^mon-sun$/i.test(days) && !s.frequency) { if (allDay) return "24/7"; days = ""; tm = "Every day" + (tm ? ", " + tm : ""); }
+  const f = (s.frequency || "").trim(), hasDay = /\b(mon|tue|wed|thu|fri|sat|sun)/i.test(f);
+  let when = "";
+  if (f && !/^see /i.test(f)) when = hasDay ? f : cap(f) + (days ? ", " + days : "");
+  else if (days) when = (/-/.test(days) ? "" : "Every ") + days;
+  else if (s.dates) when = "Dates: " + split(s.dates).slice(0, 3).map(d => /^\d{4}-\d\d-\d\d$/.test(d) ? new Date(d + "T12:00").toLocaleDateString("en-GB", { day: "numeric", month: "short" }) : d).join(", ") + (split(s.dates).length > 3 ? "…" : "");
+  return [when, tm].filter(Boolean).join(", ");
+}
+function copyText(s, when) {
+  const ACC = { "drop in": "Just turn up", "sign up": "Contact to join", "book": "Book first", "referral": "Needs a referral" }[s.access];
+  const modes = split(s.mode), inPerson = modes.includes("in-person");
+  const how = !inPerson && modes.length ? modes.map(m => m === "phone" ? "Phone" : m === "online" ? "Online" : m).join(" or ") : "";
+  return [
+    s.name + (s.provider && s.provider !== s.name ? ` (${s.provider})` : ""),
+    [when || copyWhen(s), how, ACC, s.cost, s.eligibility].filter(Boolean).join(" · "),
+    inPerson ? [s.address, [s.town, s.postcode].filter(Boolean).join(" ")].filter(Boolean).join(", ") : "",
+    [s.phone, s.email, s.url].filter(Boolean).join(" · "),
+  ].filter(Boolean).join("\n");
+}
+// Tap-to-call: the first number in the field ("01234 567890 or 0800..." -> 01234567890); texts and non-numbers stay plain
+function telLink(phone) {
+  if (!phone) return "";
+  const n = phone.split(" (")[0].split(" or ")[0].split(";")[0].replace(/[^\d+]/g, "");
+  return /^text/i.test(phone) || n.length < 5 ? esc(phone) : `<a href="tel:${n}">${esc(phone)}</a>`;
+}
+// Directions in the phone's own maps app: Apple Maps on iPhone/iPad, Google Maps everywhere else.
+// Only for a real venue location, never for town-centre (approx.) points or services without an address.
+const DIR_ICON = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polygon points="3 11 22 2 13 21 11 13 3 11"/></svg>';
+const IOS = /iPhone|iPad|iPod/.test(navigator.userAgent) || (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1);
+// Shared with the Assist tab. Needs a postcode: records without one are placed at a town centre or meet in varying places.
+function dirHref(s) {
+  if (!s || s.approx || isNaN(s.lat) || isNaN(s.lon) || !s.postcode) return "";
+  const ll = `${(+s.lat).toFixed(6)},${(+s.lon).toFixed(6)}`;
+  return IOS ? `https://maps.apple.com/?daddr=${ll}` : `https://www.google.com/maps/dir/?api=1&destination=${ll}`;
+}
+function directionsLink(s) {
+  const href = dirHref(s); if (!href) return "";
+  return `<a class="copy dirs" href="${href}" target="_blank" rel="noopener" aria-label="Directions to ${esc(s.name)}" data-tip="Directions">${DIR_ICON}</a>`;
+}
+function copyToClipboard(txt) {
+  if (navigator.clipboard && window.isSecureContext) return navigator.clipboard.writeText(txt).catch(() => copyFallback(txt));
+  copyFallback(txt);
+}
+function copyFallback(txt) {
+  const ta = document.createElement("textarea"); ta.value = txt; ta.setAttribute("readonly", ""); ta.style.cssText = "position:fixed;top:-1000px;opacity:0";
+  document.body.appendChild(ta); ta.select(); try { document.execCommand("copy"); } catch (_) {} ta.remove();
+}
+document.addEventListener("click", e => {
+  const b = e.target.closest && e.target.closest("button.copy"); if (!b) return;
+  e.preventDefault(); e.stopPropagation();
+  const s = ALL.find(x => String(x.id) === b.dataset.copy); if (!s) return;
+  copyToClipboard(copyText(s, b.dataset.when));
+  b.classList.add("copied"); clearTimeout(b._t); b._t = setTimeout(() => b.classList.remove("copied"), 1600);
+  const live = $("copy-live"); if (live) { live.textContent = ""; setTimeout(() => { live.textContent = `Copied details for ${s.name}`; }, 30); }
+});
+function renderTalk() {
+  if (LIVE_ONLY && !ALL.length) { panelMessage(liveMsg); return; }
+  const now = new Date(), sup = $("t-support").value, onlyOpen = $("t-open").checked, area = $("t-area").value;
+  $("q-tsupport").classList.toggle("on", !!sup); $("q-open").classList.toggle("on", onlyOpen); $("q-tarea").classList.toggle("on", !!area);
+  let rows = T.filter(s => (!sup || s._sf.includes(sup)) && (!area || (area === "national") === (s.area === "national"))).map(s => ({ s, st: openState(s, now) }));
+  if (onlyOpen) rows = rows.filter(r => r.st.open);
+  const card = ({ s, st }) => {
+    const modes = split(s.mode).filter(m => m !== "in-person").map(m => m === "phone" ? "Phone" : "Online").sort((a, b) => a === "Phone" ? -1 : b === "Phone" ? 1 : 0).join(" · ");
+    const reach = s.phone ? (/^text/i.test(s.phone) ? esc(s.phone) : `<a href="tel:${esc(s.phone.split(" (")[0].split(" or ")[0].replace(/\s/g, ""))}">${esc(s.phone)}</a>`) : s.email ? `<a href="mailto:${esc(s.email)}">${esc(s.email)}</a>` : "";
+    return `<article class="tcard">
+      <div class="row1"><span class="mode">${modes} · ${s.area === "national" ? "UK-wide" : "Local"}</span><span class="chipr"><span class="openp ${st.open ? "yes" : st.when || "no"}">${esc(st.txt)}</span>${copyBtn(s)}</span></div>
+      <h3>${esc(s.name)}</h3>
+      ${reach ? `<div class="reach${s.phone ? "" : " email"}">${reach}</div>` : ""}
+      <p class="desc" style="-webkit-line-clamp:3">${esc(s.description)}</p>
+      <div class="meta" style="margin:0">${esc(s.provider)} · ${esc(s.type)}${s.who && s.who !== "anyone" ? " · For " + esc(s.who) : ""}${s.eligibility ? " · " + esc(s.eligibility) : ""}</div>
+      ${s.url ? `<div class="foot"><a href="${esc(s.url)}" target="_blank" rel="noopener">Website</a>${s.email && s.phone ? " · " + esc(s.email) : ""}</div>` : ""}
+    </article>`;
+  };
+  const used = new Set(); let html = "";
+  for (const [g, vals] of GROUPS) {
+    const rs = rows.filter(r => !used.has(r.s.id) && r.s._sf.some(v => vals.includes(v)));
+    rs.forEach(r => used.add(r.s.id));
+    rs.sort((a, b) => (b.st.open - a.st.open) || a.s.name.localeCompare(b.s.name));
+    if (rs.length) html += `<h2 class="gh">${g}<small>${rs.length}</small></h2><div class="tgrid">${rs.map(card).join("")}</div>`;
+  }
+  $("talk").innerHTML = html || `<div class="empty"><strong>${onlyOpen ? "Nothing open right now for this" : "Nothing listed for this"}</strong><br>${[onlyOpen ? 'untick "Open now only"' : "", area ? 'choose "Local and UK-wide"' : "", sup ? 'choose "Anything" under Support for' : ""].filter(Boolean).join(", or ").replace(/^./, c => c.toUpperCase()) || "Try again later"}, or call Samaritans on 116 123 at any time.</div>`;
+}
+function courseInfo(s, now) {
+  const today = iso(now);
+  if (!s.dates) return { order: 9e15, when: `${s.days ? s.days + " " + s.times + " · " : ""}Rolling course: ask for the next start date`, status: "Rolling", join: true };
+  const ds = [];
+  for (const p of split(s.dates)) { const r = p.match(/^(\d{4}-\d\d-\d\d) to (\d{4}-\d\d-\d\d)$/);
+    if (r) { for (let d = new Date(r[1]); iso(d) <= r[2]; d = addDays(d, 1)) if (!s._days.size || s._days.has(d.getDay())) ds.push(iso(d)); } else ds.push(p); }
+  ds.sort(); const first = ds[0], last = ds[ds.length - 1], left = ds.filter(d => d >= today).length;
+  const f = d => new Date(d + "T12:00").toLocaleDateString("en-GB", { day: "numeric", month: "short" });
+  const span = `${ds.length} sessions · ${f(first)} to ${f(last)}${s.times ? " · " + s.days + " " + s.times.replace("-", "–") : ""}`;
+  if (first > today) return { order: +new Date(first), when: span, status: `Starts ${f(first)}`, join: true };
+  return { order: +new Date(first), when: span, status: `Running now: ${left} of ${ds.length} sessions left`, join: false };
+}
+function renderCourses() {
+  if (LIVE_ONLY && !ALL.length) { panelMessage(liveMsg); return; }
+  const now = new Date(), sup = $("c-support").value, fmt = $("c-fmt").value, canJoin = $("c-book").checked;
+  ["csupport", "cfmt"].forEach(k => $("q-" + k).classList.toggle("on", !!$(k === "csupport" ? "c-support" : "c-fmt").value)); $("q-cbook").classList.toggle("on", canJoin);
+  let rows = C.filter(s => (!sup || s._sf.includes(sup)) && (!fmt || split(s.mode).includes(fmt))).map(s => ({ s, ci: courseInfo(s, now) }));
+  if (canJoin) rows = rows.filter(r => r.ci.join);
+  rows.sort((a, b) => (b.ci.join - a.ci.join) || (a.ci.order - b.ci.order));
+  const card = ({ s, ci }) => `<article class="tcard">
+      <div class="row1"><span class="mode">${split(s.mode).includes("online") ? "Online" : esc(s.town || "In person")}</span><span class="chipr"><span class="openp ${ci.join ? "yes" : "no"}">${esc(ci.status)}</span>${copyBtn(s, ci.when)}</span></div>
+      <h3>${esc(s.name)}</h3>
+      <div class="meta" style="margin:0;color:var(--ink);font-weight:600">${esc(ci.when)}</div>
+      <p class="desc" style="-webkit-line-clamp:3">${esc(s.description)}</p>
+      <div class="meta" style="margin:0">${esc(s.provider)}${s.cost ? " · " + esc(s.cost) : ""}${s.eligibility ? " · " + esc(s.eligibility) : ""}</div>
+      <div class="foot">${[s.url ? `<a href="${esc(s.url)}" target="_blank" rel="noopener">Website</a>` : "", esc(s.phone), esc(s.email)].filter(Boolean).join(" · ")}</div>
+    </article>`;
+  $("courses").innerHTML = rows.length ? `<h2 class="gh">Courses<small>${rows.length}</small></h2><div class="tgrid">${rows.map(card).join("")}</div>`
+    : `<div class="empty"><strong>No courses match</strong><br>Try "Anything", or untick "Can still join".</div>`;
+}
+/* ---------- About ---------- */
+// Paste the Google Form link between the quotes to show the "Suggest a change" button.
+const FEEDBACK_FORM_URL = "https://docs.google.com/forms/d/e/1FAIpQLSf8NCl7EpGkgKNACUMDJEFzToJnoQp_xs7Fj0E9z4o2pLiqOQ/viewform";
+function renderAbout() {
+  const n = ALL.length, providers = new Set(ALL.map(s => s.provider).filter(Boolean)).size;
+  const stats = n ? `${n} services from ${providers} providers.` : "Loading services…";
+  const suggest = FEEDBACK_FORM_URL
+    ? `<p>Spotted something out of date, or know a service that should be here? Local knowledge is what keeps this useful.</p>
+       <a class="btn" href="${esc(FEEDBACK_FORM_URL)}" target="_blank" rel="noopener">Suggest a change</a>
+       <p class="small">Please don't include personal details about anyone you support.</p>`
+    : `<p>Spotted something out of date, or know a service that should be here? Please tell the person who shared this site with you. A suggestion form is coming soon.</p>`;
+  $("about").innerHTML = `<article class="aboutpage">
+    <h2>About Signposting Somerset</h2>
+    <div class="note"><strong>Demo version.</strong> Details are checked against each provider's own information, but services change. Please confirm with the service before attending.
+      In an emergency call <a href="tel:999">999</a>. For urgent mental health help call NHS <a href="tel:111">111</a> and choose option 2.</div>
+    <div class="acols"><div class="acol">
+    <section>
+    <h3>What it is</h3>
+    <p>One place to find local mental health and wellbeing support across Somerset, North Somerset and B&amp;NES: what's on, when and where, and whether someone can go.
+      It's built for support workers, volunteers and anyone looking for help, activities or community connections.</p>
+    <p class="stats">${esc(stats)}</p>
+    </section>
+    <section>
+    <h3>What's included</h3>
+    <ul>
+      <li><strong>Specialist support:</strong> crisis support, low mood, anxiety, bereavement, hearing voices, long-term pain, eating disorders, dementia, addiction (alcohol, drugs and gambling), abuse, caring for someone.</li>
+      <li><strong>Practical help and support:</strong> money, housing and food, including advice and advocacy.</li>
+      <li><strong>Everyday wellbeing:</strong> connection, activity, learning, nature and giving, based on the Five Ways to Wellbeing.</li>
+      <li>Helplines and online groups, in-person services on a map, and courses with set dates.</li>
+    </ul>
+    </section>
+    ${typeof window.assistAbout === "function" ? window.assistAbout() : ""}
+    </div><div class="acol">
+    <section>
+    <h3>How it's kept accurate</h3>
+    <ul>
+      <li>Every service is checked against the provider's own website, timetable or leaflet, and dated.</li>
+      <li>Nothing is guessed: if a provider doesn't say something, it's left blank.</li>
+      <li>Some venues are only shared after registration, and Crisis Safe Space addresses are never published. These show at the town centre.</li>
+      <li>The records are shared, so people with local knowledge can keep them up to date. Changes appear here within minutes.</li>
+    </ul>
+    </section>
+    <section>
+    <h3>Suggest a change</h3>
+    ${suggest}
+    </section>
+    </div></div>
+    <p class="small">Service information belongs to the providers listed. Map data © <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap</a> contributors, © <a href="https://carto.com/attributions" target="_blank" rel="noopener">CARTO</a>.</p>
+    <p class="small" id="site-version">Version: /*SITE_VERSION*/${typeof window.assistRelayVersion === "function" ? window.assistRelayVersion() : ""}</p>
+  </article>`;
+}
+let tab = "talk";
+const SITE_TABS = ["talk", "near", "course", "about"/*ASSIST_TABNAME*/];
+const LEDE = { talk: "Phone lines, text services and online groups: support you can reach from anywhere.",
+  near: "In-person mental health and wellbeing support across Somerset, North Somerset and B&NES.", about: "What this is, how it's kept accurate, and how to suggest a change.", course: "Courses with a set programme and length, in person or online. Most need booking." };
+function setSiteTab(t) {
+  tab = t;
+  try { $("tab-" + t).scrollIntoView({ block: "nearest", inline: "nearest" }); } catch (e) {}
+  for (const k of SITE_TABS) { $("tab-" + k).setAttribute("aria-selected", k === t); $("panel-" + k).hidden = k !== t; $("hdr-" + k).hidden = k !== t; }
+  if (t === "talk") renderTalk(); else if (t === "course") renderCourses(); else if (t === "about") renderAbout(); else if (t === "assist") { if (window.assistShow) window.assistShow(); } else { initMap(); setTimeout(() => { map && map.invalidateSize(); fitPending = true; render(); }, 30); }
+  try { history.replaceState(null, "", "#" + t); } catch (e) {}
+  try { localStorage.setItem("ss-tab", t); } catch (e) {}
+}
+for (const k of SITE_TABS) $("tab-" + k).onclick = () => setSiteTab(k);
+{ const nav = document.querySelector(".sitetabs");
+  const edge = () => nav.classList.toggle("more", nav.scrollLeft + nav.clientWidth < nav.scrollWidth - 2);
+  nav.addEventListener("scroll", edge, { passive: true }); addEventListener("resize", edge); setTimeout(edge, 0); }
+$("c-support").onchange = renderCourses; $("c-fmt").onchange = renderCourses; $("c-book").onchange = renderCourses;
+$("t-support").onchange = renderTalk; $("t-open").onchange = renderTalk; $("t-area").onchange = renderTalk;
+
+/* ---------- events ---------- */
+fs.onchange = () => { fitPending = true; render(); };
+$("f-when").onchange = () => { fitPending = true; render(); };
+$("within").onchange = () => { fitPending = true; render(); };
+$("f-town").onchange = e => { const t = e.target.value; locMsg = "";
+  origin = t && PLACE[t] ? { lat: PLACE[t][0], lon: PLACE[t][1], label: t } : null; sortBy = origin ? "near" : "soon"; fitPending = true; render(); };
+$("s-soon").onclick = () => { sortBy = "soon"; render(); };
+/* "Use my location": optional, asks only when pressed; the position never leaves the browser */
+function setPtLabel(txt) { const o = $("f-town").querySelector('option[value="__pt"]'); if (o) o.textContent = txt; }
+(() => {
+  const btn = $("uselocation");
+  if (!btn || !("geolocation" in navigator)) return;
+  btn.hidden = false;
+  btn.onclick = () => {
+    btn.disabled = true; locMsg = "Finding your location…"; render();
+    navigator.geolocation.getCurrentPosition(p => {
+      btn.disabled = false; locMsg = "";
+      origin = { lat: p.coords.latitude, lon: p.coords.longitude, label: "your location" };
+      setPtLabel("Your location"); $("f-town").value = "__pt"; sortBy = "near"; fitPending = true; render();
+    }, err => {
+      btn.disabled = false;
+      locMsg = err.code === 1 ? "Location not allowed" : "Location not found"; render();
+      setTimeout(() => { locMsg = ""; render(); }, 5000);
+    }, { enableHighAccuracy: false, timeout: 12000, maximumAge: 600000 });
+  };
+})();
+$("s-near").onclick = () => { sortBy = "near"; render(); };
+$("list").addEventListener("mouseover", e => { const c = e.target.closest(".card"); document.querySelectorAll(".pin.hot, .cpin.hot").forEach(p => p.classList.remove("hot"));
+  const m = c && markers[c.dataset.id]; if (m) m.getElement()?.firstElementChild?.classList.add("hot"); });
+$("list").addEventListener("click", e => {
+  if (e.target.closest("#show-month")) { $("f-when").value = "month"; fitPending = true; render(); return; }
+  if (e.target.closest("a, .copy")) return; const c = e.target.closest(".card"); if (!c) return; c.classList.toggle("open");
+  const m = markers[c.dataset.id]; if (m && map && mapVisible()) { map.flyTo(m.getLatLng(), Math.max(map.getZoom(), 15), { duration: .5 }); m.openTooltip(); } });
+function setTab(t) { $("main").classList.toggle("show-map", t === "map"); $("t-list").setAttribute("aria-pressed", t === "list"); $("t-map").setAttribute("aria-pressed", t === "map");
+  if (t === "map" && map) setTimeout(() => { map.invalidateSize(); fitPending = true; render(); }, 30); }
+$("t-list").onclick = () => setTab("list"); $("t-map").onclick = () => setTab("map");
+addEventListener("resize", () => map && map.invalidateSize());
+// Opens on Assist when it's unlocked in this browser, otherwise on In person. A link with #near, #talk, #course, #about or #assist wins.
+(function () {
+  const fromHash = SITE_TABS.includes(location.hash.slice(1)) ? location.hash.slice(1) : "";
+  let unlocked = false; try { unlocked = !!sessionStorage.getItem("assist-code"); } catch (e) {}
+  setSiteTab(fromHash || (unlocked && SITE_TABS.includes("assist") ? "assist" : "near"));
+})();
+
+/* ---------- live data: read records from a published Google Sheet (CSV) ---------- */
+// Paste the sheet's "Publish to web → CSV" link between the quotes. Leave empty to use the built-in copy only.
+const SHEET_CSV_URL = "";
+const BUILT = "/*BUILT*/";
+function parseCSV(text) {
+  text = text.replace(/^﻿/, "");
+  const rows = []; let row = [], f = "", q = false;
+  for (let i = 0; i < text.length; i++) {
+    const c = text[i];
+    if (q) { if (c === '"') { if (text[i + 1] === '"') { f += '"'; i++; } else q = false; } else f += c; }
+    else if (c === '"') q = true;
+    else if (c === ",") { row.push(f); f = ""; }
+    else if (c === "\n" || c === "\r") { if (c === "\r" && text[i + 1] === "\n") i++; row.push(f); rows.push(row); row = []; f = ""; }
+    else f += c;
+  }
+  if (f !== "" || row.length) { row.push(f); rows.push(row); }
+  return rows;
+}
+// Undo what spreadsheets do to values: 25/10/2026 -> 2026-10-25, 10:00:00 -> 10:00
+const fixDate = v => v.replace(/\b(\d{1,2})\/(\d{1,2})\/(\d{4})\b/g, (m, d, mo, y) => `${y}-${mo.padStart(2, "0")}-${d.padStart(2, "0")}`);
+const fixTime = v => v.replace(/\b(\d{1,2}):(\d\d)(?::\d\d)?\b/g, (m, h, mi) => `${h.padStart(2, "0")}:${mi}`).replace(/\s*-\s*/g, "-");
+function recordsFromCSV(text) {
+  const rows = parseCSV(text), head = (rows[0] || []).map(h => h.trim().toLowerCase());
+  const missing = ["name", "type", "mode"].filter(k => !head.includes(k));
+  if (missing.length) return { error: `no ${missing.join(", ")} column` };
+  const recs = [];
+  for (const r of rows.slice(1)) {
+    const o = {}; head.forEach((h, i) => { if (h) o[h] = String(r[i] ?? "").trim(); });
+    if (!o.name) continue;
+    if (o.dates) o.dates = fixDate(o.dates);
+    if (o.last_checked) o.last_checked = fixDate(o.last_checked);
+    if (o.times) o.times = fixTime(o.times);
+    recs.push(o);
+  }
+  return { recs };
+}
+function applyRecords(recs) {  // (also refreshes the About counts)
+  const keepTown = $("f-town").value, keepOrigin = origin;   // a place chosen while the live sheet was loading
+  prepare(recs);
+  fitPending = true;
+  if (keepOrigin && (keepTown === "__pt" || PLACE[keepTown])) {
+    if (keepTown === "__pt") setPtLabel(keepOrigin.label === "your location" ? "Your location" : "Point on map");
+    $("f-town").value = keepTown; origin = keepOrigin;
+  } else { $("f-town").value = ""; origin = null; sortBy = "soon"; }
+  setSiteTab(tab);
+}
+function showSource(txt) { const el = $("datasrc"); el.textContent = txt; el.hidden = !txt; }
+function panelMessage(html) { for (const id of ["talk", "courses", "list"]) $(id).innerHTML = `<div class="empty">${html}</div>`; $("summary").textContent = ""; }
+if (SHEET_CSV_URL) {
+  if (LIVE_ONLY) { showSource(""); panelMessage(liveMsg); } else showSource("Loading the latest records…");
+  const ctl = new AbortController(); setTimeout(() => ctl.abort(), 15000);
+  fetch(SHEET_CSV_URL, { cache: "no-store", signal: ctl.signal })
+    .then(r => { if (!r.ok) throw new Error("HTTP " + r.status); return r.text(); })
+    .then(text => {
+      const { recs, error } = recordsFromCSV(text);
+      if (error || recs.length < 10) throw new Error(error || "too few records");
+      try { applyRecords(recs); }
+      catch (e) { console.error("Display error", e); showSource(`${recs.length} services loaded, but something went wrong showing them (${e && e.message}). Please send this message to the maintainer.`); return; }
+      showSource("");   // success needs no message; problems are still reported here
+    })
+    .catch(e => {
+      console.error("Sheet load error", e);
+      if (LIVE_ONLY) {
+        showSource("");
+        panelMessage(liveMsg = `<strong>Services can't be loaded right now.</strong><br>Please <a href="" onclick="location.reload();return false">try again</a> in a moment. If you need to talk to someone now, call Samaritans on <a href="tel:116123">116 123</a>.<br><small style="color:#78716C">Technical detail: ${esc(String(e && e.message || e))}</small>`);
+      } else showSource(`Couldn't reach the shared sheet, so this is the saved copy from ${BUILT}.`);
+    });
+}
+/*TRIAL*/
+setInterval(() => { if (!ALL.length) return; tab === "talk" ? renderTalk() : tab === "course" ? renderCourses() : render(); }, 5 * 60 * 1000);
+</script>

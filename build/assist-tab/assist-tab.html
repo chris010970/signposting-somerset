@@ -1,0 +1,59 @@
+<!--TAB-->
+      <button type="button" role="tab" id="tab-assist" aria-selected="false" aria-controls="panel-assist" title="Assist: for invited support workers (access code needed)"><svg class="lock" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M12 2a5 5 0 0 1 5 5v3h1a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2v-8a2 2 0 0 1 2-2h1V7a5 5 0 0 1 5-5zm0 2a3 3 0 0 0-3 3v3h6V7a3 3 0 0 0-3-3z"/></svg><span>Assist</span><span class="sr-lock" id="tab-assist-sr" style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)"> (access code needed)</span></button>
+<!--HDR-->
+    <div id="hdr-assist" hidden>
+    <div class="qs">
+      <div class="q" id="aq-support"><label for="a-support">1. Support for</label><select id="a-support"></select></div>
+      <div class="q" id="aq-where"><span class="lab">2. Where?</span>
+        <div class="where">
+          <select id="a-town" aria-label="Place"></select>
+          <button type="button" class="locbtn" id="a-uselocation" hidden aria-label="Use my location" title="Use my location (rounded to about 1 km before anything is sent)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="7"/><circle cx="12" cy="12" r="2.5" fill="currentColor"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3"/></svg></button>
+          <select id="a-rad" aria-label="Distance"><option value="2">within 2 miles</option><option value="5">within 5 miles</option><option value="10" selected>within 10 miles</option><option value="20">within 20 miles</option></select>
+        </div>
+      </div>
+      <div class="q" id="aq-remote"><label for="a-mode">3. How?</label><select id="a-mode"><option value="either" selected>All services</option><option value="inperson">In person</option><option value="remote">Phone or online</option></select></div>
+    </div>
+    </div>
+<!--PANEL-->
+<section id="panel-assist" role="tabpanel" aria-labelledby="tab-assist" hidden style="flex:1;min-height:0;overflow-y:auto"><div class="gut"><div class="a-wrap">
+
+  <form class="a-card a-gate" id="a-gate" hidden>
+    <label class="a-h" for="a-code">Access code</label>
+    <p class="a-hint" style="margin:0 0 4px">Assist is for invited support workers and volunteers. Enter the code you were given.</p>
+    <input id="a-code" type="password" autocomplete="off">
+    <button class="a-btn" type="submit" id="a-codeBtn">Unlock Assist</button>
+    <p class="a-err" id="a-gateErr" hidden></p>
+    <p class="a-hint">The code is remembered only until you close this browser.</p>
+  </form>
+
+  <p class="a-err" id="a-noworker" hidden>Assist isn't connected to its relay yet.</p>
+
+  <div id="a-app" hidden>
+  <form class="a-card a-form" id="a-form"><div class="a-formgrid">
+    <div class="a-formmain">
+      <div class="a-compose">
+      <label class="a-ttl" for="a-need">4. What's going on for them?</label>
+      <textarea id="a-need" maxlength="2000" aria-describedby="a-keytip" placeholder="Describe the need, not the person (no names or contact details).&#10;&#10;e.g. Feeling low since losing his job, hardly leaves the house, no car, not mornings."></textarea>
+      <div class="a-go"><button type="button" class="a-mapbtn" id="a-mapbtn" aria-expanded="false" aria-controls="a-mapbox"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M15 4 9 2 3 4v18l6-2 6 2 6-2V2zm-1 15.6-4-1.3V4.4l4 1.3z"/></svg>Map</button><button type="button" class="a-online" id="a-online" aria-pressed="false" title="Also search online for anything the directory doesn't cover. Only a short search phrase and the nearest town are sent, never the description."><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c2.5 2.7 3.8 5.7 3.8 9s-1.3 6.3-3.8 9c-2.5-2.7-3.8-5.7-3.8-9S9.5 5.7 12 3z"/></svg>Search online</button><span class="a-keytip" id="a-keytip">Enter to send, Shift+Enter for a new line</span><button class="a-send" id="a-ask" type="submit" aria-label="Suggest support" title="Suggest support"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></button></div>
+      </div>
+    </div>
+    <div class="a-mapbox" id="a-mapbox" hidden>
+      <div id="a-map" role="application" aria-label="Map: click roughly where the person is"></div>
+      <div class="a-maptl" aria-hidden="true">Or click the map</div>
+    </div>
+  </div></form>
+
+  <div class="a-alert" id="a-crisis" hidden>
+    <h2>This sounds like it may need urgent support</h2>
+    <p>If someone is at risk right now, call 999. For urgent mental health help, call NHS 111 and choose option 2. They can also talk to Samaritans or Mindline any time.</p>
+    <div class="a-lines"><a href="tel:999">999</a><a href="tel:111">NHS 111, option 2</a><a href="tel:116123">Samaritans 116 123</a></div>
+  </div>
+
+  <p class="a-scrubnote" id="a-scrubnote" hidden></p>
+  <p class="a-status" id="a-status" hidden><span class="a-dot"></span><span id="a-statusText">Thinking...</span></p>
+  <p class="a-err" id="a-err" hidden></p>
+  <section id="a-out" hidden></section>
+
+  </div>
+</div></div></section>
+<div id="a-printplan"></div>
