@@ -470,13 +470,13 @@ function occurrences(s, from, days) {
   return out;
 }
 const fmtT = m => `${String(Math.floor(m / 60)).padStart(2, "0")}:${String(m % 60).padStart(2, "0")}`;
-function nextText(s, now) {
+function nextText(s, now, from = now) {   // from: start of the chosen time window (e.g. tomorrow), so the card shows that session
   if (s._kind === "website") return { cls: "chk", txt: "Times vary: see website" };
   if (s._kind === "appointment") return { cls: "chk", txt: "By appointment" };
   // Booked, phoned or referred with no set time: there's no session to turn up to, so give the days instead of a next date
   if (!s._times && s.days && ["book", "call", "referral"].includes(s.access) && !/group|community|course|volunteering/i.test(s.type || "")) return { cls: "chk", txt: `By appointment · ${s.days.replace(/;/g, ", ").replace(/-/g, "–")}` };
   if (s._kind === "check") return { cls: "chk", txt: `Check dates${s.frequency ? ` (${s.frequency})` : ""}${s.days ? ` · ${s.days} ${s.times}` : ""}` };
-  const o = occurrences(s, now, 70).find(x => x.en > now);
+  const o = occurrences(s, from, 70).find(x => x.en > from);
   if (!o) return { cls: "chk", txt: "No upcoming dates" };
   const d0 = dayStart(now), dd = Math.round((dayStart(o.st) - d0) / 864e5);
   const day = dd === 0 ? "Today" : dd === 1 ? "Tomorrow" : o.st.toLocaleDateString("en-GB", { weekday: "short", day: "numeric", month: "short" });
@@ -584,10 +584,10 @@ function render() {
   $("s-soon").setAttribute("aria-pressed", sortBy === "soon"); $("s-near").setAttribute("aria-pressed", sortBy === "near");
   $("pointnote").textContent = locMsg;  // only short location messages; floats below the box so the filters never change height
 
-  const win = windowFor(when, now);
+  const win = windowFor(when, now), from = win ? new Date(Math.max(win[0], now)) : now;
   let rows = S.filter(s => !sup || s._sf.includes(sup)).map(s => {
     const d = origin && !isNaN(s.lat) ? miles(origin, s) : null;
-    return { s, d, nx: nextText(s, now) };
+    return { s, d, nx: nextText(s, now, from) };
   });
   if (origin && rad) rows = rows.filter(r => r.d != null && r.d <= rad);
   let checkRows = [];
