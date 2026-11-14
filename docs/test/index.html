@@ -806,6 +806,9 @@ h1 { font-family: var(--serif); color: var(--b900); font-size: 26px; margin: 0; 
 .sitetabs #tab-analytics::before { content: ""; position: absolute; left: 0; top: 10px; bottom: 12px; border-left: 1px solid var(--line); }
 .sitetabs #tab-analytics + #tab-about { margin-left: 0; padding-left: 14px; }
 .sitetabs #tab-analytics + #tab-about::before { display: none; }
+/* Analytics is a desktop tool: no tab below 760px wide (About then keeps its own separator) */
+@media (max-width: 759px) { .sitetabs #tab-analytics { display: none; } .sitetabs #tab-analytics + #tab-about { margin-left: 6px; } .sitetabs #tab-analytics + #tab-about::before { display: block; } }
+@media (max-width: 420px) { .sitetabs #tab-analytics + #tab-about { margin-left: 1px; padding-left: 7px; } }
 /* On narrow phones the last tab may not fit: fade the edge so it's clear the row scrolls */
 .sitetabs.more { -webkit-mask-image: linear-gradient(to right, #000 calc(100% - 36px), transparent); mask-image: linear-gradient(to right, #000 calc(100% - 36px), transparent); }
 @media (max-width: 420px) { .sitetabs { gap: 0; } .sitetabs .tgrp { gap: 0; } .sitetabs button { padding-inline: 5px; font-size: 13px; } .sitetabs #tab-assist, .sitetabs #tab-about { margin-left: 1px; padding-left: 7px; } .sitetabs #tab-assist { gap: 4px; } .sitetabs .lg { display: none; } .sitetabs .sh { display: inline; } }
@@ -934,6 +937,8 @@ a.copy.dirs { text-decoration: none; }
 .cpin span { width: 18px; height: 18px; border-radius: 50%; background: #fff; color: var(--b900); display: grid; place-items: center; font-size: 11px; }
 .cpin.approx { opacity: .85; }
 .cpin.hot { transform: scale(1.3); box-shadow: 0 0 0 2px var(--b900), 0 1px 4px rgba(0,0,0,.35); }
+.an-pnext { color: var(--muted); font-size: 12px; }
+#amap a.plink { color: var(--b700); display: inline-block; }
 .plist-h { font-weight: 700; color: var(--b900); margin-bottom: 6px; font-size: 13px; }
 .plist ul { list-style: none; margin: 0; padding: 0; max-height: 220px; overflow-y: auto; display: grid; gap: 2px; }
 .plink { border: 0; background: none; padding: 4px 0; text-align: left; color: var(--b700); text-decoration: underline; cursor: pointer; font: 500 13px var(--sans); }
@@ -1045,23 +1050,11 @@ footer.urgent p { color: #FEE2E2; }
 .an-src.prov { background: #DDEFEA; color: #1F5F52; }
 .an-scale { background: rgba(255,255,255,.95); border: 1px solid var(--line); border-radius: 10px; padding: 8px 10px 6px; width: 250px; box-shadow: 0 1px 4px rgba(0,0,0,.12); font-family: var(--sans); }
 .an-scale b { display: block; font-size: 12px; color: var(--b900); margin-bottom: 5px; }
-@media (max-width: 599px) { .an-scale { width: 200px; padding: 6px 8px 4px; } .an-scale .an-ends { font-size: 10px; } }
 .an-ramp { display: flex; height: 12px; border-radius: 4px; overflow: hidden; } .an-ramp i { flex: 1; }
 .an-ticks, .an-ends { display: flex; justify-content: space-between; font-size: 11px; color: var(--muted); margin-top: 4px; }
 .an-ticks.even span { flex: 1; text-align: center; }
 .an-ends { color: var(--ink); margin-top: 2px; }
-.an-qs #q-asupport { grid-column: span 2; }
-@media (max-width: 899px) { .an-qs { grid-template-columns: 1fr 1fr; } .an-qs #q-asupport { grid-column: 1 / -1; } }
-.an-info { background: rgba(255,255,255,.95); border: 1px solid var(--line); border-radius: 10px; padding: 7px 10px; font: 13px/1.45 var(--sans); color: var(--ink); max-width: min(560px, calc(100vw - 60px)); box-shadow: 0 1px 4px rgba(0,0,0,.12); }
-.an-info b { color: var(--b900); } .an-info .mut { color: var(--muted); }
-.an-info .sw { display: inline-block; width: 10px; height: 10px; border-radius: 2px; margin-right: 5px; vertical-align: -1px; }
-.an-plist { list-style: none; margin: 0; padding: 0; max-height: 220px; overflow-y: auto; } .an-plist li { padding: 4px 0; border-top: 1px solid var(--line); font-size: 13px; }
-@media (max-width: 599px) { .an-info { font-size: 12px; max-width: calc(100vw - 32px); } }
-@media (max-width: 899px) {
-  .an:not([hidden]) { display: flex; flex-direction: column; overflow-y: auto; margin-bottom: 0; }
-  .an-mapwrap { order: -1; flex: none; height: 58vh; min-height: 300px; border-bottom: 1px solid var(--line); }
-  .an-side { border-right: 0; overflow: visible; padding: 14px 16px 90px; }
-}
+@media (min-width: 900px) { .an-qs #q-asupport { grid-column: span 2; } }
 
 /* ---------- Assist tab (v2 only). Everything is scoped to #panel-assist or prefixed a- so it can't affect the rest of the site. ---------- */
 .sitetabs #tab-assist { display: inline-flex; align-items: center; gap: 6px; }
@@ -1740,11 +1733,11 @@ function clusterBg(g) {
 }
 let lastDraw = null;
 const AREA_ZOOM = 11, AREA_PX = 52;   // at zoom 11 or less, pins within ~52px merge into one numbered circle
-function areaClusters(groups) {
+function areaClusters(groups, m = map) {   // also used by the Analytics map
   // Greedy merge of same-spot groups by on-screen distance; biggest spots seed the clusters
-  const z = map.getZoom(), cl = [];
+  const z = m.getZoom(), cl = [];
   [...groups.entries()].sort((a, b) => b[1].length - a[1].length).forEach(([k, g]) => {
-    const p = map.project([g[0].lat, g[0].lon], z);
+    const p = m.project([g[0].lat, g[0].lon], z);
     const c = cl.find(c => c.p.distanceTo(p) < AREA_PX);
     if (c) { c.spots.push([k, g]); c.n += g.length; } else cl.push({ p, spots: [[k, g]], n: g.length });
   });
@@ -1991,6 +1984,7 @@ function renderAbout() {
       <li><strong>Practical help and support:</strong> money, housing and food, including advice and advocacy.</li>
       <li><strong>Everyday wellbeing:</strong> connection, activity, learning, nature and giving, based on the Five Ways to Wellbeing.</li>
       <li>Helplines and online groups, in-person services on a map, and courses with set dates.</li>
+      <li><strong>Analytics (desktop only):</strong> where the services are, alongside local deprivation, health and disability, for each small census area (LSOA). It needs a laptop or larger screen, so it doesn't appear on phones.</li>
     </ul>
     </section>
     ${typeof window.assistAbout === "function" ? window.assistAbout() : ""}
@@ -2010,10 +2004,10 @@ function renderAbout() {
     </section>
     </div></div>
     <p class="small">Service information belongs to the providers listed. Map data © <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap</a> contributors, © <a href="https://carto.com/attributions" target="_blank" rel="noopener">CARTO</a>.</p>
-    <p class="small" id="site-version">Version: test 2026-11-14 09:39${typeof window.assistRelayVersion === "function" ? window.assistRelayVersion() : ""}</p>
+    <p class="small" id="site-version">Version: test 2026-11-14 10:17${typeof window.assistRelayVersion === "function" ? window.assistRelayVersion() : ""}</p>
   </article>`;
 }
-/* ---------- Analytics tab: neighbourhoods (2021 LSOAs) shaded by local data, with the directory's services on top ----------
+/* ---------- Analytics tab (desktop only: hidden below 760px wide): neighbourhoods (2021 LSOAs) shaded by local data, with the directory's services on top ----------
    Same frame as In person: questions in the header (Support for · Place · How often · Within), panel left, map right with the
    "What it is" key. The boundary and statistics file loads only when the tab is first opened. Distances and nearby counts are
    worked out here from the live records and follow the filters. Within also sets miles or km for the whole tab. */
@@ -2090,33 +2084,18 @@ function anSetLayer(id) {
   aAreas.setStyle(anStyle);
   document.querySelectorAll("#an-layers label").forEach(l => l.classList.toggle("on", l.dataset.id === aCur.id));   // only the chosen one shows its description
   const cur = $("an-pcur"); if (cur) cur.textContent = aCur.name;
-  anInfo(null);
   if (aScaleEl) aScaleEl.innerHTML = `<b>${esc(aCur.name)}</b>` + anLegend();
-}
-// Info strip (bottom left of the map): the LSOA under the pointer, else the selected one(s). No floating box, so it never covers the pins.
-let aInfoEl = null;
-function anInfo(f) {
-  if (!aInfoEl) return;
-  const line = (g, tag) => { const p = g.properties;
-    return `${tag || ""}<b>${esc(p.name)}</b> · ${esc(p.ruc || "")} · ${esc(aCur.name)}: <b>${esc(aFmt(aCur, p))}</b>` +
-      (aCur.id === "n1" ? "" : ` · ${p.n1} service${p.n1 === 1 ? "" : "s"} within ${esc(aRadius())}`); };
-  const sw = c => `<i class="sw" style="background:${c}"></i>`;
-  aInfoEl.innerHTML = f ? line(f)
-    : aCmp ? (aA ? line(aA, sw("#7A2E8E")) : "") + (aB ? "<br>" + line(aB, sw("#1B5FA8")) : `<br><span class="mut">Tap another LSOA to compare</span>`)
-    : aSel ? line(aSel) + ` <span class="mut">· details below the map</span>`
-    : `<span class="mut">${matchMedia("(hover: hover)").matches ? "Hover over or click" : "Tap"} an LSOA</span>`;
 }
 // This LSOA panel: the LSOA under the pointer (or the selected one), or A and B, beside the median for A's council area.
 // It is live: a line says so, and the card flashes briefly whenever what it shows changes.
 let aShowing = "";
 function anDetail() {
-  const el = $("an-detail"), F = aGeo.features, hov = matchMedia("(hover: hover)").matches;
+  const el = $("an-detail"), F = aGeo.features;
   const one = aCmp ? aA : aSel || aHover;
-  const live = `<p class="an-live"><i></i>Updates as you ${hov ? "hover over or click" : "tap"} the map</p>`;
+  const live = `<p class="an-live"><i></i>Updates as you hover over or click the map</p>`;
   const key = aCmp ? "c:" + (aA ? aA.properties.code : "") + (aB ? aB.properties.code : "") : one ? one.properties.code : "";
   if (key !== aShowing) { aShowing = key; if (key) { el.classList.remove("flash"); void el.offsetWidth; el.classList.add("flash"); } }
-  if (!one) { el.innerHTML = live + `<p class="an-hint">${hov ? "Hover over an LSOA on the map to see its figures here. Click to keep it selected." : "Tap an LSOA on the map to see its figures here."} ` +
-    `LSOAs are small census areas of about 1,500 people.</p>`; return; }
+  if (!one) { el.innerHTML = live + `<p class="an-hint">Hover over an LSOA on the map to see its figures here. Click to keep it selected. LSOAs are small census areas of about 1,500 people.</p>`; return; }
   const cols = aCmp ? [aA, aB].filter(Boolean) : [one], la = one.properties.la;
   const LA = F.filter(f => f.properties.la === la), mid = k => { const v = LA.map(f => f.properties[k]).sort((a, b) => a - b); return v[Math.floor(v.length / 2)]; };
   const typ = { pop: mid("pop"), dist: mid("dist"), n1: mid("n1"), imd: mid("imd"), hdep: mid("hdep"), dis: mid("dis") };
@@ -2145,23 +2124,44 @@ function anRefresh() {
     for (const q of pts) { const d = anMiles(p.c, q); if (d < best) best = d; if (d <= aR) n++; }
     p.dist = pts.length ? Math.round(best * 100) / 100 : 99; p.n1 = n;
   }
-  // service pins: one per spot, numbered when several share it (as on In person); markers sit above the LSOA shapes
+  aShownNow = shown; anDrawPins();
+  anSetLayer(aCur.id); anDetail(); anChart(); if (aLegendEl) anMapKey(aLegendEl);
+}
+// Service pins, drawn exactly as on In person: zoomed out, nearby pins merge into area circles (click to zoom in);
+// zoomed in, one pin per spot, numbered when several share it. Popups link to each service's own website (there are no cards here).
+let aShownNow = [];
+function anDrawPins() {
+  if (!aPins) return;
   aPins.clearLayers();
-  const spots = new Map();
-  for (const s of shown) { const k = spotKey(s); if (!spots.has(k)) spots.set(k, []); spots.get(k).push(s); }
-  const one = s => `<b>${esc(s.name)}</b><br><span style="color:var(--muted)">${esc(nextText(s, now).txt)}</span>` + (s.url ? ` · <a href="${esc(s.url)}" target="_blank" rel="noopener">Website</a>` : "");
-  for (const g of spots.values()) {
+  const now = new Date(), spots = new Map();
+  for (const s of aShownNow) { const k = spotKey(s); if (!spots.has(k)) spots.set(k, []); spots.get(k).push(s); }
+  const link = s => s.url ? `<a class="plink" href="${esc(s.url)}" target="_blank" rel="noopener">${esc(s.name)}</a>`
+    : s.phone ? `${esc(s.name)} · <a href="tel:${esc(s.phone.replace(/[^\d+]/g, ""))}">${esc(s.phone)}</a>` : esc(s.name);
+  let list = [...spots.entries()];
+  if (amap.getZoom() <= AREA_ZOOM) {
+    list = [];
+    for (const c of areaClusters(spots, amap)) {
+      if (c.spots.length === 1) { list.push(c.spots[0]); continue; }
+      const all = c.spots.flatMap(([, g]) => g);
+      const lat = all.reduce((x, s) => x + s.lat, 0) / all.length, lon = all.reduce((x, s) => x + s.lon, 0) / all.length;
+      const towns = {}; all.forEach(s => towns[s.town] = (towns[s.town] || 0) + 1);
+      const town = Object.entries(towns).sort((x, y) => y[1] - x[1])[0][0], bd = L.latLngBounds(all.map(s => [s.lat, s.lon]));
+      L.marker([lat, lon], { icon: L.divIcon({ className: "", html: `<div class="cpin area" style="background:${clusterBg(all)}"><span>${all.length}</span></div>`, iconSize: [34, 34], iconAnchor: [17, 17] }), title: `${all.length} services around ${town}` })
+        .bindTooltip(`<strong>${all.length} services</strong><br>around ${esc(town)} · click to zoom in`, { direction: "top", offset: [0, -14] })
+        .on("click", () => amap.flyToBounds(bd.pad(0.15), { maxZoom: AREA_ZOOM + 2, duration: .5 })).addTo(aPins);
+    }
+  }
+  for (const [, g] of list) {
     const s0 = g[0], place = esc(s0.address || s0.town || "");
-    const m = g.length === 1
+    (g.length === 1
       ? L.marker([s0.lat, s0.lon], { icon: L.divIcon({ className: "", html: `<div class="pin" style="background:${pinCol(s0)}"></div>`, iconSize: [14, 14], iconAnchor: [7, 7] }), title: s0.name })
           .bindTooltip(`<strong>${esc(s0.name)}</strong><br>${esc(s0.town || "")}`, { direction: "top", offset: [0, -6] })
-          .bindPopup(`<div class="an-pop">${one(s0)}${place ? "<br>" + place : ""}</div>`, { maxWidth: 280 })
+          .bindPopup(`<div class="plist"><div class="plist-h">${place}</div><ul><li>${link(s0)}<br><span class="an-pnext">${esc(nextText(s0, now).txt)}</span></li></ul></div>`, { maxWidth: 280 })
       : L.marker([s0.lat, s0.lon], { icon: L.divIcon({ className: "", html: `<div class="cpin" style="background:${clusterBg(g)}"><span>${g.length}</span></div>`, iconSize: [28, 28], iconAnchor: [14, 14] }), title: `${g.length} services` })
           .bindTooltip(`<strong>${g.length} services</strong><br>${place}`, { direction: "top", offset: [0, -12] })
-          .bindPopup(`<div class="plist"><div class="plist-h">${g.length} services · ${place}</div><ul class="an-plist">${g.map(s => `<li>${one(s)}</li>`).join("")}</ul></div>`, { maxWidth: 280 });
-    m.addTo(aPins);
+          .bindPopup(`<div class="plist"><div class="plist-h">${g.length} services · ${place}</div><ul>${g.map(s => `<li>${link(s)}</li>`).join("")}</ul></div>`, { maxWidth: 280 })
+    ).addTo(aPins);
   }
-  anSetLayer(aCur.id); anDetail(); anChart(); anInfo(null); if (aLegendEl) anMapKey(aLegendEl);
 }
 // The same "What it is" key as In person, with its own on/off state
 function anMapKey(d) {
@@ -2184,7 +2184,7 @@ const AN_RUC = { Urban: "#4E9C88", Rural: "#A08A5C" };
 function anPick(f) {
   if (aCmp) { if (f !== aA) aB = f; }
   else aSel = aSel === f ? null : f;
-  aHover = null; aAreas.setStyle(anStyle); anDetail(); anChart(); anInfo(null);
+  aHover = null; aAreas.setStyle(anStyle); anDetail(); anChart();
 }
 function anChart() {
   const box = $("an-svg"); if (!box || !aGeo || aTab !== "ov" || aGeo.features[0].properties.n1 === undefined) return;
@@ -2259,12 +2259,12 @@ function anChartInit() {
   box.onmousemove = e => { const [i, x, y] = near(e), tip = $("an-ctip"); if (!tip) return;
     const f = i >= 0 ? aGeo.features[i] : null;
     if (f !== last) { if (last) { const l = last.__l; aAreas.resetStyle(l); }
-      if (f) { const l = f.__l; l.setStyle({ weight: 2.5, color: "#1B3126" }); l.bringToFront(); } last = f; anChartHover(f, !!f); anInfo(f); }
+      if (f) { const l = f.__l; l.setStyle({ weight: 2.5, color: "#1B3126" }); l.bringToFront(); } last = f; anChartHover(f, !!f); }
     if (!f) { tip.hidden = true; return; }
     const p = f.properties, ly = AN_LAYERS.find(l => l.id === aAy);
     tip.innerHTML = `<b>${esc(p.name)}</b><br>${esc(p.ruc)}<br>${esc(ly.name)}: ${esc(aFmt(ly, p))}<br>Nearest service: ${esc(aDist(p.dist))}`;
     tip.hidden = false; tip.style.left = Math.min(x + 12, box.clientWidth - 170) + "px"; tip.style.top = Math.max(0, y - 52) + "px"; };
-  box.onmouseleave = () => { if (last) { aAreas.resetStyle(last.__l); last = null; } anChartHover(null, false); anInfo(null); const tip = $("an-ctip"); if (tip) tip.hidden = true; };
+  box.onmouseleave = () => { if (last) { aAreas.resetStyle(last.__l); last = null; } anChartHover(null, false); const tip = $("an-ctip"); if (tip) tip.hidden = true; };
   box.onclick = e => { const [i] = near(e); if (i >= 0) anPick(aGeo.features[i]); };
   addEventListener("resize", () => { clearTimeout(anChartInit._t); anChartInit._t = setTimeout(anChart, 150); });
   anTabSet(aTab);
@@ -2285,11 +2285,17 @@ async function initAnalytics() {
   for (let i = 0; !S.length && i < 100; i++) await new Promise(r => setTimeout(r, 300));   // wait for the sheet if it's still loading
   aAreas = L.geoJSON(aGeo, { style: anStyle, onEachFeature: (f, l) => {
     f.__l = l;
-    l.on("mouseover", () => { if (!aSel && !aCmp) { aHover = f; anDetail(); } l.setStyle({ weight: 2.5, color: "#1B3126" }); l.bringToFront(); anChartHover(f, true); anInfo(f); });
-    l.on("mouseout", () => { aAreas.resetStyle(l); anChartHover(f, false); anInfo(null); if (aHover === f) { aHover = null; anDetail(); } });
+    l.on("mouseover", () => { if (!aSel && !aCmp) { aHover = f; anDetail(); } l.setStyle({ weight: 2.5, color: "#1B3126" }); l.bringToFront(); anChartHover(f, true); });
+    l.on("mouseout", () => { aAreas.resetStyle(l); anChartHover(f, false); if (aHover === f) { aHover = null; anDetail(); } });
     l.on("click", () => anPick(f));
   } }).addTo(amap);
   aPins = L.layerGroup().addTo(amap);
+  amap.on("zoomend", anDrawPins);   // re-merge or split the pins as you zoom, as on In person
+  amap.on("popupopen", e => {   // if a popup opens under the map key, nudge the map down so it's clear of it
+    const pe = e.popup.getElement(), k = aLegendEl; if (!pe || !k) return;
+    const p = pe.getBoundingClientRect(), r = k.getBoundingClientRect();
+    if (p.left < r.right && p.right > r.left && p.top < r.bottom && p.bottom > r.top) amap.panBy([0, -(r.bottom - p.top + 12)]);
+  });
   const legend = L.control({ position: "topleft" });
   legend.onAdd = () => {
     const d = L.DomUtil.create("div", "maplegend");
@@ -2304,11 +2310,6 @@ async function initAnalytics() {
     anMapKey(d); return d;
   };
   legend.addTo(amap);
-  if (innerWidth < 900) {   // phones and narrow screens: the panel is below the map, so an info strip on the map shows what was tapped
-    const info = L.control({ position: "topleft" });
-    info.onAdd = () => { aInfoEl = L.DomUtil.create("div", "an-info"); L.DomEvent.disableClickPropagation(aInfoEl); return aInfoEl; };
-    info.addTo(amap);
-  }
   const scale = L.control({ position: "bottomright" });   // the colour scale for the selected layer
   scale.onAdd = () => { aScaleEl = L.DomUtil.create("div", "an-scale"); L.DomEvent.disableClickPropagation(aScaleEl); return aScaleEl; };
   scale.addTo(amap);
@@ -2323,8 +2324,8 @@ async function initAnalytics() {
   $("an-often").onchange = anRefresh;
   $("an-within").onchange = e => { aSetWithin(e.target.value); anRefresh(); };
   $("an-layers").onchange = e => anSetLayer(e.target.value);
-  // the "Shade the map by" panel folds to one line, like the map key; open on desktop, folded on phones unless the viewer chose otherwise
-  let po = innerWidth >= 600; try { const v = localStorage.getItem("anLayersOpen"); if (v) po = v === "1"; } catch (_) {}
+  // the "Shade the map by" panel folds to one line, like the map key; remembered on the device
+  let po = true; try { const v = localStorage.getItem("anLayersOpen"); if (v) po = v === "1"; } catch (_) {}
   const pset = o => { $("an-pan").classList.toggle("closed", !o); $("an-ptog").setAttribute("aria-expanded", o); };
   pset(po); $("an-pcur").textContent = aCur.name;
   $("an-ptog").onclick = () => { po = !po; pset(po); try { localStorage.setItem("anLayersOpen", po ? "1" : "0"); } catch (_) {} setTimeout(anChart, 0); };
@@ -2332,11 +2333,10 @@ async function initAnalytics() {
     const b = e.target.closest("button"); if (!b) return;
     if (b.dataset.a === "cmp") { aCmp = true; aA = aSel; aB = null; aSel = null; }
     else { aCmp = false; aA = aB = aSel = null; }
-    aAreas.setStyle(anStyle); anDetail(); anChart(); anInfo(null);
+    aAreas.setStyle(anStyle); anDetail(); anChart();
   };
   anChartInit();
   amap.fitBounds(aAreas.getBounds(), { padding: [8, 8] });
-  if (innerWidth < 600) amap.setZoom(amap.getZoom() + .5);   // phones: a little closer in to start
   anRefresh();
   $("an-loading").hidden = true;
   setTimeout(() => amap.invalidateSize(), 30);
@@ -2347,7 +2347,9 @@ const SITE_TABS = ["talk", "near", "course", "analytics", "about", "assist"];
 const LEDE = { talk: "Phone lines, text services and online groups: support you can reach from anywhere.",
   analytics: "The directory's services alongside local deprivation, health and population.",
   near: "In-person mental health and wellbeing support across Somerset, North Somerset and B&NES.", about: "What this is, how it's kept accurate, and how to suggest a change.", course: "Courses with a set programme and length, in person or online. Most need booking." };
+const wideEnough = () => matchMedia("(min-width: 760px)").matches;   // Analytics is desktop only
 function setSiteTab(t) {
+  if (t === "analytics" && !wideEnough()) t = "near";
   tab = t;
   try { $("tab-" + t).scrollIntoView({ block: "nearest", inline: "nearest" }); } catch (e) {}
   for (const k of SITE_TABS) { $("tab-" + k).setAttribute("aria-selected", k === t); $("panel-" + k).hidden = k !== t; $("hdr-" + k).hidden = k !== t; }
@@ -2398,7 +2400,7 @@ $("list").addEventListener("click", e => {
 function setTab(t) { $("main").classList.toggle("show-map", t === "map"); $("t-list").setAttribute("aria-pressed", t === "list"); $("t-map").setAttribute("aria-pressed", t === "map");
   if (t === "map" && map) setTimeout(() => { map.invalidateSize(); fitPending = true; render(); }, 30); }
 $("t-list").onclick = () => setTab("list"); $("t-map").onclick = () => setTab("map");
-addEventListener("resize", () => map && map.invalidateSize());
+addEventListener("resize", () => { map && map.invalidateSize(); if (tab === "analytics" && !wideEnough()) setSiteTab("near"); });
 // Opens on Assist when it's unlocked in this browser, otherwise on In person. A link with #near, #talk, #course, #about or #assist wins.
 (function () {
   const fromHash = SITE_TABS.includes(location.hash.slice(1)) ? location.hash.slice(1) : "";
@@ -2483,7 +2485,7 @@ setInterval(() => { if (!ALL.length) return; tab === "talk" ? renderTalk() : tab
    this page only remembers it for the current browser session. */
 (() => {
 const WORKER_URL = "https://signposting-assist.c-r-williams0109.workers.dev";
-const PAGE_VERSION = "test 2026-11-14 09:39";
+const PAGE_VERSION = "test 2026-11-14 10:17";
 let relayVersion = "";
 // The version line is at the bottom of the About tab: "Version: test 2026-11-06 11:30 · Assist relay 2026-11-06 11:07"
 window.assistRelayVersion = () => relayVersion ? ` · Assist relay ${relayVersion}` : "";
