@@ -314,14 +314,6 @@ footer.urgent p { color: #FEE2E2; }
 .an-box { background: var(--white); border: 1px solid var(--line); border-radius: 12px; padding: 10px 12px; }
 .an-h { display: flex; align-items: baseline; justify-content: space-between; gap: 8px; margin: 0 0 4px; }
 .an-h h2 { font-family: var(--serif); color: var(--b900); font-size: 16px; margin: 0; }
-.an-svg { position: relative; cursor: crosshair; }
-.an-svg svg { display: block; }
-.an-svg .tk { font-size: 10.5px; fill: var(--muted); } .an-svg .ax { font-size: 11px; fill: var(--ink); }
-.an-svg .ref { stroke: #B9C3BC; stroke-dasharray: 3 3; }
-.an-svg .reft { font-size: 10.5px; fill: #8A5A2A; paint-order: stroke; stroke: rgba(255,255,255,.9); stroke-width: 3px; stroke-linejoin: round; }
-.an-svg .tag { font-size: 12px; font-weight: 700; }
-.an-ctip { position: absolute; pointer-events: none; background: #fff; border: 1px solid var(--line); border-radius: 8px; padding: 5px 8px; font-size: 12px; line-height: 1.4; box-shadow: 0 2px 8px rgba(0,0,0,.12); white-space: nowrap; z-index: 2; }
-.an-ctip[hidden] { display: none; } .an-ctip b { color: var(--b900); }
 .an-cap { display: flex; flex-wrap: wrap; gap: 3px 12px; font-size: 11.5px; color: var(--muted); margin-top: 2px; }
 .an-cap i, .an-legend i { display: inline-block; width: 9px; height: 9px; border-radius: 50%; margin-right: 5px; vertical-align: -1px; }
 .an-cap b { color: var(--ink); font-weight: 600; }
@@ -332,7 +324,30 @@ footer.urgent p { color: #FEE2E2; }
 .an-pane { flex: 1; min-height: 0; display: flex; flex-direction: column; } .an-pane[hidden] { display: none; }
 .an-pchart { padding: 0 12px 10px; }
 .an-ct { font-family: var(--serif); color: var(--b900); font-size: 15px; margin: 2px 0 4px; }
-.an-pchart .an-svg { flex: 1; min-height: 0; }
+.an-pchart .an-svg { flex: 1; min-height: 0; cursor: default; overflow-y: auto; }
+.an-tools[hidden] { display: none; }
+.an-gsub { font-size: 12px; color: var(--muted); margin: 0 0 6px; }
+.an-grid { width: 100%; border-collapse: separate; border-spacing: 3px; table-layout: fixed; font-variant-numeric: tabular-nums; }
+.an-grid th { font-size: 11px; font-weight: 600; color: var(--muted); padding: 2px 3px; text-align: center; }
+.an-grid th.rh { text-align: right; width: 88px; line-height: 1.2; color: var(--ink); } .an-grid th.rh small { display: block; font-weight: 400; color: var(--muted); font-size: 10.5px; }
+.an-grid th.tcr { color: var(--muted); font-weight: 400; } .an-grid .tc { width: 42px; }
+.an-grid td { text-align: center; border-radius: 6px; padding: 6px 2px 5px; cursor: pointer; line-height: 1.15; }
+.an-grid td:hover { filter: brightness(.95); }
+.an-grid td b { display: block; font-size: 16px; } .an-grid td small { display: block; font-size: 10px; opacity: .85; }
+.an-grid td.z { color: #B5BBB7; cursor: default; } .an-grid td.z b { font-weight: 500; }
+.an-grid td.hot { box-shadow: inset 0 0 0 2px #9B4A24; }
+.an-grid td.me { box-shadow: inset 0 0 0 2px #7A2E8E, inset 0 0 0 4px #fff; }
+.an-grid td.hov { box-shadow: inset 0 0 0 2px #1B3126; }
+.an-grid td.on { box-shadow: inset 0 0 0 3px #7A2E8E; }
+.an-grid td.tc { background: none; color: var(--muted); cursor: default; } .an-grid td.tc b { font-size: 13px; color: var(--b900); }
+@media (max-height: 820px) { .an-grid td { padding: 3px 2px; } .an-grid td b { font-size: 14.5px; } .an-grid td small { font-size: 9.5px; } .an-gsub { display: none; } }
+.an-gx { font-size: 11px; color: var(--muted); text-align: center; margin: 2px 0 0 92px; }
+.an-cap .hotk { border-radius: 3px; box-shadow: inset 0 0 0 2px #9B4A24; background: #fff; width: 13px; }
+.an-cap .mek { border-radius: 3px; box-shadow: inset 0 0 0 2px #7A2E8E; background: #fff; width: 13px; }
+.an-cellbar { margin: 0 10px 6px; padding: 5px 9px; background: #F3EAF6; border-radius: 8px; font-size: 12.5px; color: var(--ink); } .an-cellbar[hidden] { display: none; }
+.an-cellbar .an-link { padding: 0 0 0 6px; }
+.an-glist tr { cursor: pointer; } .an-glist tr:hover td { background: var(--b50); }
+.an-back { padding: 0 0 6px; display: block; }
 .an-tools { display: flex; gap: 6px; align-items: center; padding: 0 10px 6px; flex-wrap: wrap; }
 .an-chips { display: flex; gap: 4px; flex-wrap: wrap; }
 .an-chips button { font: inherit; font-size: 11.5px; font-weight: 600; padding: 2px 8px; border-radius: 999px; border: 1px solid var(--line); background: var(--b50); color: var(--b900); cursor: pointer; white-space: nowrap; }
@@ -364,6 +379,7 @@ footer.urgent p { color: #FEE2E2; }
 .an-legend b { font-size: 10.5px; letter-spacing: .06em; text-transform: uppercase; color: var(--b700); }
 .an-whole { font: inherit; font-size: 12px; font-weight: 600; color: var(--b900); background: #fff; border: 1px solid var(--line); border-radius: 8px; padding: 6px 10px; cursor: pointer; box-shadow: 0 1px 3px rgba(0,0,0,.12); }
 .an-tt { font-size: 12px; }
+.an-nod { display:inline-block; width:10px; height:10px; background:#D9D9D6; margin-right:4px; vertical-align:-1px; }
 .an-scale { background: rgba(255,255,255,.95); border: 1px solid var(--line); border-radius: 10px; padding: 8px 10px 6px; width: 240px; box-shadow: 0 1px 4px rgba(0,0,0,.12); font-family: var(--sans); }
 .an-scale b { display: block; font-size: 12px; color: var(--b900); margin-bottom: 5px; }
 .an-ramp { display: flex; height: 12px; border-radius: 4px; overflow: hidden; } .an-ramp i { flex: 1; }
@@ -484,12 +500,13 @@ footer.urgent p { color: #FEE2E2; }
   <div class="an-col">
     <div class="an-box an-left">
       <div class="an-ltabs" role="tablist" aria-label="Explore"><button type="button" role="tab" data-lt="list" aria-selected="true">List</button><button type="button" role="tab" data-lt="chart" aria-selected="false">Chart</button></div>
-      <div class="an-tools"><div class="an-chips" id="an-chips" role="group" aria-label="Show"></div></div>
+      <div class="an-tools" id="an-chipsrow"><div class="an-chips" id="an-chips" role="group" aria-label="Show"></div></div>
       <div class="an-pane" id="an-plist">
         <div class="an-tools an-tools2"><p class="an-rule" id="an-rule"></p><input class="an-find" id="an-find" type="search" placeholder="Find a place…" aria-label="Find a place"></div>
+        <div class="an-cellbar" id="an-cellbar" hidden></div>
         <div class="an-scroll" id="an-scroll"><table><thead id="an-thead"></thead><tbody id="an-tbody"></tbody></table></div>
       </div>
-      <div class="an-pane an-pchart" id="an-pchart" hidden><h2 class="an-ct" id="an-ctitle"></h2><div class="an-svg" id="an-svg"></div><div class="an-cap" id="an-cap"></div></div>
+      <div class="an-pane an-pchart" id="an-pchart" hidden><h2 class="an-ct" id="an-ctitle"></h2><p class="an-gsub">Number of LSOAs in each group. Click a square to see which.</p><div class="an-svg" id="an-svg"></div><div class="an-cap" id="an-cap"></div></div>
     </div>
   </div>
   <div class="an-mapwrap"><div id="amap" role="region" aria-label="Map of LSOAs and services"></div><div class="an-loading" id="an-loading">Loading LSOAs…</div></div>
@@ -1081,7 +1098,7 @@ function renderAbout() {
     <h3>How the Analytics tab works</h3>
     <ul>
       <li><strong>What it shows:</strong> each small census area (LSOA, about 1,500 people) beside the support recorded nearby in this directory. It's for exploring, not a measure of need.</li>
-      <li><strong>Ranking:</strong> by the indicator you choose, never by distance: the national deprivation or health rank from the English Indices of Deprivation 2025 (1 = most deprived of 33,755 in England), or the share of residents disabled (Census 2021). Ties go to the larger population.</li>
+      <li><strong>Ranking:</strong> by the indicator you choose, never by distance: the national deprivation or health rank from the English Indices of Deprivation 2025 (1 = most deprived of 33,755 in England), the share of residents disabled (Census 2021), or people per km² (least dense first). Ties go to the larger population. The grid groups areas into five bands of the chosen indicator and five distance bands; the map is shaded by the same bands.</li>
       <li><strong>Distances:</strong> straight lines from where people live in each area (the average position of its postcodes), not travel times. The search area is 1 mile in towns and 3 miles in rural areas (ONS urban/rural classification 2021).</li>
       <li><strong>What it can't tell you:</strong> how much a service can take, how good it is, or whether it's easy to reach. "None recorded" may mean a gap in this directory rather than in local provision.</li>
       <li><strong>Data:</strong> ONS boundaries, population (mid-2022) and urban/rural classification; MHCLG Indices of Deprivation 2025; Census 2021; open postcode data (2016). Open Government Licence.</li>
@@ -1104,16 +1121,48 @@ function renderAbout() {
 const AN_NEED = ["#FBF3E4", "#F3D9A9", "#E3AB6A", "#C9763A", "#9B4A24"];
 const AN_RUC = { Urban: "#4E9C88", Rural: "#A08A5C" }, AN_A = "#7A2E8E", AN_B = "#1B5FA8";
 const AN_N = 33755, AN_HALF = AN_N / 2;   // LSOAs in England (IMD 2025)
+// One entry per indicator. Everything that differs between indicators lives here: the grid rows, the map shading and key,
+// the ranking, the optional "higher half" filter, the profile tile, the compare row and the copy line all come from it.
+// bands: most need first (the top row and the darkest shading). has: whether an LSOA has a value (otherwise "No data").
+const aFmt = n => n.toLocaleString("en-GB"), aDec = r => Math.ceil(r / (AN_N / 10));
+const aDecBands = k => [["Decile 1–2", "most deprived", 1], ["Decile 3–4", "", 3], ["Decile 5–6", "", 5], ["Decile 7–8", "", 7], ["Decile 9–10", "least deprived", 9]]
+  .map(([label, sub, d]) => ({ label, sub, test: p => p[k] === d || p[k] === d + 1 }));
+const aNum = k => p => Number.isFinite(p[k]);
 const AN_IND = {
-  imd: { name: "Deprivation (IMD 2025)", short: "Deprivation", col: "IMD rank", key: "imdr", hiLab: "Most deprived half",
-    hi: p => p.imdr <= AN_HALF, cmp: (a, b) => a.imdr - b.imdr || b.pop - a.pop, val: p => p.imdr.toLocaleString("en-GB"),
+  imd: { name: "Deprivation (IMD 2025)", short: "Deprivation", col: "IMD rank", has: aNum("imdr"), unit: "", hot: "most deprived",
+    ends: ["Less deprived", "More deprived"], bands: aDecBands("imd"),
+    hi: { lab: "Most deprived half", test: p => p.imdr <= AN_HALF }, cmp: (a, b) => a.imdr - b.imdr || b.pop - a.pop,
+    val: p => aFmt(p.imdr), tile: p => [aFmt(p.imdr), "deprivation rank", "decile " + p.imd],
+    copy: p => `rank ${aFmt(p.imdr)} of ${aFmt(AN_N)} in England (decile ${p.imd})`,
     note: "Ranked by the national deprivation rank (1 = most deprived LSOA in England)." },
-  hdep: { name: "Health deprivation (IMD 2025)", short: "Health deprivation", col: "Health rank", key: "hr", hiLab: "Most health-deprived half",
-    hi: p => p.hr <= AN_HALF, cmp: (a, b) => a.hr - b.hr || b.pop - a.pop, val: p => p.hr.toLocaleString("en-GB"),
+  hdep: { name: "Health deprivation (IMD 2025)", short: "Health deprivation", col: "Health rank", has: aNum("hr"), unit: "", hot: "most health-deprived",
+    ends: ["Less deprived", "More deprived"], bands: aDecBands("hdep"),
+    hi: { lab: "Most health-deprived half", test: p => p.hr <= AN_HALF }, cmp: (a, b) => a.hr - b.hr || b.pop - a.pop,
+    val: p => aFmt(p.hr), tile: p => [aFmt(p.hr), "health rank", "decile " + p.hdep],
+    copy: p => `rank ${aFmt(p.hr)} of ${aFmt(AN_N)} (decile ${p.hdep})`,
     note: "Ranked by the national health deprivation and disability rank (1 = most deprived in England)." },
-  dis: { name: "Disabled people (Census 2021)", short: "Disabled people", col: "Disabled", key: "dis", hiLab: "Above England median",
-    hi: p => p.dis > aDisMed, cmp: (a, b) => b.dis - a.dis || b.disn - a.disn, val: p => p.dis.toFixed(1) + "%",
+  dis: { name: "Disabled people (Census 2021)", short: "Disabled people", col: "Disabled", has: aNum("dis"), unit: "disabled", hot: "most disabled residents",
+    ends: ["Fewer", "More disabled residents"],
+    bands: [["24%+", "most disabled residents", 24, 101], ["21–24%", "", 21, 24], ["18–21%", "", 18, 21], ["15–18%", "", 15, 18], ["under 15%", "fewest", -1, 15, "<15%"]]
+      .map(([label, sub, lo, hi, tick]) => ({ label, sub, tick, test: p => p.dis >= lo && p.dis < hi })),
+    hi: { lab: "Above England median", test: p => p.dis > aDisMed }, cmp: (a, b) => b.dis - a.dis || b.disn - a.disn,
+    val: p => p.dis.toFixed(1) + "%", tile: p => [p.dis.toFixed(1) + "%", "disabled", aFmt(p.disn) + " people"],
+    copy: p => `${p.dis.toFixed(1)}% (${aFmt(p.disn)} people)`,
     note: "Ranked by the share of residents disabled under the Equality Act (highest first)." },
+  dens: { name: "Population density (2022)", short: "Population density", col: "Per km²", has: aNum("dens"), unit: "per km²", hot: "most sparsely populated",
+    ends: ["Denser", "More sparsely populated"],
+    bands: [["under 50", "sparsest", 0, 50, "<50"], ["50–250", "", 50, 250], ["250–1,000", "", 250, 1000, "250–1k"], ["1,000–4,000", "", 1000, 4000, "1k–4k"], ["4,000+", "densest", 4000, Infinity, "4k+"]]
+      .map(([label, sub, lo, hi, tick]) => ({ label, sub, tick, test: p => p.dens >= lo && p.dens < hi })),
+    hi: null, cmp: (a, b) => a.dens - b.dens || b.pop - a.pop,   // least dense first; no "higher half" filter
+    val: p => aFmt(p.dens), tile: p => [aFmt(p.dens), "people per km²", ""],
+    copy: p => `${aFmt(p.dens)} people per km²`,
+    note: "Ranked by people per km², least dense first (sparse areas tend to be further from services)." },
+};
+// Accessibility: which column of the grid an LSOA falls in. A count measure could replace this later with the same shape.
+const AN_ACC = {
+  title: sup => `Distance to the nearest ${sup ? sup + " " : ""}support (miles), from where people live`,
+  cols: [["under ½", d => d < .5], ["½–1", d => d < 1], ["1–2", d => d < 2], ["2–5", d => d < 5], ["5+", () => true]].map(([label, test]) => ({ label, test })),
+  none: "None recorded",   // shown only when an LSOA has no matching service anywhere
 };
 let aReady = false, amap = null, aGeo = null, aAreas = null, aPins = null, aLegendEl = null, aScaleEl = null, aLines = null, aDisMed = 17;
 let aInd = "imd", aShow = "all", aSort = { col: "rk", dir: 1 }, aFind = "", aSel = null, aCmp = false, aA = null, aB = null, aShownNow = [];
@@ -1157,29 +1206,26 @@ function anCompute() {   // after Support for / How often change: nearest matchi
 }
 function anRank() {   // after the indicator changes: a stable rank 1–595 by the indicator alone (no distance in it)
   const I = AN_IND[aInd];
-  aGeo.features.slice().sort((a, b) => I.cmp(a.properties, b.properties)).forEach((f, i) => f.properties.rk = i + 1);
+  aGeo.features.slice().sort((a, b) => (I.has(b.properties) - I.has(a.properties)) || (I.has(a.properties) ? I.cmp(a.properties, b.properties) : 0)).forEach((f, i) => f.properties.rk = i + 1);
 }
 const aKeep = p => { const I = AN_IND[aInd];
-  return aShow === "all" || (aShow === "hi" && I.hi(p)) || (aShow === "none" && !p.nIn) || (aShow === "both" && I.hi(p) && !p.nIn); };
+  const hi = I.hi && I.hi.test(p);
+  return aShow === "all" || (aShow === "hi" && hi) || (aShow === "none" && !p.nIn) || (aShow === "both" && hi && !p.nIn); };
 
 /* ---------- map ---------- */
-let aDisBr = [];
-function anClass(p) {
-  if (aInd === "imd") return 4 - Math.floor((p.imd - 1) / 2);
-  if (aInd === "hdep") return 4 - Math.floor((p.hdep - 1) / 2);
-  return aDisBr.filter(b => p.dis >= b).length;
-}
+const aBandCol = (i, n) => i < 0 || i >= n ? "#D9D9D6" : AN_NEED[Math.round((n - 1 - i) * (AN_NEED.length - 1) / Math.max(1, n - 1))];
+function anClass(p) { const n = AN_IND[aInd].bands.length; return aBandCol(aRowOf(p), n); }   // shading follows the grid rows
 function anStyle(f) {
-  const a = f === (aCmp ? aA : aSel), b = aCmp && f === aB;
-  return { fillColor: AN_NEED[anClass(f.properties)], fillOpacity: .72, opacity: 1, dashArray: null,
-    color: a ? AN_A : b ? AN_B : "#fff", weight: a || b ? 3.5 : .6 };
+  const a = f === (aCmp ? aA : aSel), b = aCmp && f === aB, inC = aCell ? aInCell(f) : null;
+  return { fillColor: anClass(f.properties), fillOpacity: inC === false ? .35 : .72, opacity: 1, dashArray: null,
+    color: a ? AN_A : b ? AN_B : inC ? "#7A2E8E" : "#fff", weight: a || b ? 3.5 : inC ? 1.8 : .6 };
 }
-function anScale() {
+function anScale() {   // the key under the map: the indicator's bands, least need on the left
   if (!aScaleEl) return;
-  const I = AN_IND[aInd], dis = aInd === "dis", t = dis ? ["", ...aDisBr.map(b => Math.round(b) + "%"), ""] : ["9–10", "7–8", "5–6", "3–4", "1–2"];
-  aScaleEl.innerHTML = `<b>${esc(I.name)}${dis ? "" : " · deciles"}</b><div class="an-ramp">${AN_NEED.map(c => `<i style="background:${c}"></i>`).join("")}</div>` +
-    `<div class="an-ticks${dis ? "" : " even"}">${t.map(x => `<span>${x}</span>`).join("")}</div>` +
-    `<div class="an-ends"><span>${dis ? "Fewer" : "Less deprived"}</span><span>${dis ? "More disabled residents" : "More deprived"}</span></div>`;
+  const I = AN_IND[aInd], B = I.bands.slice().reverse(), n = B.length, miss = aGeo.features.some(f => !I.has(f.properties));
+  aScaleEl.innerHTML = `<b>${esc(I.name)}</b><div class="an-ramp">${B.map((_, i) => `<i style="background:${aBandCol(n - 1 - i, n)}"></i>`).join("")}</div>` +
+    `<div class="an-ticks even">${B.map(b => `<span>${esc(b.tick || b.label.replace("Decile ", ""))}</span>`).join("")}</div>` +
+    `<div class="an-ends"><span>${esc(I.ends[0])}</span><span>${esc(I.ends[1])}</span></div>` + (miss ? `<div class="an-ends"><span><i class="an-nod"></i>No data</span></div>` : "");
 }
 function anLegendPlain() {   // a plain legend: the filters live in the header, not on the map
   if (!aLegendEl) return;
@@ -1228,50 +1274,72 @@ function anDrawPins() {
 }
 
 /* ---------- chart (left, top): indicator up, distance to the nearest matching support across ---------- */
-let aDots = [];
+// The grid: LSOAs counted by indicator band (rows, most need at the top) and distance to the nearest matching support (columns).
+// Clicking a square selects that group: outlined on the map, the only rows in the list, listed in the right panel.
+// Rows: the indicator's bands (plus "No data" only if some LSOA has no value). Columns: AN_ACC (plus "None recorded" only if needed).
+// Row and column numbers are fixed per indicator (No data = bands.length, None recorded = cols.length), so a selected square
+// keeps its meaning when the filters change and only its contents are recalculated.
+const aRowOf = p => { const I = AN_IND[aInd]; return I.has(p) ? I.bands.findIndex(b => b.test(p)) : -1; };
+const aColOf = p => p.nr ? AN_ACC.cols.findIndex(c => c.test(p.dist)) : -1;
+// Pure: puts every feature in exactly one cell. -1 from rowOf/colOf goes to the extra row/column.
+function anAggregate(F, rowOf, colOf, nR, nC) {
+  const cells = Array.from({ length: nR + 1 }, () => Array.from({ length: nC + 1 }, () => ({ ls: [], pop: 0 })));
+  for (const f of F) {
+    const p = f.properties, r0 = rowOf(p), c0 = colOf(p), x = cells[r0 < 0 ? nR : r0][c0 < 0 ? nC : c0];
+    x.ls.push(f); x.pop += p.pop || 0;
+  }
+  const sum = l => l.reduce((t, c) => ({ n: t.n + c.ls.length, pop: t.pop + c.pop }), { n: 0, pop: 0 });
+  const rows = cells.map(sum), cols = cells[0].map((_, j) => sum(cells.map(r => r[j])));
+  return { cells, rows, cols, total: sum(cells.flat()), missing: rows[nR].n, none: cols[nC].n, nR, nC };
+}
+const anAgg = () => anAggregate(aGeo.features, aRowOf, aColOf, AN_IND[aInd].bands.length, AN_ACC.cols.length);
+let aCell = null;   // [row, col] of the selected square, or null
+const aCellOf = p => { const r = aRowOf(p), c = aColOf(p); return [r < 0 ? AN_IND[aInd].bands.length : r, c < 0 ? AN_ACC.cols.length : c]; };
+const aInCell = f => { if (!aCell) return false; const [r, c] = aCellOf(f.properties); return r === aCell[0] && c === aCell[1]; };
+const aCellList = () => aCell ? aGeo.features.filter(aInCell) : [];
+function aCellLabel() {
+  const I = AN_IND[aInd], b = I.bands[aCell[0]], c = AN_ACC.cols[aCell[1]];
+  return `${b ? b.label + (I.unit ? " " + I.unit : "") : "No data"} · ${c ? c.label + " mile" + (aCell[1] <= 1 ? "" : "s") : "none recorded"}`;
+}
 function anChart() {
   const box = $("an-svg"); if (!aReady || !box || !box.clientWidth) return;
-  const F = aGeo.features, I = AN_IND[aInd], W = box.clientWidth, H = Math.max(160, box.clientHeight);
-  const m = { l: 50, r: 10, t: 12, b: 28 }, pw = W - m.l - m.r, ph = H - m.t - m.b, sup = aSupL(), dis = aInd === "dis";
-  const cap = F.filter(f => f.properties.dist > 10 && f.properties.dist < 99).length > 40 ? 20 : 10;
-  const X = d => m.l + Math.sqrt(Math.min(d, cap) / cap) * pw;
-  const dv = F.map(f => f.properties.dis), dmax = Math.ceil(Math.max(...dv)), dmin = Math.floor(Math.min(...dv));
-  const Y = p => m.t + (dis ? (dmax - p.dis) / (dmax - dmin) : p[I.key] / AN_N) * ph;   // top = most need
-  const yref = Y(dis ? { dis: aDisMed } : { [I.key]: AN_HALF });
-  let s = `<svg width="${W}" height="${H}" role="img" aria-label="${esc(I.short)} against distance to the nearest ${esc(sup || "matching")} support, one dot per LSOA">` +
-    `<line class="ref" x1="${m.l}" x2="${m.l + pw}" y1="${yref}" y2="${yref}"/><text class="reft" x="${m.l + 4}" y="${yref - 4}">↑ ${dis ? `above the England median (${aDisMed}%)` : "most deprived half of England"}</text>` +
-    `<text class="tk" x="${m.l - 6}" y="${m.t + 6}" text-anchor="end">${dis ? "More" : "Most"}</text><text class="tk" x="${m.l - 6}" y="${m.t + 17}" text-anchor="end">${dis ? "disabled" : "deprived"}</text>` +
-    `<text class="tk" x="${m.l - 6}" y="${m.t + ph - 9}" text-anchor="end">${dis ? "Fewer" : "Least"}</text><text class="tk" x="${m.l - 6}" y="${m.t + ph + 2}" text-anchor="end">${dis ? "" : "deprived"}</text>` +
-    (cap > 10 ? [0, 1, 2, 5, 10, 20] : [0, .5, 1, 2, 5, 10]).map(v => `<text class="tk" x="${X(v)}" y="${m.t + ph + 13}" text-anchor="middle">${v === .5 ? "½" : v}${v === cap ? "+" : ""}</text>`).join("") +
-    `<text class="ax" x="${m.l + pw / 2}" y="${H - 2}" text-anchor="middle">Distance to the nearest ${esc(sup ? sup + " " : "")}support (miles)</text>`;
-  aDots = F.map(f => [f, X(f.properties.dist), Y(f.properties)]);
-  const order = F.map((f, i) => [aKeep(f.properties) ? 1 : 0, i]).sort((a, b) => a[0] - b[0]);
-  for (const [k, i] of order) { const [f, x, y] = aDots[i], p = f.properties;
-    s += `<circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="2.6" fill="${k ? AN_RUC[p.ruc] : "#C9CFCB"}" fill-opacity="${k ? .85 : .5}"/>`; }
-  for (const [f, c, tag] of aCmp ? [[aA, AN_A, "A"], [aB, AN_B, "B"]] : [[aSel, AN_A, ""]]) {
-    if (!f) continue; const [, x, y] = aDots[F.indexOf(f)];
-    s += `<circle cx="${x}" cy="${y}" r="6.5" fill="none" stroke="${c}" stroke-width="2.5"/>` + (tag ? `<text class="tag" x="${x + 9}" y="${y + 4}" fill="${c}">${tag}</text>` : "");
-  }
-  box.innerHTML = s + `</svg><div class="an-ctip" id="an-ctip" hidden></div>`;
-  box.querySelector("svg").style.position = "absolute";
+  const I = AN_IND[aInd], sup = aSupL(), A = anAgg(), nR = A.nR, nC = A.nC;
+  const R = [...I.bands.map((b, i) => [i, b.label, b.sub]), ...(A.missing ? [[nR, "No data", ""]] : [])];
+  const C = [...AN_ACC.cols.map((c, j) => [j, c.label]), ...(A.none ? [[nC, AN_ACC.none]] : [])];
+  const max = Math.max(1, ...A.cells.flat().map(c => c.ls.length));
+  const shade = n => { if (!n) return "#F4F5F3"; const u = Math.sqrt(n / max); return `rgb(${[[238, 246, 243], [31, 95, 82]].reduce((a, b) => a.map((x, i) => Math.round(x + (b[i] - x) * u)))})`; };
+  const k = n => n >= 1000 ? (n / 1000).toFixed(1).replace(/\.0$/, "") + "k" : String(n);
+  const mine = aCmp ? aA : aSel, me = mine ? aCellOf(mine.properties) : [-1, -1];
   $("an-ctitle").textContent = `${I.short} and distance to the nearest ${sup ? sup + " " : ""}support`;
-  const n = F.filter(f => aKeep(f.properties)).length, lab = { hi: I.hiLab, none: `No ${sup ? sup + " " : ""}support nearby`, both: "Both" }[aShow];
-  $("an-cap").innerHTML = `<span><i style="background:${AN_RUC.Urban}"></i>Urban</span><span><i style="background:${AN_RUC.Rural}"></i>Rural</span>` +
-    (aShow === "all" ? `<span>One dot per LSOA · click to select</span>` : `<span>Coloured: <b>${esc(lab)}</b> (${n}) · grey: other LSOAs</span>`);
+  box.innerHTML = `<table class="an-grid"><thead><tr><th class="rh"></th>${C.map(([, l]) => `<th>${esc(l)}</th>`).join("")}<th class="tc">All</th></tr></thead><tbody>` +
+    R.map(([i, lab, sub]) => `<tr><th class="rh">${esc(lab)}${sub ? `<small>${esc(sub)}</small>` : ""}</th>` +
+      C.map(([j]) => { const c = A.cells[i][j], n = c.ls.length, dark = n && Math.sqrt(n / max) > .5, on = aCell && aCell[0] === i && aCell[1] === j;
+        return `<td data-r="${i}" data-c="${j}" class="${n ? "" : "z"}${i <= 1 && i < nR && j >= nC - 2 ? " hot" : ""}${on ? " on" : ""}${i === me[0] && j === me[1] ? " me" : ""}" style="background:${shade(n)};color:${dark ? "#fff" : "var(--b900)"}"` +
+          ` title="${n} LSOAs, ${aFmt(c.pop)} people"><b>${n || "–"}</b>${n ? `<small>${k(c.pop)} people</small>` : ""}</td>`; }).join("") +
+      `<td class="tc"><b>${A.rows[i].n}</b></td></tr>`).join("") +
+    `<tr><th class="rh tcr">All</th>${C.map(([j]) => `<td class="tc"><b>${A.cols[j].n}</b></td>`).join("")}<td class="tc"><b>${A.total.n}</b></td></tr></tbody></table>` +
+    `<div class="an-gx">${esc(AN_ACC.title(sup))}</div>`;
+  $("an-cap").innerHTML = `<span><i style="background:${shade(1)}"></i>fewer LSOAs</span><span><i style="background:${shade(max)}"></i>more</span>` +
+    `<span><i class="hotk"></i>${esc(I.hot)} and furthest away</span>` + (mine ? `<span><i class="mek"></i>${esc(aPlace(mine.properties))}</span>` : "");
 }
-function anChartPoint(e) {
-  const box = $("an-svg"), r = box.getBoundingClientRect(), x = e.clientX - r.left, y = e.clientY - r.top;
-  let best = null, bd = 100; for (const [f, px, py] of aDots) { const d = (px - x) ** 2 + (py - y) ** 2; if (d < bd) { bd = d; best = f; } }
-  return [best, x, y];
+function anGridHover(f) {   // map hover → ring the square that LSOA belongs to
+  document.querySelectorAll("#an-svg td.hov").forEach(td => td.classList.remove("hov")); if (!f || $("an-pchart").hidden) return;
+  const [r, c] = aCellOf(f.properties), td = document.querySelector(`#an-svg td[data-r="${r}"][data-c="${c}"]`); if (td) td.classList.add("hov");
 }
-
+function anCellPick(r, c) {
+  aCell = aCell && aCell[0] === r && aCell[1] === c ? null : [r, c];
+  if (aCell) { aSel = null; aCmp = false; aA = aB = null; }
+  anSync();
+  const l = aCellList(); if (l.length) amap.fitBounds(L.featureGroup(l.map(f => f.__l)).getBounds().pad(.25), { maxZoom: 12 });
+}
 /* ---------- list (left, below the chart) ---------- */
 function anListHead() {
   const I = AN_IND[aInd], sup = aSupL(), F = aGeo.features;
-  const c = { all: F.length, hi: F.filter(f => I.hi(f.properties)).length, none: F.filter(f => !f.properties.nIn).length,
-    both: F.filter(f => I.hi(f.properties) && !f.properties.nIn).length };
+  const hi = p => I.hi && I.hi.test(p);
+  const c = { all: F.length, hi: F.filter(f => hi(f.properties)).length, none: F.filter(f => !f.properties.nIn).length,
+    both: F.filter(f => hi(f.properties) && !f.properties.nIn).length };
   const chip = (k, t) => `<button type="button" data-show="${k}" aria-pressed="${aShow === k}">${esc(t)} <em>${c[k]}</em></button>`;
-  $("an-chips").innerHTML = chip("all", "All") + chip("hi", I.hiLab) + chip("none", `No ${sup ? sup + " " : ""}support nearby`) + chip("both", "Both");
+  $("an-chips").innerHTML = chip("all", "All") + (I.hi ? chip("hi", I.hi.lab) : "") + chip("none", `No ${sup ? sup + " " : ""}support nearby`) + (I.hi ? chip("both", "Both") : "");
   $("an-rule").textContent = I.note;
   const arrow = k => aSort.col === k ? (aSort.dir > 0 ? " ↑" : " ↓") : "";
   $("an-thead").innerHTML = `<tr><th data-sort="rk">Rank${arrow("rk")}</th><th data-sort="near">Place · LSOA${arrow("near")}</th>` +
@@ -1281,12 +1349,14 @@ function anList() {
   const I = AN_IND[aInd], q = aFind.trim().toLowerCase(), sel = aCmp ? aA : aSel;
   const match = p => !q || p.near.toLowerCase().includes(q) || p.name.toLowerCase().includes(q);
   const key = { rk: p => p.rk, near: p => p.near, ind: p => p.rk, pop: p => -p.pop, dist: p => -p.dist }[aSort.col];
-  const rows = aGeo.features.filter(f => (aKeep(f.properties) && match(f.properties)) || f === sel || f === aB);
+  const keep = f => aCell ? aInCell(f) : aKeep(f.properties);
+  const rows = aGeo.features.filter(f => (keep(f) && match(f.properties)) || f === sel || f === aB);
   rows.sort((a, b) => { const x = key(a.properties), y = key(b.properties); return (x < y ? -1 : x > y ? 1 : a.properties.rk - b.properties.rk) * aSort.dir; });
-  $("an-tbody").innerHTML = rows.length ? rows.map(f => { const p = f.properties, out = !(aKeep(p) && match(p));
+  $("an-cellbar").hidden = !aCell; if (aCell) $("an-cellbar").innerHTML = `Showing <b>${aCellList().length}</b> LSOAs: ${esc(aCellLabel())} <button type="button" class="an-link" data-clear="1">Clear</button>`;
+  $("an-tbody").innerHTML = rows.length ? rows.map(f => { const p = f.properties, out = !(keep(f) && match(p));
     return `<tr data-c="${p.code}" class="${f === sel ? "sel" : ""}${f === aB ? " selb" : ""}${out ? " out" : ""}"><td>${p.rk}</td>` +
       `<td><b>${esc(aPlace(p))}</b><small>${esc(aShort(p.name))} · ${p.ruc.toLowerCase()}${out ? " · <em>selected, not in this filter</em>" : ""}</small></td>` +
-      `<td class="r">${I.val(p)}</td><td class="r">${p.pop.toLocaleString("en-GB")}</td><td class="r${p.nIn ? "" : " far"}">${aMi(p.dist)}</td></tr>`; }).join("")
+      `<td class="r">${I.has(p) ? I.val(p) : "–"}</td><td class="r">${p.pop.toLocaleString("en-GB")}</td><td class="r${p.nIn ? "" : " far"}">${aMi(p.dist)}</td></tr>`; }).join("")
     : `<tr><td colspan="5" class="an-empty">No LSOAs match. Try another filter or place name.</td></tr>`;
   anListScroll();
 }
@@ -1309,14 +1379,18 @@ function anProfile() {
   if (key !== aProfKey) { aProfKey = key; el.scrollTop = 0; }   // a new selection starts at the top of the profile
   const supTitle = (sup ? cap($("an-support").value) + " support" : "Any support") + (oft ? ", " + $("an-often").selectedOptions[0].text.toLowerCase() : "");
   if (aCmp) return anCompare(el, supTitle);
+  if (!aSel && aCell) {
+    const l = aCellList().sort((x, y) => x.properties.rk - y.properties.rk), n = l.reduce((s, f) => s + f.properties.pop, 0);
+    el.innerHTML = `<h2>${l.length} LSOA${l.length === 1 ? "" : "s"} selected</h2><div class="an-psub">${esc(aCellLabel())} from the nearest ${esc(sup || "matching")} support · ${n.toLocaleString("en-GB")} people</div>` +
+      `<table class="an-kv an-glist">${l.map(f => `<tr data-pick="${f.properties.code}"><td>${esc(aPlace(f.properties))}<small>${esc(f.properties.name)}</small></td><td class="r">${aMi(f.properties.dist)}</td></tr>`).join("")}</table>` +
+      `<p class="an-fine">Click a place to see its profile. Outlined on the map; the List tab shows just these.</p>`; return;
+  }
   if (!aSel) { el.innerHTML = `<div class="an-pempty"><h2>Local support profile</h2><p>Select a place from the chart, the list or the map to see its figures and the support recorded nearby.</p></div>`; return; }
   const p = aSel.properties, R = aR(p), mi = R + " mile" + (R > 1 ? "s" : ""), kinds = anKindsWithin(p), total = kinds.reduce((t, [, , l]) => t + l.length, 0);
-  const dec = r => "decile " + Math.ceil(r / (AN_N / 10));
-  el.innerHTML = `<h2>${esc(aPlace(p))}</h2><div class="an-psub">${esc(p.name)} · ${esc(aLA(p.la))} · ${p.ruc.toLowerCase()}</div>
-    <div class="an-tiles"><div><b>${p.pop.toLocaleString("en-GB")}</b>people</div><div><b>${p.dens.toLocaleString("en-GB")}</b>per km²</div>
-      <div><b>${p.ruc}</b>${esc(p.rucc.replace(/^[^:]*: /, "").replace("Nearer to", "near").replace("Further from", "far from"))}</div>
-      <div><b>${p.imdr.toLocaleString("en-GB")}</b>deprivation rank<br>${dec(p.imdr)}</div><div><b>${p.hr.toLocaleString("en-GB")}</b>health rank<br>${dec(p.hr)}</div>
-      <div><b>${p.dis.toFixed(1)}%</b>disabled<br>${p.disn.toLocaleString("en-GB")} people</div></div>
+  const tiles = [[aFmt(p.pop), "people", ""], [p.ruc, p.rucc.replace(/^[^:]*: /, "").replace("Nearer to", "near").replace("Further from", "far from"), ""],
+    ...Object.values(AN_IND).map(I => I.has(p) ? I.tile(p) : ["–", I.short.toLowerCase(), "no data"])];
+  el.innerHTML = (aCell ? `<button type="button" class="an-link an-back" data-a="group">← Back to the ${aCellList().length} LSOAs (${esc(aCellLabel())})</button>` : "") + `<h2>${esc(aPlace(p))}</h2><div class="an-psub">${esc(p.name)} · ${esc(aLA(p.la))} · ${p.ruc.toLowerCase()}</div>
+    <div class="an-tiles">${tiles.map(([b, l, sub]) => `<div><b>${esc(b)}</b>${esc(l)}${sub ? "<br>" + esc(sub) : ""}</div>`).join("")}</div>
     <div class="an-match"><div class="an-sech">${esc(supTitle)}<span>matches your filters</span></div>
       <table class="an-kv"><tr><td>Nearest${p.nr ? `<small>${esc(p.nr.name)}</small>` : ""}</td><td class="r">${aMi(p.dist)}</td></tr><tr><td>Within ${mi}</td><td class="r">${p.nIn}</td></tr></table>` +
       (p.nIn ? "" : `<div class="an-none"><b>None recorded within ${mi}</b>That may be a gap in this directory rather than in local provision.</div>`) + `</div>
@@ -1331,8 +1405,7 @@ function anProfile() {
 function anCompare(el, supTitle) {
   const cols = [aA, aB].filter(Boolean), rows = [
     ["Place", p => esc(aPlace(p))], ["LSOA", p => esc(aShort(p.name))], ["Urban or rural", p => p.ruc], ["People", p => p.pop.toLocaleString("en-GB")],
-    ["Per km²", p => p.dens.toLocaleString("en-GB")], ["Deprivation rank", p => p.imdr.toLocaleString("en-GB")], ["Health rank", p => p.hr.toLocaleString("en-GB")],
-    ["Disabled", p => p.dis.toFixed(1) + "%"], [supTitle + ": nearest", p => aMi(p.dist)], ["…within search area", p => p.nIn],
+    ...Object.values(AN_IND).map(I => [I.col, p => I.has(p) ? I.val(p) : "–"]), [supTitle + ": nearest", p => aMi(p.dist)], ["…within search area", p => p.nIn],
     ["All support within search area", p => anKindsWithin(p).reduce((t, [, , l]) => t + l.length, 0)]];
   el.innerHTML = `<div class="an-dh"><h2>Comparing places</h2><button type="button" class="an-btn" data-a="clear">Clear</button></div>` +
     `<table class="an-cmp"><thead><tr><th></th><th><i class="sw" style="background:${AN_A}"></i>A</th><th>${aB ? `<i class="sw" style="background:${AN_B}"></i>B` : ""}</th></tr></thead><tbody>` +
@@ -1342,8 +1415,7 @@ function anCompare(el, supTitle) {
 function anCopyText() {
   const sup = $("an-support").selectedOptions[0].text, oft = $("an-often").selectedOptions[0].text, line = p => {
     const R = aR(p), k = anKindsWithin(p);
-    return [`${aPlace(p)} (${p.name}, ${aLA(p.la)}, ${p.ruc.toLowerCase()})`, `People: ${p.pop.toLocaleString("en-GB")} · per km²: ${p.dens.toLocaleString("en-GB")}`,
-      `Deprivation rank: ${p.imdr.toLocaleString("en-GB")} of ${AN_N.toLocaleString("en-GB")} in England · health rank: ${p.hr.toLocaleString("en-GB")} · disabled: ${p.dis.toFixed(1)}% (${p.disn} people)`,
+    return [`${aPlace(p)} (${p.name}, ${aLA(p.la)}, ${p.ruc.toLowerCase()})`, `People: ${aFmt(p.pop)}`, ...Object.values(AN_IND).map(I => `${I.short}: ${I.has(p) ? I.copy(p) : "no data"}`),
       `Matching support (${sup}, ${oft.toLowerCase()}): nearest ${aMi(p.dist)}${p.nr ? " (" + p.nr.name + ")" : ""}; ${p.nIn} within ${R} mile${R > 1 ? "s" : ""}`,
       `All support within ${R} mile${R > 1 ? "s" : ""}: ` + (k.filter(([, , l]) => l.length).map(([kk, , l]) => `${kk[0]} ${l.length}`).join(", ") || "none recorded")].join("\n"); };
   const ps = aCmp ? [aA, aB].filter(Boolean).map((f, i) => "AB"[i] + ": " + line(f.properties)) : [line(aSel.properties)];
@@ -1362,7 +1434,7 @@ function anSelect(f, from) {
 }
 function anSync() { aAreas.setStyle(anStyle); (aCmp ? [aA, aB] : [aSel]).forEach(f => f && f.__l.bringToFront()); anLines(); anChart(); anList(); anProfile(); }
 function anRefilter() { anCompute(); anListHead(); anLegendPlain(); anDrawPins(); anSync(); }   // Support for / How often
-function anReindicator() { anRank(); anScale(); anListHead(); anSync(); }                          // Compare areas by
+function anReindicator() { aCell = null; if (!AN_IND[aInd].hi && (aShow === "hi" || aShow === "both")) aShow = "all"; anRank(); anScale(); anListHead(); anSync(); }                          // Compare areas by
 
 async function initAnalytics() {
   if (amap) { setTimeout(() => { amap.invalidateSize(); anChart(); }, 30); return; }
@@ -1380,12 +1452,11 @@ async function initAnalytics() {
   for (let i = 0; !S.length && i < 100; i++) await new Promise(r => setTimeout(r, 300));   // wait for the sheet if it's still loading
   aDisMed = (aGeo.meta && aGeo.meta.dis_median_england) || 17;
   aGeo.features.forEach(f => f.properties.near = aNear(f.properties));
-  const dv = aGeo.features.map(f => f.properties.dis).sort((a, b) => a - b); aDisBr = [1, 2, 3, 4].map(i => dv[Math.floor(i * dv.length / 5)]);
   aAreas = L.geoJSON(aGeo, { style: anStyle, onEachFeature: (f, l) => {
     f.__l = l;
-    l.bindTooltip(() => `<b>${esc(aPlace(f.properties))}</b><br>${esc(AN_IND[aInd].col)}: ${esc(AN_IND[aInd].val(f.properties))}`, { sticky: true, direction: "top", offset: [0, -10], className: "an-tt" });
-    l.on("mouseover", () => { if (anStyle(f).weight < 1) l.setStyle({ weight: 1.5, color: "#1B3126", dashArray: "3 3", fillOpacity: .9 }); });
-    l.on("mouseout", () => aAreas.resetStyle(l));
+    l.bindTooltip(() => `<b>${esc(aPlace(f.properties))}</b><br>${esc(AN_IND[aInd].col)}: ${esc(AN_IND[aInd].has(f.properties) ? AN_IND[aInd].val(f.properties) : "no data")}`, { sticky: true, direction: "top", offset: [0, -10], className: "an-tt" });
+    l.on("mouseover", () => { anGridHover(f); if (anStyle(f).weight < 1) l.setStyle({ weight: 1.5, color: "#1B3126", dashArray: "3 3", fillOpacity: .9 }); });
+    l.on("mouseout", () => { aAreas.resetStyle(l); anGridHover(null); });
     l.on("click", () => anSelect(f, "map"));
   } }).addTo(amap);
   aLines = L.layerGroup().addTo(amap);
@@ -1399,7 +1470,7 @@ async function initAnalytics() {
   scale.addTo(amap);
   const whole = L.control({ position: "topright" });
   whole.onAdd = () => { const b = L.DomUtil.create("button", "an-whole"); b.type = "button"; b.textContent = "Whole area"; L.DomEvent.disableClickPropagation(b);
-    b.onclick = () => { aSel = aA = aB = null; aCmp = false; anSync(); amap.fitBounds(aAreas.getBounds(), { padding: [8, 8] }); }; return b; };
+    b.onclick = () => { aSel = aA = aB = null; aCmp = false; aCell = null; anSync(); amap.fitBounds(aAreas.getBounds(), { padding: [8, 8] }); }; return b; };
   whole.addTo(amap);
   // controls
   $("an-support").innerHTML = supportOptions(S);
@@ -1410,7 +1481,8 @@ async function initAnalytics() {
   $("an-chips").onclick = e => { const b = e.target.closest("button"); if (!b) return; aShow = b.dataset.show; anListHead(); anList(); anChart(); };
   // List / Chart tabs in the left column (remembered on the device)
   const ltab = t => { document.querySelectorAll(".an-ltabs button").forEach(b => b.setAttribute("aria-selected", b.dataset.lt === t));
-    $("an-plist").hidden = t !== "list"; $("an-pchart").hidden = t !== "chart"; try { localStorage.setItem("anLeft", t); } catch (_) {}
+    $("an-plist").hidden = t !== "list"; $("an-pchart").hidden = t !== "chart"; $("an-chipsrow").hidden = t === "chart";   // the grid already splits by need and distance
+    try { localStorage.setItem("anLeft", t); } catch (_) {}
     if (t === "chart") anChart(); else anListScroll(); };
   document.querySelector(".an-ltabs").onclick = e => { const b = e.target.closest("button"); if (b) ltab(b.dataset.lt); };
   let lt0 = "list"; try { lt0 = localStorage.getItem("anLeft") || "list"; } catch (_) {} ltab(lt0);
@@ -1418,16 +1490,13 @@ async function initAnalytics() {
   $("an-thead").onclick = e => { const th = e.target.closest("th"); if (!th) return; const k = th.dataset.sort;
     aSort = aSort.col === k ? { col: k, dir: -aSort.dir } : { col: k, dir: 1 }; anListHead(); anList(); };
   $("an-tbody").onclick = e => { const tr = e.target.closest("tr[data-c]"); if (!tr) return; anSelect(aGeo.features.find(f => f.properties.code === tr.dataset.c), "list"); };
-  const box = $("an-svg");
-  box.onmousemove = e => { const [f, x, y] = anChartPoint(e), tip = $("an-ctip"); if (!tip) return;
-    if (!f) { tip.hidden = true; return; } const p = f.properties, I = AN_IND[aInd];
-    tip.innerHTML = `<b>${esc(aPlace(p))}</b><br>${esc(I.col)}: ${I.val(p)} · nearest ${aMi(p.dist)}`; tip.hidden = false;
-    tip.style.left = Math.min(x + 12, box.clientWidth - 180) + "px"; tip.style.top = Math.max(0, y - 46) + "px"; };
-  box.onmouseleave = () => { const tip = $("an-ctip"); if (tip) tip.hidden = true; };
-  box.onclick = e => { const [f] = anChartPoint(e); if (f) anSelect(f, "chart"); };
+  $("an-svg").onclick = e => { const td = e.target.closest("td[data-r]"); if (td && !td.classList.contains("z")) anCellPick(+td.dataset.r, +td.dataset.c); };
+  $("an-cellbar").onclick = e => { if (e.target.closest("[data-clear]")) anCellPick(...aCell); };
   $("an-prof").onclick = e => {
     const k = e.target.closest("[data-kind]"); if (k) { const i = +k.dataset.kind; aOpenKinds.has(i) ? aOpenKinds.delete(i) : aOpenKinds.add(i); anProfile(); return; }
+    const pk = e.target.closest("tr[data-pick]"); if (pk) { anSelect(aGeo.features.find(f => f.properties.code === pk.dataset.pick), "list"); return; }
     const b = e.target.closest("button[data-a]"); if (!b) return;
+    if (b.dataset.a === "group") { aSel = null; anSync(); return; }
     if (b.dataset.a === "cmp") { aCmp = true; aA = aSel; aB = null; aSel = null; anSync(); }
     else if (b.dataset.a === "clear") { aSel = aA; aCmp = false; aA = aB = null; anSync(); }
     else if (b.dataset.a === "copy") { copyToClipboard(anCopyText()); b.textContent = "Copied"; clearTimeout(b._t); b._t = setTimeout(() => b.textContent = "Copy", 1600); }
