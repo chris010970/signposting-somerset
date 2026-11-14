@@ -973,7 +973,7 @@ footer.urgent p { color: #FEE2E2; }
 .an-area { display: flex; flex-direction: column; justify-content: center; }
 .an-area .v { font-weight: 600; color: var(--b900); font-size: 15px; line-height: 1.25; }
 .an-area a { font-size: 12px; color: var(--b700); margin-top: 1px; align-self: flex-start; }
-.an:not([hidden]) { flex: 1; min-height: 600px; display: grid; grid-template-columns: minmax(0, 35fr) minmax(0, 40fr) minmax(0, 25fr); gap: 12px;
+.an:not([hidden]) { flex: 1; min-height: 420px; display: grid; grid-template-columns: minmax(0, 35fr) minmax(0, 40fr) minmax(0, 25fr); gap: 12px;
   max-width: 1432px; width: 100%; padding: 10px max(16px, env(safe-area-inset-left, 0px)) 0; margin: 0 auto var(--footh, 50px); box-sizing: border-box; }
 .an-col { min-height: 0; display: flex; flex-direction: column; gap: 10px; padding-bottom: 10px; }
 .an-box { background: var(--white); border: 1px solid var(--line); border-radius: 12px; padding: 10px 12px; }
@@ -990,7 +990,14 @@ footer.urgent p { color: #FEE2E2; }
 .an-cap { display: flex; flex-wrap: wrap; gap: 3px 12px; font-size: 11.5px; color: var(--muted); margin-top: 2px; }
 .an-cap i, .an-legend i { display: inline-block; width: 9px; height: 9px; border-radius: 50%; margin-right: 5px; vertical-align: -1px; }
 .an-cap b { color: var(--ink); font-weight: 600; }
-.an-tbl { flex: 1; min-height: 0; display: flex; flex-direction: column; padding: 8px 0 0; overflow: hidden; }
+.an-left { flex: 1; min-height: 0; display: flex; flex-direction: column; padding: 0; overflow: hidden; }
+.an-ltabs { display: flex; gap: 2px; padding: 4px 10px 0; border-bottom: 1px solid var(--line); margin-bottom: 8px; }
+.an-ltabs button { border: 0; background: none; padding: 8px 12px; font: inherit; font-size: 14px; font-weight: 600; color: var(--muted); border-bottom: 2px solid transparent; margin-bottom: -1px; cursor: pointer; }
+.an-ltabs button[aria-selected="true"] { color: var(--b900); border-bottom-color: var(--b600); }
+.an-pane { flex: 1; min-height: 0; display: flex; flex-direction: column; } .an-pane[hidden] { display: none; }
+.an-pchart { padding: 0 12px 10px; }
+.an-ct { font-family: var(--serif); color: var(--b900); font-size: 15px; margin: 2px 0 4px; }
+.an-pchart .an-svg { flex: 1; min-height: 0; }
 .an-tools { display: flex; gap: 6px; align-items: center; padding: 0 10px 6px; flex-wrap: wrap; }
 .an-chips { display: flex; gap: 4px; flex-wrap: wrap; }
 .an-chips button { font: inherit; font-size: 11.5px; font-weight: 600; padding: 2px 8px; border-radius: 999px; border: 1px solid var(--line); background: var(--b50); color: var(--b900); cursor: pointer; white-space: nowrap; }
@@ -1367,10 +1374,15 @@ footer.urgent p { color: #FEE2E2; }
 <section id="panel-about" role="tabpanel" aria-labelledby="tab-about" hidden style="flex:1;min-height:0;overflow-y:auto"><div class="talk gut" id="about"></div></section>
 <section id="panel-analytics" role="tabpanel" aria-labelledby="tab-analytics" hidden class="an">
   <div class="an-col">
-    <div class="an-box"><div class="an-h"><h2 id="an-ctitle">Explore</h2></div><div class="an-svg" id="an-svg"></div><div class="an-cap" id="an-cap"></div></div>
-    <div class="an-box an-tbl"><div class="an-tools"><div class="an-chips" id="an-chips" role="group" aria-label="Show"></div></div>
-      <div class="an-tools an-tools2"><p class="an-rule" id="an-rule"></p><input class="an-find" id="an-find" type="search" placeholder="Find a place…" aria-label="Find a place"></div>
-      <div class="an-scroll" id="an-scroll"><table><thead id="an-thead"></thead><tbody id="an-tbody"></tbody></table></div></div>
+    <div class="an-box an-left">
+      <div class="an-ltabs" role="tablist" aria-label="Explore"><button type="button" role="tab" data-lt="list" aria-selected="true">List</button><button type="button" role="tab" data-lt="chart" aria-selected="false">Chart</button></div>
+      <div class="an-tools"><div class="an-chips" id="an-chips" role="group" aria-label="Show"></div></div>
+      <div class="an-pane" id="an-plist">
+        <div class="an-tools an-tools2"><p class="an-rule" id="an-rule"></p><input class="an-find" id="an-find" type="search" placeholder="Find a place…" aria-label="Find a place"></div>
+        <div class="an-scroll" id="an-scroll"><table><thead id="an-thead"></thead><tbody id="an-tbody"></tbody></table></div>
+      </div>
+      <div class="an-pane an-pchart" id="an-pchart" hidden><h2 class="an-ct" id="an-ctitle"></h2><div class="an-svg" id="an-svg"></div><div class="an-cap" id="an-cap"></div></div>
+    </div>
   </div>
   <div class="an-mapwrap"><div id="amap" role="region" aria-label="Map of LSOAs and services"></div><div class="an-loading" id="an-loading">Loading LSOAs…</div></div>
   <div class="an-col"><div class="an-box an-prof" id="an-prof"></div></div>
@@ -2015,7 +2027,7 @@ function renderAbout() {
     </section>
     </div></div>
     <p class="small">Service information belongs to the providers listed. Map data © <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap</a> contributors, © <a href="https://carto.com/attributions" target="_blank" rel="noopener">CARTO</a>.</p>
-    <p class="small" id="site-version">Version: test 2026-11-14 14:17${typeof window.assistRelayVersion === "function" ? window.assistRelayVersion() : ""}</p>
+    <p class="small" id="site-version">Version: test 2026-11-14 22:17${typeof window.assistRelayVersion === "function" ? window.assistRelayVersion() : ""}</p>
   </article>`;
 }
 /* ---------- Analytics tab (desktop only: hidden below 760px wide) ----------
@@ -2153,7 +2165,7 @@ function anDrawPins() {
 let aDots = [];
 function anChart() {
   const box = $("an-svg"); if (!aReady || !box || !box.clientWidth) return;
-  const F = aGeo.features, I = AN_IND[aInd], W = box.clientWidth, H = Math.round(Math.max(150, Math.min(280, ($("panel-analytics").clientHeight || 600) * .33)));
+  const F = aGeo.features, I = AN_IND[aInd], W = box.clientWidth, H = Math.max(160, box.clientHeight);
   const m = { l: 50, r: 10, t: 12, b: 28 }, pw = W - m.l - m.r, ph = H - m.t - m.b, sup = aSupL(), dis = aInd === "dis";
   const cap = F.filter(f => f.properties.dist > 10 && f.properties.dist < 99).length > 40 ? 20 : 10;
   const X = d => m.l + Math.sqrt(Math.min(d, cap) / cap) * pw;
@@ -2175,6 +2187,7 @@ function anChart() {
     s += `<circle cx="${x}" cy="${y}" r="6.5" fill="none" stroke="${c}" stroke-width="2.5"/>` + (tag ? `<text class="tag" x="${x + 9}" y="${y + 4}" fill="${c}">${tag}</text>` : "");
   }
   box.innerHTML = s + `</svg><div class="an-ctip" id="an-ctip" hidden></div>`;
+  box.querySelector("svg").style.position = "absolute";
   $("an-ctitle").textContent = `${I.short} and distance to the nearest ${sup ? sup + " " : ""}support`;
   const n = F.filter(f => aKeep(f.properties)).length, lab = { hi: I.hiLab, none: `No ${sup ? sup + " " : ""}support nearby`, both: "Both" }[aShow];
   $("an-cap").innerHTML = `<span><i style="background:${AN_RUC.Urban}"></i>Urban</span><span><i style="background:${AN_RUC.Rural}"></i>Rural</span>` +
@@ -2329,6 +2342,12 @@ async function initAnalytics() {
   $("an-ind").onchange = e => { aInd = e.target.value; anReindicator(); };
   $("an-how").onclick = e => { e.preventDefault(); setSiteTab("about"); setTimeout(() => { const h = $("how-analytics"); if (h) h.scrollIntoView({ block: "start" }); }, 60); };
   $("an-chips").onclick = e => { const b = e.target.closest("button"); if (!b) return; aShow = b.dataset.show; anListHead(); anList(); anChart(); };
+  // List / Chart tabs in the left column (remembered on the device)
+  const ltab = t => { document.querySelectorAll(".an-ltabs button").forEach(b => b.setAttribute("aria-selected", b.dataset.lt === t));
+    $("an-plist").hidden = t !== "list"; $("an-pchart").hidden = t !== "chart"; try { localStorage.setItem("anLeft", t); } catch (_) {}
+    if (t === "chart") anChart(); else anListScroll(); };
+  document.querySelector(".an-ltabs").onclick = e => { const b = e.target.closest("button"); if (b) ltab(b.dataset.lt); };
+  let lt0 = "list"; try { lt0 = localStorage.getItem("anLeft") || "list"; } catch (_) {} ltab(lt0);
   $("an-find").oninput = e => { aFind = e.target.value; anList(); };
   $("an-thead").onclick = e => { const th = e.target.closest("th"); if (!th) return; const k = th.dataset.sort;
     aSort = aSort.col === k ? { col: k, dir: -aSort.dir } : { col: k, dir: 1 }; anListHead(); anList(); };
@@ -2504,7 +2523,7 @@ setInterval(() => { if (!ALL.length) return; tab === "talk" ? renderTalk() : tab
    this page only remembers it for the current browser session. */
 (() => {
 const WORKER_URL = "https://signposting-assist.c-r-williams0109.workers.dev";
-const PAGE_VERSION = "test 2026-11-14 14:17";
+const PAGE_VERSION = "test 2026-11-14 22:17";
 let relayVersion = "";
 // The version line is at the bottom of the About tab: "Version: test 2026-11-06 11:30 · Assist relay 2026-11-06 11:07"
 window.assistRelayVersion = () => relayVersion ? ` · Assist relay ${relayVersion}` : "";
