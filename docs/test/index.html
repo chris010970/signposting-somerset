@@ -1003,12 +1003,17 @@ footer.urgent p { color: #FEE2E2; }
 .an-cmp thead th { font-weight: 700; color: var(--b900); font-size: 12px; text-align: right; padding-left: 10px; white-space: nowrap; }
 .an-cmp thead th.typ { color: var(--muted); }
 .an-cmp .sw { display: inline-block; width: 10px; height: 10px; border-radius: 2px; margin-right: 4px; vertical-align: -1px; }
-.an-hint { color: var(--muted); font-size: 13px; margin: 6px 0 0; display: block; }
+.an-hint { color: var(--muted); font-size: 13px; margin: 0; display: block; }
 .an-small { color: var(--muted); font-size: 12px; margin: 6px 0 0; }
 .an-tabs { display: flex; gap: 4px; margin: 14px 0 0; border-bottom: 1px solid var(--line); }
 .an-tabs button { border: 0; background: none; padding: 8px 12px; font: inherit; font-size: 14px; font-weight: 600; color: var(--muted); border-bottom: 2px solid transparent; margin-bottom: -1px; cursor: pointer; }
 .an-tabs button[aria-selected="true"] { color: var(--b900); border-bottom-color: var(--b600); }
-.an-ov, .an-tabs + .an-ov + .an-detail { margin-top: 10px; }
+.an-ov { margin-top: 10px; }
+.an-live { display: flex; align-items: center; gap: 6px; margin: 0 0 8px; font-size: 11px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; color: var(--b700); }
+.an-live i { width: 7px; height: 7px; border-radius: 50%; background: #3BA27A; box-shadow: 0 0 0 3px rgba(59,162,122,.2); }
+.an-detail.flash { animation: anflash .7s ease-out; }
+@keyframes anflash { from { box-shadow: 0 0 0 3px rgba(59,162,122,.45); border-color: #3BA27A; } to { box-shadow: 0 0 0 0 rgba(59,162,122,0); } }
+@media (prefers-reduced-motion: reduce) { .an-detail.flash { animation: none; } }
 .an-ov { background: var(--white); border: 1px solid var(--line); border-radius: 10px; padding: 10px 12px; }
 .an-ov[hidden], .an-detail[hidden] { display: none; }
 .an-axes { display: flex; gap: 10px; flex-wrap: wrap; font-size: 12px; color: var(--muted); margin-bottom: 6px; }
@@ -1047,7 +1052,11 @@ footer.urgent p { color: #FEE2E2; }
 .an-ends { color: var(--ink); margin-top: 2px; }
 .an-qs #q-asupport { grid-column: span 2; }
 @media (max-width: 899px) { .an-qs { grid-template-columns: 1fr 1fr; } .an-qs #q-asupport { grid-column: 1 / -1; } }
-.an-tip { font-size: 12px; line-height: 1.45; } .an-tip b { font-family: var(--serif); color: var(--b900); font-size: 13px; }
+.an-info { background: rgba(255,255,255,.95); border: 1px solid var(--line); border-radius: 10px; padding: 7px 10px; font: 13px/1.45 var(--sans); color: var(--ink); max-width: min(560px, calc(100vw - 60px)); box-shadow: 0 1px 4px rgba(0,0,0,.12); }
+.an-info b { color: var(--b900); } .an-info .mut { color: var(--muted); }
+.an-info .sw { display: inline-block; width: 10px; height: 10px; border-radius: 2px; margin-right: 5px; vertical-align: -1px; }
+.an-plist { list-style: none; margin: 0; padding: 0; max-height: 220px; overflow-y: auto; } .an-plist li { padding: 4px 0; border-top: 1px solid var(--line); font-size: 13px; }
+@media (max-width: 599px) { .an-info { font-size: 12px; max-width: calc(100vw - 32px); } }
 @media (max-width: 899px) {
   .an:not([hidden]) { display: flex; flex-direction: column; overflow-y: auto; margin-bottom: 0; }
   .an-mapwrap { order: -1; flex: none; height: 58vh; min-height: 300px; border-bottom: 1px solid var(--line); }
@@ -1361,14 +1370,14 @@ footer.urgent p { color: #FEE2E2; }
 <section id="panel-analytics" role="tabpanel" aria-labelledby="tab-analytics" hidden class="an">
   <aside class="an-side">
     <div class="an-pan" id="an-pan"><button type="button" class="an-phead" id="an-ptog" aria-expanded="true" aria-controls="an-layers"><span class="t">Shade the map by</span><span class="cur" id="an-pcur"></span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 15l6-6 6 6"/></svg></button><div class="an-layers" id="an-layers" role="radiogroup" aria-label="Shade the map by"></div></div>
-    <div class="an-tabs" role="tablist" aria-label="Views"><button type="button" role="tab" data-t="ov" aria-selected="true">Overview</button><button type="button" role="tab" data-t="cmp" aria-selected="false">Compare LSOAs</button></div>
-    <div class="an-ov" id="an-ov">
+    <div class="an-tabs" role="tablist" aria-label="Views"><button type="button" role="tab" data-t="cmp" aria-selected="true">This LSOA</button><button type="button" role="tab" data-t="ov" aria-selected="false">All LSOAs</button></div>
+    <div class="an-detail" id="an-detail"></div>
+    <div class="an-ov" id="an-ov" hidden>
       <div class="an-axes"><label>Need <select id="an-ay"></select></label><span class="an-seg" id="an-ru" role="group" aria-label="Show">Show <button type="button" data-r="all" aria-pressed="true">All</button><button type="button" data-r="Urban" aria-pressed="false">Urban</button><button type="button" data-r="Rural" aria-pressed="false">Rural</button></span></div>
       <div class="an-svg" id="an-svg"></div>
       <div class="an-cleg" id="an-cleg"></div>
       <p class="an-small" id="an-csum"></p>
     </div>
-    <div class="an-detail" id="an-detail" hidden></div>
   </aside>
   <div class="an-mapwrap"><div id="amap" role="region" aria-label="Map of LSOAs and services"></div><div class="an-loading" id="an-loading">Loading LSOAs…</div></div>
 </section>
@@ -2001,7 +2010,7 @@ function renderAbout() {
     </section>
     </div></div>
     <p class="small">Service information belongs to the providers listed. Map data © <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap</a> contributors, © <a href="https://carto.com/attributions" target="_blank" rel="noopener">CARTO</a>.</p>
-    <p class="small" id="site-version">Version: test 2026-11-14 09:15${typeof window.assistRelayVersion === "function" ? window.assistRelayVersion() : ""}</p>
+    <p class="small" id="site-version">Version: test 2026-11-14 09:39${typeof window.assistRelayVersion === "function" ? window.assistRelayVersion() : ""}</p>
   </article>`;
 }
 /* ---------- Analytics tab: neighbourhoods (2021 LSOAs) shaded by local data, with the directory's services on top ----------
@@ -2081,18 +2090,33 @@ function anSetLayer(id) {
   aAreas.setStyle(anStyle);
   document.querySelectorAll("#an-layers label").forEach(l => l.classList.toggle("on", l.dataset.id === aCur.id));   // only the chosen one shows its description
   const cur = $("an-pcur"); if (cur) cur.textContent = aCur.name;
+  anInfo(null);
   if (aScaleEl) aScaleEl.innerHTML = `<b>${esc(aCur.name)}</b>` + anLegend();
 }
-function anTip(f) {
-  const p = f.properties;
-  return `<div class="an-tip"><b>${esc(p.name)}</b><br>${esc(aCur.name)}: <strong>${esc(aFmt(aCur, p))}</strong>` +
-    (aCur.id === "n1" ? "" : `<br>${p.n1} service${p.n1 === 1 ? "" : "s"} within ${esc(aRadius())}`) + `</div>`;
+// Info strip (bottom left of the map): the LSOA under the pointer, else the selected one(s). No floating box, so it never covers the pins.
+let aInfoEl = null;
+function anInfo(f) {
+  if (!aInfoEl) return;
+  const line = (g, tag) => { const p = g.properties;
+    return `${tag || ""}<b>${esc(p.name)}</b> · ${esc(p.ruc || "")} · ${esc(aCur.name)}: <b>${esc(aFmt(aCur, p))}</b>` +
+      (aCur.id === "n1" ? "" : ` · ${p.n1} service${p.n1 === 1 ? "" : "s"} within ${esc(aRadius())}`); };
+  const sw = c => `<i class="sw" style="background:${c}"></i>`;
+  aInfoEl.innerHTML = f ? line(f)
+    : aCmp ? (aA ? line(aA, sw("#7A2E8E")) : "") + (aB ? "<br>" + line(aB, sw("#1B5FA8")) : `<br><span class="mut">Tap another LSOA to compare</span>`)
+    : aSel ? line(aSel) + ` <span class="mut">· details below the map</span>`
+    : `<span class="mut">${matchMedia("(hover: hover)").matches ? "Hover over or click" : "Tap"} an LSOA</span>`;
 }
-// Neighbourhood panel: one neighbourhood, or A and B, beside the typical (middle) value for A's council area
+// This LSOA panel: the LSOA under the pointer (or the selected one), or A and B, beside the median for A's council area.
+// It is live: a line says so, and the card flashes briefly whenever what it shows changes.
+let aShowing = "";
 function anDetail() {
-  const el = $("an-detail"), F = aGeo.features;
+  const el = $("an-detail"), F = aGeo.features, hov = matchMedia("(hover: hover)").matches;
   const one = aCmp ? aA : aSel || aHover;
-  if (!one) { el.innerHTML = `<span class="an-hint">Hover over or tap an LSOA on the map or in Overview to see its figures, then press Compare to set it against another. LSOAs are small census areas of about 1,500 people.</span>`; return; }
+  const live = `<p class="an-live"><i></i>Updates as you ${hov ? "hover over or click" : "tap"} the map</p>`;
+  const key = aCmp ? "c:" + (aA ? aA.properties.code : "") + (aB ? aB.properties.code : "") : one ? one.properties.code : "";
+  if (key !== aShowing) { aShowing = key; if (key) { el.classList.remove("flash"); void el.offsetWidth; el.classList.add("flash"); } }
+  if (!one) { el.innerHTML = live + `<p class="an-hint">${hov ? "Hover over an LSOA on the map to see its figures here. Click to keep it selected." : "Tap an LSOA on the map to see its figures here."} ` +
+    `LSOAs are small census areas of about 1,500 people.</p>`; return; }
   const cols = aCmp ? [aA, aB].filter(Boolean) : [one], la = one.properties.la;
   const LA = F.filter(f => f.properties.la === la), mid = k => { const v = LA.map(f => f.properties[k]).sort((a, b) => a - b); return v[Math.floor(v.length / 2)]; };
   const typ = { pop: mid("pop"), dist: mid("dist"), n1: mid("n1"), imd: mid("imd"), hdep: mid("hdep"), dis: mid("dis") };
@@ -2101,8 +2125,8 @@ function anDetail() {
     ["Deprivation decile", p => p.imd], ["Health decile", p => p.hdep], ["Disabled people", p => p.dis + "%"]];
   const sw = c => `<i class="sw" style="background:${c}"></i>`;
   const head = aCmp ? `<th>${sw("#7A2E8E")}A</th>${aB ? `<th>${sw("#1B5FA8")}B</th>` : ""}` : `<th></th>`;
-  el.innerHTML = `<div class="an-dh"><h3>${aCmp ? "Comparing LSOAs" : esc(one.properties.name)}</h3>` +
-    (aCmp ? `<button type="button" class="an-btn" data-a="clear">Clear</button>` : aSel ? `<button type="button" class="an-btn" data-a="cmp">Compare</button>` : "") + `</div>` +
+  el.innerHTML = live + `<div class="an-dh"><h3>${aCmp ? "Comparing LSOAs" : esc(one.properties.name)}</h3>` +
+    (aCmp ? `<button type="button" class="an-btn" data-a="clear">Clear</button>` : aSel ? `<button type="button" class="an-btn" data-a="cmp">Compare with another</button>` : "") + `</div>` +
     `<table class="an-cmp"><thead><tr><th></th>${head}<th class="typ">Area median</th></tr></thead><tbody>` +
     (aCmp ? `<tr><th>Name</th>${cols.map(f => `<td>${esc(f.properties.name)}</td>`).join("")}<td class="typ"></td></tr>` : "") +
     (!aCmp ? `<tr><th>Council area</th><td>${esc(short)}</td><td class="typ"></td></tr>` : "") +
@@ -2121,16 +2145,23 @@ function anRefresh() {
     for (const q of pts) { const d = anMiles(p.c, q); if (d < best) best = d; if (d <= aR) n++; }
     p.dist = pts.length ? Math.round(best * 100) / 100 : 99; p.n1 = n;
   }
+  // service pins: one per spot, numbered when several share it (as on In person); markers sit above the LSOA shapes
   aPins.clearLayers();
-  for (const s of shown) {
-    const k = kindOf(s), addr = [s.address, s.town, s.postcode].filter(Boolean).join(", ");
-    L.circleMarker([s.lat, s.lon], { radius: innerWidth < 600 ? 3.5 : 4.5, color: "#fff", weight: 1.2, fillColor: KINDS[k][1], fillOpacity: 1 })
-      .bindTooltip(esc(s.name), { direction: "top", offset: [0, -4] })
-      .bindPopup(`<b>${esc(s.name)}</b><br>${esc(s.provider || "")}<br><span style="color:var(--muted)">${esc(nextText(s, now).txt)}</span>${addr ? "<br>" + esc(addr) : ""}${s.url ? `<br><a href="${esc(s.url)}" target="_blank" rel="noopener">Website</a>` : ""}`)
-      .addTo(aPins);
+  const spots = new Map();
+  for (const s of shown) { const k = spotKey(s); if (!spots.has(k)) spots.set(k, []); spots.get(k).push(s); }
+  const one = s => `<b>${esc(s.name)}</b><br><span style="color:var(--muted)">${esc(nextText(s, now).txt)}</span>` + (s.url ? ` · <a href="${esc(s.url)}" target="_blank" rel="noopener">Website</a>` : "");
+  for (const g of spots.values()) {
+    const s0 = g[0], place = esc(s0.address || s0.town || "");
+    const m = g.length === 1
+      ? L.marker([s0.lat, s0.lon], { icon: L.divIcon({ className: "", html: `<div class="pin" style="background:${pinCol(s0)}"></div>`, iconSize: [14, 14], iconAnchor: [7, 7] }), title: s0.name })
+          .bindTooltip(`<strong>${esc(s0.name)}</strong><br>${esc(s0.town || "")}`, { direction: "top", offset: [0, -6] })
+          .bindPopup(`<div class="an-pop">${one(s0)}${place ? "<br>" + place : ""}</div>`, { maxWidth: 280 })
+      : L.marker([s0.lat, s0.lon], { icon: L.divIcon({ className: "", html: `<div class="cpin" style="background:${clusterBg(g)}"><span>${g.length}</span></div>`, iconSize: [28, 28], iconAnchor: [14, 14] }), title: `${g.length} services` })
+          .bindTooltip(`<strong>${g.length} services</strong><br>${place}`, { direction: "top", offset: [0, -12] })
+          .bindPopup(`<div class="plist"><div class="plist-h">${g.length} services · ${place}</div><ul class="an-plist">${g.map(s => `<li>${one(s)}</li>`).join("")}</ul></div>`, { maxWidth: 280 });
+    m.addTo(aPins);
   }
-  aAreas.eachLayer(l => l.closeTooltip());   // reopen with fresh figures on the next hover
-  anSetLayer(aCur.id); anDetail(); anChart(); if (aLegendEl) anMapKey(aLegendEl);
+  anSetLayer(aCur.id); anDetail(); anChart(); anInfo(null); if (aLegendEl) anMapKey(aLegendEl);
 }
 // The same "What it is" key as In person, with its own on/off state
 function anMapKey(d) {
@@ -2153,7 +2184,7 @@ const AN_RUC = { Urban: "#4E9C88", Rural: "#A08A5C" };
 function anPick(f) {
   if (aCmp) { if (f !== aA) aB = f; }
   else aSel = aSel === f ? null : f;
-  aHover = null; aAreas.setStyle(anStyle); anDetail(); anChart();
+  aHover = null; aAreas.setStyle(anStyle); anDetail(); anChart(); anInfo(null);
 }
 function anChart() {
   const box = $("an-svg"); if (!box || !aGeo || aTab !== "ov" || aGeo.features[0].properties.n1 === undefined) return;
@@ -2200,7 +2231,7 @@ function anChart() {
     `<span><i style="background:#C9763A"></i>Higher need, further than the middle ${aRu === "all" ? "LSOA of its kind" : aRu.toLowerCase() + " LSOA"}</span>`;
   const sel = aCmp ? null : aSel;
   $("an-csum").innerHTML = `<b>${nHot}</b> of ${nSet} ${aRu === "all" ? "" : aRu.toLowerCase() + " "}LSOAs (${pHot.toLocaleString("en-GB")} people) have higher need and are further from a service than the middle ${aRu === "all" ? "LSOA of the same kind (urban or rural)" : aRu.toLowerCase() + " LSOA"}. Dots follow the filters; tap one to select it.` +
-    (sel ? `<br><b>${esc(sel.properties.name)}</b> selected. <button type="button" class="an-link" data-go="cmp">See its figures in Compare LSOAs</button>` : "");
+    (sel ? `<br><b>${esc(sel.properties.name)}</b> selected. <button type="button" class="an-link" data-go="cmp">See its figures in This LSOA</button>` : "");
   box._pos = F.map((f, i) => [sx(X(f.properties)), sy(Y(f.properties, i))]);
 }
 function anChartHover(f, on) {   // map → chart: ring the LSOA's dot
@@ -2209,12 +2240,12 @@ function anChartHover(f, on) {   // map → chart: ring the LSOA's dot
   const [x, y] = box._pos[aGeo.features.indexOf(f)]; d.setAttribute("cx", x); d.setAttribute("cy", y); d.style.display = "";
 }
 function anTabSet(t) {
-  aTab = t; try { localStorage.setItem("anTab", t); } catch (_) {}
+  aTab = t; try { localStorage.setItem("anTab2", t); } catch (_) {}
   document.querySelectorAll(".an-tabs button").forEach(b => b.setAttribute("aria-selected", b.dataset.t === t));
   $("an-ov").hidden = t !== "ov"; $("an-detail").hidden = t !== "cmp"; anChart();
 }
 function anChartInit() {
-  try { aTab = localStorage.getItem("anTab") || "ov"; } catch (_) {}
+  aTab = "cmp"; try { aTab = localStorage.getItem("anTab2") || "cmp"; } catch (_) {}   // This LSOA first
   $("an-ay").innerHTML = AN_LAYERS.filter(l => !l.prov).map(l => `<option value="${l.id}">${esc(l.name)}</option>`).join("");
   $("an-ru").onclick = e => { const b = e.target.closest("button"); if (!b) return; aRu = b.dataset.r;
     $("an-ru").querySelectorAll("button").forEach(x => x.setAttribute("aria-pressed", x === b)); anChart(); };
@@ -2227,13 +2258,13 @@ function anChartInit() {
   let last = null;
   box.onmousemove = e => { const [i, x, y] = near(e), tip = $("an-ctip"); if (!tip) return;
     const f = i >= 0 ? aGeo.features[i] : null;
-    if (f !== last) { if (last) { const l = last.__l; aAreas.resetStyle(l); l.closeTooltip(); }
-      if (f) { const l = f.__l; l.setStyle({ weight: 2.5, color: "#1B3126" }); l.bringToFront(); } last = f; anChartHover(f, !!f); }
+    if (f !== last) { if (last) { const l = last.__l; aAreas.resetStyle(l); }
+      if (f) { const l = f.__l; l.setStyle({ weight: 2.5, color: "#1B3126" }); l.bringToFront(); } last = f; anChartHover(f, !!f); anInfo(f); }
     if (!f) { tip.hidden = true; return; }
     const p = f.properties, ly = AN_LAYERS.find(l => l.id === aAy);
     tip.innerHTML = `<b>${esc(p.name)}</b><br>${esc(p.ruc)}<br>${esc(ly.name)}: ${esc(aFmt(ly, p))}<br>Nearest service: ${esc(aDist(p.dist))}`;
     tip.hidden = false; tip.style.left = Math.min(x + 12, box.clientWidth - 170) + "px"; tip.style.top = Math.max(0, y - 52) + "px"; };
-  box.onmouseleave = () => { if (last) { aAreas.resetStyle(last.__l); last = null; } anChartHover(null, false); const tip = $("an-ctip"); if (tip) tip.hidden = true; };
+  box.onmouseleave = () => { if (last) { aAreas.resetStyle(last.__l); last = null; } anChartHover(null, false); anInfo(null); const tip = $("an-ctip"); if (tip) tip.hidden = true; };
   box.onclick = e => { const [i] = near(e); if (i >= 0) anPick(aGeo.features[i]); };
   addEventListener("resize", () => { clearTimeout(anChartInit._t); anChartInit._t = setTimeout(anChart, 150); });
   anTabSet(aTab);
@@ -2253,13 +2284,12 @@ async function initAnalytics() {
   } catch (e) { $("an-loading").textContent = "The LSOA data couldn't load. It works on the website itself."; return; }
   for (let i = 0; !S.length && i < 100; i++) await new Promise(r => setTimeout(r, 300));   // wait for the sheet if it's still loading
   aAreas = L.geoJSON(aGeo, { style: anStyle, onEachFeature: (f, l) => {
-    l.bindTooltip(() => anTip(f), { sticky: true, direction: "top", offset: [0, -8], opacity: .97 });
     f.__l = l;
-    l.on("mouseover", () => { if (!aSel && !aCmp) { aHover = f; anDetail(); } l.setStyle({ weight: 2.5, color: "#1B3126" }); l.bringToFront(); anChartHover(f, true); });
-    l.on("mouseout", () => { aAreas.resetStyle(l); anChartHover(f, false); if (aHover === f) { aHover = null; anDetail(); } });
+    l.on("mouseover", () => { if (!aSel && !aCmp) { aHover = f; anDetail(); } l.setStyle({ weight: 2.5, color: "#1B3126" }); l.bringToFront(); anChartHover(f, true); anInfo(f); });
+    l.on("mouseout", () => { aAreas.resetStyle(l); anChartHover(f, false); anInfo(null); if (aHover === f) { aHover = null; anDetail(); } });
     l.on("click", () => anPick(f));
   } }).addTo(amap);
-  aPins = L.layerGroup().addTo(amap);   // added after the areas, so pins sit on top
+  aPins = L.layerGroup().addTo(amap);
   const legend = L.control({ position: "topleft" });
   legend.onAdd = () => {
     const d = L.DomUtil.create("div", "maplegend");
@@ -2274,6 +2304,11 @@ async function initAnalytics() {
     anMapKey(d); return d;
   };
   legend.addTo(amap);
+  if (innerWidth < 900) {   // phones and narrow screens: the panel is below the map, so an info strip on the map shows what was tapped
+    const info = L.control({ position: "topleft" });
+    info.onAdd = () => { aInfoEl = L.DomUtil.create("div", "an-info"); L.DomEvent.disableClickPropagation(aInfoEl); return aInfoEl; };
+    info.addTo(amap);
+  }
   const scale = L.control({ position: "bottomright" });   // the colour scale for the selected layer
   scale.onAdd = () => { aScaleEl = L.DomUtil.create("div", "an-scale"); L.DomEvent.disableClickPropagation(aScaleEl); return aScaleEl; };
   scale.addTo(amap);
@@ -2297,7 +2332,7 @@ async function initAnalytics() {
     const b = e.target.closest("button"); if (!b) return;
     if (b.dataset.a === "cmp") { aCmp = true; aA = aSel; aB = null; aSel = null; }
     else { aCmp = false; aA = aB = aSel = null; }
-    aAreas.setStyle(anStyle); anDetail(); anChart();
+    aAreas.setStyle(anStyle); anDetail(); anChart(); anInfo(null);
   };
   anChartInit();
   amap.fitBounds(aAreas.getBounds(), { padding: [8, 8] });
@@ -2448,7 +2483,7 @@ setInterval(() => { if (!ALL.length) return; tab === "talk" ? renderTalk() : tab
    this page only remembers it for the current browser session. */
 (() => {
 const WORKER_URL = "https://signposting-assist.c-r-williams0109.workers.dev";
-const PAGE_VERSION = "test 2026-11-14 09:15";
+const PAGE_VERSION = "test 2026-11-14 09:39";
 let relayVersion = "";
 // The version line is at the bottom of the About tab: "Version: test 2026-11-06 11:30 · Assist relay 2026-11-06 11:07"
 window.assistRelayVersion = () => relayVersion ? ` · Assist relay ${relayVersion}` : "";
