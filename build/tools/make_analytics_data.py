@@ -3,8 +3,8 @@
 make_analytics_data.py - rebuild docs/assets/analytics-lsoa.geojson for the Analytics tab.
 
 What it makes: the 595 LSOAs (2021 Lower Layer Super Output Areas) in Somerset, North Somerset and Bath and
-North East Somerset, with each one's population (mid-2022), IMD 2025 deciles (overall and health), % disabled
-(Census 2021), urban/rural class (ONS RUC 2021), and a postcode-weighted centre: the average position of the
+North East Somerset, with each one's population (mid-2022), IMD 2025 exact national ranks and deciles (overall
+and health), % and number disabled (Census 2021, plus the England median %), urban/rural class (ONS RUC 2021), and a postcode-weighted centre: the average position of the
 postcodes inside it, i.e. roughly where the homes are. (ONS withdrew its own LSOA 2021 population-weighted
 centroids from public access in 2026, so this stands in for them.) Distances to services are NOT stored: the
 website works them out from the live sheet, measuring from that centre.
@@ -121,11 +121,15 @@ def main():
     for f, a in zip(feats, pcs):
         p = f["properties"]; c = p["code"]
         cen = [round(a[1] / a[2], 5), round(a[0] / a[2], 5)] if a[2] >= 3 else centre(f)
-        p.update(c=cen, npc=a[2], ruc=str(ruc.loc[c, "ruc"]), rucc=str(ruc.loc[c, "classification"]), pop=int(pop.loc[c, "n_people"]), imd=int(imd.loc[c, "IMD_decile"]), hdep=int(imd.loc[c, "Health_decile"]),
-                 dis=round(float(dis.loc[c, "prop"]) * 100, 1))
+        p.update(c=cen, npc=a[2], ruc=str(ruc.loc[c, "ruc"]), rucc=str(ruc.loc[c, "classification"]), pop=int(pop.loc[c, "n_people"]),
+                 imd=int(imd.loc[c, "IMD_decile"]), hdep=int(imd.loc[c, "Health_decile"]),
+                 imdr=int(imd.loc[c, "IMD_rank"]), hr=int(imd.loc[c, "Health_rank"]),   # exact national ranks, 1 = most deprived in England
+                 dis=round(float(dis.loc[c, "prop"]) * 100, 2), disn=int(dis.loc[c, "n"]))
         p["dens"] = round(p["pop"] / area_km2(f))
+    eng = dis[dis.index.str.startswith("E")]["prop"]
     geo = {"type": "FeatureCollection", "features": feats,
-           "meta": {"sources": "Boundaries and population: ONS (mid-2022). Deprivation: English Indices of Deprivation 2025. "
+           "meta": {"lsoas_england": int(len(imd)), "dis_median_england": round(float(eng.median()) * 100, 2),
+                    "sources": "Boundaries and population: ONS (mid-2022). Deprivation: English Indices of Deprivation 2025. "
                                "Disability: Census 2021. Urban/rural: ONS RUC 2021. Centres: postcode-weighted (OS/ONS open postcode data, 2016). "
                                "Open Government Licence; prepared via humaniverse R packages."}}
     json.dump(geo, open("analytics-lsoa.geojson", "w"), separators=(",", ":"))
