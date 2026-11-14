@@ -128,6 +128,8 @@ python run_scenarios.py --scenarios scenarios-banes.json --all
 - **Search:** meta description "Discover mental health and wellbeing support across Somerset, North Somerset and B&NES: what's on, when and where. Built for anyone looking for help, activities or community connections."; canonical `/main/`; test page `noindex`.
 - **Assist answer limit:** `max_tokens` 8000 (lower values cut long plans off).
 
+- **Analytics tab:** the 595 neighbourhoods (2021 LSOAs) shaded by distance to the nearest service (worked out live from the sheet), IMD 2025 deprivation and health deprivation, Census 2021 disability, and population density, with the services on top. It uses the same layout as In person: Support for and How often (most days, at least weekly, fortnightly or monthly; a blank frequency counts as weekly) in the header, the layers as cards in the left panel, and the "What it is" key on the map; distances and counts follow those filters, in fixed bands (½, 1, 2, 3 miles). The data file is `docs/assets/analytics-lsoa.geojson` and loads only when the tab is opened. Rebuild it with `build/tools/make_analytics_data.py` (it fetches the official data from the humaniverse packages on GitHub). It's a talking point, not a needs assessment: the page says the directory's coverage varies.
+
 ## 10. Known gaps and to-dos (Nov 2026)
 
 - B&NES and North Somerset still thinner than Somerset; Bristol is out of scope.
