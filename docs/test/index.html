@@ -973,12 +973,23 @@ footer.urgent p { color: #FEE2E2; }
 .an-loading[hidden] { display: none; }
 .an-lab { font-size: 10px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: var(--b700); margin: 16px 2px 6px; }
 .an-side > .an-lab:first-child { margin-top: 0; }
-.an-layers label { display: flex; gap: 10px; align-items: flex-start; padding: 8px 12px; border: 1px solid var(--line); border-radius: 12px; background: var(--white); margin-bottom: 6px; cursor: pointer; }
-.an-layers label:hover { border-color: var(--b200); }
-.an-layers label:has(input:checked) { border-color: var(--b600); box-shadow: 0 0 0 1px var(--b600) inset; }
-.an-layers input { margin-top: 3px; accent-color: var(--b600); }
+.an-pan { background: var(--white); border: 1px solid var(--line); border-radius: 12px; overflow: hidden; }
+.an-phead { display: flex; align-items: center; gap: 8px; width: 100%; border: 0; background: none; padding: 10px 12px; font: inherit; cursor: pointer; text-align: left; }
+.an-phead .t { font-size: 11px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: var(--b700); white-space: nowrap; }
+.an-phead .cur { font-weight: 600; color: var(--b900); font-size: 14px; display: none; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.an-phead svg { width: 16px; height: 16px; margin-left: auto; flex: none; color: var(--b700); transition: transform .15s; }
+.an-pan.closed .an-phead .cur { display: block; }
+.an-pan.closed .an-phead svg { transform: rotate(180deg); }
+.an-pan.closed .an-layers { display: none; }
+.an-layers { border-top: 1px solid var(--line); padding: 6px; }
+.an-layers label { display: flex; gap: 10px; align-items: flex-start; padding: 7px 8px; border-radius: 9px; cursor: pointer; }
+.an-layers label + label { margin-top: 2px; }
+.an-layers label:hover { background: var(--b50); }
+.an-layers label.on { background: #EEF4F0; box-shadow: inset 0 0 0 1.5px var(--b600); }
+.an-layers input { margin-top: 4px; accent-color: var(--b600); }
 .an-layers b { font-weight: 600; color: var(--b900); }
-.an-layers small { display: block; color: var(--muted); font-size: 12px; line-height: 1.35; margin-top: 1px; }
+.an-layers small { display: none; color: var(--muted); font-size: 12px; line-height: 1.35; margin-top: 2px; overflow-wrap: anywhere; }
+.an-layers label.on small { display: block; }
 .an-src { font-size: 10px; font-weight: 700; letter-spacing: .04em; text-transform: uppercase; background: var(--b100); color: var(--b700); border-radius: 4px; padding: 1px 5px; margin-left: 6px; white-space: nowrap; vertical-align: 2px; font-family: var(--sans); }
 .an-detail { background: var(--white); border: 1px solid var(--line); border-radius: 10px; padding: 10px 12px; min-height: 64px; margin-top: 10px; }
 .an-detail h3 { font-family: var(--serif); color: var(--b900); font-size: 15px; margin: 0; }
@@ -1030,8 +1041,6 @@ footer.urgent p { color: #FEE2E2; }
 .an-scale { background: rgba(255,255,255,.95); border: 1px solid var(--line); border-radius: 10px; padding: 8px 10px 6px; width: 250px; box-shadow: 0 1px 4px rgba(0,0,0,.12); font-family: var(--sans); }
 .an-scale b { display: block; font-size: 12px; color: var(--b900); margin-bottom: 5px; }
 @media (max-width: 599px) { .an-scale { width: 200px; padding: 6px 8px 4px; } .an-scale .an-ends { font-size: 10px; } }
-.an-layers small { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-@media (max-width: 599px) { .an-layers small { white-space: normal; } }
 .an-ramp { display: flex; height: 12px; border-radius: 4px; overflow: hidden; } .an-ramp i { flex: 1; }
 .an-ticks, .an-ends { display: flex; justify-content: space-between; font-size: 11px; color: var(--muted); margin-top: 4px; }
 .an-ticks.even span { flex: 1; text-align: center; }
@@ -1284,21 +1293,21 @@ footer.urgent p { color: #FEE2E2; }
       <button type="button" role="tab" id="tab-about" aria-selected="false" aria-controls="panel-about">About</button>    </nav>
     </div>
     <div id="hdr-talk" class="tq">
-      <div class="q" id="q-tsupport"><label for="t-support">Support for</label><select id="t-support"></select></div>
-      <div class="q" id="q-tarea"><label for="t-area">Coverage</label><select id="t-area"><option value="">Local and UK-wide</option><option value="local">Local only</option><option value="national">UK-wide only</option></select></div>
+      <div class="q" id="q-tsupport"><label for="t-support">1. Support for</label><select id="t-support"></select></div>
+      <div class="q" id="q-tarea"><label for="t-area">2. Coverage</label><select id="t-area"><option value="">Local and UK-wide</option><option value="local">Local only</option><option value="national">UK-wide only</option></select></div>
       <label class="toggle" id="q-open"><input type="checkbox" id="t-open"> Open now only</label>
     </div>
     <div id="hdr-course" class="tq" hidden>
-      <div class="q" id="q-csupport"><label for="c-support">Support for</label><select id="c-support"></select></div>
-      <div class="q" id="q-cfmt"><label for="c-fmt">Format</label><select id="c-fmt"><option value="">In person or online</option><option value="in-person">In person</option><option value="online">Online</option></select></div>
+      <div class="q" id="q-csupport"><label for="c-support">1. Support for</label><select id="c-support"></select></div>
+      <div class="q" id="q-cfmt"><label for="c-fmt">2. Format</label><select id="c-fmt"><option value="">In person or online</option><option value="in-person">In person</option><option value="online">Online</option></select></div>
       <label class="toggle" id="q-cbook"><input type="checkbox" id="c-book"> Can still join</label>
     </div>
     <div id="hdr-about" hidden></div>
     <div id="hdr-analytics" hidden>
     <div class="qs an-qs">
-      <div class="q" id="q-asupport"><label for="a-support">Support for</label><select id="a-support"><option value="">Anything</option></select></div>
-      <div class="q" id="q-aoften"><label for="a-often">How often</label><select id="a-often"><option value="">Any</option><option value="daily">Most days (5+ a week)</option><option value="weekly">At least weekly</option><option value="less">Fortnightly or monthly</option></select></div>
-      <div class="q" id="q-awithin"><label for="a-within">Neighbourhood</label><select id="a-within"><option>1 mi</option></select></div>
+      <div class="q" id="q-asupport"><label for="an-support">1. Support for</label><select id="an-support"><option value="">Anything</option></select></div>
+      <div class="q" id="q-aoften"><label for="an-often">2. How often</label><select id="an-often"><option value="">Any</option><option value="daily">Most days (5+ a week)</option><option value="weekly">At least weekly</option><option value="less">Fortnightly or monthly</option></select></div>
+      <div class="q" id="q-awithin"><label for="an-within">3. Neighbourhood</label><select id="an-within"><option>1 mi</option></select></div>
     </div>
     </div>
     <div id="hdr-assist" hidden>
@@ -1351,7 +1360,7 @@ footer.urgent p { color: #FEE2E2; }
 <section id="panel-about" role="tabpanel" aria-labelledby="tab-about" hidden style="flex:1;min-height:0;overflow-y:auto"><div class="talk gut" id="about"></div></section>
 <section id="panel-analytics" role="tabpanel" aria-labelledby="tab-analytics" hidden class="an">
   <aside class="an-side">
-    <div class="an-lab">Shade the map by</div><div class="an-layers" id="an-layers" role="radiogroup" aria-label="Shade the map by"></div>
+    <div class="an-pan" id="an-pan"><button type="button" class="an-phead" id="an-ptog" aria-expanded="true" aria-controls="an-layers"><span class="t">Shade the map by</span><span class="cur" id="an-pcur"></span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 15l6-6 6 6"/></svg></button><div class="an-layers" id="an-layers" role="radiogroup" aria-label="Shade the map by"></div></div>
     <div class="an-tabs" role="tablist" aria-label="Views"><button type="button" role="tab" data-t="ov" aria-selected="true">Overview</button><button type="button" role="tab" data-t="cmp" aria-selected="false">Compare LSOAs</button></div>
     <div class="an-ov" id="an-ov">
       <div class="an-axes"><label>Need <select id="an-ay"></select></label><span class="an-seg" id="an-ru" role="group" aria-label="Show">Show <button type="button" data-r="all" aria-pressed="true">All</button><button type="button" data-r="Urban" aria-pressed="false">Urban</button><button type="button" data-r="Rural" aria-pressed="false">Rural</button></span></div>
@@ -1394,7 +1403,7 @@ footer.urgent p { color: #FEE2E2; }
 
   <div class="a-alert" id="a-crisis" hidden>
     <h2>This sounds like it may need urgent support</h2>
-    <p>If someone is at risk right now, call 999. For urgent mental health help, call NHS 111 and choose option 2. They can also talk to Samaritans or Mindline any time.</p>
+    <p>If someone is at risk right now, call 999. For urgent mental health help, call NHS 111 and choose option 2. They can also call Samaritans on 116 123 any time.</p>
     <div class="a-lines"><a href="tel:999">999</a><a href="tel:111">NHS 111, option 2</a><a href="tel:116123">Samaritans 116 123</a></div>
   </div>
 
@@ -1992,7 +2001,7 @@ function renderAbout() {
     </section>
     </div></div>
     <p class="small">Service information belongs to the providers listed. Map data © <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap</a> contributors, © <a href="https://carto.com/attributions" target="_blank" rel="noopener">CARTO</a>.</p>
-    <p class="small" id="site-version">Version: test 2026-11-14 08:46${typeof window.assistRelayVersion === "function" ? window.assistRelayVersion() : ""}</p>
+    <p class="small" id="site-version">Version: test 2026-11-14 09:15${typeof window.assistRelayVersion === "function" ? window.assistRelayVersion() : ""}</p>
   </article>`;
 }
 /* ---------- Analytics tab: neighbourhoods (2021 LSOAs) shaded by local data, with the directory's services on top ----------
@@ -2003,9 +2012,9 @@ const AN_NEED = ["#FBF3E4", "#F3D9A9", "#E3AB6A", "#C9763A", "#9B4A24"];      //
 const AN_PROV = ["#EEF6F3", "#C6E4DA", "#8CC5B4", "#4E9C88", "#1F5F52"];      // directory layers: teal (darker = less provision)
 const AN_LAYERS = [
   { id: "dist", name: "Distance to nearest service", src: "This directory", prov: true, low: "Closer", high: "Further away",
-    help: "Straight line from where people live in each LSOA (postcode-weighted) to the nearest service shown." },
+    help: "Straight line from where people live (postcode-weighted) to the nearest service." },
   { id: "n1", name: "Services nearby", src: "This directory", prov: true, low: "More", high: "Fewer",
-    help: "How many services shown are within the neighbourhood distance of where people live in each LSOA." },
+    help: "Services within the neighbourhood distance of where people live." },
   { id: "imd", name: "Deprivation", src: "IMD 2025", deciles: true, low: "Less deprived", high: "More deprived",
     help: "Decile 1 = among the 10% most deprived LSOAs in England." },
   { id: "hdep", name: "Health deprivation", src: "IMD 2025", deciles: true, low: "Less deprived", high: "More deprived",
@@ -2029,7 +2038,7 @@ function aFreq(s) {
   return null;
 }
 function aOften(s, w) { if (!w) return true; const c = aFreq(s); return w === "weekly" ? c === "daily" || c === "weekly" : c === w; }
-const aShown = () => { const sup = $("a-support").value, w = $("a-often").value;
+const aShown = () => { const sup = $("an-support").value, w = $("an-often").value;
   return aLocated().filter(s => kindOf(s) >= 0 && !aOff.has(kindOf(s)) && (!sup || s._sf.includes(sup)) && aOften(s, w)); };
 
 // Units: Within holds the radius and the unit ("2 km")
@@ -2038,7 +2047,7 @@ function aSetWithin(v) {
   try { localStorage.setItem("anWithin", v); } catch (_) {}
 }
 const aDist = mi => aKm ? (mi * KM).toFixed(1) + " km" : mi.toFixed(1) + " mi";
-const aRadius = () => { const [n, u] = $("a-within").value.split(" "); return (n === "0.5" ? "½" : n) + (u === "km" ? " km" : +n > 1 ? " miles" : " mile"); };
+const aRadius = () => { const [n, u] = $("an-within").value.split(" "); return (n === "0.5" ? "½" : n) + (u === "km" ? " km" : +n > 1 ? " miles" : " mile"); };
 function aFmt(l, p) {
   const v = p[l.id];
   return l.id === "dist" ? aDist(v) : l.id === "n1" ? String(v) : l.deciles ? "Decile " + v : v + "%";
@@ -2070,6 +2079,8 @@ function anSetLayer(id) {
   else if (aCur.id === "dis") { const v = aGeo.features.map(f => f.properties.dis).sort((a, b) => a - b);
     aBreaks = [1, 2, 3, 4].map(i => Math.round(v[Math.floor(i * v.length / 5)])); }
   aAreas.setStyle(anStyle);
+  document.querySelectorAll("#an-layers label").forEach(l => l.classList.toggle("on", l.dataset.id === aCur.id));   // only the chosen one shows its description
+  const cur = $("an-pcur"); if (cur) cur.textContent = aCur.name;
   if (aScaleEl) aScaleEl.innerHTML = `<b>${esc(aCur.name)}</b>` + anLegend();
 }
 function anTip(f) {
@@ -2103,7 +2114,7 @@ function anMiles(a, b) { const r = Math.PI / 180, dLa = (b[0] - a[0]) * r, dLo =
   const h = Math.sin(dLa / 2) ** 2 + Math.cos(a[0] * r) * Math.cos(b[0] * r) * Math.sin(dLo / 2) ** 2; return 7917.6 * Math.asin(Math.sqrt(h)); }
 // Redraw after any filter change: pins, distances, counts, shading, key and figures all follow what's shown
 function anRefresh() {
-  $("q-asupport").classList.toggle("on", !!$("a-support").value); $("q-aoften").classList.toggle("on", !!$("a-often").value);
+  $("q-asupport").classList.toggle("on", !!$("an-support").value); $("q-aoften").classList.toggle("on", !!$("an-often").value);
   const shown = aShown(), now = new Date(), pts = shown.map(s => [s.lat, s.lon]);
   for (const f of aGeo.features) {
     const p = f.properties; let best = Infinity, n = 0;
@@ -2124,7 +2135,7 @@ function anRefresh() {
 // The same "What it is" key as In person, with its own on/off state
 function anMapKey(d) {
   aLegendEl = d;
-  const sup = $("a-support").value, w = $("a-often").value, base = aLocated().filter(s => (!sup || s._sf.includes(sup)) && aOften(s, w));
+  const sup = $("an-support").value, w = $("an-often").value, base = aLocated().filter(s => (!sup || s._sf.includes(sup)) && aOften(s, w));
   const n = KINDS.map((_, i) => base.filter(s => kindOf(s) === i).length), has = KINDS.map((_, i) => aLocated().some(s => kindOf(s) === i));
   d.classList.toggle("closed", !legendOpen);
   const chev = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 15l6-6 6 6"/></svg>`;
@@ -2266,17 +2277,22 @@ async function initAnalytics() {
   const scale = L.control({ position: "bottomright" });   // the colour scale for the selected layer
   scale.onAdd = () => { aScaleEl = L.DomUtil.create("div", "an-scale"); L.DomEvent.disableClickPropagation(aScaleEl); return aScaleEl; };
   scale.addTo(amap);
-  $("a-support").innerHTML = supportOptions(S);
+  $("an-support").innerHTML = supportOptions(S);
   let w = "1 mi"; try { w = localStorage.getItem("anWithin") || w; } catch (_) {}
-  $("a-within").innerHTML = AN_WITHIN.map(v => `<option${v === w ? " selected" : ""}>${v === "0.5 mi" ? "½ mi" : v}</option>`).join("");
-  [...$("a-within").options].forEach((o, i) => o.value = AN_WITHIN[i]);
-  if (!AN_WITHIN.includes(w)) w = "1 mi"; $("a-within").value = w; aSetWithin(w);
-  $("an-layers").innerHTML = AN_LAYERS.map((l, i) => `<label><input type="radio" name="an-layer" value="${l.id}"${i ? "" : " checked"}>` +
+  $("an-within").innerHTML = AN_WITHIN.map(v => `<option${v === w ? " selected" : ""}>${v === "0.5 mi" ? "½ mi" : v}</option>`).join("");
+  [...$("an-within").options].forEach((o, i) => o.value = AN_WITHIN[i]);
+  if (!AN_WITHIN.includes(w)) w = "1 mi"; $("an-within").value = w; aSetWithin(w);
+  $("an-layers").innerHTML = AN_LAYERS.map((l, i) => `<label data-id="${l.id}"${i ? "" : ' class="on"'}><input type="radio" name="an-layer" value="${l.id}"${i ? "" : " checked"}>` +
     `<span><b>${esc(l.name)}</b><span class="an-src${l.prov ? " prov" : ""}">${esc(l.src)}</span><small>${esc(l.help)}</small></span></label>`).join("");
-  $("a-support").onchange = anRefresh;
-  $("a-often").onchange = anRefresh;
-  $("a-within").onchange = e => { aSetWithin(e.target.value); anRefresh(); };
+  $("an-support").onchange = anRefresh;
+  $("an-often").onchange = anRefresh;
+  $("an-within").onchange = e => { aSetWithin(e.target.value); anRefresh(); };
   $("an-layers").onchange = e => anSetLayer(e.target.value);
+  // the "Shade the map by" panel folds to one line, like the map key; open on desktop, folded on phones unless the viewer chose otherwise
+  let po = innerWidth >= 600; try { const v = localStorage.getItem("anLayersOpen"); if (v) po = v === "1"; } catch (_) {}
+  const pset = o => { $("an-pan").classList.toggle("closed", !o); $("an-ptog").setAttribute("aria-expanded", o); };
+  pset(po); $("an-pcur").textContent = aCur.name;
+  $("an-ptog").onclick = () => { po = !po; pset(po); try { localStorage.setItem("anLayersOpen", po ? "1" : "0"); } catch (_) {} setTimeout(anChart, 0); };
   $("an-detail").onclick = e => {
     const b = e.target.closest("button"); if (!b) return;
     if (b.dataset.a === "cmp") { aCmp = true; aA = aSel; aB = null; aSel = null; }
@@ -2432,7 +2448,7 @@ setInterval(() => { if (!ALL.length) return; tab === "talk" ? renderTalk() : tab
    this page only remembers it for the current browser session. */
 (() => {
 const WORKER_URL = "https://signposting-assist.c-r-williams0109.workers.dev";
-const PAGE_VERSION = "test 2026-11-14 08:46";
+const PAGE_VERSION = "test 2026-11-14 09:15";
 let relayVersion = "";
 // The version line is at the bottom of the About tab: "Version: test 2026-11-06 11:30 · Assist relay 2026-11-06 11:07"
 window.assistRelayVersion = () => relayVersion ? ` · Assist relay ${relayVersion}` : "";
