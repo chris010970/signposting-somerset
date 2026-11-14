@@ -801,7 +801,11 @@ h1 { font-family: var(--serif); color: var(--b900); font-size: 26px; margin: 0; 
 .sitetabs .tgrp { display: inline-flex; align-items: flex-end; gap: 4px; position: relative; flex: none; }
 .sitetabs #tab-assist, .sitetabs #tab-about { margin-left: 6px; padding-left: 14px; position: relative; }
 .sitetabs #tab-assist::before, .sitetabs #tab-about::before { content: ""; position: absolute; left: 0; top: 10px; bottom: 12px; border-left: 1px solid var(--line); }
-.sitetabs #tab-about { font-weight: 600; }
+.sitetabs #tab-about, .sitetabs #tab-analytics { font-weight: 600; }
+.sitetabs #tab-analytics { margin-left: 6px; padding-left: 14px; position: relative; }
+.sitetabs #tab-analytics::before { content: ""; position: absolute; left: 0; top: 10px; bottom: 12px; border-left: 1px solid var(--line); }
+.sitetabs #tab-analytics + #tab-about { margin-left: 0; padding-left: 14px; }
+.sitetabs #tab-analytics + #tab-about::before { display: none; }
 /* On narrow phones the last tab may not fit: fade the edge so it's clear the row scrolls */
 .sitetabs.more { -webkit-mask-image: linear-gradient(to right, #000 calc(100% - 36px), transparent); mask-image: linear-gradient(to right, #000 calc(100% - 36px), transparent); }
 @media (max-width: 420px) { .sitetabs { gap: 0; } .sitetabs .tgrp { gap: 0; } .sitetabs button { padding-inline: 5px; font-size: 13px; } .sitetabs #tab-assist, .sitetabs #tab-about { margin-left: 1px; padding-left: 7px; } .sitetabs #tab-assist { gap: 4px; } .sitetabs .lg { display: none; } .sitetabs .sh { display: inline; } }
@@ -958,6 +962,42 @@ footer.urgent p { color: #FEE2E2; }
 .line { font-size: 12px; font-weight: 700; padding: 6px 12px; border-radius: 8px; background: #fff; color: var(--b900); text-decoration: none; white-space: nowrap; }
 .line.ghost { background: transparent; color: #fff; border: 1px solid rgba(255,255,255,.45); }
 @media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
+/* Analytics tab: same frame as In person (panel 42% left, map right, 1400px); map first on phones */
+.an:not([hidden]) { flex: 1; min-height: 0; display: grid; grid-template-columns: minmax(0, 42%) minmax(0, 1fr); max-width: 1400px; width: 100%; margin: 0 auto var(--footh, 50px); }
+.an-side { overflow-y: auto; padding: 14px 14px 90px; border-right: 1px solid var(--line); min-height: 0; }
+@media (min-width: 900px) { .an:not([hidden]) { max-width: 1432px; padding-inline: max(16px, env(safe-area-inset-left, 0px)); } .an-side { padding-left: 0; } }
+.an-lede { margin: 0 0 4px; color: var(--muted); font-size: 13px; }
+.an-mapwrap { position: relative; min-height: 360px; }
+#amap { position: absolute; inset: 0; background: #EEF1EE; }
+.an-loading { position: absolute; inset: 0; z-index: 600; display: grid; place-items: center; background: rgba(250,248,244,.85); color: var(--b700); font-weight: 600; text-align: center; padding: 20px; }
+.an-loading[hidden] { display: none; }
+.an-lab { font-size: 10px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: var(--b700); margin: 16px 2px 6px; }
+.an-side > .an-lab:first-child { margin-top: 0; }
+.an-layers label { display: flex; gap: 10px; align-items: flex-start; padding: 8px 12px; border: 1px solid var(--line); border-radius: 12px; background: var(--white); margin-bottom: 6px; cursor: pointer; }
+.an-layers label:hover { border-color: var(--b200); }
+.an-layers label:has(input:checked) { border-color: var(--b600); box-shadow: 0 0 0 1px var(--b600) inset; }
+.an-layers input { margin-top: 3px; accent-color: var(--b600); }
+.an-layers b { font-weight: 600; color: var(--b900); }
+.an-layers small { display: block; color: var(--muted); font-size: 12px; line-height: 1.35; margin-top: 1px; }
+.an-src { font-size: 10px; font-weight: 700; letter-spacing: .04em; text-transform: uppercase; background: var(--b100); color: var(--b700); border-radius: 4px; padding: 1px 5px; margin-left: 6px; white-space: nowrap; vertical-align: 2px; font-family: var(--sans); }
+.an-key, .an-detail { background: var(--white); border: 1px solid var(--line); border-radius: 10px; padding: 10px 12px; }
+.an-key h3, .an-detail h3 { font-family: var(--serif); color: var(--b900); font-size: 15px; margin: 0 0 4px; }
+.an-key p { margin: 0 0 8px; font-size: 13px; color: var(--muted); }
+.an-key .an-sum { margin: 10px 0 0; color: var(--ink); font-size: 13px; }
+.an-ramp { display: flex; height: 12px; border-radius: 4px; overflow: hidden; } .an-ramp i { flex: 1; }
+.an-ticks, .an-ends { display: flex; justify-content: space-between; font-size: 11px; color: var(--muted); margin-top: 4px; }
+.an-ends { color: var(--ink); margin-top: 2px; }
+.an-detail { min-height: 64px; }
+.an-detail dl { display: grid; grid-template-columns: 1fr auto; gap: 2px 10px; margin: 0; font-size: 13px; }
+.an-detail dt { color: var(--muted); } .an-detail dd { margin: 0; font-weight: 600; text-align: right; }
+.an-hint { color: var(--muted); font-size: 13px; }
+.an-note { font-size: 12px; color: var(--muted); margin: 16px 2px 0; }
+.an-tip { font-size: 12px; line-height: 1.45; } .an-tip b { font-family: var(--serif); color: var(--b900); font-size: 13px; }
+@media (max-width: 899px) {
+  .an:not([hidden]) { display: flex; flex-direction: column; overflow-y: auto; margin-bottom: 0; }
+  .an-mapwrap { order: -1; flex: none; height: 58vh; min-height: 300px; border-bottom: 1px solid var(--line); }
+  .an-side { border-right: 0; overflow: visible; padding: 14px 16px 90px; }
+}
 
 /* ---------- Assist tab (v2 only). Everything is scoped to #panel-assist or prefixed a- so it can't affect the rest of the site. ---------- */
 .sitetabs #tab-assist { display: inline-flex; align-items: center; gap: 6px; }
@@ -1194,6 +1234,7 @@ footer.urgent p { color: #FEE2E2; }
       <button type="button" role="tab" id="tab-course" aria-selected="false" aria-controls="panel-course">Courses</button></span>
       <button type="button" role="tab" id="tab-assist" aria-selected="false" aria-controls="panel-assist" title="Assist: for invited support workers (access code needed)"><svg class="lock" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M12 2a5 5 0 0 1 5 5v3h1a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2v-8a2 2 0 0 1 2-2h1V7a5 5 0 0 1 5-5zm0 2a3 3 0 0 0-3 3v3h6V7a3 3 0 0 0-3-3z"/></svg><span>Assist</span><span class="sr-lock" id="tab-assist-sr" style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)"> (access code needed)</span></button>
 
+      <button type="button" role="tab" id="tab-analytics" aria-selected="false" aria-controls="panel-analytics">Analytics</button>
       <button type="button" role="tab" id="tab-about" aria-selected="false" aria-controls="panel-about">About</button>    </nav>
     </div>
     <div id="hdr-talk" class="tq">
@@ -1207,6 +1248,10 @@ footer.urgent p { color: #FEE2E2; }
       <label class="toggle" id="q-cbook"><input type="checkbox" id="c-book"> Can still join</label>
     </div>
     <div id="hdr-about" hidden></div>
+    <div id="hdr-analytics" class="tq" hidden>
+      <div class="q" id="q-asupport"><label for="a-support">Support for</label><select id="a-support"><option value="">Anything</option></select></div>
+      <div class="q" id="q-aoften"><label for="a-often">How often</label><select id="a-often"><option value="">Any</option><option value="daily">Most days (5+ a week)</option><option value="weekly">At least weekly</option><option value="less">Fortnightly or monthly</option></select></div>
+    </div>
     <div id="hdr-assist" hidden>
     <div class="qs">
       <div class="q" id="aq-support"><label for="a-support">1. Support for</label><select id="a-support"></select></div>
@@ -1255,6 +1300,15 @@ footer.urgent p { color: #FEE2E2; }
 
 <section id="panel-talk" role="tabpanel" aria-labelledby="tab-talk"><div class="talk gut" id="talk"></div></section>
 <section id="panel-about" role="tabpanel" aria-labelledby="tab-about" hidden style="flex:1;min-height:0;overflow-y:auto"><div class="talk gut" id="about"></div></section>
+<section id="panel-analytics" role="tabpanel" aria-labelledby="tab-analytics" hidden class="an">
+  <aside class="an-side">
+    <div class="an-lab">Shade neighbourhoods by</div><div class="an-layers" id="an-layers" role="radiogroup" aria-label="Shade neighbourhoods by"></div>
+    <div class="an-lab">Key</div><div class="an-key" id="an-key"></div>
+    <div class="an-lab">Neighbourhood</div><div class="an-detail" id="an-detail"><span class="an-hint">Hover over or tap a neighbourhood to see its figures.</span></div>
+    <p class="an-note">Where the services in this directory are, alongside local deprivation, health and population: a talking point, not a needs assessment. Neighbourhoods are the 595 Lower Layer Super Output Areas (2021) in Somerset, North Somerset and B&amp;NES, about 1,500 people each, so rural ones cover large areas. Distances are straight lines from the middle of each neighbourhood to the nearest in-person service with a known location, worked out from the live directory. How often comes from each record's days and frequency; a blank frequency is read as weekly, so a monthly group recorded without one will count as weekly. Services with no set days, or "see website", count only under Any. The directory covers some places more fully than others, so a gap may be a gap in the directory. Sources: ONS boundaries and mid-2022 population; English Indices of Deprivation 2025; Census 2021. Open Government Licence.</p>
+  </aside>
+  <div class="an-mapwrap"><div id="amap" role="region" aria-label="Map of neighbourhoods and services"></div><div class="an-loading" id="an-loading">Loading neighbourhoods…</div></div>
+</section>
 <section id="panel-course" role="tabpanel" aria-labelledby="tab-course" hidden style="flex:1;min-height:0;overflow-y:auto"><div class="talk gut" id="courses"></div></section>
 <section id="panel-assist" role="tabpanel" aria-labelledby="tab-assist" hidden style="flex:1;min-height:0;overflow-y:auto"><div class="gut"><div class="a-wrap">
 
@@ -1884,18 +1938,184 @@ function renderAbout() {
     </section>
     </div></div>
     <p class="small">Service information belongs to the providers listed. Map data © <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap</a> contributors, © <a href="https://carto.com/attributions" target="_blank" rel="noopener">CARTO</a>.</p>
-    <p class="small" id="site-version">Version: test 2026-11-13 12:57${typeof window.assistRelayVersion === "function" ? window.assistRelayVersion() : ""}</p>
+    <p class="small" id="site-version">Version: test 2026-11-13 19:57${typeof window.assistRelayVersion === "function" ? window.assistRelayVersion() : ""}</p>
   </article>`;
 }
+/* ---------- Analytics tab: neighbourhoods (2021 LSOAs) shaded by local data, with the directory's services on top ----------
+   Same frame as In person: questions in the header, panel left, map right with the "What it is" key.
+   The boundary and statistics file loads only when the tab is first opened. Distances and nearby counts are worked out
+   here from the live records and follow the filters (Support for, and the key). */
+const AN_LAYERS = [
+  { id: "dist", name: "Distance to nearest service", src: "This directory", low: "Closer", high: "Further away", fmt: v => v.toFixed(1) + " mi",
+    help: "Straight line from the middle of each neighbourhood to the nearest in-person service shown on the map. Follows the filters.",
+    fixed: [0.5, 1, 2, 3], ticks: ["½ mi", "1 mi", "2 mi", "3 mi"] },
+  { id: "imd", name: "Deprivation", src: "IMD 2025", low: "Less deprived", high: "More deprived", fmt: v => "Decile " + v, deciles: true,
+    help: "English Indices of Deprivation 2025. Decile 1 = among the 10% most deprived neighbourhoods in England." },
+  { id: "hdep", name: "Health deprivation", src: "IMD 2025", low: "Less deprived", high: "More deprived", fmt: v => "Decile " + v, deciles: true,
+    help: "The health and disability part of the index: early death, illness, disability and mental health." },
+  { id: "dis", name: "Disabled people", src: "Census 2021", low: "Fewer", high: "More", fmt: v => v + "%",
+    help: "Share of residents disabled under the Equality Act." },
+  { id: "dens", name: "Population density", src: "ONS 2022", low: "Sparser", high: "Denser", fmt: v => v.toLocaleString("en-GB") + " /km²",
+    help: "People per square kilometre (mid-2022 population estimates)." },
+];
+const AN_RAMP = ["#FBF3E4", "#F3D9A9", "#E3AB6A", "#C9763A", "#9B4A24"];
+let amap = null, aGeo = null, aAreas = null, aPins = null, aLegendEl = null, aCur = AN_LAYERS[0], aBreaks = [], aSel = null;
+const aOff = new Set();
+const aLocated = () => S.filter(s => !s.approx && !isNaN(s.lat) && !isNaN(s.lon));
+// How often: from days + frequency. Blank frequency = weekly (as elsewhere on the site); no set days or "see website" can't be placed
+const AN_OFTEN = { daily: "running most days", weekly: "running at least weekly" };
+function aFreq(s) {
+  const f = (s.frequency || "").toLowerCase().trim();
+  if (!s._days.size || /see website/.test(f)) return null;
+  if (/fortnight|month/.test(f)) return "less";
+  if (!f || f === "weekly") return s._days.size >= 5 ? "daily" : "weekly";
+  return null;
+}
+function aOften(s, w) {
+  if (!w) return true;
+  const c = aFreq(s);
+  return w === "weekly" ? c === "daily" || c === "weekly" : c === w;
+}
+const aBase = (often = true) => { const sup = $("a-support").value, w = often ? $("a-often").value : "";
+  return aLocated().filter(s => kindOf(s) >= 0 && (!sup || s._sf.includes(sup)) && aOften(s, w)); };
+const aShown = (often = true) => aBase(often).filter(s => !aOff.has(kindOf(s)));
+
+function anClass(v) {
+  if (aCur.deciles) return 4 - Math.floor((v - 1) / 2);          // deciles 1–2 darkest … 9–10 lightest
+  let i = 0; while (i < aBreaks.length && v >= aBreaks[i]) i++; return i;
+}
+function anStyle(f) {
+  const on = aSel === f;
+  return { fillColor: AN_RAMP[anClass(f.properties[aCur.id])], fillOpacity: .72, color: on ? "#1B3126" : "#fff", weight: on ? 2.2 : .6, opacity: 1 };
+}
+function anKey() {
+  $("an-key").innerHTML = `<div class="an-ramp">${AN_RAMP.map(c => `<i style="background:${c}"></i>`).join("")}</div>` +
+    (aCur.deciles ? `<div class="an-ticks">${["9–10", "7–8", "5–6", "3–4", "1–2"].map(x => `<span>${x}</span>`).join("")}</div>`
+                  : `<div class="an-ticks"><span></span>${(aCur.ticks || aBreaks.map(b => aCur.fmt(b))).map(b => `<span>${esc(b)}</span>`).join("")}<span></span></div>`) +
+    `<div class="an-ends"><span>${esc(aCur.low)}</span><span>${esc(aCur.high)}</span></div>` +
+    (aCur.id === "dist" ? `<p class="an-sum" id="an-sum"></p>` : "");
+}
+function anSummary() {
+  const el = $("an-sum"); if (!el) return;
+  const F = aGeo.features, far = F.filter(f => f.properties.dist >= 2), none = F.filter(f => f.properties.n1 === 0);
+  const ppl = a => a.reduce((t, f) => t + f.properties.pop, 0).toLocaleString("en-GB");
+  const w = $("a-often").value, lost = AN_OFTEN[w] ? F.filter(f => f.properties.n1 === 0 && f.properties.n1any > 0) : [];
+  el.innerHTML = `With these filters, <b>${none.length}</b> of ${F.length} neighbourhoods (${ppl(none)} people) have no service within a mile, and <b>${far.length}</b> (${ppl(far)} people) are 2 miles or more from the nearest.` +
+    (AN_OFTEN[w] ? ` <b>${lost.length}</b> (${ppl(lost)} people) have a service within a mile, but none ${AN_OFTEN[w]}.` : "");
+}
+function anSetLayer(id) {
+  aCur = AN_LAYERS.find(l => l.id === id);
+  if (aCur.fixed) aBreaks = aCur.fixed;
+  else if (!aCur.deciles) { const v = aGeo.features.map(f => f.properties[aCur.id]).sort((a, b) => a - b);
+    aBreaks = [1, 2, 3, 4].map(i => v[Math.floor(i * v.length / 5)]); }
+  aAreas.setStyle(anStyle); anKey(); anSummary();
+  anDetail(aSel);
+}
+function anTip(f) {
+  const p = f.properties;
+  return `<div class="an-tip"><b>${esc(p.name)}</b><br>${esc(aCur.name)}: <strong>${esc(aCur.fmt(p[aCur.id]))}</strong><br>${p.n1} service${p.n1 === 1 ? "" : "s"} within 1 mile</div>`;
+}
+function anDetail(f) {
+  if (!f) { $("an-detail").innerHTML = `<span class="an-hint">Hover over or tap a neighbourhood to see its figures.</span>`; return; }
+  const p = f.properties;
+  $("an-detail").innerHTML = `<h3>${esc(p.name)}</h3><dl><dt>Council area</dt><dd>${esc(p.la)}</dd>` +
+    `<dt>People (2022)</dt><dd>${p.pop.toLocaleString("en-GB")}</dd><dt>Services within 1 mile</dt><dd>${p.n1}</dd>` +
+    AN_LAYERS.map(l => `<dt>${esc(l.name)}</dt><dd>${esc(l.fmt(p[l.id]))}</dd>`).join("") + `</dl>`;
+}
+function anMiles(a, b) { const r = Math.PI / 180, dLa = (b[0] - a[0]) * r, dLo = (b[1] - a[1]) * r;
+  const h = Math.sin(dLa / 2) ** 2 + Math.cos(a[0] * r) * Math.cos(b[0] * r) * Math.sin(dLo / 2) ** 2; return 7917.6 * Math.asin(Math.sqrt(h)); }
+// Redraw after any filter change: pins, distances, shading, key and figures all follow what's shown
+function anRefresh() {
+  const shown = aShown(), now = new Date(), pts = shown.map(s => [s.lat, s.lon]);
+  const anyPts = $("a-often").value ? aShown(false).map(s => [s.lat, s.lon]) : null;   // same filters at any frequency, for the comparison
+  for (const f of aGeo.features) {
+    const p = f.properties; let best = Infinity, n1 = 0;
+    for (const q of pts) { const d = anMiles(p.c, q); if (d < best) best = d; if (d <= 1) n1++; }
+    p.dist = pts.length ? Math.round(best * 100) / 100 : 99; p.n1 = n1;
+    p.n1any = anyPts ? anyPts.filter(q => anMiles(p.c, q) <= 1).length : n1;
+  }
+  $("q-asupport").classList.toggle("on", !!$("a-support").value); $("q-aoften").classList.toggle("on", !!$("a-often").value);
+  aPins.clearLayers();
+  for (const s of shown) {
+    const k = kindOf(s), addr = [s.address, s.town, s.postcode].filter(Boolean).join(", ");
+    L.circleMarker([s.lat, s.lon], { radius: innerWidth < 600 ? 3.5 : 4.5, color: "#fff", weight: 1.2, fillColor: KINDS[k][1], fillOpacity: 1 })
+      .bindTooltip(esc(s.name), { direction: "top", offset: [0, -4] })
+      .bindPopup(`<b>${esc(s.name)}</b><br>${esc(s.provider || "")}<br><span style="color:var(--muted)">${esc(nextText(s, now).txt)}</span>${addr ? "<br>" + esc(addr) : ""}${s.url ? `<br><a href="${esc(s.url)}" target="_blank" rel="noopener">Website</a>` : ""}`)
+      .addTo(aPins);
+  }
+  anSetLayer(aCur.id); if (aLegendEl) anLegend(aLegendEl);
+}
+// The same "What it is" key as In person, with its own on/off state
+function anLegend(d) {
+  aLegendEl = d;
+  const base = aBase();
+  const n = KINDS.map((_, i) => base.filter(s => kindOf(s) === i).length), has = KINDS.map((_, i) => aLocated().some(s => kindOf(s) === i));
+  d.classList.toggle("closed", !legendOpen);
+  const chev = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 15l6-6 6 6"/></svg>`;
+  const head = `<button type="button" class="lghead" data-k="toggle" aria-expanded="${legendOpen}" title="${legendOpen ? "Hide the key" : "Show the key"}">What it is ` +
+    (legendOpen ? `<span>tap to filter</span>` : `<span class="dots">${KINDS.map((k, i) => has[i] && !aOff.has(i) ? `<i style="background:${k[1]}"></i>` : "").join("")}</span>${aOff.size ? `<span>· filtered</span>` : ""}`) + chev + `</button>`;
+  d.innerHTML = head + (!legendOpen ? "" : KINDS.map((k, i) => !has[i] ? "" :
+    `<button type="button"${n[i] ? "" : ' class="zero"'} data-k="${i}" aria-pressed="${!aOff.has(i)}"><i style="--c:${k[1]}"></i><span class="lt">${esc(k[0])}<small>${esc(k[2].filter(t => S.some(x => x.type === t)).join(", "))}</small></span><em>${n[i]}</em></button>`).join("") +
+    (aOff.size ? `<button type="button" class="all" data-k="all">Show all</button>` : ""));
+}
+async function initAnalytics() {
+  if (amap) { setTimeout(() => amap.invalidateSize(), 30); return; }
+  if (typeof L === "undefined") { $("an-loading").textContent = "The map library couldn't load."; return; }
+  amap = L.map("amap", { zoomControl: false, zoomSnap: .25, zoomDelta: .5 });
+  L.control.zoom({ position: "topright" }).addTo(amap);
+  L.tileLayer("https://basemaps.cartocdn.com/rastertiles/light_all/{z}/{x}/{y}.png?key=cb1_4v7b_1_0f5ea1a12b0919dd5e3cbbb7", { maxZoom: 19,
+    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> &copy; <a href="https://carto.com/attributions">CARTO</a> · Data: ONS, MHCLG (OGL)' }).addTo(amap);
+  amap.setView([51.1, -2.9], 9);
+  try {
+    const r = await fetch("/assets/analytics-lsoa.geojson", { cache: "no-cache" });
+    if (!r.ok) throw new Error(r.status);
+    aGeo = await r.json();
+  } catch (e) { $("an-loading").textContent = "The neighbourhood data couldn't load. It works on the website itself."; return; }
+  for (let i = 0; !S.length && i < 100; i++) await new Promise(r => setTimeout(r, 300));   // wait for the sheet if it's still loading
+  aAreas = L.geoJSON(aGeo, { style: anStyle, onEachFeature: (f, l) => {
+    l.bindTooltip(() => anTip(f), { sticky: true, direction: "top", offset: [0, -8], opacity: .97 });
+    l.on("mouseover", () => { if (!aSel) anDetail(f); l.setStyle({ weight: 2, color: "#1B3126" }); l.bringToFront(); });
+    l.on("mouseout", () => { aAreas.resetStyle(l); if (!aSel) anDetail(null); });
+    l.on("click", () => { aSel = aSel === f ? null : f; aAreas.setStyle(anStyle); anDetail(aSel || f); });
+  } }).addTo(amap);
+  aPins = L.layerGroup().addTo(amap);   // added after the areas, so pins sit on top
+  const legend = L.control({ position: "topleft" });
+  legend.onAdd = () => {
+    const d = L.DomUtil.create("div", "maplegend");
+    L.DomEvent.disableClickPropagation(d); L.DomEvent.disableScrollPropagation(d);
+    d.addEventListener("click", e => {
+      const b = e.target.closest("button"); if (!b) return;
+      if (b.dataset.k === "toggle") { legendOpen = !legendOpen; try { localStorage.setItem("keyOpen", legendOpen ? "1" : "0"); } catch (_) {} setTimeout(() => anLegend(d), 0); return; }
+      if (b.dataset.k === "all") aOff.clear();
+      else { const k = +b.dataset.k; aOff.has(k) ? aOff.delete(k) : aOff.add(k); if (KINDS.every((_, i) => aOff.has(i) || !aLocated().some(s => kindOf(s) === i))) aOff.clear(); }
+      anRefresh();
+    });
+    anLegend(d); return d;
+  };
+  legend.addTo(amap);
+  $("a-support").innerHTML = supportOptions(S);
+  $("an-layers").innerHTML = AN_LAYERS.map((l, i) => `<label><input type="radio" name="an-layer" value="${l.id}"${i ? "" : " checked"}>` +
+    `<span><b>${esc(l.name)}</b><span class="an-src">${esc(l.src)}</span><small>${esc(l.help)}</small></span></label>`).join("");
+  $("a-support").onchange = anRefresh;
+  $("an-layers").onchange = e => anSetLayer(e.target.value);
+  $("a-often").onchange = anRefresh;
+  amap.fitBounds(aAreas.getBounds(), { padding: [8, 8] });
+  if (innerWidth < 600) amap.setZoom(amap.getZoom() + .5);   // phones: a little closer in to start
+  anRefresh();
+  $("an-loading").hidden = true;
+  setTimeout(() => amap.invalidateSize(), 30);
+}
+
 let tab = "talk";
-const SITE_TABS = ["talk", "near", "course", "about", "assist"];
+const SITE_TABS = ["talk", "near", "course", "analytics", "about", "assist"];
 const LEDE = { talk: "Phone lines, text services and online groups: support you can reach from anywhere.",
+  analytics: "The directory's services alongside local deprivation, health and population.",
   near: "In-person mental health and wellbeing support across Somerset, North Somerset and B&NES.", about: "What this is, how it's kept accurate, and how to suggest a change.", course: "Courses with a set programme and length, in person or online. Most need booking." };
 function setSiteTab(t) {
   tab = t;
   try { $("tab-" + t).scrollIntoView({ block: "nearest", inline: "nearest" }); } catch (e) {}
   for (const k of SITE_TABS) { $("tab-" + k).setAttribute("aria-selected", k === t); $("panel-" + k).hidden = k !== t; $("hdr-" + k).hidden = k !== t; }
-  if (t === "talk") renderTalk(); else if (t === "course") renderCourses(); else if (t === "about") renderAbout(); else if (t === "assist") { if (window.assistShow) window.assistShow(); } else { initMap(); setTimeout(() => { map && map.invalidateSize(); fitPending = true; render(); }, 30); }
+  if (t === "talk") renderTalk(); else if (t === "course") renderCourses(); else if (t === "about") renderAbout(); else if (t === "analytics") initAnalytics(); else if (t === "assist") { if (window.assistShow) window.assistShow(); } else { initMap(); setTimeout(() => { map && map.invalidateSize(); fitPending = true; render(); }, 30); }
   try { history.replaceState(null, "", "#" + t); } catch (e) {}
   try { localStorage.setItem("ss-tab", t); } catch (e) {}
 }
@@ -2027,7 +2247,7 @@ setInterval(() => { if (!ALL.length) return; tab === "talk" ? renderTalk() : tab
    this page only remembers it for the current browser session. */
 (() => {
 const WORKER_URL = "https://signposting-assist.c-r-williams0109.workers.dev";
-const PAGE_VERSION = "test 2026-11-13 12:57";
+const PAGE_VERSION = "test 2026-11-13 19:57";
 let relayVersion = "";
 // The version line is at the bottom of the About tab: "Version: test 2026-11-06 11:30 · Assist relay 2026-11-06 11:07"
 window.assistRelayVersion = () => relayVersion ? ` · Assist relay ${relayVersion}` : "";
