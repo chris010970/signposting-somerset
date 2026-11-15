@@ -1509,6 +1509,7 @@ function windowFor(v, now) {
   return null;
 }
 function render() {
+  setTimeout(syncLink, 0);   // keep the address bar in step with the filters
   if (LIVE_ONLY && !ALL.length) { panelMessage(liveMsg); return; }
   const now = new Date(), sup = fs.value, when = $("f-when").value, rad = +$("within").value;
   ["support", "where", "when"].forEach(k => $("q-" + k).classList.toggle("on", k === "support" ? !!sup : k === "where" ? !!origin : when !== "week"));
@@ -1779,6 +1780,7 @@ document.addEventListener("click", e => {
   const live = $("copy-live"); if (live) { live.textContent = ""; setTimeout(() => { live.textContent = `Copied details for ${s.name}`; }, 30); }
 });
 function renderTalk() {
+  setTimeout(syncLink, 0);   // keep the address bar in step with the filters
   if (LIVE_ONLY && !ALL.length) { panelMessage(liveMsg); return; }
   const now = new Date(), sup = $("t-support").value, onlyOpen = $("t-open").checked, area = $("t-area").value;
   $("q-tsupport").classList.toggle("on", !!sup); $("q-open").classList.toggle("on", onlyOpen); $("q-tarea").classList.toggle("on", !!area);
@@ -1818,6 +1820,7 @@ function courseInfo(s, now) {
   return { order: +new Date(first), when: span, status: `Running now: ${left} of ${ds.length} sessions left`, join: false };
 }
 function renderCourses() {
+  setTimeout(syncLink, 0);   // keep the address bar in step with the filters
   if (LIVE_ONLY && !ALL.length) { panelMessage(liveMsg); return; }
   const now = new Date(), sup = $("c-support").value, fmt = $("c-fmt").value, canJoin = $("c-book").checked;
   ["csupport", "cfmt"].forEach(k => $("q-" + k).classList.toggle("on", !!$(k === "csupport" ? "c-support" : "c-fmt").value)); $("q-cbook").classList.toggle("on", canJoin);
@@ -1883,7 +1886,7 @@ function renderAbout() {
     </section>
     </div></div>
     <p class="small">Service information belongs to the providers listed. Map data © <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap</a> contributors, © <a href="https://carto.com/attributions" target="_blank" rel="noopener">CARTO</a>.</p>
-    <p class="small" id="site-version">Version: test 2026-11-15 12:50${typeof window.assistRelayVersion === "function" ? window.assistRelayVersion() : ""}</p>
+    <p class="small" id="site-version">Version: test 2026-11-15 14:16${typeof window.assistRelayVersion === "function" ? window.assistRelayVersion() : ""}</p>
   </article>`;
 }
 let tab = "talk";
@@ -1895,7 +1898,7 @@ function setSiteTab(t) {
   try { $("tab-" + t).scrollIntoView({ block: "nearest", inline: "nearest" }); } catch (e) {}
   for (const k of SITE_TABS) { $("tab-" + k).setAttribute("aria-selected", k === t); $("panel-" + k).hidden = k !== t; $("hdr-" + k).hidden = k !== t; }
   if (t === "talk") renderTalk(); else if (t === "course") renderCourses(); else if (t === "about") renderAbout(); else if (t === "assist") { if (window.assistShow) window.assistShow(); } else { initMap(); setTimeout(() => { map && map.invalidateSize(); fitPending = true; render(); }, 30); }
-  try { history.replaceState(null, "", "#" + t); } catch (e) {}
+  syncLink();
   try { localStorage.setItem("ss-tab", t); } catch (e) {}
 }
 for (const k of SITE_TABS) $("tab-" + k).onclick = () => setSiteTab(k);
@@ -1942,8 +1945,51 @@ function setTab(t) { $("main").classList.toggle("show-map", t === "map"); $("t-l
   if (t === "map" && map) setTimeout(() => { map.invalidateSize(); fitPending = true; render(); }, 30); }
 $("t-list").onclick = () => setTab("list"); $("t-map").onclick = () => setTab("map");
 addEventListener("resize", () => map && map.invalidateSize());
+/* ---------- links that open the directory already filtered ----------
+   e.g. /directory/?support=bereavement&town=Frome#near · ?lat=51.21&lon=-3.6&label=near%20Porlock#near · ?support=anxiety#talk
+   support (any tab), town or lat + lon (+ label), within and when (In person). Unknown values are ignored, so a bad link still
+   opens the normal page. The address bar follows the filters, so any view can be copied as a link (never "Use my location"). */
+const LINK = (() => { try { return new URLSearchParams(location.search); } catch (e) { return new URLSearchParams(); } })();
+let userChanged = false;
+document.addEventListener("change", e => { if (e.isTrusted) userChanged = true; }, true);
+function pickOpt(sel, v) {
+  if (!sel || v == null || String(v).trim() === "") return false;
+  const o = [...sel.options].find(o => !o.hidden && o.value.toLowerCase() === String(v).trim().toLowerCase());
+  if (o) sel.value = o.value;
+  return !!o;
+}
+function applyLink() {   // after the records are ready, and again when the live sheet arrives, until the person changes something
+  if (userChanged || ![...LINK.keys()].length) return;
+  const sup = LINK.get("support");
+  pickOpt(fs, sup); pickOpt($("t-support"), sup); pickOpt($("c-support"), sup);
+  const lat = parseFloat(LINK.get("lat")), lon = parseFloat(LINK.get("lon"));
+  if (pickOpt($("f-town"), LINK.get("town")) && PLACE[$("f-town").value]) {
+    const n = $("f-town").value; origin = { lat: PLACE[n][0], lon: PLACE[n][1], label: n }; sortBy = "near";
+  } else if (lat > 50.5 && lat < 51.7 && lon > -4.2 && lon < -1.9) {   // a point in or near the area
+    const label = (LINK.get("label") || "").replace(/[<>"]/g, "").trim().slice(0, 60) || "the point on the map";
+    origin = { lat, lon, label, link: true }; setPtLabel(cap(label)); $("f-town").value = "__pt"; sortBy = "near";
+  }
+  pickOpt($("within"), LINK.get("within")); pickOpt($("f-when"), LINK.get("when"));
+  fitPending = true;
+}
+function linkFor(t) {   // the current filters, as the part of the address after "?"
+  const q = new URLSearchParams();
+  if (t === "near") {
+    if (fs.value) q.set("support", fs.value);
+    const n = $("f-town").value;
+    if (PLACE[n]) q.set("town", n);
+    else if (n === "__pt" && origin && origin.link) { q.set("lat", origin.lat.toFixed(4)); q.set("lon", origin.lon.toFixed(4)); q.set("label", origin.label); }
+    if (origin && $("within").value !== "10") q.set("within", $("within").value);
+    if ($("f-when").value !== "week") q.set("when", $("f-when").value);
+  } else if (t === "talk" && $("t-support").value) q.set("support", $("t-support").value);
+  else if (t === "course" && $("c-support").value) q.set("support", $("c-support").value);
+  return q.toString();
+}
+function syncLink() { try { const q = linkFor(tab); history.replaceState(null, "", location.pathname + (q ? "?" + q : "") + "#" + tab); } catch (e) {} }
+
 // Opens on Assist when it's unlocked in this browser, otherwise on In person. A link with #near, #talk, #course, #about or #assist wins.
 (function () {
+  applyLink();
   const fromHash = SITE_TABS.includes(location.hash.slice(1)) ? location.hash.slice(1) : "";
   let unlocked = false; try { unlocked = !!sessionStorage.getItem("assist-code"); } catch (e) {}
   setSiteTab(fromHash || (unlocked && SITE_TABS.includes("assist") ? "assist" : "near"));
@@ -1993,6 +2039,7 @@ function applyRecords(recs) {  // (also refreshes the About counts)
     if (keepTown === "__pt") setPtLabel(keepOrigin.label === "your location" ? "Your location" : "Point on map");
     $("f-town").value = keepTown; origin = keepOrigin;
   } else { $("f-town").value = ""; origin = null; sortBy = "soon"; }
+  applyLink();
   setSiteTab(tab);
 }
 function showSource(txt) { const el = $("datasrc"); el.textContent = txt; el.hidden = !txt; }
@@ -2026,7 +2073,7 @@ setInterval(() => { if (!ALL.length) return; tab === "talk" ? renderTalk() : tab
    this page only remembers it for the current browser session. */
 (() => {
 const WORKER_URL = "https://signposting-assist.c-r-williams0109.workers.dev";
-const PAGE_VERSION = "test 2026-11-15 12:50";
+const PAGE_VERSION = "test 2026-11-15 14:16";
 let relayVersion = "";
 // The version line is at the bottom of the About tab: "Version: test 2026-11-06 11:30 · Assist relay 2026-11-06 11:07"
 window.assistRelayVersion = () => relayVersion ? ` · Assist relay ${relayVersion}` : "";
