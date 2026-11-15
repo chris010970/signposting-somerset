@@ -2,7 +2,7 @@
 
 Run build.py first (it makes github/index.html), then: python build_v2.py
 (or run build_all.py, which does both).
-Writes github/main/index.html (the live site) and github/test/index.html (the test copy).
+Writes github/directory/index.html (the live site, published at /directory/) and github/test/index.html (the test copy).
 Plans always link to the live site.
 """
 import pathlib, re
@@ -37,7 +37,7 @@ import datetime, zoneinfo
 STAMP = datetime.datetime.now(zoneinfo.ZoneInfo("Europe/London")).strftime("%Y-%m-%d %H:%M")
 js_built = page
 import sys
-TARGETS = (("main", "Signposting Somerset"), ("test", "Signposting Somerset (test)"))
+TARGETS = (("directory", "Signposting Somerset"), ("test", "Signposting Somerset (test)"))
 if "test" in sys.argv[1:]: TARGETS = TARGETS[1:]   # python build_v2.py test : only the test copy
 for name, title in TARGETS:
     out_page = js_built.replace("/*SITE_URL*/", LIVE).replace("/*SITE_VERSION*/", f"{name} {STAMP}")
@@ -45,7 +45,7 @@ for name, title in TARGETS:
     # keep the test copy out of search engines
     out_page = out_page.replace("<!--ROBOTS-->", '<meta name="robots" content="noindex, nofollow">' if name == "test" else "", 1)
     if name == "test":   # noindex page: no canonical, so the signals don't conflict
-        out_page = out_page.replace('<link rel="canonical" href="https://signpostingsomerset.org.uk/main/">\n', "", 1)
+        out_page = out_page.replace('<link rel="canonical" href="https://signpostingsomerset.org.uk/directory/">\n', "", 1)
     out = HERE / "github" / name
     out.mkdir(parents=True, exist_ok=True)
     (out / "index.html").write_text(out_page, encoding="utf-8")

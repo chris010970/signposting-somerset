@@ -6,7 +6,7 @@ Writes index.html (for publishing) and signposting-somerset.html (standalone fil
 import csv, json, re, sys, pathlib
 
 HERE = pathlib.Path(__file__).parent
-SRC = sys.argv[1] if len(sys.argv) > 1 else str(HERE.parent / "services-update" / "services.csv")
+SRC = sys.argv[1] if len(sys.argv) > 1 else str(HERE.parents[1] / "services-update" / "services.csv")
 LEAFLET_CSS = HERE / "leaflet.css"
 
 # Town-centre coordinates (fallback pin when a record has no lat/lon). Taken from the previous build.

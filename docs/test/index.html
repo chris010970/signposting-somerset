@@ -10,7 +10,7 @@
 <meta property="og:site_name" content="Signposting Somerset">
 <meta property="og:title" content="Signposting Somerset">
 <meta property="og:description" content="Discover mental health and wellbeing support across Somerset, North Somerset and B&amp;NES: what's on, when and where. Built for anyone looking for help, activities or community connections.">
-<meta property="og:url" content="https://signpostingsomerset.org.uk/main/">
+<meta property="og:url" content="https://signpostingsomerset.org.uk/directory/">
 <meta property="og:image" content="https://signpostingsomerset.org.uk/assets/share.png">
 <meta property="og:image:width" content="1200"><meta property="og:image:height" content="630">
 <meta property="og:image:alt" content="Signposting Somerset">
@@ -1883,7 +1883,7 @@ function renderAbout() {
     </section>
     </div></div>
     <p class="small">Service information belongs to the providers listed. Map data © <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap</a> contributors, © <a href="https://carto.com/attributions" target="_blank" rel="noopener">CARTO</a>.</p>
-    <p class="small" id="site-version">Version: test 2026-11-15 12:36${typeof window.assistRelayVersion === "function" ? window.assistRelayVersion() : ""}</p>
+    <p class="small" id="site-version">Version: test 2026-11-15 12:50${typeof window.assistRelayVersion === "function" ? window.assistRelayVersion() : ""}</p>
   </article>`;
 }
 let tab = "talk";
@@ -2026,7 +2026,7 @@ setInterval(() => { if (!ALL.length) return; tab === "talk" ? renderTalk() : tab
    this page only remembers it for the current browser session. */
 (() => {
 const WORKER_URL = "https://signposting-assist.c-r-williams0109.workers.dev";
-const PAGE_VERSION = "test 2026-11-15 12:36";
+const PAGE_VERSION = "test 2026-11-15 12:50";
 let relayVersion = "";
 // The version line is at the bottom of the About tab: "Version: test 2026-11-06 11:30 · Assist relay 2026-11-06 11:07"
 window.assistRelayVersion = () => relayVersion ? ` · Assist relay ${relayVersion}` : "";
