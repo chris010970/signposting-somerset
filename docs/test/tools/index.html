@@ -1419,7 +1419,13 @@ function recordsFromCSV(text) {
   }
   return { recs };
 }
-// The latest records from the published sheet (rejects if it can't be reached or looks wrong)
+// The records this browser last loaded, kept for the visit (this tab's session only), so coming back to the directory
+// from the town pages, or opening the tools page, shows them at once while the sheet is checked again in the background
+const RECORDS_KEY = "ss-records";
+function cachedRecords() { try { const v = JSON.parse(sessionStorage.getItem(RECORDS_KEY) || "null"); return v && Array.isArray(v.recs) && v.recs.length ? v.recs : null; } catch (e) { return null; } }
+function keepRecords(recs) { try { sessionStorage.setItem(RECORDS_KEY, JSON.stringify({ at: Date.now(), recs })); } catch (e) {} }
+const sameRecords = (a, b) => !!a && !!b && JSON.stringify(a) === JSON.stringify(b);
+// The latest records from the published sheet (rejects if it can't be reached or looks wrong); remembered for the visit
 function fetchRecords() {
   const ctl = new AbortController(); setTimeout(() => ctl.abort(), 15000);
   return fetch(SHEET_CSV_URL, { cache: "no-store", signal: ctl.signal })
@@ -1427,6 +1433,7 @@ function fetchRecords() {
     .then(text => {
       const { recs, error } = recordsFromCSV(text);
       if (error || recs.length < 10) throw new Error(error || "too few records");
+      keepRecords(recs);
       return recs;
     });
 }
@@ -1460,7 +1467,7 @@ function renderAbout() {
     <p>Community insights: local support set against need (deprivation, disability, distance to the nearest service). Desktop only.</p>
     </section>
     </div></div>
-    <p class="small" id="site-version">Version: test 2026-11-15 21:36${typeof window.assistRelayVersion === "function" ? window.assistRelayVersion() : ""}</p>
+    <p class="small" id="site-version">Version: test 2026-11-15 22:08${typeof window.assistRelayVersion === "function" ? window.assistRelayVersion() : ""}</p>
   </article>`;
 }
 
@@ -1470,7 +1477,11 @@ function useRecords(recs) {
   const sel = $("a-support"), v = sel.value;
   sel.innerHTML = supportOptions(ALL); sel.value = v;
 }
-if (SHEET_CSV_URL) fetchRecords().then(useRecords).catch(e => console.error("Sheet load error", e));
+if (SHEET_CSV_URL) {
+  const kept = cachedRecords();   // loaded earlier in this visit (e.g. in the directory): use at once
+  if (kept) useRecords(kept);
+  fetchRecords().then(recs => { if (!sameRecords(recs, kept)) useRecords(recs); }).catch(e => console.error("Sheet load error", e));
+}
 </script>
 <script>
 /* ---------- Assist (the tools page) ----------
@@ -1478,7 +1489,7 @@ if (SHEET_CSV_URL) fetchRecords().then(useRecords).catch(e => console.error("She
    this page only remembers it for the current browser session. */
 (() => {
 const WORKER_URL = "https://signposting-assist.c-r-williams0109.workers.dev";
-const PAGE_VERSION = "test 2026-11-15 21:36";
+const PAGE_VERSION = "test 2026-11-15 22:08";
 let relayVersion = "";
 // The version line is at the bottom of the About tab: "Version: test 2026-11-06 11:30 · Assist relay 2026-11-06 11:07"
 window.assistRelayVersion = () => relayVersion ? ` · Assist relay ${relayVersion}` : "";

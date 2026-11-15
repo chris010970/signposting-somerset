@@ -1639,7 +1639,7 @@ function renderAbout() {
     </section>
     </div></div>
     <p class="small">Service information belongs to the providers listed. Map data © <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap</a> contributors, © <a href="https://carto.com/attributions" target="_blank" rel="noopener">CARTO</a>.</p>
-    <p class="small" id="site-version">Version: test 2026-11-15 21:36</p>
+    <p class="small" id="site-version">Version: test 2026-11-15 22:08</p>
   </article>`;
 }
 let tab = "talk";
@@ -1785,7 +1785,13 @@ function recordsFromCSV(text) {
   }
   return { recs };
 }
-// The latest records from the published sheet (rejects if it can't be reached or looks wrong)
+// The records this browser last loaded, kept for the visit (this tab's session only), so coming back to the directory
+// from the town pages, or opening the tools page, shows them at once while the sheet is checked again in the background
+const RECORDS_KEY = "ss-records";
+function cachedRecords() { try { const v = JSON.parse(sessionStorage.getItem(RECORDS_KEY) || "null"); return v && Array.isArray(v.recs) && v.recs.length ? v.recs : null; } catch (e) { return null; } }
+function keepRecords(recs) { try { sessionStorage.setItem(RECORDS_KEY, JSON.stringify({ at: Date.now(), recs })); } catch (e) {} }
+const sameRecords = (a, b) => !!a && !!b && JSON.stringify(a) === JSON.stringify(b);
+// The latest records from the published sheet (rejects if it can't be reached or looks wrong); remembered for the visit
 function fetchRecords() {
   const ctl = new AbortController(); setTimeout(() => ctl.abort(), 15000);
   return fetch(SHEET_CSV_URL, { cache: "no-store", signal: ctl.signal })
@@ -1793,6 +1799,7 @@ function fetchRecords() {
     .then(text => {
       const { recs, error } = recordsFromCSV(text);
       if (error || recs.length < 10) throw new Error(error || "too few records");
+      keepRecords(recs);
       return recs;
     });
 }
@@ -1810,15 +1817,20 @@ function applyRecords(recs) {  // (also refreshes the About counts)
 function showSource(txt) { const el = $("datasrc"); el.textContent = txt; el.hidden = !txt; }
 function panelMessage(html) { for (const id of ["talk", "courses", "list"]) $(id).innerHTML = `<div class="empty">${html}</div>`; $("summary").textContent = ""; }
 if (SHEET_CSV_URL) {
-  if (LIVE_ONLY) { showSource(""); panelMessage(liveMsg); } else showSource("Loading the latest records…");
+  // Records already loaded earlier in this visit show straight away; the sheet is still checked, and only a change redraws the page
+  const kept = cachedRecords();
+  if (kept) { try { applyRecords(kept); } catch (e) { console.error("Display error (kept records)", e); } }
+  else if (LIVE_ONLY) { showSource(""); panelMessage(liveMsg); } else showSource("Loading the latest records…");
   fetchRecords()
     .then(recs => {
+      if (sameRecords(recs, kept)) return showSource("");
       try { applyRecords(recs); }
       catch (e) { console.error("Display error", e); showSource(`${recs.length} services loaded, but something went wrong showing them (${e && e.message}). Please send this message to the maintainer.`); return; }
       showSource("");   // success needs no message; problems are still reported here
     })
     .catch(e => {
       console.error("Sheet load error", e);
+      if (kept) return;   // still showing the records from earlier in this visit
       if (LIVE_ONLY) {
         showSource("");
         panelMessage(liveMsg = `<strong>Services can't be loaded right now.</strong><br>Please <a href="" onclick="location.reload();return false">try again</a> in a moment. If you need to talk to someone now, call Samaritans on <a href="tel:116123">116 123</a>.<br><small style="color:#78716C">Technical detail: ${esc(String(e && e.message || e))}</small>`);

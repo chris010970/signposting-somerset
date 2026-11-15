@@ -38,4 +38,8 @@ function useRecords(recs) {
   const sel = $("a-support"), v = sel.value;
   sel.innerHTML = supportOptions(ALL); sel.value = v;
 }
-if (SHEET_CSV_URL) fetchRecords().then(useRecords).catch(e => console.error("Sheet load error", e));
+if (SHEET_CSV_URL) {
+  const kept = cachedRecords();   // loaded earlier in this visit (e.g. in the directory): use at once
+  if (kept) useRecords(kept);
+  fetchRecords().then(recs => { if (!sameRecords(recs, kept)) useRecords(recs); }).catch(e => console.error("Sheet load error", e));
+}
