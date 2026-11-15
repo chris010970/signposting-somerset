@@ -23,7 +23,7 @@ Last updated: 15 November 2026.
 | Build sources | repo `build/`, one folder per part of the site (see section 7) |
 | Worker | Cloudflare: Workers & Pages → `signposting-assist`. Copy of the code in `src/cloudflare-worker.js` and `build/directory/assist/` |
 | Secrets | **Only in Cloudflare** (Settings → Variables and Secrets): `ANTHROPIC_API_KEY`, access code. Never in the repo, never in a chat |
-| Tools | `src/run_scenarios.py`, `src/check_sources.py`, `src/geocode.py`, `src/services-sheet-tools.gs` |
+| Tools | `src/`: `run_scenarios.py` and the `scenarios-*.json` files, `check_sources.py`, `church_events.py`, `geocode.py`, `services-sheet-tools.gs` (not part of the site build) |
 | Search | Google Search Console (property for signpostingsomerset.org.uk; sitemap submitted) |
 
 ## 3. The data: 25 columns
@@ -99,7 +99,6 @@ These are decisions, not accidents. Keep to them unless deliberately changed (an
 | `build/analytics/` | Analytics: `DESIGN.md` (decisions so far), the v24 code, `make_analytics_data.py` (rebuilds `docs/assets/analytics-lsoa.geojson`) |
 | `build/browse/` | Browse pages (planned) |
 | `build/shared/` | Pieces used by more than one part (planned) |
-| `build/tools/` | `run_scenarios.py`, scenario files, `check_sources.py`, `church_events.py` |
 
 ```
 cd build
@@ -119,10 +118,12 @@ python directory/build_assist.py                   # rebuilds the worker: direct
 ## 8. Testing Assist
 
 ```
+cd src
 set ASSIST_CODE=your-code             (Windows; never write the code into a file)
 python run_scenarios.py --list
 python run_scenarios.py --ids S25,S26
 python run_scenarios.py --scenarios scenarios-banes.json --all
+python run_scenarios.py --scenarios scenarios-helpline.json --all   # local 24/7 line only where the area has one
 ```
 
 - Up to 28 plans run without waiting; more wait ~2 minutes each (rate limit 30/hour).

@@ -6,7 +6,7 @@ build/ holds one folder per part of the site:
   analytics/  the Analytics page (coming; make_analytics_data.py rebuilds docs/assets/analytics-lsoa.geojson)
   browse/     the Browse pages (coming)
   shared/     pieces used by more than one part (coming)
-  tools/      checks and Assist test scenarios
+(Data and Assist tools, such as run_scenarios.py, live in src/, not here.)
 
 Today this builds the directory: directory/build.py, then directory/build_v2.py (adds Assist),
 writing directory/github/directory/index.html (live, published to docs/directory/) and
