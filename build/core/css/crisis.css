@@ -1,0 +1,4 @@
+.crisis { background: #0F172A; color: #E7E5E4; padding-block: 7px; display: flex; align-items: center; justify-content: space-between; gap: 10px; font-size: 13px; }
+.crisis b { color: var(--amber); text-transform: uppercase; letter-spacing: .08em; font-size: 11px; margin-right: 8px; }
+.crisis a { color: #fff; }
+.exit { background: #1E293B; color: #fff; border: 1px solid #334155; border-radius: 6px; padding: 5px 10px; font-size: 12px; font-weight: 600; text-decoration: none; white-space: nowrap; }

@@ -48,7 +48,9 @@ missing = sorted({r["town"] for r in rows if r["town"] and r["town"] not in TOWN
 if missing:
     print("WARNING: towns with no town-centre entry (won't pin without lat/lon):", ", ".join(missing))
 
-tpl = (HERE / "template.html").read_text(encoding="utf-8")
+sys.path.insert(0, str(HERE.parent / "shared"))
+from core import inline_core
+tpl = inline_core((HERE / "template.html").read_text(encoding="utf-8"))   # shared code from build/core/
 import base64
 BANNER = "data:image/webp;base64," + base64.b64encode((HERE / "banner-wide.webp").read_bytes()).decode()
 tpl = tpl.replace("/*BANNER*/", BANNER)

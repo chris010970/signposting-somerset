@@ -1,0 +1,15 @@
+/* Layout: crisis bar, header with three questions, then list (left) and map (right); stacks with a List/Map toggle on phones. Single light theme to match the map tiles. */
+:root {
+  color-scheme: light;
+  --cream: #F9F9F7; --white: #FFFFFF; --ink: #1E293B; --muted: #57534E; --line: #E7E5E4;
+  --b50: #F2F6F4; --b100: #E1EBE5; --b200: #C2D6CA; --b500: #528368; --b600: #3D6C53; --b700: #2F5441; --b800: #234031; --b900: #1B3126;
+  --amber: #FBBF24; --urgent: #DC2626; --origin: #C2410C;
+  --sans: "Inter", "Segoe UI", system-ui, sans-serif; --serif: "Literata", Georgia, serif;
+}
+* { box-sizing: border-box; }
+[hidden] { display: none !important; }
+html, body { height: 100%; }
+body { margin: 0; background: var(--cream); color: var(--ink); font-family: var(--sans); font-size: 14px; display: flex; flex-direction: column; }
+.gut { padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
+button, select { font: inherit; }
+:focus-visible { outline: 2px solid var(--b500); outline-offset: 2px; }

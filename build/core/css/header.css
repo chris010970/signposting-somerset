@@ -1,0 +1,27 @@
+/* Header: slim, so the lists and plans get the room. A watercolour strip on the right (computers); text only on phones */
+:root { --strip: url("/assets/banner.webp"); }
+.hero { position: relative; display: flex; flex-direction: column; justify-content: center; margin-bottom: 2px; }
+@media (min-width: 761px) { .hero { padding-block: 8px 6px; } }
+.hero > :not(.illus) { position: relative; z-index: 1; max-width: min(48%, 680px); }
+.hero h1 { font-size: 24px; line-height: 1.1; display: flex; align-items: center; gap: 9px; }
+.hero h1 .logo { height: 34px; width: auto; flex: none; margin: -2px 0 -1px; }
+.hero .lede { font-size: 13.5px; color: #78716C; margin: 3px 0 2px; max-width: 60ch; }
+/* The tagline stays on one line: a shorter version on narrow screens */
+.hero .lede { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: none; }
+.hero .lede .sh { display: none; }
+@media (max-width: 560px) { .hero .lede .lg { display: none; } .hero .lede .sh { display: inline; } .hero .lede { font-size: clamp(12px, 3.6vw, 13.5px); } }
+.masthead { position: relative; }
+.masthead > :not(.illus) { position: relative; z-index: 1; }
+.masthead .illus { position: absolute; z-index: 0; top: -10px; bottom: -1px; left: calc(50% - 50vw); right: calc(50% - 50vw); background: var(--strip) right bottom / auto 100% no-repeat; }
+/* On wide screens, keep the strip to the same width as the content below, fading softly at its right edge */
+@media (min-width: 1432px) {
+  .masthead .illus { left: 0; right: 0;
+    -webkit-mask-image: linear-gradient(to left, transparent 0, #000 24px); mask-image: linear-gradient(to left, transparent 0, #000 24px); }
+}
+.masthead .sitetabs { margin-bottom: 0; }
+.masthead ~ [id^="hdr-"] { margin-top: 14px; }
+@media (max-width: 760px) {
+  .hero > :not(.illus) { max-width: none; }
+  .hero .lede { font-size: 13.5px; margin-bottom: 6px; }
+  .masthead .illus { display: none; }
+}

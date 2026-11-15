@@ -14,6 +14,7 @@ on that. Everything else is as of the build date shown on each page.
 import csv, datetime, html, io, json, math, pathlib, re, sys, urllib.request, zoneinfo
 sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent.parent / "shared"))
 from site_config import rebase
+from core import inline_core
 
 HERE = pathlib.Path(__file__).parent
 BUILD = HERE.parent
@@ -44,7 +45,7 @@ TODAY = NOW.date().isoformat()
 UPDATED = f"{NOW.day} {NOW:%B %Y}"
 
 # Shared look: the directory's own stylesheet, taken from its template at build time, so the two never drift apart.
-tpl = (BUILD / "directory" / "template.html").read_text(encoding="utf-8")
+tpl = inline_core((BUILD / "directory" / "template.html").read_text(encoding="utf-8"))   # with the shared code from build/core/
 SITE_CSS = re.search(r"<style>\n(.*?)</style>", tpl, re.S).group(1)
 
 e = lambda s: html.escape(str(s), quote=True)
