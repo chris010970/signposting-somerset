@@ -88,7 +88,8 @@ def services_for(town):
     return out
 
 # ---------- pieces ----------
-ACCESS = {"drop in": "Drop in", "sign up": "Sign up first", "book": "Book first", "call": "Call first", "referral": "Referral"}
+# The directory's wording and badge colours
+ACCESS = {"drop in": ("b-drop", "Just turn up"), "sign up": ("b-sign", "Contact to join"), "book": ("b-book", "Book first"), "call": ("b-ref", "Call first"), "referral": ("b-ref", "Needs a referral")}
 
 def pattern(r):
     if r.get("days") == "Mon-Sun" and r.get("times") == "00:00-23:59":
@@ -106,7 +107,6 @@ def row(d, r, town):
     who = r.get("who", "")
     bits = [f'<span class="bwhere">{e(r.get("town") or "")}</span>' if not local else "", f"<span>{e(dist)}</span>",
             f'<span class="bwhen" data-days="{e(r.get("days",""))}" data-times="{e(r.get("times",""))}" data-freq="{e(r.get("frequency",""))}" data-mode="{e(r.get("mode",""))}">{e(pattern(r))}</span>']
-    if acc: bits.append(f'<b class="bacc">{e(acc)}</b>')
     meta = " · ".join(b for b in bits if b)
     contact = []
     if r.get("url"): contact.append(f'<a href="{e(r["url"])}" rel="noopener">Website</a>')
@@ -120,7 +120,8 @@ def row(d, r, town):
     if r.get("eligibility"): extra.append(r["eligibility"])
     if r.get("cost"): extra.append(r["cost"])
     name = f'<a href="{e(r["url"])}" rel="noopener">{e(r["name"])}</a>' if r.get("url") else e(r["name"])
-    return (f'<li class="br"><h4 class="bn">{name}</h4><div class="bmeta">{meta}</div><p>{e(r.get("description",""))}</p>'
+    chip = f'<span class="badge {acc[0]}">{e(acc[1])}</span>' if acc else ""
+    return (f'<li class="br"><div class="brow"><h4 class="bn">{name}</h4>{chip}</div><div class="bmeta">{meta}</div><p>{e(r.get("description",""))}</p>'
             + (f'<p class="bextra">{e(" · ".join(extra))}</p>' if extra else "")
             + (f'<p class="bplace">{e(place)}</p>' if place else "")
             + (f'<p class="bcontact">{" · ".join(contact)}</p>' if contact else "") + "</li>")
@@ -161,8 +162,7 @@ def town_main(town, items, dirbase):
                     + (f'<h3>Nearby</h3><ul class="blist">{"".join(near)}</ul>' if near else "") + "</section>")
     return (f'<div class="bcrumb"><a href="../">Find support by town</a> › {e(town)}</div>'
             f'<h1 class="bt">Mental health and wellbeing support in and around {e(town)}</h1>'
-            f'<p class="blead">{e(summary(town, counts))}</p>'
-            f'<p class="bnote">Free and low-cost groups and services within about {RADIUS} miles, in person. Choose what you\'re looking for.</p>'
+            f'<p class="bnote">{total} free and low-cost groups and services you can go to, within about {RADIUS} miles. Choose what you\'re looking for.</p>'
             f'<nav class="bbtns" aria-label="Kind of support">{"".join(btns)}</nav>' + "".join(secs) +
             f'<p class="bfoot">Also: <a href="{dirbase}#talk">phone and online support</a> you can use from anywhere. '
             f'Distances are straight lines. Please check with the service before going, as details can change. Updated {UPDATED}.</p>')
@@ -219,32 +219,40 @@ html, body { height: auto; } body { display: block; padding-bottom: calc(var(--f
 /* The site name looks exactly like the directory's (there it is the page's h1; here the town heading is) */
 .hero .brand { font-family: var(--serif); color: var(--b900); font-size: 24px; font-weight: 700; line-height: 1.1; margin: 0; display: flex; align-items: center; gap: 9px; text-decoration: none; }
 .hero .brand .logo { height: 34px; width: auto; flex: none; margin: -2px 0 -1px; }
-.bdir { display: flex; align-items: center; gap: 12px; height: 39px; margin-top: 4px; } .bdir a { font-weight: 600; color: var(--b700); font-size: 15px; } .bdir span { font-size: 12.5px; color: #78716C; }
-.bw { max-width: 1400px; margin: 0 auto; display: grid; grid-template-columns: 220px minmax(0, 1fr); gap: 28px; padding-top: 16px; }
+/* The tab row, as the directory's */
+.btabs { margin-bottom: 0; align-items: flex-end; }
+.btabs a { white-space: nowrap; padding: 9px 14px 10px; font-weight: 700; font-size: 14px; color: #78716C; text-decoration: none; border-bottom: 3px solid transparent; margin-bottom: -1px; }
+.btabs a:hover { color: var(--b900); }
+.btabs a[aria-current] { color: var(--b900); border-bottom-color: var(--b600); }
+.bw { max-width: 1400px; margin: 0 auto; display: grid; grid-template-columns: 200px minmax(0, 1fr); gap: 28px; padding-top: 18px; }
 .btowns { position: sticky; top: 12px; align-self: start; max-height: calc(100vh - var(--footh, 56px) - 24px); overflow-y: auto; }
-.btowns .bh { display: block; font-weight: 700; font-size: 15px; color: var(--b900); text-decoration: none; margin-bottom: 2px; }
-.btowns h3 { font-size: 11px; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); margin: 14px 0 4px; font-family: var(--sans); }
+.btowns .bh { display: block; font-weight: 700; font-size: 11px; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); text-decoration: none; margin: 2px 0 6px; }
+.btowns h3 { font-size: 12px; font-weight: 700; color: var(--b900); margin: 12px 0 2px; font-family: var(--sans); }
 .btowns ul { list-style: none; margin: 0; padding: 0; }
-.btowns li a { display: block; padding: 5px 10px; border-radius: 8px; color: var(--b900); text-decoration: none; font-size: 14.5px; }
-.btowns li a:hover { background: var(--b50); } .btowns li a.on { background: #176B55; color: #fff; font-weight: 600; }
+.btowns li a { display: block; padding: 4px 10px; border-radius: 8px; color: var(--ink); text-decoration: none; font-size: 14px; }
+.btowns li a:hover { background: var(--b50); } .btowns li a.on { background: var(--b100); color: var(--b900); font-weight: 600; }
 .bmain { min-width: 0; } .bmain.loading { opacity: .5; transition: opacity .15s; }
-.bcrumb { font-size: 13px; color: var(--muted); } .bcrumb a { color: var(--b700); }
-.bt { font-family: var(--serif); color: var(--b900); font-size: 27px; line-height: 1.2; margin: 4px 0 6px; }
-.blead { font-size: 15.5px; color: var(--ink); margin: 0 0 4px; line-height: 1.5; } .bnote { font-size: 13.5px; color: var(--muted); margin: 0 0 12px; } .bnote a, .bfoot a { color: var(--b700); }
-.bbtns { display: flex; gap: 8px; flex-wrap: wrap; margin: 0 0 6px; }
-.bbtns a { border: 1px solid var(--b200); background: #fff; color: var(--b900); border-radius: 999px; padding: 7px 14px; font-size: 14px; font-weight: 600; text-decoration: none; }
-.bbtns a span { font-weight: 500; color: var(--muted); font-size: 12.5px; margin-left: 2px; }
-.bbtns a.on { background: #176B55; border-color: #176B55; color: #fff; } .bbtns a.on span { color: #d6ebe2; }
-.bsec { border-top: 1px solid var(--line); margin-top: 12px; padding-top: 8px; }
-.bsh { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; flex-wrap: wrap; }
-.bsh h2 { font-family: var(--serif); color: var(--b900); font-size: 20px; margin: 4px 0; } .bmap { color: var(--b700); font-weight: 600; font-size: 13.5px; }
-.bsec h3 { font-size: 12px; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); margin: 12px 0 6px; font-family: var(--sans); }
-.blist { list-style: none; margin: 0; padding: 0; display: grid; gap: 8px; }
-.br { border: 1px solid var(--line); border-radius: 10px; padding: 10px 14px; background: #fff; }
-.bn { margin: 0; font-family: var(--serif); font-size: 16.5px; color: var(--b900); } .bn a { color: var(--b900); }
-.bmeta { font-size: 13px; color: #176B55; margin: 2px 0 3px; } .bmeta .bacc { color: #8a5a1b; font-weight: 600; } .bmeta .bnext { font-weight: 600; }
-.br p { margin: 2px 0 0; font-size: 13.5px; line-height: 1.4; } .br .bextra { color: #8a5a1b; font-size: 12.5px; } .br .bplace { color: var(--muted); font-size: 12.5px; }
-.br .bcontact { font-size: 12.5px; } .br .bcontact a { color: var(--b700); }
+.bcrumb { font-size: 12px; color: var(--muted); } .bcrumb a { color: var(--b700); }
+.bt { font-family: var(--serif); color: var(--b900); font-size: 22px; line-height: 1.25; margin: 4px 0 4px; }
+.blead { font-size: 14px; color: var(--ink); margin: 0 0 4px; line-height: 1.5; max-width: 75ch; } .bnote { font-size: 13px; color: var(--muted); margin: 0 0 12px; } .bnote a, .bfoot a { color: var(--b700); }
+.bbtns { display: flex; gap: 6px; flex-wrap: wrap; margin: 0 0 4px; }
+.bbtns a { border: 1px solid var(--line); background: #fff; color: var(--ink); border-radius: 999px; padding: 5px 12px; font-size: 13px; font-weight: 600; text-decoration: none; }
+.bbtns a:hover { border-color: var(--b200); }
+.bbtns a span { font-weight: 500; color: var(--muted); font-size: 12px; margin-left: 2px; }
+.bbtns a.on { background: var(--b700); border-color: var(--b700); color: #fff; } .bbtns a.on span { color: var(--b100); }
+.bsec { margin-top: 10px; }
+.bsh { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; flex-wrap: wrap; margin: 18px 0 4px; }
+.bsh h2 { font-family: var(--serif); color: var(--b900); font-size: 18px; margin: 0; } .bmap { color: var(--b700); font-weight: 600; font-size: 12.5px; }
+.bsec h3 { font-size: 11px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); margin: 12px 0 8px; font-family: var(--sans); }
+.blist { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(340px, 1fr)); gap: 12px; }
+.br { background: var(--white); border-radius: 16px; padding: 14px 16px; box-shadow: 0 1px 2px rgba(0,0,0,.05); border: 1px solid var(--line); display: flex; flex-direction: column; gap: 3px; }
+.brow { display: flex; justify-content: space-between; align-items: flex-start; gap: 10px; }
+.brow .badge { flex: none; }
+.chip { flex: none; font-size: 10px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; color: #57534E; background: #F5F5F4; border: 1px solid var(--line); padding: 3px 7px; border-radius: 6px; }
+.bn { margin: 0; font-family: var(--serif); font-size: 17px; line-height: 1.25; color: var(--b900); } .bn a { color: var(--b900); text-decoration: none; } .bn a:hover { text-decoration: underline; }
+.bmeta { font-size: 12px; color: var(--muted); font-weight: 500; } .bmeta .bnext { color: var(--b700); font-weight: 600; }
+.br p { margin: 4px 0 0; font-size: 13.5px; line-height: 1.45; color: var(--ink); } .br .bextra, .br .bplace { color: var(--muted); font-size: 12px; margin-top: 2px; }
+.br .bcontact { font-size: 12.5px; margin-top: auto; padding-top: 8px; border-top: 1px solid var(--line); } .br .bcontact a { color: var(--b700); }
 .bw.nolist { grid-template-columns: minmax(0, 1fr); }
 .bland { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.15fr); gap: 28px; align-items: start; margin-top: 8px; }
 .bmapsvg { width: 100%; height: auto; display: block; } .bmapsvg .land { fill: #E1EBE5; stroke: #fff; stroke-width: 1.5; }
@@ -253,8 +261,8 @@ html, body { height: auto; } body { display: block; padding-bottom: calc(var(--f
 .btownlist h2 { font-family: var(--serif); color: var(--b900); font-size: 17px; margin: 0 0 8px; } .btownlist h2 ~ h2 { margin-top: 16px; }
 .bcards { list-style: none; padding: 0; margin: 0; columns: 2; column-gap: 28px; }
 .bcards li { break-inside: avoid; border-bottom: 1px solid var(--line); }
-.bcards a { display: flex; justify-content: space-between; align-items: baseline; padding: 7px 4px; text-decoration: none; color: var(--b900); }
-.bcards a:hover b { text-decoration: underline; color: #176B55; } .bcards b { font-size: 15.5px; font-weight: 600; } .bcards span { font-size: 12.5px; color: var(--muted); }
+.bcards a { display: flex; justify-content: space-between; align-items: baseline; padding: 6px 4px; text-decoration: none; color: var(--b900); }
+.bcards a:hover b { text-decoration: underline; color: #176B55; } .bcards b { font-size: 14px; font-weight: 600; } .bcards span { font-size: 12.5px; color: var(--muted); }
 .bmain > h2 { font-family: var(--serif); color: var(--b900); font-size: 18px; margin: 18px 0 8px; }
 .bfoot { font-size: 12.5px; color: var(--muted); margin-top: 18px; }
 .btownsel { display: none; }
@@ -324,7 +332,9 @@ PAGE_JS = r"""
 })();
 """
 
-def page(title, desc, canonical, robots, main_html, nav_html, sel_html, dirbase, crumbs):
+FONTS = "\n".join(l for l in tpl.splitlines() if "fonts.g" in l)   # the directory's font links, as they are
+
+def page(title, desc, canonical, robots, main_html, nav_html, sel_html, dirbase, crumbs, base):
     ld = {"@context": "https://schema.org", "@type": "BreadcrumbList", "itemListElement": [
         {"@type": "ListItem", "position": i + 1, "name": n, "item": u} for i, (n, u) in enumerate(crumbs)]}
     head_extra = (f'<link rel="canonical" href="{canonical}">\n' if canonical else "") + (robots or "")
@@ -336,6 +346,7 @@ def page(title, desc, canonical, robots, main_html, nav_html, sel_html, dirbase,
 <title>{e(title)}</title>
 <meta name="description" content="{e(desc)}">
 {head_extra}<link rel="icon" href="/favicon.ico">
+{FONTS}
 <script type="application/ld+json">{json.dumps(ld)}</script>
 <style>
 {SITE_CSS}
@@ -355,7 +366,7 @@ def page(title, desc, canonical, robots, main_html, nav_html, sel_html, dirbase,
         <a class="brand" href="{dirbase}"><img class="logo" src="/assets/logo-signpost.webp" alt="" width="31" height="34">Signposting Somerset</a>
         <p class="lede"><span class="lg">Connecting people with local mental health and wellbeing support.</span><span class="sh">Local mental health and wellbeing support.</span></p>
       </div>
-      <div class="bdir"><a href="{dirbase}">← Search the full directory</a><span>Map, filters, phone and online support</span></div>
+      <nav class="sitetabs btabs" aria-label="Site"><a href="{dirbase}#near">← Full directory</a><a href="{base}" aria-current="page">Support by town</a></nav>
     </div>
   </div>
 </header>
@@ -400,13 +411,13 @@ for name, base, dirbase, site, robots in TARGETS:
     title = "Find mental health and wellbeing support by town | Signposting Somerset"
     desc = "Free and low-cost mental health and wellbeing support across Somerset, North Somerset and Bath & North East Somerset, by town: groups, activities and services with times and contacts."
     (root / "index.html").write_text(page(title, desc, canon(base), robots, landing_main(base, dirbase, totals), "", "", dirbase,
-        [("Signposting Somerset", SITE + "/directory/"), ("Find support by town", SITE + "/browse/")]), encoding="utf-8")
+        [("Signposting Somerset", SITE + "/directory/"), ("Find support by town", SITE + "/browse/")], base), encoding="utf-8")
     for t, items in data.items():
         counts = {c["id"]: len({id(r) for _, r in items if c["id"] in r["_cats"]}) for c in CATS}
         d = root / slug(t); d.mkdir(exist_ok=True)
         (d / "index.html").write_text(page(f"Mental health and wellbeing support in {t} | Signposting Somerset", summary(t, counts), canon(base + slug(t) + "/"), robots,
             town_main(t, items, dirbase), town_nav(base, t), town_select(base, t), dirbase,
-            [("Signposting Somerset", SITE + "/directory/"), ("Find support by town", SITE + "/browse/"), (t, SITE + "/browse/" + slug(t) + "/")]), encoding="utf-8")
+            [("Signposting Somerset", SITE + "/directory/"), ("Find support by town", SITE + "/browse/"), (t, SITE + "/browse/" + slug(t) + "/")], base), encoding="utf-8")
     print(f"out/{base.strip('/')}/: landing + {len(data)} towns")
 if not ONLY_TEST:
     urls = [SITE + "/directory/", SITE + "/browse/"] + [SITE + "/browse/" + slug(t) + "/" for t in data]
