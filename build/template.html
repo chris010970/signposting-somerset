@@ -136,7 +136,6 @@ h1 { font-family: var(--serif); color: var(--b900); font-size: 26px; margin: 0; 
 .sitetabs .tgrp { display: inline-flex; align-items: flex-end; gap: 4px; position: relative; flex: none; }
 .sitetabs #tab-assist, .sitetabs #tab-about { margin-left: 6px; padding-left: 14px; position: relative; }
 .sitetabs #tab-assist::before, .sitetabs #tab-about::before { content: ""; position: absolute; left: 0; top: 10px; bottom: 12px; border-left: 1px solid var(--line); }
-.sitetabs #tab-about { font-weight: 600; }
 /* On narrow phones the last tab may not fit: fade the edge so it's clear the row scrolls */
 .sitetabs.more { -webkit-mask-image: linear-gradient(to right, #000 calc(100% - 36px), transparent); mask-image: linear-gradient(to right, #000 calc(100% - 36px), transparent); }
 @media (max-width: 420px) { .sitetabs { gap: 0; } .sitetabs .tgrp { gap: 0; } .sitetabs button { padding-inline: 5px; font-size: 13px; } .sitetabs #tab-assist, .sitetabs #tab-about { margin-left: 1px; padding-left: 7px; } .sitetabs #tab-assist { gap: 4px; } .sitetabs .lg { display: none; } .sitetabs .sh { display: inline; } }
