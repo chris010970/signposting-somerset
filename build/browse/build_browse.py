@@ -1,11 +1,11 @@
-"""Build the town pages (the directory's "By town" tab): a landing page and one page per town, as plain HTML that search engines can read.
+"""Build the town pages (the directory's "Places" tab): a landing page and one page per town, as plain HTML that search engines can read.
 
-    python build_browse.py path/to/services.csv          # live (out/directory/towns/) and test (out/test/directory/towns/)
+    python build_browse.py path/to/services.csv          # live (out/directory/places/) and test (out/test/directory/places/)
     python build_browse.py path/to/services.csv test     # test only
     python build_browse.py                               # reads the published sheet (directory/sheet_url.txt)
 
-Publish: copy out/directory/towns/ -> docs/directory/towns/, out/test/directory/towns/ -> docs/test/directory/towns/,
-and out/sitemap.xml -> docs/sitemap.xml. They are the directory's "By town" tab.
+Publish: copy out/directory/places/ -> docs/directory/places/, out/test/directory/places/ -> docs/test/directory/places/,
+and out/sitemap.xml -> docs/sitemap.xml. They are the directory's "Places" tab.
 Configuration (no code changes needed): towns.json (which towns, radius) and categories.json (sections and buttons).
 The pages look and behave like one page: picking a town swaps the main area in place, but every town has its own address.
 Rules kept here: only in-person services (not courses) with a place; Crisis Safe Space addresses are never in the data, so
@@ -40,7 +40,7 @@ RADIUS = CONF["radius_miles"]
 AREAS = [(a["area"], a["towns"]) for a in CONF["areas"]]
 for _, ts in AREAS:
     for t in ts:
-        assert t in TOWNS, f"{t} is not in build/directory/towns.json"
+        assert t in TOWNS, f"{t} is not in build/directory/places.json"
 NOW = datetime.datetime.now(zoneinfo.ZoneInfo("Europe/London"))
 TODAY = NOW.date().isoformat()
 UPDATED = f"{NOW.day} {NOW:%B %Y}"
@@ -169,7 +169,7 @@ def town_main(town, items, dirbase, base):
                     f'<a class="bmap" href="{maplink}">View on the map →</a></div>'
                     + (f'<h3>In {e(town)}</h3><ul class="blist">{"".join(inn)}</ul>' if inn else "")
                     + (f'<h3>Nearby</h3><ul class="blist">{"".join(near)}</ul>' if near else "") + "</section>")
-    return (f'<div class="bcrumb"><a href="../">Find support by town</a> › {e(town)}</div>'
+    return (f'<div class="bcrumb"><a href="../">Places</a> › {e(town)}</div>'
             f'<h1 class="bt">Mental health and wellbeing support in and around {e(town)}</h1>'
             f'<p class="bnote">{total} free and low-cost groups and services you can go to, within about {RADIUS} miles. Choose what you\'re looking for above.</p>'
             + "".join(secs) +
@@ -211,7 +211,7 @@ def area_map(base, totals):
 
 def landing_main(base, dirbase, totals):
     links = " · ".join(f'<a href="{base}{slug(t)}/">{e(t)}</a>' for _, ts in AREAS for t in sorted(ts))
-    return (f'<div class="bpick"><div class="bpicktxt"><h1 class="bt">Find support by town</h1>'
+    return (f'<div class="bpick"><div class="bpicktxt"><h1 class="bt">Places</h1>'
             f'<p>Choose your nearest town above, or on the map, to see free and low-cost groups, activities and services in and around it, '
             f'with times, places and how to get in touch.</p>'
             f'<p class="otowns">{links}</p></div>'
@@ -357,7 +357,7 @@ def page(title, desc, canonical, robots, main_html, filters_html, dirbase, crumb
         <a class="brand" href="{dirbase}"><img class="logo" src="/assets/logo-signpost.webp" alt="" width="31" height="34">Signposting Somerset</a>
         <p class="lede"><span class="lg">Connecting people with local mental health and wellbeing support.</span><span class="sh">Local mental health and wellbeing support.</span></p>
       </div>
-      <nav class="sitetabs" aria-label="Site"><span class="tgrp"><a class="tab" href="{dirbase}#near">In person</a><a class="tab" href="{dirbase}#talk"><span class="lg">Phone and online</span><span class="sh">Phone &amp; online</span></a><a class="tab" href="{dirbase}#course">Courses</a><a class="tab" href="{base}" aria-current="page">By town</a></span><a class="tab sep" href="{dirbase}#about">About</a><a class="tolink" href="{dirbase.replace("directory/", "tools/")}">For professionals →</a></nav>
+      <nav class="sitetabs" aria-label="Site"><span class="tgrp"><a class="tab" href="{dirbase}#near">In person</a><a class="tab" href="{dirbase}#talk"><span class="lg">Phone and online</span><span class="sh">Phone &amp; online</span></a><a class="tab" href="{dirbase}#course">Courses</a><a class="tab" href="{base}" aria-current="page">Places</a></span><a class="tab sep" href="{dirbase}#about">About</a><a class="tolink" href="{dirbase.replace("directory/", "tools/")}">For professionals →</a></nav>
     </div>
 {filters_html}
   </div>
@@ -382,9 +382,9 @@ def page(title, desc, canonical, robots, main_html, filters_html, dirbase, crumb
 """)
 
 # ---------- build ----------
-TARGETS = [("test", "/test/directory/towns/", "/test/directory/", None, '<meta name="robots" content="noindex, nofollow">\n')]
+TARGETS = [("test", "/test/directory/places/", "/test/directory/", None, '<meta name="robots" content="noindex, nofollow">\n')]
 if not ONLY_TEST:
-    TARGETS.insert(0, ("towns", "/directory/towns/", "/directory/", SITE, ""))
+    TARGETS.insert(0, ("towns", "/directory/places/", "/directory/", SITE, ""))
 OUT = HERE / "out"
 data = {t: services_for(t) for _, ts in AREAS for t in ts}
 totals = {t: len(v) for t, v in data.items()}
@@ -395,16 +395,16 @@ for name, base, dirbase, site, robots in TARGETS:
     title = "Find mental health and wellbeing support by town | Signposting Somerset"
     desc = "Free and low-cost mental health and wellbeing support across Somerset, North Somerset and Bath & North East Somerset, by town: groups, activities and services with times and contacts."
     (root / "index.html").write_text(page(title, desc, canon(base), robots, landing_main(base, dirbase, totals), filters(base), dirbase,
-        [("Signposting Somerset", SITE + "/directory/"), ("Find support by town", SITE + "/directory/towns/")], base), encoding="utf-8")
+        [("Signposting Somerset", SITE + "/directory/"), ("Places", SITE + "/directory/places/")], base), encoding="utf-8")
     for t, items in data.items():
         counts = {c["id"]: len({id(r) for _, r in items if c["id"] in r["_cats"]}) for c in CATS}
         d = root / slug(t); d.mkdir(exist_ok=True)
         (d / "index.html").write_text(page(f"Mental health and wellbeing support in {t} | Signposting Somerset", summary(t, counts), canon(base + slug(t) + "/"), robots,
             town_main(t, items, dirbase, base), filters(base, t, counts, len(items)), dirbase,
-            [("Signposting Somerset", SITE + "/directory/"), ("Find support by town", SITE + "/directory/towns/"), (t, SITE + "/directory/towns/" + slug(t) + "/")], base), encoding="utf-8")
+            [("Signposting Somerset", SITE + "/directory/"), ("Places", SITE + "/directory/places/"), (t, SITE + "/directory/places/" + slug(t) + "/")], base), encoding="utf-8")
     print(f"out/{base.strip('/')}/: landing + {len(data)} towns")
 if not ONLY_TEST:
-    urls = [SITE + "/directory/", SITE + "/directory/towns/"] + [SITE + "/directory/towns/" + slug(t) + "/" for t in data]
+    urls = [SITE + "/directory/", SITE + "/directory/places/"] + [SITE + "/directory/places/" + slug(t) + "/" for t in data]
     (OUT / "sitemap.xml").write_text('<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n' +
         "".join(f"  <url><loc>{u}</loc><changefreq>weekly</changefreq></url>\n" for u in urls) + "</urlset>\n", encoding="utf-8")
     print(f"out/sitemap.xml: {len(urls)} addresses")
