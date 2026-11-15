@@ -2,13 +2,13 @@
 
 How the directory is built, what the data means, and the rules for adding to it. Written so that anyone (a person or an AI assistant) can pick the work up without the history of how it got here. **Update this file whenever a rule or process changes.**
 
-Last updated: 12 November 2026.
+Last updated: 15 November 2026.
 
 ---
 
 ## 1. What it is
 
-- **The site:** https://signpostingsomerset.org.uk. The root forwards to `/main/`. `/test/` is the test copy (not indexed by Google).
+- **The site:** https://signpostingsomerset.org.uk. The directory is at `/directory/`; the root and the old `/main/` address forward to it (keeping any tab, e.g. `/main/#about`). `/test/` is the test copy (not indexed by Google). Planned: `/browse/` (simple pages by town) and `/analytics/` (coverage analysis, desktop only).
 - **Coverage:** Somerset (Somerset Council area), North Somerset, and Bath and North East Somerset (B&NES), plus national phone and online services.
 - **Audience:** support workers, volunteers and anyone looking for help, activities or community connections.
 - **Data:** one Google Sheet (published as CSV). The site reads it live; nothing needs rebuilding when the sheet changes.
@@ -18,10 +18,10 @@ Last updated: 12 November 2026.
 
 | What | Where |
 |---|---|
-| Live pages | repo `docs/main/index.html`, `docs/test/index.html`, `docs/index.html` (forwarder) |
+| Live pages | repo `docs/directory/index.html` (live), `docs/test/index.html` (test); `docs/index.html` and `docs/main/index.html` are forwarders to `/directory/` |
 | Site assets | `docs/assets/` (icons, `share.png` link-preview image), `docs/favicon.ico`, `docs/sitemap.xml` |
-| Build sources | repo `build/` (see section 7) |
-| Worker | Cloudflare: Workers & Pages → `signposting-assist`. Copy of the code in `src/cloudflare-worker.js` and `build/assist/` |
+| Build sources | repo `build/`, one folder per part of the site (see section 7) |
+| Worker | Cloudflare: Workers & Pages → `signposting-assist`. Copy of the code in `src/cloudflare-worker.js` and `build/directory/assist/` |
 | Secrets | **Only in Cloudflare** (Settings → Variables and Secrets): `ANTHROPIC_API_KEY`, access code. Never in the repo, never in a chat |
 | Tools | `src/run_scenarios.py`, `src/check_sources.py`, `src/geocode.py`, `src/services-sheet-tools.gs` |
 | Search | Google Search Console (property for signpostingsomerset.org.uk; sitemap submitted) |
@@ -34,7 +34,7 @@ One row per service **session pattern**. If a group meets at different times on 
 |---|---|
 | `name` | Short, specific name. Add the place in brackets when the same group runs in several places: `Talking Café Brean`, `SoBS Support Group (Bath)`. Make ambiguous places explicit: `(Weston, Bath)` not just `Weston`. |
 | `provider` | Organisation that runs it. |
-| `type` | One of: `Activity group`, `Peer group`, `Community`, `Practical support`, `One-to-one support`, `Advocacy`, `Course`, `Counselling or therapy`, `Helpline`, `Volunteering`. |
+| `type` | One of: `Activity group`, `Peer group`, `Community`, `Practical support`, `One-to-one support`, `Advocacy`, `Course`, `Counselling or therapy`, `Volunteering` (the sheet's dropdown; nothing else). Helplines are `One-to-one support`, or `Practical support` for advice lines. |
 | `access` | One of: `drop in` (just turn up), `sign up` (contact or register first), `book`, `call`, `referral` (needs a professional). |
 | `support_for` | One or more, separated by `;`: `connect`, `be active`, `take notice`, `keep learning`, `giving`, `low mood`, `anxiety`, `crisis prevention`, `bereavement`, `addiction`, `dementia`, `caring for someone`, `long-term pain`, `eating disorders`, `hearing voices`, `abuse`, `food`, `finances`, `housing`. |
 | `mode` | One or more of `in-person`, `phone`, `online` (`;` separated). |
@@ -44,10 +44,10 @@ One row per service **session pattern**. If a group meets at different times on 
 | `eligibility` | Who can go and what to do first: age, area, "contact first for the venue", "currently full", "faith content". Area limits use the exact phrase `Somerset Council area only` (only when the service really is limited). |
 | `days` | `Mon`, `Tue`, `Wed`, `Thu`, `Fri`, `Sat`, `Sun`. Ranges `Mon-Fri`; lists `Mon;Wed;Fri`. 24/7 lines: `Mon-Sun`. |
 | `times` | `HH:MM-HH:MM` (24-hour), or a start time only `10:00` if no end is published. 24/7: `00:00-23:59`. Never `00:00` as an end time. |
-| `frequency` | Blank or `weekly` for weekly. Otherwise e.g. `fortnightly`, `1st Tue of month`, `last Fri of month`, `monthly (dates vary)`, `see website`, `6-week courses through the year (see website)`. |
+| `frequency` | Free text. **Leave blank for weekly** (days + times alone mean every week; the word `weekly` stops the site and Assist working out next dates). The site computes dates only from `1st Tue of month`, `last Fri of month`, `1st and 3rd Wed of month` (weekday must match `days`, no extra words). Anything else (e.g. `fortnightly`, `monthly (dates vary)`, `term time`, `see website`) shows as "Check dates" with the wording, which is fine when that's all that's known. |
 | `dates` | Specific dates for one-off courses or term-time limits, if needed. |
 | `address` | Venue name and street. Leave blank when the venue isn't published. |
-| `town` | Town or village. Must be one the site knows (see `build/towns.json`); add new ones there. Leave blank for services with no single place (area-wide). |
+| `town` | Town or village. Must be one the site knows (see `build/directory/towns.json`); add new ones there. Leave blank for services with no single place (area-wide). |
 | `area` | One of `Somerset`, `North Somerset`, `Bath and North East Somerset`, `national`. |
 | `postcode` | Venue postcode, if published. |
 | `phone`, `email` | Public contact details only. |
@@ -91,21 +91,30 @@ These are decisions, not accidents. Keep to them unless deliberately changed (an
 
 ## 7. Building and deploying
 
-The site pages are generated from `build/`:
+`build/` has one folder per part of the site:
+
+| Folder | What |
+|---|---|
+| `build/directory/` | The directory: `template.html` (site), `assist-tab/` (Assist tab), `assist/worker-template.js` (worker and AI prompt), `towns.json`, build scripts |
+| `build/analytics/` | Analytics: `DESIGN.md` (decisions so far), the v24 code, `make_analytics_data.py` (rebuilds `docs/assets/analytics-lsoa.geojson`) |
+| `build/browse/` | Browse pages (planned) |
+| `build/shared/` | Pieces used by more than one part (planned) |
+| `build/tools/` | `run_scenarios.py`, scenario files, `check_sources.py`, `church_events.py` |
 
 ```
 cd build
-python build_all.py path/to/services.csv          # builds main and test
+python build_all.py path/to/services.csv          # builds the live directory and test
 python build_all.py path/to/services.csv test     # test only
-python build_assist.py                             # rebuilds the worker: assist/cloudflare-worker.js
+python directory/build_assist.py                   # rebuilds the worker: directory/assist/cloudflare-worker.js
 ```
 
-- Edit `template.html` (site), `assist-tab/` (Assist tab), `assist/worker-template.js` (worker and AI prompt). Never edit the generated files.
-- Each build stamps a version (`main 2026-11-12 06:49`), visible on the site and in Assist, so you can tell which build is live.
-- **Deploy the site:** copy `github/main/index.html` → repo `docs/main/index.html` and `github/test/index.html` → `docs/test/index.html`, commit, push. GitHub Pages updates in a few minutes.
-- **Deploy the worker:** Cloudflare → `signposting-assist` → Edit code → paste `assist/cloudflare-worker.js` → Deploy. Also copy it to `src/`. Check the version shown on the Assist tab.
-- Test on `/test/` first, then build main.
-- Setup from scratch: `build/assist/ASSIST-SETUP.md`.
+- Edit the sources above; never edit the generated files.
+- Each build stamps a version (`directory 2026-11-15 12:50`), visible on the site and in Assist, so you can tell which build is live.
+- **Deploy the site:** copy `build/directory/github/directory/index.html` → repo `docs/directory/index.html` and `build/directory/github/test/index.html` → `docs/test/index.html`, commit, push. GitHub Pages updates in a few minutes.
+- **Deploy the worker:** Cloudflare → `signposting-assist` → Edit code → paste `build/directory/assist/cloudflare-worker.js` → Deploy. Also copy it to `src/`. Check the version shown on the Assist tab.
+- Test on `/test/` first, then build the live directory.
+- Setup from scratch: `build/directory/assist/ASSIST-SETUP.md`.
+- The domain's DNS is at 123-reg and points straight at GitHub Pages (no Cloudflare in front), so redirects are small forwarding pages, not server redirects.
 
 ## 8. Testing Assist
 
@@ -123,15 +132,19 @@ python run_scenarios.py --scenarios scenarios-banes.json --all
 
 ## 9. Decisions on record
 
-- **Crisis line in the site footer, plan footer and Assist safety note:** Samaritans 116 123 (not Mindline Somerset, which is Somerset-only).
+- **Crisis line in the site footer, plan footer, Assist crisis message and Assist safety note:** Samaritans 116 123 (not Mindline Somerset, which is Somerset-only). Neither B&NES nor North Somerset has a local 24/7 line (their NHS route is 111 option 2). Planned: when there is risk, Assist adds a local 24/7 helpline from the records matching the person's area (Mindline Somerset today), rather than naming it in the code.
+- **Filter labels:** the questions that narrow results are numbered (1. Support for, 2. Where?, 3. When?, 2. Coverage, 2. Format); display controls are not (Sort, checkboxes). All site tabs have the same weight.
 - **Directions** link only for records with a postcode; Apple Maps on iPhone/iPad, Google Maps elsewhere. Phone numbers are tap-to-call.
-- **Search:** meta description "Discover mental health and wellbeing support across Somerset, North Somerset and B&NES: what's on, when and where. Built for anyone looking for help, activities or community connections."; canonical `/main/`; test page `noindex`.
+- **Search:** meta description "Discover mental health and wellbeing support across Somerset, North Somerset and B&NES: what's on, when and where. Built for anyone looking for help, activities or community connections."; canonical `/directory/`; test page `noindex`; sitemap lists `/directory/`.
 - **Assist answer limit:** `max_tokens` 8000 (lower values cut long plans off).
 
-- **Analytics tab:** **desktop only** (hidden below 760px wide; #analytics on a phone opens In person; the LSOA file only downloads when the tab is opened). Redesigned Nov 2026 around a question rather than map layers: *Explore → Locate → Understand*, three columns sharing **one selected LSOA**. Header: 1. Support for · 2. How often (most days / at least weekly / fortnightly or monthly; blank frequency = weekly) · 3. Compare areas by (Deprivation, Health deprivation, Disabled people, Population density) · Search area (fixed: **1 mile urban, 3 miles rural**, by the ONS Rural-Urban Classification 2021) with a "How this works" link to a section on About. **Left:** two tabs, **List** (default; sortable, searchable) and **Chart**, a grid counting LSOAs by indicator band (rows: the indicator's five bands, most need at the top; a "No data" row appears only if an LSOA lacks a value and a "None recorded" column only if an LSOA has no matching service anywhere) and distance to the nearest matching support (columns: under ½, ½–1, 1–2, 2–5, 5+ miles), with people counts; clicking a square selects that group (outlined on the map, the only rows in the List, listed in the right panel, from which one LSOA can be opened). The List uses the Show filters; the Chart hides them because the grid already splits by need and distance. The page fits between the header and the footer bar (no page scroll on common laptop screens). **Rank** = the chosen indicator only, never distance: exact national IMD or health rank (1 = most deprived of 33,755), % disabled, or people per km² (least dense first); ties to the larger population (or disabled count). Show filters with counts: All / most deprived half (or above the England median for disability; hidden for density) / no matching support within the search area / both. A selected LSOA outside the filter still appears in the list, marked. **Centre:** map shaded by the same bands as the grid rows, service pins as on In person (matching services only), a plain legend, the selected LSOA outlined with a dashed line to its nearest matching service; selecting from the list or chart centres the map without zooming out; "Whole area" clears. **Right:** a read-only local support profile: figures (people, density, urban/rural, ranks, disabled % and count), the matching support (nearest and count within the search area, or "None recorded… may be a gap in this directory"), then all support within the search area by kind with named services ("Show all"), and View services (opens In person centred there), Copy, Compare (A/B). Distances are straight lines from a **postcode-weighted centre** (ONS withdrew its population-weighted centroids in 2026; uses the 2016 open postcode file). Place names ("near Porlock") are the nearest entry in the site's town list. Data file: `docs/assets/analytics-lsoa.geojson`; rebuild with `build/tools/make_analytics_data.py`. **Adding an indicator:** one entry in `AN_IND` in the Analytics script (field test, label, bands, rank order, optional higher-half rule, profile tile, copy line); the grid, map shading and key, list, profile, compare and copy all follow from it. Distance columns are in `AN_ACC`. Changing the indicator clears a selected square; changing Support for / How often keeps it and recounts. Indicators describe areas; they don't measure need for mental health support.
+- **Analytics:** taken out of the directory on 15 Nov 2026, to be rebuilt as its own page `/analytics/` (desktop only). What was decided and why, the last working code and a screenshot are in `build/analytics/` (start with `DESIGN.md`). Data file: `docs/assets/analytics-lsoa.geojson`.
 
 ## 10. Known gaps and to-dos (Nov 2026)
 
 - B&NES and North Somerset still thinner than Somerset; Bristol is out of scope.
 - Services needing times or checks: Talk Club Bath, EcoWild Lakeside/Woodland/Men's Woodland, Bath Organic Group, Share and Repair, the Bath Shed (Friday?), Genesis Lifeline (address/hours conflict), Quantock Foodbank (no times).
+- Gaps found by Analytics and the browse counts: no recorded bereavement support within 5 miles of Taunton, Yeovil, Bridgwater, Weston or Bath; Taunton, Yeovil and Bridgwater show no in-person "low mood" or "anxiety" tags within 5 miles (probably tagging, not absence).
+- Site structure, planned in this order: links that open the directory already filtered (e.g. `/directory/?town=Frome&support=bereavement#near`), `/analytics/`, then a `/browse/` pilot (towns listed on the left, each town's support grouped by type on the right, same header as the directory without the tabs).
+- Possible: a check in `services-sheet-tools.gs` that flags `weekly` in frequency and values outside the dropdowns.
 - Ideas not yet done: more places in the location dropdown for North Somerset and B&NES; Cloudflare Web Analytics; an Open Referral UK export.
