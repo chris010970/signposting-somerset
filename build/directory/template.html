@@ -22,6 +22,9 @@
 
 /*@core:css/header.css*/
 /*@core:css/page.css*/
+/* "For professionals": a quiet link after the tabs (not at the far right, where it would sit on the illustration), to the tools page */
+.sitetabs a.tolink { margin-left: 6px; white-space: nowrap; padding: 9px 14px 10px; font-weight: 600; font-size: 13px; color: #78716C; text-decoration: none; border-bottom: 3px solid transparent; margin-bottom: -1px; }
+.sitetabs a.tolink:hover, .sitetabs a.tolink:focus-visible { color: var(--b900); }
 /* Phone and online / Courses bars: the dropdowns share the width evenly; the checkbox sits at the right, where Sort is on In person */
 .tq { display: flex; gap: 10px; align-items: stretch; }
 .tq > .q { flex: 1 1 0; min-width: 0; }
@@ -114,8 +117,8 @@ main { flex: 1; min-height: 0; display: grid; grid-template-columns: minmax(0, 4
       <span class="tgrp" role="presentation"><button type="button" role="tab" id="tab-near" aria-selected="false" aria-controls="panel-near">In person</button>
       <button type="button" role="tab" id="tab-talk" aria-selected="false" aria-controls="panel-talk"><span class="lg">Phone and online</span><span class="sh">Phone &amp; online</span></button>
       <button type="button" role="tab" id="tab-course" aria-selected="false" aria-controls="panel-course">Courses</button></span>
-<!--ASSIST_TAB-->
-      <button type="button" role="tab" id="tab-about" aria-selected="false" aria-controls="panel-about">About</button>    </nav>
+      <button type="button" role="tab" id="tab-about" aria-selected="false" aria-controls="panel-about">About</button>
+      <a class="tolink" href="/tools/">For professionals →</a>    </nav>
     </div>
     <div id="hdr-talk" class="tq">
       <div class="q" id="q-tsupport"><label for="t-support">1. Support for</label><select id="t-support"></select></div>
@@ -128,7 +131,7 @@ main { flex: 1; min-height: 0; display: grid; grid-template-columns: minmax(0, 4
       <label class="toggle" id="q-cbook"><input type="checkbox" id="c-book"> Can still join</label>
     </div>
     <div id="hdr-about" hidden></div>
-<!--ASSIST_HDR-->    <div id="hdr-near" hidden>
+    <div id="hdr-near" hidden>
     <div class="qs">
       <div class="q" id="q-support"><label for="f-support">1. Support for</label>
         <select id="f-support"></select></div>
@@ -164,7 +167,7 @@ main { flex: 1; min-height: 0; display: grid; grid-template-columns: minmax(0, 4
 <section id="panel-talk" role="tabpanel" aria-labelledby="tab-talk"><div class="talk gut" id="talk"></div></section>
 <section id="panel-about" role="tabpanel" aria-labelledby="tab-about" hidden style="flex:1;min-height:0;overflow-y:auto"><div class="talk gut" id="about"></div></section>
 <section id="panel-course" role="tabpanel" aria-labelledby="tab-course" hidden style="flex:1;min-height:0;overflow-y:auto"><div class="talk gut" id="courses"></div></section>
-<!--ASSIST_PANEL--><div id="panel-near" role="tabpanel" aria-labelledby="tab-near" hidden style="flex:1;min-height:0;display:flex;flex-direction:column">
+<div id="panel-near" role="tabpanel" aria-labelledby="tab-near" hidden style="flex:1;min-height:0;display:flex;flex-direction:column">
 
 <main id="main">
   <section id="list" aria-live="polite"></section>
@@ -552,7 +555,10 @@ function renderAbout() {
       <li>Helplines and online groups, in-person services on a map, and courses with set dates.</li>
     </ul>
     </section>
-    ${typeof window.assistAbout === "function" ? window.assistAbout() : ""}
+    <section>
+    <h3>For support workers and volunteers</h3>
+    <p>The <a href="${TOOLS_URL}">tools page</a> has Assist: describe someone's situation and it suggests a short plan of support from the services listed here, easiest steps first. It's a trial for invited workers and volunteers (access code needed).</p>
+    </section>
     </div><div class="acol">
     <section>
     <h3>How it's kept accurate</h3>
@@ -569,18 +575,19 @@ function renderAbout() {
     </section>
     </div></div>
     <p class="small">Service information belongs to the providers listed. Map data © <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap</a> contributors, © <a href="https://carto.com/attributions" target="_blank" rel="noopener">CARTO</a>.</p>
-    <p class="small" id="site-version">Version: /*SITE_VERSION*/${typeof window.assistRelayVersion === "function" ? window.assistRelayVersion() : ""}</p>
+    <p class="small" id="site-version">Version: /*SITE_VERSION*/</p>
   </article>`;
 }
 let tab = "talk";
-const SITE_TABS = ["talk", "near", "course", "about"/*ASSIST_TABNAME*/];
+const SITE_TABS = ["talk", "near", "course", "about"];
+const TOOLS_URL = "/*TOOLS_URL*/";   // the tools page (Assist)
 const LEDE = { talk: "Phone lines, text services and online groups: support you can reach from anywhere.",
   near: "In-person mental health and wellbeing support across Somerset, North Somerset and B&NES.", about: "What this is, how it's kept accurate, and how to suggest a change.", course: "Courses with a set programme and length, in person or online. Most need booking." };
 function setSiteTab(t) {
   tab = t;
   try { $("tab-" + t).scrollIntoView({ block: "nearest", inline: "nearest" }); } catch (e) {}
   for (const k of SITE_TABS) { $("tab-" + k).setAttribute("aria-selected", k === t); $("panel-" + k).hidden = k !== t; $("hdr-" + k).hidden = k !== t; }
-  if (t === "talk") renderTalk(); else if (t === "course") renderCourses(); else if (t === "about") renderAbout(); else if (t === "assist") { if (window.assistShow) window.assistShow(); } else { initMap(); setTimeout(() => { map && map.invalidateSize(); fitPending = true; render(); }, 30); }
+  if (t === "talk") renderTalk(); else if (t === "course") renderCourses(); else if (t === "about") renderAbout(); else { initMap(); setTimeout(() => { map && map.invalidateSize(); fitPending = true; render(); }, 30); }
   syncLink();
   try { localStorage.setItem("ss-tab", t); } catch (e) {}
 }
@@ -670,12 +677,12 @@ function linkFor(t) {   // the current filters, as the part of the address after
 }
 function syncLink() { try { const q = linkFor(tab); history.replaceState(null, "", location.pathname + (q ? "?" + q : "") + "#" + tab); } catch (e) {} }
 
-// Opens on Assist when it's unlocked in this browser, otherwise on In person. A link with #near, #talk, #course, #about or #assist wins.
+// Opens on In person; a link with #near, #talk, #course or #about opens that tab. Old links to #assist go to the tools page.
 (function () {
+  if (location.hash === "#assist") { location.replace(TOOLS_URL + "#assist"); return; }
   applyLink();
   const fromHash = SITE_TABS.includes(location.hash.slice(1)) ? location.hash.slice(1) : "";
-  let unlocked = false; try { unlocked = !!sessionStorage.getItem("assist-code"); } catch (e) {}
-  setSiteTab(fromHash || (unlocked && SITE_TABS.includes("assist") ? "assist" : "near"));
+  setSiteTab(fromHash || "near");
 })();
 
 /*@core:js/sheet.js*/

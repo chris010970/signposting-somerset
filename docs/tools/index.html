@@ -1421,7 +1421,7 @@ function fetchRecords() {
     });
 }
 /* ---------- tools page: tabs, About, and the records Assist's pins and "Support for" come from ---------- */
-// Assist itself is the same code as the directory's Assist tab (build/directory/assist-tab/), added after this script.
+// Assist itself (assist/assist.js) is added after this script.
 const TABS = ["assist", "about"];
 let tab = location.hash === "#about" ? "about" : "assist";
 function setTab(t) {
@@ -1432,7 +1432,7 @@ function setTab(t) {
 }
 for (const k of TABS) $("tab-" + k).onclick = () => setTab(k);
 for (const k of TABS) { $("tab-" + k).setAttribute("aria-selected", k === tab); $("panel-" + k).hidden = k !== tab; $("hdr-" + k).hidden = k !== tab; }
-// (Assist's script, added after this one, opens itself or the About tab: see the end of assist-tab.js)
+// (Assist's script, added after this one, opens itself or the About tab: see the end of assist.js)
 
 function renderAbout() {
   $("about").innerHTML = `<article class="aboutpage">
@@ -1450,7 +1450,7 @@ function renderAbout() {
     <p>Community insights: local support set against need (deprivation, disability, distance to the nearest service). Desktop only.</p>
     </section>
     </div></div>
-    <p class="small" id="site-version">Version: tools 2026-11-15 21:09${typeof window.assistRelayVersion === "function" ? window.assistRelayVersion() : ""}</p>
+    <p class="small" id="site-version">Version: tools 2026-11-15 21:29${typeof window.assistRelayVersion === "function" ? window.assistRelayVersion() : ""}</p>
   </article>`;
 }
 
@@ -1463,12 +1463,12 @@ function useRecords(recs) {
 if (SHEET_CSV_URL) fetchRecords().then(useRecords).catch(e => console.error("Sheet load error", e));
 </script>
 <script>
-/* ---------- Assist tab (v2 only) ----------
+/* ---------- Assist (the tools page) ----------
    Locked until a valid access code is entered. The code is checked by the Worker (server side);
    this page only remembers it for the current browser session. */
 (() => {
 const WORKER_URL = "https://signposting-assist.c-r-williams0109.workers.dev";
-const PAGE_VERSION = "tools 2026-11-15 21:09";
+const PAGE_VERSION = "tools 2026-11-15 21:29";
 let relayVersion = "";
 // The version line is at the bottom of the About tab: "Version: test 2026-11-06 11:30 · Assist relay 2026-11-06 11:07"
 window.assistRelayVersion = () => relayVersion ? ` · Assist relay ${relayVersion}` : "";
@@ -1585,30 +1585,9 @@ function syncMode() {
 $a("a-mode").addEventListener("change", syncMode);
 syncMode();
 
-// Shared with In person: what's chosen on one tab is there on the other
-function pushToMain() {
-  try {
-    fs.value = $a("a-support").value;
-    $a("within").value = $a("a-rad").value;
-    if (place.kind === "place") { $a("f-town").value = place.name; origin = { lat: place.lat, lon: place.lon, label: place.name }; }
-    else if (place.kind === "pt") {
-      const lab = place.label === "Your location" ? "your location" : "the point on the map";
-      setPtLabel(place.label); $a("f-town").value = "__pt"; origin = { lat: place.lat, lon: place.lon, label: lab }; }
-    else { $a("f-town").value = ""; origin = null; }
-    sortBy = origin ? "near" : "soon"; fitPending = true;
-  } catch (e) { /* the In person tab isn't ready yet: nothing to share */ }
-}
-function pullFromMain() {
-  if (typeof fs === "undefined") return;   // on the tools page there's no In person tab to copy from
-  $a("a-support").innerHTML = fs.innerHTML; $a("a-support").value = fs.value;
-  $a("aq-support").classList.toggle("on", !!fs.value);
-  const w = $a("within").value; $a("a-rad").value = w === "0" ? "20" : w;
-  const t = $a("f-town").value;
-  if (origin && PLACE[t]) place = placeByName(t);
-  else if (origin) place = { kind: "pt", lat: round2(origin.lat), lon: round2(origin.lon), label: origin.label === "your location" ? "Your location" : "Point on the map (" + nearest([origin.lat, origin.lon]) + ")" };
-  else place = { kind: "" };
-  setPlace(place);
-}
+// (In the directory, Assist shared its choices with the In person tab. On the tools page there's nothing to share.)
+function pushToMain() {}
+function pullFromMain() {}
 
 // ---- location button: rounded before use, like a map click ----
 (() => {

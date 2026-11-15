@@ -1,5 +1,5 @@
 /* ---------- tools page: tabs, About, and the records Assist's pins and "Support for" come from ---------- */
-// Assist itself is the same code as the directory's Assist tab (build/directory/assist-tab/), added after this script.
+// Assist itself (assist/assist.js) is added after this script.
 const TABS = ["assist", "about"];
 let tab = location.hash === "#about" ? "about" : "assist";
 function setTab(t) {
@@ -10,7 +10,7 @@ function setTab(t) {
 }
 for (const k of TABS) $("tab-" + k).onclick = () => setTab(k);
 for (const k of TABS) { $("tab-" + k).setAttribute("aria-selected", k === tab); $("panel-" + k).hidden = k !== tab; $("hdr-" + k).hidden = k !== tab; }
-// (Assist's script, added after this one, opens itself or the About tab: see the end of assist-tab.js)
+// (Assist's script, added after this one, opens itself or the About tab: see the end of assist.js)
 
 function renderAbout() {
   $("about").innerHTML = `<article class="aboutpage">

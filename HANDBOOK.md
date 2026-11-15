@@ -95,9 +95,9 @@ These are decisions, not accidents. Keep to them unless deliberately changed (an
 
 | Folder | What |
 |---|---|
-| `build/directory/` | The directory: `template.html` (site), `assist-tab/` (Assist tab), `assist/worker-template.js` (worker and AI prompt), `towns.json`, build scripts |
+| `build/directory/` | The directory: `template.html` (site), `assist/worker-template.js` (Assist's worker and AI prompt), `towns.json`, build scripts |
 | `build/analytics/` | Analytics: `DESIGN.md` (decisions so far), the v24 code, `make_analytics_data.py` (rebuilds `docs/assets/analytics-lsoa.geojson`) |
-| `build/tools/` | The tools page (`/tools/`): Assist on its own. `build_tools.py`, `template.html`, `tools.js`; Assist's own files are still in `build/directory/assist-tab/` |
+| `build/tools/` | The tools page (`/tools/`): Assist (`assist/`), About. `build_tools.py`, `template.html`, `tools.js`. The directory links to it ("For professionals →"); old `#assist` links forward there |
 | `build/core/` | Code shared by the directory and the tools pages (styles, crisis and helpline bars, places, schedules, cards, sheet loading); see its README |
 | `build/browse/` | Town pages: `build_browse.py`, `towns.json`, `categories.json` |
 | `build/shared/` | Build helpers: `site_config.py` (base path), `core.py` (stitches `build/core/` into pages) |
@@ -111,7 +111,7 @@ python directory/build_assist.py                   # rebuilds the worker: direct
 
 - Edit the sources above; never edit the generated files.
 - Each build stamps a version (`directory 2026-11-15 12:50`), visible on the site and in Assist, so you can tell which build is live.
-- **Deploy the site:** copy `build/directory/github/directory/index.html` → repo `docs/directory/index.html` and `build/directory/github/test/directory/index.html` → `docs/test/directory/index.html`, commit, push. GitHub Pages updates in a few minutes.
+- **Deploy the site:** copy `build/directory/github/directory/index.html` → repo `docs/directory/index.html` and `build/directory/github/test/directory/index.html` → `docs/test/directory/index.html`, and `build/tools/out/tools/index.html` → `docs/tools/index.html`, `build/tools/out/test/tools/index.html` → `docs/test/tools/index.html`, commit, push. GitHub Pages updates in a few minutes.
 - **Deploy the worker:** Cloudflare → `signposting-assist` → Edit code → paste `build/directory/assist/cloudflare-worker.js` → Deploy. Also copy it to `src/`. Check the version shown on the Assist tab.
 - Test on `/test/directory/` first, then build the live directory.
 - **Where the site is served:** `build/site.json` → `base_path`. It is `"/signposting-somerset-v2"` while this repo is previewed on github.io, and must be `""` on signpostingsomerset.org.uk. Every build adds it to links and images that start with `/` (`build/shared/site_config.py`).
