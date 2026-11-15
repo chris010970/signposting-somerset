@@ -1,10 +1,11 @@
-"""Build the Browse pages: a landing page and one page per town, as plain HTML that search engines can read.
+"""Build the town pages (the directory's "By town" tab): a landing page and one page per town, as plain HTML that search engines can read.
 
-    python build_browse.py path/to/services.csv          # live (out/browse/) and test (out/test/browse/)
+    python build_browse.py path/to/services.csv          # live (out/directory/towns/) and test (out/test/directory/towns/)
     python build_browse.py path/to/services.csv test     # test only
     python build_browse.py                               # reads the published sheet (directory/sheet_url.txt)
 
-Publish: copy out/browse/ -> docs/browse/, out/test/browse/ -> docs/test/browse/, and out/sitemap.xml -> docs/sitemap.xml.
+Publish: copy out/directory/towns/ -> docs/directory/towns/, out/test/directory/towns/ -> docs/test/directory/towns/,
+and out/sitemap.xml -> docs/sitemap.xml. They are the directory's "By town" tab.
 Configuration (no code changes needed): towns.json (which towns, radius) and categories.json (sections and buttons).
 The pages look and behave like one page: picking a town swaps the main area in place, but every town has its own address.
 Rules kept here: only in-person services (not courses) with a place; Crisis Safe Space addresses are never in the data, so
@@ -223,10 +224,6 @@ html, body { height: auto; } body { display: block; padding-bottom: calc(var(--f
 .hero .brand { font-family: var(--serif); color: var(--b900); font-size: 24px; font-weight: 700; line-height: 1.1; margin: 0; display: flex; align-items: center; gap: 9px; text-decoration: none; }
 .hero .brand .logo { height: 34px; width: auto; flex: none; margin: -2px 0 -1px; }
 /* The tab row, as the directory's */
-.btabs { margin-bottom: 0; align-items: flex-end; }
-.btabs a { white-space: nowrap; padding: 9px 14px 10px; font-weight: 700; font-size: 14px; color: #78716C; text-decoration: none; border-bottom: 3px solid transparent; margin-bottom: -1px; }
-.btabs a:hover { color: var(--b900); }
-.btabs a[aria-current] { color: var(--b900); border-bottom-color: var(--b600); }
 .bw { max-width: 1400px; margin: 0 auto; display: grid; grid-template-columns: 200px minmax(0, 1fr); gap: 28px; padding-top: 18px; }
 .btowns { position: sticky; top: 12px; align-self: start; max-height: calc(100vh - var(--footh, 56px) - 24px); overflow-y: auto; }
 .btowns .bh { display: block; font-weight: 700; font-size: 11px; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); text-decoration: none; margin: 2px 0 6px; }
@@ -372,7 +369,7 @@ def page(title, desc, canonical, robots, main_html, nav_html, sel_html, dirbase,
         <a class="brand" href="{dirbase}"><img class="logo" src="/assets/logo-signpost.webp" alt="" width="31" height="34">Signposting Somerset</a>
         <p class="lede"><span class="lg">Connecting people with local mental health and wellbeing support.</span><span class="sh">Local mental health and wellbeing support.</span></p>
       </div>
-      <nav class="sitetabs btabs" aria-label="Site"><a href="{dirbase}#near">← Full directory</a><a href="{base}" aria-current="page">Support by town</a></nav>
+      <nav class="sitetabs" aria-label="Site"><span class="tgrp"><a class="tab" href="{dirbase}#near">In person</a><a class="tab" href="{dirbase}#talk"><span class="lg">Phone and online</span><span class="sh">Phone &amp; online</span></a><a class="tab" href="{dirbase}#course">Courses</a><a class="tab" href="{base}" aria-current="page">By town</a></span><a class="tab sep" href="{dirbase}#about">About</a><a class="tolink" href="{dirbase.replace("directory/", "tools/")}">For professionals →</a></nav>
     </div>
   </div>
 </header>
@@ -404,9 +401,9 @@ def town_select(base, current):
     return f'<div class="btownsel"><label for="btown">Town</label><select id="btown">{first}{opts}</select></div>'
 
 # ---------- build ----------
-TARGETS = [("test", "/test/browse/", "/test/directory/", None, '<meta name="robots" content="noindex, nofollow">\n')]
+TARGETS = [("test", "/test/directory/towns/", "/test/directory/", None, '<meta name="robots" content="noindex, nofollow">\n')]
 if not ONLY_TEST:
-    TARGETS.insert(0, ("browse", "/browse/", "/directory/", SITE, ""))
+    TARGETS.insert(0, ("towns", "/directory/towns/", "/directory/", SITE, ""))
 OUT = HERE / "out"
 data = {t: services_for(t) for _, ts in AREAS for t in ts}
 totals = {t: len(v) for t, v in data.items()}
@@ -417,16 +414,16 @@ for name, base, dirbase, site, robots in TARGETS:
     title = "Find mental health and wellbeing support by town | Signposting Somerset"
     desc = "Free and low-cost mental health and wellbeing support across Somerset, North Somerset and Bath & North East Somerset, by town: groups, activities and services with times and contacts."
     (root / "index.html").write_text(page(title, desc, canon(base), robots, landing_main(base, dirbase, totals), "", "", dirbase,
-        [("Signposting Somerset", SITE + "/directory/"), ("Find support by town", SITE + "/browse/")], base), encoding="utf-8")
+        [("Signposting Somerset", SITE + "/directory/"), ("Find support by town", SITE + "/directory/towns/")], base), encoding="utf-8")
     for t, items in data.items():
         counts = {c["id"]: len({id(r) for _, r in items if c["id"] in r["_cats"]}) for c in CATS}
         d = root / slug(t); d.mkdir(exist_ok=True)
         (d / "index.html").write_text(page(f"Mental health and wellbeing support in {t} | Signposting Somerset", summary(t, counts), canon(base + slug(t) + "/"), robots,
             town_main(t, items, dirbase), town_nav(base, t), town_select(base, t), dirbase,
-            [("Signposting Somerset", SITE + "/directory/"), ("Find support by town", SITE + "/browse/"), (t, SITE + "/browse/" + slug(t) + "/")], base), encoding="utf-8")
+            [("Signposting Somerset", SITE + "/directory/"), ("Find support by town", SITE + "/directory/towns/"), (t, SITE + "/directory/towns/" + slug(t) + "/")], base), encoding="utf-8")
     print(f"out/{base.strip('/')}/: landing + {len(data)} towns")
 if not ONLY_TEST:
-    urls = [SITE + "/directory/", SITE + "/browse/"] + [SITE + "/browse/" + slug(t) + "/" for t in data]
+    urls = [SITE + "/directory/", SITE + "/directory/towns/"] + [SITE + "/directory/towns/" + slug(t) + "/" for t in data]
     (OUT / "sitemap.xml").write_text('<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n' +
         "".join(f"  <url><loc>{u}</loc><changefreq>weekly</changefreq></url>\n" for u in urls) + "</urlset>\n", encoding="utf-8")
     print(f"out/sitemap.xml: {len(urls)} addresses")

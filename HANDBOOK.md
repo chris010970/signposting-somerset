@@ -8,7 +8,7 @@ Last updated: 15 November 2026.
 
 ## 1. What it is
 
-- **The site:** https://signpostingsomerset.org.uk. The directory is at `/directory/`; the root and the old `/main/` address forward to it (keeping any tab, e.g. `/main/#about`). `/test/` mirrors the site for trying changes first (`/test/directory/`, `/test/browse/`; not indexed by Google; `/test/` itself forwards to `/test/directory/`). Planned: `/browse/` (simple pages by town) and `/analytics/` (coverage analysis, desktop only).
+- **The site:** https://signpostingsomerset.org.uk. The directory is at `/directory/`, with its By town pages at `/directory/towns/`; the root and the old `/main/` address forward to it (keeping any tab, e.g. `/main/#about`). Tools for professionals (Assist; community insights to come) are at `/tools/`. `/test/` mirrors the site for trying changes first (`/test/directory/`, `/test/directory/towns/`, `/test/tools/`; not indexed by Google; `/test/` itself forwards to `/test/directory/`).
 - **Coverage:** Somerset (Somerset Council area), North Somerset, and Bath and North East Somerset (B&NES), plus national phone and online services.
 - **Audience:** support workers, volunteers and anyone looking for help, activities or community connections.
 - **Data:** one Google Sheet (published as CSV). The site reads it live; nothing needs rebuilding when the sheet changes.
@@ -18,7 +18,7 @@ Last updated: 15 November 2026.
 
 | What | Where |
 |---|---|
-| Live pages | repo `docs/directory/index.html` (live), `docs/test/directory/index.html` (test); `docs/test/browse/` (test town pages); `docs/index.html` and `docs/main/index.html` are forwarders to `/directory/` |
+| Live pages | repo `docs/directory/index.html` (live), `docs/test/directory/index.html` (test); `docs/directory/towns/` and `docs/test/directory/towns/` (town pages); `docs/tools/` and `docs/test/tools/` (tools page); `docs/index.html` and `docs/main/index.html` are forwarders to `/directory/` |
 | Site assets | `docs/assets/` (icons, `share.png` link-preview image), `docs/favicon.ico`, `docs/sitemap.xml` |
 | Build sources | repo `build/`, one folder per part of the site (see section 7) |
 | Worker | Cloudflare: Workers & Pages → `signposting-assist`. Copy of the code in `src/cloudflare-worker.js` and `build/directory/assist/` |
@@ -99,7 +99,7 @@ These are decisions, not accidents. Keep to them unless deliberately changed (an
 | `build/analytics/` | Analytics: `DESIGN.md` (decisions so far), the v24 code, `make_analytics_data.py` (rebuilds `docs/assets/analytics-lsoa.geojson`) |
 | `build/tools/` | The tools page (`/tools/`): Assist (`assist/`), About. `build_tools.py`, `template.html`, `tools.js`. The directory links to it ("For professionals →"); old `#assist` links forward there |
 | `build/core/` | Code shared by the directory and the tools pages (styles, crisis and helpline bars, places, schedules, cards, sheet loading); see its README |
-| `build/browse/` | Town pages: `build_browse.py`, `towns.json`, `categories.json` |
+| `build/browse/` | Town pages (the directory's By town tab, `/directory/towns/`): `build_browse.py`, `towns.json`, `categories.json` |
 | `build/shared/` | Build helpers: `site_config.py` (base path), `core.py` (stitches `build/core/` into pages) |
 
 ```

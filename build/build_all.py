@@ -4,7 +4,7 @@
 build/ holds one folder per part of the site:
   directory/  the interactive directory (template.html, build.py, build_v2.py, Assist sources)
   tools/      the tools page, /tools/: Assist on its own (build_tools.py, template.html, tools.js)
-  browse/     the town pages (build_browse.py; run it separately, it reads the sheet or a CSV)
+  browse/     the town pages, the directory's By town tab (build_browse.py; run it separately, it reads the sheet or a CSV)
   analytics/  community insights (coming; make_analytics_data.py rebuilds docs/assets/analytics-lsoa.geojson)
   core/       code shared by the directory and the tools page
   shared/     build helpers (base path, stitching core/ into pages)

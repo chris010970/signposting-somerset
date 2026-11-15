@@ -1,4 +1,25 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url><loc>https://signpostingsomerset.org.uk/directory/</loc><changefreq>weekly</changefreq></url>
+  <url><loc>https://signpostingsomerset.org.uk/directory/towns/</loc><changefreq>weekly</changefreq></url>
+  <url><loc>https://signpostingsomerset.org.uk/directory/towns/bridgwater/</loc><changefreq>weekly</changefreq></url>
+  <url><loc>https://signpostingsomerset.org.uk/directory/towns/burnham-on-sea/</loc><changefreq>weekly</changefreq></url>
+  <url><loc>https://signpostingsomerset.org.uk/directory/towns/chard/</loc><changefreq>weekly</changefreq></url>
+  <url><loc>https://signpostingsomerset.org.uk/directory/towns/crewkerne/</loc><changefreq>weekly</changefreq></url>
+  <url><loc>https://signpostingsomerset.org.uk/directory/towns/frome/</loc><changefreq>weekly</changefreq></url>
+  <url><loc>https://signpostingsomerset.org.uk/directory/towns/glastonbury/</loc><changefreq>weekly</changefreq></url>
+  <url><loc>https://signpostingsomerset.org.uk/directory/towns/minehead/</loc><changefreq>weekly</changefreq></url>
+  <url><loc>https://signpostingsomerset.org.uk/directory/towns/shepton-mallet/</loc><changefreq>weekly</changefreq></url>
+  <url><loc>https://signpostingsomerset.org.uk/directory/towns/street/</loc><changefreq>weekly</changefreq></url>
+  <url><loc>https://signpostingsomerset.org.uk/directory/towns/taunton/</loc><changefreq>weekly</changefreq></url>
+  <url><loc>https://signpostingsomerset.org.uk/directory/towns/wellington/</loc><changefreq>weekly</changefreq></url>
+  <url><loc>https://signpostingsomerset.org.uk/directory/towns/wells/</loc><changefreq>weekly</changefreq></url>
+  <url><loc>https://signpostingsomerset.org.uk/directory/towns/yeovil/</loc><changefreq>weekly</changefreq></url>
+  <url><loc>https://signpostingsomerset.org.uk/directory/towns/clevedon/</loc><changefreq>weekly</changefreq></url>
+  <url><loc>https://signpostingsomerset.org.uk/directory/towns/nailsea/</loc><changefreq>weekly</changefreq></url>
+  <url><loc>https://signpostingsomerset.org.uk/directory/towns/portishead/</loc><changefreq>weekly</changefreq></url>
+  <url><loc>https://signpostingsomerset.org.uk/directory/towns/weston-super-mare/</loc><changefreq>weekly</changefreq></url>
+  <url><loc>https://signpostingsomerset.org.uk/directory/towns/bath/</loc><changefreq>weekly</changefreq></url>
+  <url><loc>https://signpostingsomerset.org.uk/directory/towns/keynsham/</loc><changefreq>weekly</changefreq></url>
+  <url><loc>https://signpostingsomerset.org.uk/directory/towns/midsomer-norton/</loc><changefreq>weekly</changefreq></url>
 </urlset>

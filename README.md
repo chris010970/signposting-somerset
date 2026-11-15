@@ -45,7 +45,7 @@ Spotted something out of date, or know a service that should be listed? [**Sugge
 <summary><b>How it's built</b></summary>
 
 - **Records** live in a shared Google Sheet, so people with local knowledge can keep them up to date. The site reads the published sheet directly, so changes appear within minutes.
-- **The site** is static pages hosted on GitHub Pages: the directory in `docs/directory/`, with `docs/test/` mirroring the site for trying changes first (`docs/test/directory/`, `docs/test/browse/`), and images in `docs/assets/`.
+- **The site** is static pages hosted on GitHub Pages: the directory in `docs/directory/`, with `docs/test/` mirroring the site for trying changes first (`docs/test/directory/`, `docs/test/directory/towns/`, `docs/test/tools/`), the town pages in `docs/directory/towns/`, the tools page in `docs/tools/`, and images in `docs/assets/`.
 - **Assist** runs through a small Cloudflare Worker (`src/cloudflare-worker.js`) that checks the access code, chooses candidate services by distance (removing personal details again before any online search), and asks Claude (Anthropic) for the plan. The API key and access code are kept in Cloudflare, never in this repository.
 - **Tools** in `src/` help check the sheet and add map locations.
 
