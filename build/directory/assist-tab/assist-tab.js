@@ -134,6 +134,7 @@ function pushToMain() {
   } catch (e) { /* the In person tab isn't ready yet: nothing to share */ }
 }
 function pullFromMain() {
+  if (typeof fs === "undefined") return;   // on the tools page there's no In person tab to copy from
   $a("a-support").innerHTML = fs.innerHTML; $a("a-support").value = fs.value;
   $a("aq-support").classList.toggle("on", !!fs.value);
   const w = $a("within").value; $a("a-rad").value = w === "0" ? "20" : w;

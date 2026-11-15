@@ -30,5 +30,6 @@ desktop.ini
 .vscode/
 .idea/
 
-# Browse pages output (copied into docs/ to publish)
+# Browse and tools pages output (copied into docs/ to publish)
 build/browse/out/
+build/tools/out/

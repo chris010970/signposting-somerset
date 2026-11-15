@@ -1,0 +1,69 @@
+.aboutpage { overflow: hidden; }
+header.top { position: relative; overflow: hidden; background: var(--white); border-bottom: 1px solid var(--line); padding-block: 10px 10px; }
+.inner { max-width: 1400px; margin: 0 auto; }
+h1 { font-family: var(--serif); color: var(--b900); font-size: 26px; margin: 0; }
+.lede { color: #78716C; margin: 2px 0 14px; }
+.datasrc { color: #78716C; font-size: 12px; margin: -10px 0 12px; }
+.qs { display: grid; grid-template-columns: 27% 33% minmax(0, 1fr) auto; gap: 10px; }
+@media (max-width: 899px) { .qs { grid-template-columns: 1fr; } }
+.q { background: var(--b50); border: 2px solid transparent; border-radius: 10px; padding: 5px 10px; min-width: 0; }
+.q.on { background: var(--white); border-color: var(--b500); }
+.q label, .q .lab { display: block; font-size: 10px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: var(--b700); margin: 0 0 2px 2px; }
+.q select { width: 100%; border: 0; background: transparent; font-weight: 600; color: var(--ink); padding: 2px 0; cursor: pointer; }
+.where { display: grid; grid-template-columns: 1fr auto auto; gap: 8px; align-items: center; }
+.where select#within { width: auto; }
+#q-where { position: relative; }
+.pointnote { position: absolute; right: 10px; top: 6px; max-width: 70%; font-size: 11px; line-height: 1.2; color: #9A3412; text-align: right; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.pointnote:empty { display: none; }
+.locbtn { display: grid; place-items: center; width: 26px; height: 26px; border: 1px solid #C9D6CE; border-radius: 50%; background: var(--white); color: var(--b700); cursor: pointer; padding: 0; }
+.locbtn:hover, .locbtn:focus-visible { border-color: var(--b500); background: var(--b50); }
+.locbtn svg { width: 14px; height: 14px; }
+.locbtn[disabled] { opacity: .5; cursor: progress; }
+.pointnote button { border: 0; background: none; color: var(--b700); text-decoration: underline; cursor: pointer; padding: 0; font-size: 11px; }
+.sumrow { display: flex; justify-content: space-between; align-items: center; gap: 10px; margin-top: 10px; padding-top: 8px; border-top: 1px solid #F5F5F4; flex-wrap: wrap; }
+/* Count line hidden on screen; still read out by screen readers when results change */
+.summary { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+.sumrow { margin: 0; padding: 0; border: 0; }
+.qs .sort .lab { font-size: 12px; color: var(--muted); }
+@media (min-width: 900px) {
+  .qs .sort { flex-direction: column; align-items: flex-start; justify-content: center; gap: 2px; background: var(--b50); border-radius: 10px; padding: 5px 10px; }
+  .qs .sort .lab { display: block; font-size: 10px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: var(--b700); margin: 0 0 2px 2px; }
+}
+.summary b { color: var(--ink); background: #F1F5F9; padding: 1px 6px; border-radius: 4px; }
+.sort { display: flex; gap: 6px; align-items: center; font-size: 12px; color: var(--muted); }
+.seg { display: inline-flex; background: #E7E5E4; border-radius: 8px; padding: 3px; }
+.seg button { border: 0; background: transparent; padding: 4px 10px; border-radius: 6px; font-size: 12px; font-weight: 600; color: #78716C; cursor: pointer; }
+.seg button[aria-pressed="true"] { background: var(--white); color: var(--b900); box-shadow: 0 1px 2px rgba(0,0,0,.08); }
+.seg button:disabled { opacity: .4; cursor: default; }
+.tabs { display: none; }
+.sitetabs { display: flex; gap: 4px; margin: 4px 0 14px; border-bottom: 1px solid var(--line); overflow-x: auto; scrollbar-width: none; }
+.sitetabs button { white-space: nowrap; }
+.sitetabs .sh { display: none; }
+#about.talk { max-width: 1432px; }  /* 1400 + gutters, so the card lines up with the title and tabs */
+.aboutpage { max-width: none; margin: 0; background: var(--white); border: 1px solid var(--line); border-radius: 16px; padding: 22px 24px; line-height: 1.55; }
+.aboutpage h2 { font-family: var(--serif); color: var(--b900); font-size: 22px; margin: 0 0 6px; }
+.aboutpage h3 { font-family: var(--serif); color: var(--b900); font-size: 17px; margin: 22px 0 6px; }
+.aboutpage p, .aboutpage ul { margin: 6px 0; color: #44403C; }
+.aboutpage ul { padding-left: 20px; }
+.aboutpage .note { background: #FFF7ED; border: 1px solid #FED7AA; border-radius: 12px; padding: 10px 14px; color: #7C2D12; margin: 12px 0 4px; }
+.aboutpage .note { max-width: none; }
+/* Two fixed columns (one on narrow screens), each a simple stack, so a short section doesn't leave a gap beside a long one.
+   Left: what it is, what's included, About Assist (with its lock button). Right: how it's kept accurate, suggest a change. */
+.aboutpage .acols { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 420px), 1fr)); gap: 0 48px; align-items: start; margin-top: 18px; }
+.aboutpage .acols section { max-width: 68ch; margin: 0 0 18px; }
+.aboutpage .acols section > h3:first-child { margin-top: 0; }
+.aboutpage .stats { font-weight: 700; color: var(--b800); }
+.aboutpage .btn { display: inline-block; margin-top: 6px; background: var(--b700); color: #fff; text-decoration: none; font-weight: 700; padding: 10px 16px; border-radius: 10px; }
+.aboutpage .small { font-size: 13px; color: #78716C; }
+.aboutpage a:not(.btn) { color: var(--b700); text-decoration-color: var(--b200); text-underline-offset: 2px; }   /* same as Assist */
+.aboutpage a:not(.btn):hover { color: var(--b900); text-decoration-color: currentColor; }
+.sitetabs button { border: 0; background: none; padding: 9px 14px 10px; font-weight: 700; font-size: 14px; color: #78716C; cursor: pointer; border-bottom: 3px solid transparent; margin-bottom: -1px; }
+.sitetabs button[aria-selected="true"] { color: var(--b900); border-bottom-color: var(--b600); }
+/* Tabs in groups: Browse (In person, Phone and online, Courses) | Assist | About */
+.sitetabs { align-items: flex-end; }
+.sitetabs .tgrp { display: inline-flex; align-items: flex-end; gap: 4px; position: relative; flex: none; }
+.sitetabs #tab-assist, .sitetabs #tab-about { margin-left: 6px; padding-left: 14px; position: relative; }
+.sitetabs #tab-assist::before, .sitetabs #tab-about::before { content: ""; position: absolute; left: 0; top: 10px; bottom: 12px; border-left: 1px solid var(--line); }
+/* On narrow phones the last tab may not fit: fade the edge so it's clear the row scrolls */
+.sitetabs.more { -webkit-mask-image: linear-gradient(to right, #000 calc(100% - 36px), transparent); mask-image: linear-gradient(to right, #000 calc(100% - 36px), transparent); }
+@media (max-width: 420px) { .sitetabs { gap: 0; } .sitetabs .tgrp { gap: 0; } .sitetabs button { padding-inline: 5px; font-size: 13px; } .sitetabs #tab-assist, .sitetabs #tab-about { margin-left: 1px; padding-left: 7px; } .sitetabs #tab-assist { gap: 4px; } .sitetabs .lg { display: none; } .sitetabs .sh { display: inline; } }

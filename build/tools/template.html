@@ -1,0 +1,58 @@
+<title>Signposting Somerset: tools</title>
+<meta name="description" content="Tools for support workers, volunteers and community organisations using Signposting Somerset: Assist, a support-planning trial.">
+<!--ROBOTS-->
+<!--CANONICAL-->
+<!--@core:html/head.html-->
+<style>/*LEAFLET_CSS*/</style>
+<style>
+/*@core:css/base.css*/
+
+/*@core:css/crisis.css*/
+
+/*@core:css/header.css*/
+/*@core:css/page.css*/
+/*@core:css/cards.css*/
+/*@core:css/helpline.css*/
+/* The way back to the directory, in the tab row: a link, styled like the tabs */
+.sitetabs a.back { white-space: nowrap; padding: 9px 14px 10px; font-weight: 700; font-size: 14px; color: #78716C; text-decoration: none; border-bottom: 3px solid transparent; margin-bottom: -1px; margin-right: 6px; }
+.sitetabs a.back:hover, .sitetabs a.back:focus-visible { color: var(--b900); }
+#about.talk { max-width: 1432px; margin: 0 auto; padding-block: 14px 110px; }
+@media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
+</style>
+
+<!--@core:html/crisis.html-->
+
+<header class="top gut">
+  <div class="inner">
+    <div class="masthead">
+<!--@core:html/brand.html-->
+    </div>
+    <nav class="sitetabs" role="tablist" aria-label="Tools">
+      <a class="back" href="/*DIRECTORY*/">← Find support</a>
+<!--ASSIST_TAB-->
+      <button type="button" role="tab" id="tab-about" aria-selected="false" aria-controls="panel-about">About</button>
+    </nav>
+    </div>
+<!--ASSIST_HDR-->
+    <div id="hdr-about" hidden></div>
+  </div>
+</header>
+
+<!--ASSIST_PANEL-->
+<section id="panel-about" role="tabpanel" aria-labelledby="tab-about" hidden style="flex:1;min-height:0;overflow-y:auto"><div class="talk gut" id="about"></div></section>
+
+<!--@core:html/helpline.html-->
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.js"></script>
+<script>
+/*@core:js/helpline-height.js*/
+/*@core:js/places.js*/
+/*@core:js/text-time.js*/
+/*@core:js/records.js*/
+/*@core:js/kinds.js*/
+const $ = id => document.getElementById(id);
+let ALL = [];
+/*@core:js/cards.js*/
+/*@core:js/sheet.js*/
+/*TOOLS_JS*/
+</script>

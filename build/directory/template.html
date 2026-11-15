@@ -13,13 +13,7 @@
 <meta property="og:locale" content="en_GB">
 <meta name="twitter:card" content="summary_large_image">
 <script type="application/ld+json">{"@context":"https://schema.org","@type":"WebSite","name":"Signposting Somerset","url":"https://signpostingsomerset.org.uk/","description":"Discover mental health and wellbeing support across Somerset, North Somerset and B&NES: what's on, when and where."}</script>
-<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2064%2064%22%3E%3Crect%20width%3D%2264%22%20height%3D%2264%22%20rx%3D%2214%22%20fill%3D%22%23F2F6F4%22%2F%3E%3Cellipse%20cx%3D%2232%22%20cy%3D%2256%22%20rx%3D%2217%22%20ry%3D%224.5%22%20fill%3D%22%23C2D6CA%22%2F%3E%3Crect%20x%3D%2227.5%22%20y%3D%227%22%20width%3D%229%22%20height%3D%2249%22%20rx%3D%222.5%22%20fill%3D%22%238B735A%22%20stroke%3D%22%234A3A2C%22%20stroke-width%3D%223%22%2F%3E%3Cpath%20d%3D%22M8%2017h38l11%2011-11%2011H8z%22%20fill%3D%22%23CEB69B%22%20stroke%3D%22%234A3A2C%22%20stroke-width%3D%223.5%22%20stroke-linejoin%3D%22round%22%2F%3E%3Cpath%20d%3D%22M13%2025h27M13%2031h20%22%20stroke%3D%22%23A88E72%22%20stroke-width%3D%222%22%20stroke-linecap%3D%22round%22%2F%3E%3C%2Fsvg%3E">
-<link rel="icon" type="image/png" sizes="192x192" href="/assets/icon-192.png">
-<link rel="apple-touch-icon" href="/assets/apple-touch-icon.png">
-<meta name="claude:viewport-fit-sides" content="cover">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Literata:opsz,wght@7..72,600;7..72,700&display=swap">
+<!--@core:html/head.html-->
 <style>/*LEAFLET_CSS*/</style>
 <style>
 /*@core:css/base.css*/
@@ -27,75 +21,7 @@
 /*@core:css/crisis.css*/
 
 /*@core:css/header.css*/
-.aboutpage { overflow: hidden; }
-header.top { position: relative; overflow: hidden; background: var(--white); border-bottom: 1px solid var(--line); padding-block: 10px 10px; }
-.inner { max-width: 1400px; margin: 0 auto; }
-h1 { font-family: var(--serif); color: var(--b900); font-size: 26px; margin: 0; }
-.lede { color: #78716C; margin: 2px 0 14px; }
-.datasrc { color: #78716C; font-size: 12px; margin: -10px 0 12px; }
-.qs { display: grid; grid-template-columns: 27% 33% minmax(0, 1fr) auto; gap: 10px; }
-@media (max-width: 899px) { .qs { grid-template-columns: 1fr; } }
-.q { background: var(--b50); border: 2px solid transparent; border-radius: 10px; padding: 5px 10px; min-width: 0; }
-.q.on { background: var(--white); border-color: var(--b500); }
-.q label, .q .lab { display: block; font-size: 10px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: var(--b700); margin: 0 0 2px 2px; }
-.q select { width: 100%; border: 0; background: transparent; font-weight: 600; color: var(--ink); padding: 2px 0; cursor: pointer; }
-.where { display: grid; grid-template-columns: 1fr auto auto; gap: 8px; align-items: center; }
-.where select#within { width: auto; }
-#q-where { position: relative; }
-.pointnote { position: absolute; right: 10px; top: 6px; max-width: 70%; font-size: 11px; line-height: 1.2; color: #9A3412; text-align: right; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.pointnote:empty { display: none; }
-.locbtn { display: grid; place-items: center; width: 26px; height: 26px; border: 1px solid #C9D6CE; border-radius: 50%; background: var(--white); color: var(--b700); cursor: pointer; padding: 0; }
-.locbtn:hover, .locbtn:focus-visible { border-color: var(--b500); background: var(--b50); }
-.locbtn svg { width: 14px; height: 14px; }
-.locbtn[disabled] { opacity: .5; cursor: progress; }
-.pointnote button { border: 0; background: none; color: var(--b700); text-decoration: underline; cursor: pointer; padding: 0; font-size: 11px; }
-.sumrow { display: flex; justify-content: space-between; align-items: center; gap: 10px; margin-top: 10px; padding-top: 8px; border-top: 1px solid #F5F5F4; flex-wrap: wrap; }
-/* Count line hidden on screen; still read out by screen readers when results change */
-.summary { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
-.sumrow { margin: 0; padding: 0; border: 0; }
-.qs .sort .lab { font-size: 12px; color: var(--muted); }
-@media (min-width: 900px) {
-  .qs .sort { flex-direction: column; align-items: flex-start; justify-content: center; gap: 2px; background: var(--b50); border-radius: 10px; padding: 5px 10px; }
-  .qs .sort .lab { display: block; font-size: 10px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: var(--b700); margin: 0 0 2px 2px; }
-}
-.summary b { color: var(--ink); background: #F1F5F9; padding: 1px 6px; border-radius: 4px; }
-.sort { display: flex; gap: 6px; align-items: center; font-size: 12px; color: var(--muted); }
-.seg { display: inline-flex; background: #E7E5E4; border-radius: 8px; padding: 3px; }
-.seg button { border: 0; background: transparent; padding: 4px 10px; border-radius: 6px; font-size: 12px; font-weight: 600; color: #78716C; cursor: pointer; }
-.seg button[aria-pressed="true"] { background: var(--white); color: var(--b900); box-shadow: 0 1px 2px rgba(0,0,0,.08); }
-.seg button:disabled { opacity: .4; cursor: default; }
-.tabs { display: none; }
-.sitetabs { display: flex; gap: 4px; margin: 4px 0 14px; border-bottom: 1px solid var(--line); overflow-x: auto; scrollbar-width: none; }
-.sitetabs button { white-space: nowrap; }
-.sitetabs .sh { display: none; }
-#about.talk { max-width: 1432px; }  /* 1400 + gutters, so the card lines up with the title and tabs */
-.aboutpage { max-width: none; margin: 0; background: var(--white); border: 1px solid var(--line); border-radius: 16px; padding: 22px 24px; line-height: 1.55; }
-.aboutpage h2 { font-family: var(--serif); color: var(--b900); font-size: 22px; margin: 0 0 6px; }
-.aboutpage h3 { font-family: var(--serif); color: var(--b900); font-size: 17px; margin: 22px 0 6px; }
-.aboutpage p, .aboutpage ul { margin: 6px 0; color: #44403C; }
-.aboutpage ul { padding-left: 20px; }
-.aboutpage .note { background: #FFF7ED; border: 1px solid #FED7AA; border-radius: 12px; padding: 10px 14px; color: #7C2D12; margin: 12px 0 4px; }
-.aboutpage .note { max-width: none; }
-/* Two fixed columns (one on narrow screens), each a simple stack, so a short section doesn't leave a gap beside a long one.
-   Left: what it is, what's included, About Assist (with its lock button). Right: how it's kept accurate, suggest a change. */
-.aboutpage .acols { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 420px), 1fr)); gap: 0 48px; align-items: start; margin-top: 18px; }
-.aboutpage .acols section { max-width: 68ch; margin: 0 0 18px; }
-.aboutpage .acols section > h3:first-child { margin-top: 0; }
-.aboutpage .stats { font-weight: 700; color: var(--b800); }
-.aboutpage .btn { display: inline-block; margin-top: 6px; background: var(--b700); color: #fff; text-decoration: none; font-weight: 700; padding: 10px 16px; border-radius: 10px; }
-.aboutpage .small { font-size: 13px; color: #78716C; }
-.aboutpage a:not(.btn) { color: var(--b700); text-decoration-color: var(--b200); text-underline-offset: 2px; }   /* same as Assist */
-.aboutpage a:not(.btn):hover { color: var(--b900); text-decoration-color: currentColor; }
-.sitetabs button { border: 0; background: none; padding: 9px 14px 10px; font-weight: 700; font-size: 14px; color: #78716C; cursor: pointer; border-bottom: 3px solid transparent; margin-bottom: -1px; }
-.sitetabs button[aria-selected="true"] { color: var(--b900); border-bottom-color: var(--b600); }
-/* Tabs in groups: Browse (In person, Phone and online, Courses) | Assist | About */
-.sitetabs { align-items: flex-end; }
-.sitetabs .tgrp { display: inline-flex; align-items: flex-end; gap: 4px; position: relative; flex: none; }
-.sitetabs #tab-assist, .sitetabs #tab-about { margin-left: 6px; padding-left: 14px; position: relative; }
-.sitetabs #tab-assist::before, .sitetabs #tab-about::before { content: ""; position: absolute; left: 0; top: 10px; bottom: 12px; border-left: 1px solid var(--line); }
-/* On narrow phones the last tab may not fit: fade the edge so it's clear the row scrolls */
-.sitetabs.more { -webkit-mask-image: linear-gradient(to right, #000 calc(100% - 36px), transparent); mask-image: linear-gradient(to right, #000 calc(100% - 36px), transparent); }
-@media (max-width: 420px) { .sitetabs { gap: 0; } .sitetabs .tgrp { gap: 0; } .sitetabs button { padding-inline: 5px; font-size: 13px; } .sitetabs #tab-assist, .sitetabs #tab-about { margin-left: 1px; padding-left: 7px; } .sitetabs #tab-assist { gap: 4px; } .sitetabs .lg { display: none; } .sitetabs .sh { display: inline; } }
+/*@core:css/page.css*/
 /* Phone and online / Courses bars: the dropdowns share the width evenly; the checkbox sits at the right, where Sort is on In person */
 .tq { display: flex; gap: 10px; align-items: stretch; }
 .tq > .q { flex: 1 1 0; min-width: 0; }
@@ -180,10 +106,7 @@ main { flex: 1; min-height: 0; display: grid; grid-template-columns: minmax(0, 4
 <header class="top gut">
   <div class="inner">
     <div class="masthead">
-      <div class="illus" role="img" aria-label="Watercolour illustration: a path with map pins winding through Somerset fields towards Glastonbury Tor, people meeting and walking together, and a signpost to drop-ins, peer support, advice and community"></div>
-    <div class="hero">
-      <h1><img class="logo" src="/assets/logo-signpost.webp" alt="" width="31" height="34">Signposting Somerset</h1>
-      <p class="lede" id="lede"><span class="lg">Connecting people with local mental health and wellbeing support.</span><span class="sh">Local mental health and wellbeing support.</span></p>
+<!--@core:html/brand.html-->
       <p class="datasrc" id="datasrc" hidden></p>
       <span id="copy-live" role="status" aria-live="polite" style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)"></span>
     </div>
@@ -254,30 +177,21 @@ main { flex: 1; min-height: 0; display: grid; grid-template-columns: minmax(0, 4
 <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.js"></script>
 <script>
 const DATA = /*DATA*/[];
-// Keep the map and list clear of the fixed helpline bar, whatever its height
-(() => { const f = document.getElementById("help"); const set = () => document.documentElement.style.setProperty("--footh", f.offsetHeight + "px");
-  set(); if (window.ResizeObserver) new ResizeObserver(set).observe(f); else addEventListener("resize", set); })();
+/*@core:js/helpline-height.js*/
 /*@core:js/places.js*/
 const LIVE_ONLY = false;  // true in the GitHub version: no built-in copy, records come only from the sheet
 let liveMsg = "<strong>Loading services…</strong>";
 
 /*@core:js/text-time.js*/
+/*@core:js/records.js*/
 /* ---------- controls ---------- */
 const $ = id => document.getElementById(id);
 const fs = $("f-support");
-const supportOptions = list => `<option value="">Anything</option>` + GROUPS.map(([g, vals]) => {
-  const v = vals.filter(x => list.some(s => s._sf.includes(x))); return v.length ? `<optgroup label="${g}">${v.map(x => `<option value="${x}">${esc(cap(x))}</option>`).join("")}</optgroup>` : ""; }).join("");
 
 /* ---------- prepare data (re-run when a different records file is loaded) ---------- */
 let ALL = [], C = [], S = [], T = [];
 function prepare(rows) {
-  ALL = rows.map((s, id) => {
-    let lat = parseFloat(s.lat), lon = parseFloat(s.lon), approx = false;
-    if (isNaN(lat) && TOWNS[s.town]) { [lat, lon] = TOWNS[s.town]; approx = true; }
-    const o = { ...s, id, _days: parseDays(s.days), _times: parseTimes(s.times), _dates: parseDates(s.dates), lat, lon, approx, _sf: split(s.support_for) };
-    o._kind = schedKind(o);
-    return o;
-  }).filter(s => s._kind !== "ended");
+  ALL = shapeRecords(rows);
   C = ALL.filter(s => s.type === "Course");
   S = ALL.filter(s => s.type !== "Course" && split(s.mode).includes("in-person"));
   T = ALL.filter(s => s.type !== "Course" && !split(s.mode).includes("in-person"));  // services with a place live on the In person tab
@@ -780,12 +694,8 @@ function showSource(txt) { const el = $("datasrc"); el.textContent = txt; el.hid
 function panelMessage(html) { for (const id of ["talk", "courses", "list"]) $(id).innerHTML = `<div class="empty">${html}</div>`; $("summary").textContent = ""; }
 if (SHEET_CSV_URL) {
   if (LIVE_ONLY) { showSource(""); panelMessage(liveMsg); } else showSource("Loading the latest records…");
-  const ctl = new AbortController(); setTimeout(() => ctl.abort(), 15000);
-  fetch(SHEET_CSV_URL, { cache: "no-store", signal: ctl.signal })
-    .then(r => { if (!r.ok) throw new Error("HTTP " + r.status); return r.text(); })
-    .then(text => {
-      const { recs, error } = recordsFromCSV(text);
-      if (error || recs.length < 10) throw new Error(error || "too few records");
+  fetchRecords()
+    .then(recs => {
       try { applyRecords(recs); }
       catch (e) { console.error("Display error", e); showSource(`${recs.length} services loaded, but something went wrong showing them (${e && e.message}). Please send this message to the maintainer.`); return; }
       showSource("");   // success needs no message; problems are still reported here

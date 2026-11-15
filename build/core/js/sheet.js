@@ -34,3 +34,14 @@ function recordsFromCSV(text) {
   }
   return { recs };
 }
+// The latest records from the published sheet (rejects if it can't be reached or looks wrong)
+function fetchRecords() {
+  const ctl = new AbortController(); setTimeout(() => ctl.abort(), 15000);
+  return fetch(SHEET_CSV_URL, { cache: "no-store", signal: ctl.signal })
+    .then(r => { if (!r.ok) throw new Error("HTTP " + r.status); return r.text(); })
+    .then(text => {
+      const { recs, error } = recordsFromCSV(text);
+      if (error || recs.length < 10) throw new Error(error || "too few records");
+      return recs;
+    });
+}

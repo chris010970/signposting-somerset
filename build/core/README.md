@@ -7,16 +7,18 @@ code were written in the template.
 
 | File | What it is |
 |---|---|
+| `html/head.html` | icons and web fonts for the page's head |
 | `css/base.css` | colours and fonts (CSS variables), page basics |
 | `css/crisis.css`, `html/crisis.html` | the crisis bar and Quick exit |
-| `css/header.css` | the header: title, tagline, watercolour strip |
+| `css/header.css`, `html/brand.html` | the header: title, tagline, watercolour strip |
+| `css/page.css` | page frame, the filter boxes (1. Support for, 2. Where?), the tab row, the About page |
 | `css/cards.css` | service cards: badges, chips, kind tag, details, footer line |
-| `css/helpline.css`, `html/helpline.html` | the 24/7 helpline bar at the bottom |
+| `css/helpline.css`, `html/helpline.html`, `js/helpline-height.js` | the 24/7 helpline bar at the bottom (and keeping content clear of it) |
 | `js/places.js` | town centres (records without a postcode), county outline, the "Where?" places |
 | `js/text-time.js` | support-type vocabularies and labels, text helpers, schedule logic (next session, "Nth day of month", check dates), distances |
+| `js/records.js` | records as the pages use them (`shapeRecords`), and the grouped "Support for" choices (`supportOptions`) |
 | `js/kinds.js` | kinds of service and their colours |
 | `js/cards.js` | copy details, tap-to-call, directions |
-| `js/sheet.js` | reading records from the published Google Sheet (CSV) |
+| `js/sheet.js` | reading records from the published Google Sheet (CSV): `fetchRecords()` |
 
-Used by: `build/directory/template.html` (the directory) and, for the town pages' styles, `build/browse/build_browse.py`.
-Next: the tools page (Assist, then insights) built from the same pieces.
+Used by: `build/directory/template.html` (the directory), `build/tools/template.html` (the tools page) and, for the town pages' styles, `build/browse/build_browse.py`.
