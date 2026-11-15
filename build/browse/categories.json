@@ -1,0 +1,15 @@
+{
+  "_about": "Browse pages group services into these sections, in this order. A service appears in every section whose tags it has. 'map' is the support type used for the section's 'View on the map' link (a value of the sheet's support_for column).",
+  "categories": [
+    {"id": "low-mood", "label": "Low mood and anxiety", "button": "Low mood & anxiety", "tags": ["low mood", "anxiety"], "map": "low mood"},
+    {"id": "bereavement", "label": "Bereavement", "button": "Bereavement", "tags": ["bereavement"], "map": "bereavement"},
+    {"id": "connection", "label": "Meeting people", "button": "Meeting people", "tags": ["connect"], "map": "connect"},
+    {"id": "activities", "label": "Activities", "button": "Activities", "tags": ["be active", "take notice", "keep learning", "giving"], "map": "be active"},
+    {"id": "carers", "label": "Carers", "button": "Carers", "tags": ["caring for someone"], "map": "caring for someone"},
+    {"id": "dementia", "label": "Dementia", "button": "Dementia", "tags": ["dementia"], "map": "dementia"},
+    {"id": "addiction", "label": "Addiction", "button": "Addiction", "tags": ["addiction"], "map": "addiction"},
+    {"id": "food", "label": "Food", "button": "Food", "tags": ["food"], "map": "food"},
+    {"id": "money-housing", "label": "Money and housing", "button": "Money & housing", "tags": ["finances", "housing"], "map": "finances"},
+    {"id": "specialist", "label": "Specialist support", "button": "Specialist", "tags": ["crisis prevention", "eating disorders", "hearing voices", "long-term pain", "abuse"], "map": ""}
+  ]
+}
