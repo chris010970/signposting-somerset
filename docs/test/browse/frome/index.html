@@ -324,6 +324,9 @@ html, body { height: auto; } body { display: block; padding-bottom: calc(var(--f
 .br p { margin: 4px 0 0; font-size: 13.5px; line-height: 1.45; color: var(--ink); } .br .bextra, .br .bplace { color: var(--muted); font-size: 12px; margin-top: 2px; }
 .br .bcontact { font-size: 12.5px; margin-top: auto; padding-top: 8px; border-top: 1px solid var(--line); } .br .bcontact a { color: var(--b700); }
 .bw.nolist { grid-template-columns: minmax(0, 1fr); }
+/* These pages scroll and the directory doesn't, so centring on the page width would sit everything half a scrollbar
+   to the left of the directory. Centre on the window width instead, as the directory effectively does. */
+.top .inner, footer .inner, .bw { margin-left: max(0px, calc((100vw - 32px - 1400px) / 2)); margin-right: auto; }
 .bland { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.15fr); gap: 28px; align-items: start; margin-top: 8px; }
 .bmapsvg { width: 100%; height: auto; display: block; } .bmapsvg .land { fill: #E1EBE5; stroke: #fff; stroke-width: 1.5; }
 .bmapsvg a circle { fill: #176B55; stroke: #fff; stroke-width: 2; } .bmapsvg a text { font-size: 13px; font-weight: 600; fill: var(--b900); paint-order: stroke; stroke: #F9F9F7; stroke-width: 3px; }
