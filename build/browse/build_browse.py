@@ -130,16 +130,23 @@ def row(d, r, town):
             + (f'<p class="bplace">{e(place)}</p>' if place else "")
             + (f'<p class="bcontact">{" · ".join(contact)}</p>' if contact else "") + "</li>")
 
-def town_nav(base, current=None):
-    out = ['<nav class="btowns" aria-label="Towns"><a class="bh" href="' + base + '">Choose a town</a>']
-    for area, ts in AREAS:
-        out.append(f"<h3>{e(area)}</h3><ul>")
-        for t in sorted(ts):
-            on = ' class="on" aria-current="page"' if t == current else ""
-            out.append(f'<li><a href="{base}{slug(t)}/"{on}>{e(t)}</a></li>')
-        out.append("</ul>")
-    out.append("</nav>")
-    return "".join(out)
+def town_options(base, current=None):
+    first = "" if current else '<option value="" selected disabled>Choose a town</option>'
+    return first + "".join(f'<optgroup label="{e(a)}">' + "".join(
+        f'<option value="{base}{slug(t)}/"{" selected" if t == current else ""}>{e(t)}</option>' for t in sorted(ts)) + "</optgroup>" for a, ts in AREAS)
+
+def filters(base, current=None, counts=None, total=0):
+    """The filter boxes, as on the directory's tabs: 1. Support for (with counts on a town page), 2. Where? (the town)."""
+    if counts is None: sup = ['<option value="all">All support</option>'] + [f'<option value="{c["id"]}">{e(c["label"])}</option>' for c in CATS]
+    else: sup = [f'<option value="all">All support ({total})</option>'] + [f'<option value="{c["id"]}">{e(c["label"])} ({counts[c["id"]]})</option>' for c in CATS if counts[c["id"]]]
+    return (f'<div id="hdr-towns"><div class="qs">'
+            f'<div class="q" id="bq-support"><label for="b-support">1. Support for</label><select id="b-support">{"".join(sup)}</select></div>'
+            f'<div class="q{" on" if current else ""}" id="bq-town"><label for="b-town">2. Where?</label><select id="b-town">{town_options(base, current)}</select></div>'
+            f'</div></div>')
+
+def other_towns(base, current):
+    """Plain links to the other towns (for search engines, and for anyone without JavaScript)."""
+    return '<p class="otowns">Other towns: ' + " · ".join(f'<a href="{base}{slug(t)}/">{e(t)}</a>' for _, ts in AREAS for t in sorted(ts) if t != current) + "</p>"
 
 def summary(town, counts):
     parts = [f'{n} for {c["label"].lower()}' for c in CATS if (n := counts[c["id"]])]
@@ -148,15 +155,13 @@ def summary(town, counts):
     lead = f'{first[0]} {"group or service" if first[0] == "1" else "groups and services"} for {first[1]}'
     return f"In and around {town}: {', '.join([lead] + parts[1:])}."
 
-def town_main(town, items, dirbase):
+def town_main(town, items, dirbase, base):
     counts = {c["id"]: len({id(r) for _, r in items if c["id"] in r["_cats"]}) for c in CATS}
     total = len(items)
-    btns = [f'<a class="on" href="#all" data-k="all">All support <span>{total}</span></a>']
     secs = []
     for c in CATS:
         n = counts[c["id"]]
         if not n: continue
-        btns.append(f'<a href="#{c["id"]}" data-k="{c["id"]}">{e(c["button"])} <span>{n}</span></a>')
         inn = [row(d, r, town) for d, r in items if c["id"] in r["_cats"] and r.get("town") == town]
         near = [row(d, r, town) for d, r in items if c["id"] in r["_cats"] and r.get("town") != town]
         maplink = f'{dirbase}?' + (f'support={urllib.request.quote(c["map"])}&' if c["map"] else "") + f'town={urllib.request.quote(town)}&lat={TOWNS[town][0]}&lon={TOWNS[town][1]}&label={urllib.request.quote(town)}#near'   # town if the directory lists it, otherwise its centre
@@ -166,10 +171,10 @@ def town_main(town, items, dirbase):
                     + (f'<h3>Nearby</h3><ul class="blist">{"".join(near)}</ul>' if near else "") + "</section>")
     return (f'<div class="bcrumb"><a href="../">Find support by town</a> › {e(town)}</div>'
             f'<h1 class="bt">Mental health and wellbeing support in and around {e(town)}</h1>'
-            f'<p class="bnote">{total} free and low-cost groups and services you can go to, within about {RADIUS} miles. Choose what you\'re looking for.</p>'
-            f'<nav class="bbtns" aria-label="Kind of support">{"".join(btns)}</nav>' + "".join(secs) +
+            f'<p class="bnote">{total} free and low-cost groups and services you can go to, within about {RADIUS} miles. Choose what you\'re looking for above.</p>'
+            + "".join(secs) +
             f'<p class="bfoot">Also: <a href="{dirbase}#talk">phone and online support</a> you can use from anywhere. '
-            f'Distances are straight lines. Please check with the service before going, as details can change. Updated {UPDATED}.</p>')
+            f'Distances are straight lines. Please check with the service before going, as details can change. Updated {UPDATED}.</p>' + other_towns(base, town))
 
 def load_outline():
     """All three council areas, merged from the LSOA boundaries (docs/assets/analytics-lsoa.geojson) and simplified."""
@@ -205,17 +210,12 @@ def area_map(base, totals):
             f'<path class="land" d="{path}"/>{"".join(pins)}</svg>')
 
 def landing_main(base, dirbase, totals):
-    cards = []
-    for area, ts in AREAS:
-        cards.append(f'<h2>{e(area)}</h2><ul class="bcards">' + "".join(
-            f'<li><a href="{base}{slug(t)}/"><b>{e(t)}</b><span>{totals[t]}</span></a></li>' for t in sorted(ts)) + "</ul>")
-    return (f'<h1 class="bt">Find mental health and wellbeing support near you</h1>'
-            f'<p class="blead">Choose your nearest town to see free and low-cost groups, activities and services in and around it, '
+    links = " · ".join(f'<a href="{base}{slug(t)}/">{e(t)}</a>' for _, ts in AREAS for t in sorted(ts))
+    return (f'<div class="bpick"><div class="bpicktxt"><h1 class="bt">Find support by town</h1>'
+            f'<p>Choose your nearest town above, or on the map, to see free and low-cost groups, activities and services in and around it, '
             f'with times, places and how to get in touch.</p>'
-            f'<p class="bnote">Prefer to search on a map, or by day and time? <a href="{dirbase}#near">Open the full directory</a>. '
-            f'For helplines and online groups, see <a href="{dirbase}#talk">phone and online support</a>.</p>'
-            + f'<div class="bland"><div class="btownlist">{"".join(cards)}</div><div class="bmapwrap">{area_map(base, totals)}</div></div>'
-            + f'<p class="bfoot">Numbers show how many groups and services are in and around each town. Updated {UPDATED}. Every listing comes from the Signposting Somerset directory.</p>')
+            f'<p class="otowns">{links}</p></div>'
+            f'<div class="bmapwrap">{area_map(base, totals)}</div></div>')
 
 PAGE_CSS = """
 html, body { height: auto; } body { display: block; padding-bottom: calc(var(--footh, 56px) + 16px); }
@@ -223,23 +223,19 @@ html, body { height: auto; } body { display: block; padding-bottom: calc(var(--f
 /* The site name looks exactly like the directory's (there it is the page's h1; here the town heading is) */
 .hero .brand { font-family: var(--serif); color: var(--b900); font-size: 24px; font-weight: 700; line-height: 1.1; margin: 0; display: flex; align-items: center; gap: 9px; text-decoration: none; }
 .hero .brand .logo { height: 34px; width: auto; flex: none; margin: -2px 0 -1px; }
-/* The tab row, as the directory's */
-.bw { max-width: 1400px; margin: 0 auto; display: grid; grid-template-columns: 200px minmax(0, 1fr); gap: 28px; padding-top: 18px; }
-.btowns { position: sticky; top: 12px; align-self: start; max-height: calc(100vh - var(--footh, 56px) - 24px); overflow-y: auto; }
-.btowns .bh { display: block; font-weight: 700; font-size: 11px; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); text-decoration: none; margin: 2px 0 6px; }
-.btowns h3 { font-size: 12px; font-weight: 700; color: var(--b900); margin: 12px 0 2px; font-family: var(--sans); }
-.btowns ul { list-style: none; margin: 0; padding: 0; }
-.btowns li a { display: block; padding: 4px 10px; border-radius: 8px; color: var(--ink); text-decoration: none; font-size: 14px; }
-.btowns li a:hover { background: var(--b50); } .btowns li a.on { background: var(--b100); color: var(--b900); font-weight: 600; }
+.bw { max-width: 1400px; margin: 0 auto; padding-top: 14px; }
+/* Two cards: what to do (left), the map to choose from (right) */
+.bpick { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.3fr); gap: 12px; align-items: stretch; margin-top: 4px; }
+.bpick > div { background: var(--white); border: 1px solid var(--line); border-radius: 16px; padding: 24px 28px; }
+.bpicktxt { align-self: start; }
+.bpick .bt { margin-top: 0; } .bpick p { color: var(--muted); max-width: 52ch; } .bpick .otowns { margin-top: 14px; }
+.bpick .bmapwrap { display: flex; align-items: center; justify-content: center; } .bpick .bmapsvg { max-height: calc(100vh - 380px); }
+@media (max-width: 760px) { .bpick { grid-template-columns: 1fr; } .bpick > div { padding: 18px; } }
+.otowns { font-size: 12.5px; color: var(--muted); margin-top: 10px; line-height: 1.7; } .otowns a { color: var(--b700); }
 .bmain { min-width: 0; } .bmain.loading { opacity: .5; transition: opacity .15s; }
 .bcrumb { font-size: 12px; color: var(--muted); } .bcrumb a { color: var(--b700); }
 .bt { font-family: var(--serif); color: var(--b900); font-size: 22px; line-height: 1.25; margin: 4px 0 4px; }
 .blead { font-size: 14px; color: var(--ink); margin: 0 0 4px; line-height: 1.5; max-width: 75ch; } .bnote { font-size: 13px; color: var(--muted); margin: 0 0 12px; } .bnote a, .bfoot a { color: var(--b700); }
-.bbtns { display: flex; gap: 6px; flex-wrap: wrap; margin: 0 0 4px; }
-.bbtns a { border: 1px solid var(--line); background: #fff; color: var(--ink); border-radius: 999px; padding: 5px 12px; font-size: 13px; font-weight: 600; text-decoration: none; }
-.bbtns a:hover { border-color: var(--b200); }
-.bbtns a span { font-weight: 500; color: var(--muted); font-size: 12px; margin-left: 2px; }
-.bbtns a.on { background: var(--b700); border-color: var(--b700); color: #fff; } .bbtns a.on span { color: var(--b100); }
 .bsec { margin-top: 10px; }
 .bsh { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; flex-wrap: wrap; margin: 18px 0 4px; }
 .bsh h2 { font-family: var(--serif); color: var(--b900); font-size: 18px; margin: 0; } .bmap { color: var(--b700); font-weight: 600; font-size: 12.5px; }
@@ -253,27 +249,16 @@ html, body { height: auto; } body { display: block; padding-bottom: calc(var(--f
 .bmeta { font-size: 12px; color: var(--muted); font-weight: 500; } .bmeta .bnext { color: var(--b700); font-weight: 600; }
 .br p { margin: 4px 0 0; font-size: 13.5px; line-height: 1.45; color: var(--ink); } .br .bextra, .br .bplace { color: var(--muted); font-size: 12px; margin-top: 2px; }
 .br .bcontact { font-size: 12.5px; margin-top: auto; padding-top: 8px; border-top: 1px solid var(--line); } .br .bcontact a { color: var(--b700); }
-.bw.nolist { grid-template-columns: minmax(0, 1fr); }
 /* These pages scroll and the directory doesn't, so centring on the page width would sit everything half a scrollbar
    to the left of the directory. Centre on the window width instead, as the directory effectively does. */
 .top .inner, footer .inner, .bw { margin-left: max(0px, calc((100vw - 32px - 1400px) / 2)); margin-right: auto; }
-.bland { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.15fr); gap: 28px; align-items: start; margin-top: 8px; }
 .bmapsvg { width: 100%; height: auto; display: block; } .bmapsvg .land { fill: #E1EBE5; stroke: #fff; stroke-width: 1.5; }
 .bmapsvg a circle { fill: #176B55; stroke: #fff; stroke-width: 2; } .bmapsvg a text { font-size: 13px; font-weight: 600; fill: var(--b900); paint-order: stroke; stroke: #F9F9F7; stroke-width: 3px; }
 .bmapsvg a:hover circle, .bmapsvg a:focus circle { fill: #14302A; r: 7; } .bmapsvg a:hover text { fill: #176B55; text-decoration: underline; }
-.btownlist h2 { font-family: var(--serif); color: var(--b900); font-size: 17px; margin: 0 0 8px; } .btownlist h2 ~ h2 { margin-top: 16px; }
-.bcards { list-style: none; padding: 0; margin: 0; columns: 2; column-gap: 28px; }
-.bcards li { break-inside: avoid; border-bottom: 1px solid var(--line); }
-.bcards a { display: flex; justify-content: space-between; align-items: baseline; padding: 6px 4px; text-decoration: none; color: var(--b900); }
-.bcards a:hover b { text-decoration: underline; color: #176B55; } .bcards b { font-size: 14px; font-weight: 600; } .bcards span { font-size: 12.5px; color: var(--muted); }
 .bmain > h2 { font-family: var(--serif); color: var(--b900); font-size: 18px; margin: 18px 0 8px; }
 .bfoot { font-size: 12.5px; color: var(--muted); margin-top: 18px; }
-.btownsel { display: none; }
 @media (max-width: 760px) {
-  .bw { grid-template-columns: 1fr; gap: 6px; } .btowns { display: none; } .bland { grid-template-columns: 1fr; } .bmapwrap { order: 2; } .bcards { columns: 1; }
-  .btownsel { display: block; margin: 6px 0 10px; } .btownsel label { font-size: 12px; font-weight: 600; color: var(--muted); display: block; margin-bottom: 4px; }
-  .btownsel select { width: 100%; padding: 10px; border-radius: 10px; border: 1px solid var(--b200); font-size: 16px; background: #fff; }
-  .bbtns { flex-wrap: nowrap; overflow-x: auto; padding-bottom: 4px; } .bbtns a { flex: none; } .bt { font-size: 23px; } .bdir span { display: none; }
+  .bt { font-size: 23px; } .bdir span { display: none; }
 }
 """
 
@@ -301,43 +286,46 @@ PAGE_JS = r"""
     return "";
   }
   function dates(root) { const now = new Date(); root.querySelectorAll(".bwhen").forEach(el => { const n = next(el, now); if (n && !el.nextElementSibling?.classList.contains("bnext")) el.insertAdjacentHTML("afterend", ` · <span class="bnext">Next: ${n}</span>`); }); }
-  function pick(root, k) {
-    const ok = [...root.querySelectorAll(".bbtns a")].some(a => a.dataset.k === k); if (!ok) k = "all";
-    root.querySelectorAll(".bbtns a").forEach(a => a.classList.toggle("on", a.dataset.k === k));
-    root.querySelectorAll(".bsec").forEach(s => s.hidden = k !== "all" && s.dataset.k !== k);
+  const $ = id => document.getElementById(id);
+  function pick(k) {   // 1. Support for: show that section, or all of them
+    const sel = $("b-support"); if (!sel) return;
+    if (![...sel.options].some(o => o.value === k)) k = "all";
+    sel.value = k; $("bq-support").classList.toggle("on", k !== "all");
+    main.querySelectorAll(".bsec").forEach(s => s.hidden = k !== "all" && s.dataset.k !== k);
   }
-  function wire(root) {
-    dates(root);
-    const s = root.querySelector(".btownsel select"); if (s) s.onchange = () => { if (s.value) go(s.value, true); };
-    const bb = root.querySelector(".bbtns"); if (!bb) return;
-    pick(root, location.hash.slice(1) || "all");
-    bb.onclick = ev => { const a = ev.target.closest("a"); if (!a) return; ev.preventDefault(); pick(root, a.dataset.k);
-      history.replaceState(history.state, "", a.dataset.k === "all" ? location.pathname : "#" + a.dataset.k); };
+  function wire() {
+    dates(main);
+    pick(location.hash.slice(1) || "all");
+    $("b-support").onchange = () => { const k = $("b-support").value; pick(k);
+      history.replaceState(history.state, "", location.pathname + (k === "all" ? "" : "#" + k)); };
+    $("b-town").onchange = () => { const v = $("b-town").value, k = $("b-support").value;   // 2. Where?: that town, keeping the support chosen
+      if (v) go(v + (k && k !== "all" ? "#" + k : ""), true); };
   }
-  const main = document.querySelector(".bmain"), nav = document.querySelector(".btowns");
-  async function go(href, push) {   // swap the main area for another town's page, keeping its own address
+  const main = document.querySelector(".bmain"), hdr = $("hdr-towns");
+  async function go(href, push) {   // swap in another town's page (filters and listings), keeping its own address
     main.classList.add("loading");
     try {
-      const r = await fetch(href, { cache: "no-cache" }); if (!r.ok) throw 0;
+      const r = await fetch(href.split("#")[0], { cache: "no-cache" }); if (!r.ok) throw 0;
       const doc = new DOMParser().parseFromString(await r.text(), "text/html");
-      if (!nav || !doc.querySelector(".btowns")) { location.href = href; return; }   // the landing page has its own layout
-      main.innerHTML = doc.querySelector(".bmain").innerHTML; document.title = doc.title;
+      main.innerHTML = doc.querySelector(".bmain").innerHTML; hdr.innerHTML = doc.getElementById("hdr-towns").innerHTML; document.title = doc.title;
       const md = doc.querySelector('meta[name="description"]'); if (md) document.querySelector('meta[name="description"]')?.setAttribute("content", md.content);
-      nav.querySelectorAll("a.on").forEach(a => { a.classList.remove("on"); a.removeAttribute("aria-current"); });
-      const cur = nav.querySelector(`li a[href="${new URL(href, location.href).pathname}"]`); if (cur) { cur.classList.add("on"); cur.setAttribute("aria-current", "page"); }
-      if (push) history.pushState({ b: 1 }, "", href); wire(main); window.scrollTo(0, 0);
+      if (push) history.pushState({ b: 1 }, "", href); wire(); window.scrollTo(0, 0);
     } catch (_) { location.href = href; }
     main.classList.remove("loading");
   }
-  if (nav) nav.addEventListener("click", ev => { const a = ev.target.closest("a"); if (!a || ev.ctrlKey || ev.metaKey || ev.shiftKey) return; ev.preventDefault(); go(a.href, true); });
-  addEventListener("popstate", () => go(location.pathname, false));
-  if (main) wire(main);
+  main.addEventListener("click", ev => {   // links to other towns (and to the town list) swap in place too
+    const a = ev.target.closest("a"); if (!a || ev.ctrlKey || ev.metaKey || ev.shiftKey || a.target) return;
+    const u = new URL(a.getAttribute("href") || "", location.href), base = document.querySelector('.sitetabs a[aria-current]')?.getAttribute("href");
+    if (u.origin === location.origin && base && u.pathname.startsWith(base) && !u.hash) { ev.preventDefault(); go(u.pathname, true); }
+  });
+  addEventListener("popstate", () => go(location.pathname + location.hash, false));
+  if (main && hdr) wire();
 })();
 """
 
 FONTS = "\n".join(l for l in tpl.splitlines() if "fonts.g" in l)   # the directory's font links, as they are
 
-def page(title, desc, canonical, robots, main_html, nav_html, sel_html, dirbase, crumbs, base):
+def page(title, desc, canonical, robots, main_html, filters_html, dirbase, crumbs, base):
     ld = {"@context": "https://schema.org", "@type": "BreadcrumbList", "itemListElement": [
         {"@type": "ListItem", "position": i + 1, "name": n, "item": u} for i, (n, u) in enumerate(crumbs)]}
     head_extra = (f'<link rel="canonical" href="{canonical}">\n' if canonical else "") + (robots or "")
@@ -371,12 +359,11 @@ def page(title, desc, canonical, robots, main_html, nav_html, sel_html, dirbase,
       </div>
       <nav class="sitetabs" aria-label="Site"><span class="tgrp"><a class="tab" href="{dirbase}#near">In person</a><a class="tab" href="{dirbase}#talk"><span class="lg">Phone and online</span><span class="sh">Phone &amp; online</span></a><a class="tab" href="{dirbase}#course">Courses</a><a class="tab" href="{base}" aria-current="page">By town</a></span><a class="tab sep" href="{dirbase}#about">About</a><a class="tolink" href="{dirbase.replace("directory/", "tools/")}">For professionals →</a></nav>
     </div>
+{filters_html}
   </div>
 </header>
-<div class="bw gut{'' if nav_html else ' nolist'}">
-{nav_html}
+<div class="bw gut">
 <div class="bmain" role="main">
-{sel_html}
 {main_html}
 </div>
 </div>
@@ -394,12 +381,6 @@ def page(title, desc, canonical, robots, main_html, nav_html, sel_html, dirbase,
 </html>
 """)
 
-def town_select(base, current):
-    opts = "".join(f'<optgroup label="{e(a)}">' + "".join(
-        f'<option value="{base}{slug(t)}/"{" selected" if t == current else ""}>{e(t)}</option>' for t in sorted(ts)) + "</optgroup>" for a, ts in AREAS)
-    first = "" if current else '<option value="" selected disabled>Choose a town</option>'
-    return f'<div class="btownsel"><label for="btown">Town</label><select id="btown">{first}{opts}</select></div>'
-
 # ---------- build ----------
 TARGETS = [("test", "/test/directory/towns/", "/test/directory/", None, '<meta name="robots" content="noindex, nofollow">\n')]
 if not ONLY_TEST:
@@ -413,13 +394,13 @@ for name, base, dirbase, site, robots in TARGETS:
     canon = (lambda p: site + p) if site else (lambda p: None)
     title = "Find mental health and wellbeing support by town | Signposting Somerset"
     desc = "Free and low-cost mental health and wellbeing support across Somerset, North Somerset and Bath & North East Somerset, by town: groups, activities and services with times and contacts."
-    (root / "index.html").write_text(page(title, desc, canon(base), robots, landing_main(base, dirbase, totals), "", "", dirbase,
+    (root / "index.html").write_text(page(title, desc, canon(base), robots, landing_main(base, dirbase, totals), filters(base), dirbase,
         [("Signposting Somerset", SITE + "/directory/"), ("Find support by town", SITE + "/directory/towns/")], base), encoding="utf-8")
     for t, items in data.items():
         counts = {c["id"]: len({id(r) for _, r in items if c["id"] in r["_cats"]}) for c in CATS}
         d = root / slug(t); d.mkdir(exist_ok=True)
         (d / "index.html").write_text(page(f"Mental health and wellbeing support in {t} | Signposting Somerset", summary(t, counts), canon(base + slug(t) + "/"), robots,
-            town_main(t, items, dirbase), town_nav(base, t), town_select(base, t), dirbase,
+            town_main(t, items, dirbase, base), filters(base, t, counts, len(items)), dirbase,
             [("Signposting Somerset", SITE + "/directory/"), ("Find support by town", SITE + "/directory/towns/"), (t, SITE + "/directory/towns/" + slug(t) + "/")], base), encoding="utf-8")
     print(f"out/{base.strip('/')}/: landing + {len(data)} towns")
 if not ONLY_TEST:
