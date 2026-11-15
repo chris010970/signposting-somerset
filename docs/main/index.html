@@ -802,7 +802,6 @@ h1 { font-family: var(--serif); color: var(--b900); font-size: 26px; margin: 0; 
 .sitetabs .tgrp { display: inline-flex; align-items: flex-end; gap: 4px; position: relative; flex: none; }
 .sitetabs #tab-assist, .sitetabs #tab-about { margin-left: 6px; padding-left: 14px; position: relative; }
 .sitetabs #tab-assist::before, .sitetabs #tab-about::before { content: ""; position: absolute; left: 0; top: 10px; bottom: 12px; border-left: 1px solid var(--line); }
-.sitetabs #tab-about { font-weight: 600; }
 /* On narrow phones the last tab may not fit: fade the edge so it's clear the row scrolls */
 .sitetabs.more { -webkit-mask-image: linear-gradient(to right, #000 calc(100% - 36px), transparent); mask-image: linear-gradient(to right, #000 calc(100% - 36px), transparent); }
 @media (max-width: 420px) { .sitetabs { gap: 0; } .sitetabs .tgrp { gap: 0; } .sitetabs button { padding-inline: 5px; font-size: 13px; } .sitetabs #tab-assist, .sitetabs #tab-about { margin-left: 1px; padding-left: 7px; } .sitetabs #tab-assist { gap: 4px; } .sitetabs .lg { display: none; } .sitetabs .sh { display: inline; } }
@@ -1198,13 +1197,13 @@ footer.urgent p { color: #FEE2E2; }
       <button type="button" role="tab" id="tab-about" aria-selected="false" aria-controls="panel-about">About</button>    </nav>
     </div>
     <div id="hdr-talk" class="tq">
-      <div class="q" id="q-tsupport"><label for="t-support">Support for</label><select id="t-support"></select></div>
-      <div class="q" id="q-tarea"><label for="t-area">Coverage</label><select id="t-area"><option value="">Local and UK-wide</option><option value="local">Local only</option><option value="national">UK-wide only</option></select></div>
+      <div class="q" id="q-tsupport"><label for="t-support">1. Support for</label><select id="t-support"></select></div>
+      <div class="q" id="q-tarea"><label for="t-area">2. Coverage</label><select id="t-area"><option value="">Local and UK-wide</option><option value="local">Local only</option><option value="national">UK-wide only</option></select></div>
       <label class="toggle" id="q-open"><input type="checkbox" id="t-open"> Open now only</label>
     </div>
     <div id="hdr-course" class="tq" hidden>
-      <div class="q" id="q-csupport"><label for="c-support">Support for</label><select id="c-support"></select></div>
-      <div class="q" id="q-cfmt"><label for="c-fmt">Format</label><select id="c-fmt"><option value="">In person or online</option><option value="in-person">In person</option><option value="online">Online</option></select></div>
+      <div class="q" id="q-csupport"><label for="c-support">1. Support for</label><select id="c-support"></select></div>
+      <div class="q" id="q-cfmt"><label for="c-fmt">2. Format</label><select id="c-fmt"><option value="">In person or online</option><option value="in-person">In person</option><option value="online">Online</option></select></div>
       <label class="toggle" id="q-cbook"><input type="checkbox" id="c-book"> Can still join</label>
     </div>
     <div id="hdr-about" hidden></div>
@@ -1287,7 +1286,7 @@ footer.urgent p { color: #FEE2E2; }
 
   <div class="a-alert" id="a-crisis" hidden>
     <h2>This sounds like it may need urgent support</h2>
-    <p>If someone is at risk right now, call 999. For urgent mental health help, call NHS 111 and choose option 2. They can also talk to Samaritans or Mindline any time.</p>
+    <p>If someone is at risk right now, call 999. For urgent mental health help, call NHS 111 and choose option 2. They can also call Samaritans on 116 123 any time.</p>
     <div class="a-lines"><a href="tel:999">999</a><a href="tel:111">NHS 111, option 2</a><a href="tel:116123">Samaritans 116 123</a></div>
   </div>
 
@@ -1885,7 +1884,7 @@ function renderAbout() {
     </section>
     </div></div>
     <p class="small">Service information belongs to the providers listed. Map data © <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap</a> contributors, © <a href="https://carto.com/attributions" target="_blank" rel="noopener">CARTO</a>.</p>
-    <p class="small" id="site-version">Version: main 2026-11-13 12:57${typeof window.assistRelayVersion === "function" ? window.assistRelayVersion() : ""}</p>
+    <p class="small" id="site-version">Version: main 2026-11-15 12:42${typeof window.assistRelayVersion === "function" ? window.assistRelayVersion() : ""}</p>
   </article>`;
 }
 let tab = "talk";
@@ -2028,7 +2027,7 @@ setInterval(() => { if (!ALL.length) return; tab === "talk" ? renderTalk() : tab
    this page only remembers it for the current browser session. */
 (() => {
 const WORKER_URL = "https://signposting-assist.c-r-williams0109.workers.dev";
-const PAGE_VERSION = "main 2026-11-13 12:57";
+const PAGE_VERSION = "main 2026-11-15 12:42";
 let relayVersion = "";
 // The version line is at the bottom of the About tab: "Version: test 2026-11-06 11:30 · Assist relay 2026-11-06 11:07"
 window.assistRelayVersion = () => relayVersion ? ` · Assist relay ${relayVersion}` : "";
