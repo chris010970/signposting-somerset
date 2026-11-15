@@ -3,7 +3,7 @@
 Run build.py first (it makes github/index.html), then: python build_v2.py
 (or run build_all.py, which does both).
 Writes github/directory/index.html (the live site, published at /directory/) and github/test/directory/index.html (the test copy, published at /test/directory/).
-Assist is on the tools page now (build/tools/); the directory links to it ("For professionals").
+Assist is on the tools page now (build/tools/); the directory links to it ("Tools →").
 """
 import pathlib, re, sys
 sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent.parent / "shared"))

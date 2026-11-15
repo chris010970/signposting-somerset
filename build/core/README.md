@@ -17,6 +17,7 @@ code were written in the template.
 | `js/places.js` | town centres (records without a postcode), county outline, the "Where?" places |
 | `js/text-time.js` | support-type vocabularies and labels, text helpers, schedule logic (next session, "Nth day of month", check dates), distances |
 | `js/records.js` | records as the pages use them (`shapeRecords`), and the grouped "Support for" choices (`supportOptions`) |
+| `css/pins.css`, `js/map-pins.js` | map pins, numbered spots and area circles (directory map and Analytics map) |
 | `js/kinds.js` | kinds of service and their colours |
 | `js/cards.js` | copy details, tap-to-call, directions |
 | `js/sheet.js` | reading records from the published Google Sheet (CSV): `fetchRecords()` |

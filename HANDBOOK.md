@@ -97,7 +97,7 @@ These are decisions, not accidents. Keep to them unless deliberately changed (an
 |---|---|
 | `build/directory/` | The directory: `template.html` (site), `assist/worker-template.js` (Assist's worker and AI prompt), `towns.json`, build scripts |
 | `build/analytics/` | Analytics: `DESIGN.md` (decisions so far), the v24 code, `make_analytics_data.py` (rebuilds `docs/assets/analytics-lsoa.geojson`) |
-| `build/tools/` | The tools page (`/tools/`): Assist (`assist/`), About. `build_tools.py`, `template.html`, `tools.js`. The directory links to it ("For professionals →"); old `#assist` links forward there |
+| `build/tools/` | The tools page (`/tools/`): Assist (`assist/`), Analytics (`analytics/`, desktop only), About. `build_tools.py`, `template.html`, `tools.js`. The directory links to it ("Tools →"); old `#assist` links forward there |
 | `build/core/` | Code shared by the directory and the tools pages (styles, crisis and helpline bars, places, schedules, cards, sheet loading); see its README |
 | `build/browse/` | Town pages (the directory's Places tab, `/directory/places/`): `build_browse.py`, `towns.json`, `categories.json` |
 | `build/shared/` | Build helpers: `site_config.py` (base path), `core.py` (stitches `build/core/` into pages) |

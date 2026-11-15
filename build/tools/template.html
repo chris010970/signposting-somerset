@@ -1,5 +1,5 @@
 <title>Signposting Somerset: tools</title>
-<meta name="description" content="Tools for support workers, volunteers and community organisations using Signposting Somerset: Assist, a support-planning trial.">
+<meta name="description" content="Tools for support workers, volunteers and community organisations using Signposting Somerset: Assist, a support-planning trial, and Analytics, local support set against need.">
 <!--ROBOTS-->
 <!--CANONICAL-->
 <!--@core:html/head.html-->
@@ -12,6 +12,7 @@
 /*@core:css/header.css*/
 /*@core:css/page.css*/
 /*@core:css/cards.css*/
+/*@core:css/pins.css*/
 /*@core:css/helpline.css*/
 /* The way back to the directory, in the tab row: a link, styled like the tabs */
 .sitetabs a.back { white-space: nowrap; padding: 9px 14px 10px; font-weight: 700; font-size: 14px; color: #78716C; text-decoration: none; border-bottom: 3px solid transparent; margin-bottom: -1px; margin-right: 6px; }
@@ -30,15 +31,18 @@
     <nav class="sitetabs" role="tablist" aria-label="Tools">
       <a class="back" href="/*DIRECTORY*/">← Find support</a>
 <!--ASSIST_TAB-->
+<!--ANALYTICS_TAB-->
       <button type="button" role="tab" id="tab-about" aria-selected="false" aria-controls="panel-about">About</button>
     </nav>
     </div>
 <!--ASSIST_HDR-->
+<!--ANALYTICS_HDR-->
     <div id="hdr-about" hidden></div>
   </div>
 </header>
 
 <!--ASSIST_PANEL-->
+<!--ANALYTICS_PANEL-->
 <section id="panel-about" role="tabpanel" aria-labelledby="tab-about" hidden style="flex:1;min-height:0;overflow-y:auto"><div class="talk gut" id="about"></div></section>
 
 <!--@core:html/helpline.html-->
@@ -50,6 +54,7 @@
 /*@core:js/text-time.js*/
 /*@core:js/records.js*/
 /*@core:js/kinds.js*/
+/*@core:js/map-pins.js*/
 const $ = id => document.getElementById(id);
 let ALL = [];
 /*@core:js/cards.js*/

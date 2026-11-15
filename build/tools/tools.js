@@ -1,16 +1,23 @@
-/* ---------- tools page: tabs, About, and the records Assist's pins and "Support for" come from ---------- */
-// Assist itself (assist/assist.js) is added after this script.
-const TABS = ["assist", "about"];
-let tab = location.hash === "#about" ? "about" : "assist";
+/* ---------- tools page: tabs, About, and the records Assist and Analytics use ---------- */
+// Analytics (analytics/analytics.js) follows this script; Assist (assist/assist.js) is added after it.
+const SITE_BASE = "/*SITE_BASE*/";           // the folder the site is served from ("" on signpostingsomerset.org.uk)
+const DIRECTORY_URL = "/*DIRECTORY_URL*/";   // the directory beside this page (Analytics opens it filtered)
+const TABS = ["assist", "analytics", "about"];
+const wideEnough = () => matchMedia("(min-width: 760px)").matches;   // Analytics is desktop only
+let tab = TABS.includes(location.hash.slice(1)) ? location.hash.slice(1) : "assist";
+if (tab === "analytics" && !wideEnough()) { tab = "assist"; try { history.replaceState(null, "", location.pathname + location.search + "#assist"); } catch (e) {} }
+function showTab(t) { for (const k of TABS) { $("tab-" + k).setAttribute("aria-selected", k === t); $("panel-" + k).hidden = k !== t; $("hdr-" + k).hidden = k !== t; } }
 function setTab(t) {
-  tab = t;
-  for (const k of TABS) { $("tab-" + k).setAttribute("aria-selected", k === t); $("panel-" + k).hidden = k !== t; $("hdr-" + k).hidden = k !== t; }
-  if (t === "about") renderAbout(); else if (window.assistShow) window.assistShow();
+  if (t === "analytics" && !wideEnough()) t = "assist";
+  tab = t; showTab(t);
+  if (t === "about") renderAbout(); else if (t === "analytics") initAnalytics(); else if (window.assistShow) window.assistShow();
   try { history.replaceState(null, "", location.pathname + location.search + "#" + t); } catch (e) {}
 }
 for (const k of TABS) $("tab-" + k).onclick = () => setTab(k);
-for (const k of TABS) { $("tab-" + k).setAttribute("aria-selected", k === tab); $("panel-" + k).hidden = k !== tab; $("hdr-" + k).hidden = k !== tab; }
-// (Assist's script, added after this one, opens itself or the About tab: see the end of assist.js)
+showTab(tab);
+// Assist's script, added after this one, opens Assist or About (see the end of assist.js); Analytics opens once its code has run
+if (tab === "analytics") setTimeout(initAnalytics, 0);
+addEventListener("resize", () => { if (tab === "analytics" && !wideEnough()) setTab("assist"); });
 
 function renderAbout() {
   $("about").innerHTML = `<article class="aboutpage">
@@ -23,20 +30,19 @@ function renderAbout() {
     </section>
     ${typeof window.assistAbout === "function" ? window.assistAbout() : ""}
     </div><div class="acol">
-    <section>
-    <h3>Coming next</h3>
-    <p>Community insights: local support set against need (deprivation, disability, distance to the nearest service). Desktop only.</p>
-    </section>
-    </div></div>
+/*ANALYTICS_ABOUT*/    </div></div>
     <p class="small" id="site-version">Version: /*SITE_VERSION*/${typeof window.assistRelayVersion === "function" ? window.assistRelayVersion() : ""}</p>
   </article>`;
 }
 
-// Records: Assist suggests from the Worker's own copy; here they give the "Support for" choices and the map pins.
+// Records: Assist suggests from the Worker's own copy; here they give its "Support for" choices and map pins, and Analytics' services.
+let S = [];   // in-person services (not courses), as on the directory's In person tab
 function useRecords(recs) {
   ALL = shapeRecords(recs);
+  S = ALL.filter(s => s.type !== "Course" && split(s.mode).includes("in-person"));
   const sel = $("a-support"), v = sel.value;
   sel.innerHTML = supportOptions(ALL); sel.value = v;
+  try { if (aReady) anRefilter(); } catch (e) {}   // Analytics already open: recount with the latest records (before its code has run, aReady isn't there yet)
 }
 if (SHEET_CSV_URL) {
   const kept = cachedRecords();   // loaded earlier in this visit (e.g. in the directory): use at once

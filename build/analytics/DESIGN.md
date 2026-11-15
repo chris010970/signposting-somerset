@@ -77,3 +77,10 @@ One entry per indicator in `AN_IND`: bands (most need first), rank order, option
 - Needs from the directory: the record loading and helpers listed at the top of `analytics-v24.js`; these should move to `build/shared/` rather than be copied.
 - "View services" should open the directory with filters in the link (the planned deep links), not by setting the directory's variables.
 - Keep the data file at `docs/assets/analytics-lsoa.geojson`, loaded only when the page opens.
+
+## Now: a tab on the tools page (16 Nov 2026)
+
+- Analytics is the **Analytics** tab of `/tools/` (desktop only: the tab is hidden below 760px wide). Code: `build/tools/analytics/`.
+- The shared pieces it needs (records, kinds and colours, map pins and area circles, schedule logic) come from `build/core/`.
+- "View services" opens the directory in a new tab, filtered by link (support, the LSOA's centre, 2 or 5 miles), instead of setting the directory's variables.
+- The data file stays at `docs/assets/analytics-lsoa.geojson`, loaded only when the tab first opens.

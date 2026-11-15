@@ -357,7 +357,7 @@ def page(title, desc, canonical, robots, main_html, filters_html, dirbase, crumb
         <a class="brand" href="{dirbase}"><img class="logo" src="/assets/logo-signpost.webp" alt="" width="31" height="34">Signposting Somerset</a>
         <p class="lede"><span class="lg">Connecting people with local mental health and wellbeing support.</span><span class="sh">Local mental health and wellbeing support.</span></p>
       </div>
-      <nav class="sitetabs" aria-label="Site"><span class="tgrp"><a class="tab" href="{dirbase}#near">In person</a><a class="tab" href="{dirbase}#talk"><span class="lg">Phone and online</span><span class="sh">Phone &amp; online</span></a><a class="tab" href="{dirbase}#course">Courses</a><a class="tab" href="{base}" aria-current="page">Places</a></span><a class="tab sep" href="{dirbase}#about">About</a><a class="tolink" href="{dirbase.replace("directory/", "tools/")}">For professionals →</a></nav>
+      <nav class="sitetabs" aria-label="Site"><span class="tgrp"><a class="tab" href="{dirbase}#near">In person</a><a class="tab" href="{dirbase}#talk"><span class="lg">Phone and online</span><span class="sh">Phone &amp; online</span></a><a class="tab" href="{dirbase}#course">Courses</a><a class="tab" href="{base}" aria-current="page">Places</a></span><a class="tab sep" href="{dirbase}#about">About</a><a class="tolink" href="{dirbase.replace("directory/", "tools/")}">Tools →</a></nav>
     </div>
 {filters_html}
   </div>

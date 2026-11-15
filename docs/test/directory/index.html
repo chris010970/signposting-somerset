@@ -811,7 +811,7 @@ h1 { font-family: var(--serif); color: var(--b900); font-size: 26px; margin: 0; 
 .sitetabs a.tab.sep { margin-left: 6px; padding-left: 14px; position: relative; }
 .sitetabs a.tab.sep::before { content: ""; position: absolute; left: 0; top: 10px; bottom: 12px; border-left: 1px solid var(--line); }
 @media (max-width: 420px) { .sitetabs a.tab { padding-inline: 5px; font-size: 13px; } .sitetabs a.tab.sep { margin-left: 1px; padding-left: 7px; } }
-/* "For professionals": a quiet link after the tabs (not at the far right, where it would sit on the illustration), to the tools page */
+/* "Tools →": a quiet link after the tabs (not at the far right, where it would sit on the illustration), to the tools page */
 .sitetabs a.tolink { margin-left: 6px; white-space: nowrap; padding: 9px 14px 10px; font-weight: 600; font-size: 13px; color: #78716C; text-decoration: none; border-bottom: 3px solid transparent; margin-bottom: -1px; }
 .sitetabs a.tolink:hover, .sitetabs a.tolink:focus-visible { color: var(--b900); }
 /* Phone and online / Courses bars: the dropdowns share the width evenly; the checkbox sits at the right, where Sort is on In person */
@@ -992,7 +992,7 @@ footer.urgent p { color: #FEE2E2; }
       <button type="button" role="tab" id="tab-talk" aria-selected="false" aria-controls="panel-talk"><span class="lg">Phone and online</span><span class="sh">Phone &amp; online</span></button>
       <button type="button" role="tab" id="tab-course" aria-selected="false" aria-controls="panel-course">Courses</button><a class="tab" href="places/">Places</a></span>
       <button type="button" role="tab" id="tab-about" aria-selected="false" aria-controls="panel-about">About</button>
-      <a class="tolink" href="/signposting-somerset-v2/test/tools/">For professionals →</a>    </nav>
+      <a class="tolink" href="/signposting-somerset-v2/test/tools/">Tools →</a>    </nav>
     </div>
     <div id="hdr-talk" class="tq">
       <div class="q" id="q-tsupport"><label for="t-support">1. Support for</label><select id="t-support"></select></div>
@@ -1196,8 +1196,6 @@ function prepare(rows) {
     `<option value="__pt" hidden>Point on map</option>`;
 }
 prepare(DATA);
-// services at the same spot share one numbered pin (grouped in drawMap)
-const spotKey = s => s.lat.toFixed(4) + "," + s.lon.toFixed(4);
 $("today").textContent = new Date().toLocaleDateString("en-GB", { weekday: "short", day: "numeric", month: "short" });
 
 let origin = null, sortBy = "soon", fitPending = true, locMsg = "";
@@ -1333,6 +1331,28 @@ const KINDS = [
 ];
 const kindOf = s => KINDS.findIndex(k => k[2].includes(s.type));
 const pinCol = s => (KINDS[kindOf(s)] || [, "#64748B"])[1];
+// Map pins shared by the directory's map and the tools page's Analytics map.
+// Services at the same spot share one numbered pin; zoomed out, nearby pins merge into one area circle coloured by kind.
+const spotKey = s => s.lat.toFixed(4) + "," + s.lon.toFixed(4);
+function clusterBg(g) {
+  const n = new Array(KINDS.length + 1).fill(0);
+  g.forEach(s => { const i = kindOf(s); n[i < 0 ? KINDS.length : i]++; });
+  const cols = [...KINDS.map(k => k[1]), "#64748B"];
+  let at = 0; const stops = [];
+  n.forEach((c, i) => { if (c) { const to = at + c / g.length * 360; stops.push(`${cols[i]} ${at}deg ${to}deg`); at = to; } });
+  return stops.length === 1 ? stops[0].split(" ")[0] : `conic-gradient(${stops.join(", ")})`;
+}
+const AREA_ZOOM = 11, AREA_PX = 52;   // at zoom 11 or less, pins within ~52px merge into one numbered circle
+function areaClusters(groups, m = map) {   // m: the Leaflet map (the directory's own map unless another is given)
+  // Greedy merge of same-spot groups by on-screen distance; biggest spots seed the clusters
+  const z = m.getZoom(), cl = [];
+  [...groups.entries()].sort((a, b) => b[1].length - a[1].length).forEach(([k, g]) => {
+    const p = m.project([g[0].lat, g[0].lon], z);
+    const c = cl.find(c => c.p.distanceTo(p) < AREA_PX);
+    if (c) { c.spots.push([k, g]); c.n += g.length; } else cl.push({ p, spots: [[k, g]], n: g.length });
+  });
+  return cl;
+}
 // Map key doubles as a filter: tap a kind to hide or show it
 const kindsOff = new Set();
 let kindCounts = null, legendEl = null;
@@ -1354,26 +1374,7 @@ function drawLegend(d) {
 }
 // The same colour on the card as on its map pin
 const kindTag = s => { const k = KINDS[kindOf(s)]; return k ? `<div class="kind"><i style="background:${k[1]}"></i>${esc(k[0])}</div>` : ""; };
-function clusterBg(g) {
-  const n = new Array(KINDS.length + 1).fill(0);
-  g.forEach(s => { const i = kindOf(s); n[i < 0 ? KINDS.length : i]++; });
-  const cols = [...KINDS.map(k => k[1]), "#64748B"];
-  let at = 0; const stops = [];
-  n.forEach((c, i) => { if (c) { const to = at + c / g.length * 360; stops.push(`${cols[i]} ${at}deg ${to}deg`); at = to; } });
-  return stops.length === 1 ? stops[0].split(" ")[0] : `conic-gradient(${stops.join(", ")})`;
-}
 let lastDraw = null;
-const AREA_ZOOM = 11, AREA_PX = 52;   // at zoom 11 or less, pins within ~52px merge into one numbered circle
-function areaClusters(groups) {
-  // Greedy merge of same-spot groups by on-screen distance; biggest spots seed the clusters
-  const z = map.getZoom(), cl = [];
-  [...groups.entries()].sort((a, b) => b[1].length - a[1].length).forEach(([k, g]) => {
-    const p = map.project([g[0].lat, g[0].lon], z);
-    const c = cl.find(c => c.p.distanceTo(p) < AREA_PX);
-    if (c) { c.spots.push([k, g]); c.n += g.length; } else cl.push({ p, spots: [[k, g]], n: g.length });
-  });
-  return cl;
-}
 function drawArea(c) {
   const all = c.spots.flatMap(([, g]) => g);
   const lat = all.reduce((a, s) => a + s.lat, 0) / all.length, lon = all.reduce((a, s) => a + s.lon, 0) / all.length;
@@ -1639,7 +1640,7 @@ function renderAbout() {
     </section>
     </div></div>
     <p class="small">Service information belongs to the providers listed. Map data © <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap</a> contributors, © <a href="https://carto.com/attributions" target="_blank" rel="noopener">CARTO</a>.</p>
-    <p class="small" id="site-version">Version: test 2026-11-15 22:34</p>
+    <p class="small" id="site-version">Version: test 2026-11-15 22:51</p>
   </article>`;
 }
 let tab = "talk";

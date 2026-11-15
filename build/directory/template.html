@@ -80,22 +80,7 @@ main { flex: 1; min-height: 0; display: grid; grid-template-columns: minmax(0, 4
 /*@core:css/cards.css*/
 .empty { background: var(--white); border: 1px solid var(--line); border-radius: 16px; padding: 28px; text-align: center; color: var(--muted); }
 
-.pin { width: 14px; height: 14px; border-radius: 50%; background: var(--b600); border: 2px solid #fff; box-shadow: 0 1px 3px rgba(0,0,0,.35); transition: transform .15s; }
-.pin.hot { transform: scale(1.6); box-shadow: 0 0 0 2px var(--b900), 0 1px 3px rgba(0,0,0,.35); }
-.cpin.area { width: 34px; height: 34px; font-size: 13px; }
-.cpin.area span { width: 24px; height: 24px; font-size: 12px; }
-.cpin { width: 28px; height: 28px; border-radius: 50%; background: var(--b700); color: #fff; border: 2px solid #fff; box-shadow: 0 1px 4px rgba(0,0,0,.35); display: grid; place-items: center; font-size: 12px; font-weight: 700; font-variant-numeric: tabular-nums; transition: transform .15s; cursor: pointer; }
-.cpin span { width: 18px; height: 18px; border-radius: 50%; background: #fff; color: var(--b900); display: grid; place-items: center; font-size: 11px; }
-.cpin.approx { opacity: .85; }
-.cpin.hot { transform: scale(1.3); box-shadow: 0 0 0 2px var(--b900), 0 1px 4px rgba(0,0,0,.35); }
-.plist-h { font-weight: 700; color: var(--b900); margin-bottom: 6px; font-size: 13px; }
-.plist ul { list-style: none; margin: 0; padding: 0; max-height: 220px; overflow-y: auto; display: grid; gap: 2px; }
-.plink { border: 0; background: none; padding: 4px 0; text-align: left; color: var(--b700); text-decoration: underline; cursor: pointer; font: 500 13px var(--sans); }
-.pin.approx { opacity: .7; border-style: dashed; }
-.maplegend { background: rgba(255,255,255,.95); border: 1px solid var(--line); border-radius: 8px; padding: 6px 9px; font-size: 11.5px; color: var(--ink); line-height: 1.6; box-shadow: 0 1px 3px rgba(0,0,0,.1); }
-.maplegend b { display: block; font-size: 10px; letter-spacing: .08em; text-transform: uppercase; color: var(--b700); }
-.maplegend i { display: inline-block; width: 10px; height: 10px; border-radius: 50%; margin-right: 6px; vertical-align: -1px; border: 1.5px solid #fff; box-shadow: 0 0 0 1px rgba(0,0,0,.15); }
-.opin { width: 16px; height: 16px; border-radius: 50%; background: var(--origin); border: 3px solid #fff; box-shadow: 0 0 0 2px var(--origin); }
+/*@core:css/pins.css*/
 
 /*@core:css/helpline.css*/
 @media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
@@ -115,7 +100,7 @@ main { flex: 1; min-height: 0; display: grid; grid-template-columns: minmax(0, 4
       <button type="button" role="tab" id="tab-talk" aria-selected="false" aria-controls="panel-talk"><span class="lg">Phone and online</span><span class="sh">Phone &amp; online</span></button>
       <button type="button" role="tab" id="tab-course" aria-selected="false" aria-controls="panel-course">Courses</button><a class="tab" href="places/">Places</a></span>
       <button type="button" role="tab" id="tab-about" aria-selected="false" aria-controls="panel-about">About</button>
-      <a class="tolink" href="/tools/">For professionals →</a>    </nav>
+      <a class="tolink" href="/tools/">Tools →</a>    </nav>
     </div>
     <div id="hdr-talk" class="tq">
       <div class="q" id="q-tsupport"><label for="t-support">1. Support for</label><select id="t-support"></select></div>
@@ -201,8 +186,6 @@ function prepare(rows) {
     `<option value="__pt" hidden>Point on map</option>`;
 }
 prepare(DATA);
-// services at the same spot share one numbered pin (grouped in drawMap)
-const spotKey = s => s.lat.toFixed(4) + "," + s.lon.toFixed(4);
 $("today").textContent = new Date().toLocaleDateString("en-GB", { weekday: "short", day: "numeric", month: "short" });
 
 let origin = null, sortBy = "soon", fitPending = true, locMsg = "";
@@ -329,6 +312,7 @@ function render() {
   drawMap([...rows, ...checkRows], rad);
 }
 /*@core:js/kinds.js*/
+/*@core:js/map-pins.js*/
 // Map key doubles as a filter: tap a kind to hide or show it
 const kindsOff = new Set();
 let kindCounts = null, legendEl = null;
@@ -350,26 +334,7 @@ function drawLegend(d) {
 }
 // The same colour on the card as on its map pin
 const kindTag = s => { const k = KINDS[kindOf(s)]; return k ? `<div class="kind"><i style="background:${k[1]}"></i>${esc(k[0])}</div>` : ""; };
-function clusterBg(g) {
-  const n = new Array(KINDS.length + 1).fill(0);
-  g.forEach(s => { const i = kindOf(s); n[i < 0 ? KINDS.length : i]++; });
-  const cols = [...KINDS.map(k => k[1]), "#64748B"];
-  let at = 0; const stops = [];
-  n.forEach((c, i) => { if (c) { const to = at + c / g.length * 360; stops.push(`${cols[i]} ${at}deg ${to}deg`); at = to; } });
-  return stops.length === 1 ? stops[0].split(" ")[0] : `conic-gradient(${stops.join(", ")})`;
-}
 let lastDraw = null;
-const AREA_ZOOM = 11, AREA_PX = 52;   // at zoom 11 or less, pins within ~52px merge into one numbered circle
-function areaClusters(groups) {
-  // Greedy merge of same-spot groups by on-screen distance; biggest spots seed the clusters
-  const z = map.getZoom(), cl = [];
-  [...groups.entries()].sort((a, b) => b[1].length - a[1].length).forEach(([k, g]) => {
-    const p = map.project([g[0].lat, g[0].lon], z);
-    const c = cl.find(c => c.p.distanceTo(p) < AREA_PX);
-    if (c) { c.spots.push([k, g]); c.n += g.length; } else cl.push({ p, spots: [[k, g]], n: g.length });
-  });
-  return cl;
-}
 function drawArea(c) {
   const all = c.spots.flatMap(([, g]) => g);
   const lat = all.reduce((a, s) => a + s.lat, 0) / all.length, lon = all.reduce((a, s) => a + s.lon, 0) / all.length;

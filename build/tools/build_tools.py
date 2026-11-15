@@ -2,7 +2,8 @@
 
 Usage: python build_tools.py         (or run build/build_all.py)
 Writes out/tools/index.html (published at /tools/) and out/test/tools/index.html (published at /test/tools/).
-Assist's own files are in assist/ (assist.html: tab, filter bar and panel; assist.css; assist.js).
+Assist's own files are in assist/ (assist.html: tab, filter bar and panel; assist.css; assist.js), and Analytics's in analytics/
+(analytics.html: tab, filter bar, panel and its About section; analytics.css; analytics.js).
 """
 import datetime, json, pathlib, re, sys, zoneinfo
 
@@ -11,7 +12,7 @@ BUILD = HERE.parent
 DIR = BUILD / "directory"
 sys.path.insert(0, str(BUILD / "shared"))
 from core import inline_core
-from site_config import rebase
+from site_config import rebase, BASE
 
 LIVE = "https://signpostingsomerset.org.uk"
 STAMP = datetime.datetime.now(zoneinfo.ZoneInfo("Europe/London")).strftime("%Y-%m-%d %H:%M")
@@ -37,10 +38,17 @@ page = put(page, "/*APPROX*/[]", json.dumps(sorted(set(towns["APPROX_TOWNS"])), 
 page = put(page, "/*OUTLINE*/null", (DIR / "somerset-outline.json").read_text())
 page = put(page, 'const SHEET_CSV_URL = "";', f'const SHEET_CSV_URL = "{sheet}";')
 page = page.replace("/*BUILT*/", "")
-page = put(page, "/*TOOLS_JS*/\n", (HERE / "tools.js").read_text(encoding="utf-8"))
+an_parts = (HERE / "analytics" / "analytics.html").read_text(encoding="utf-8")
+def an_part(name):   # one piece of analytics.html (TAB, HDR, PANEL or ABOUT)
+    m = re.search(rf"<!--{name}-->\n(.*?)(?=\n<!--[A-Z]+-->|\Z)", an_parts, re.S)
+    return m.group(1).rstrip() + "\n"
+page = put(page, "/*TOOLS_JS*/\n", (HERE / "tools.js").read_text(encoding="utf-8").replace("/*ANALYTICS_ABOUT*/", an_part("ABOUT"))
+           + (HERE / "analytics" / "analytics.js").read_text(encoding="utf-8"))
+for name in ("TAB", "HDR", "PANEL"):
+    page = put(page, f"<!--ANALYTICS_{name}-->\n", an_part(name))
 for name in ("TAB", "HDR", "PANEL"):
     page = put(page, f"<!--ASSIST_{name}-->\n", part(name))
-i = page.rfind("</style>"); page = page[:i] + assist_css + page[i:]
+i = page.rfind("</style>"); page = page[:i] + assist_css + (HERE / "analytics" / "analytics.css").read_text(encoding="utf-8") + page[i:]
 j = page.rfind("</script>") + len("</script>")
 page = page[:j] + "\n<script>\n" + assist_js.replace("/*WORKER_URL*/", worker_url) + "</script>\n" + page[j:]
 
@@ -54,7 +62,7 @@ for name, directory, robots, canonical in (
         ("tools", "/directory/", "", f'<link rel="canonical" href="{LIVE}/tools/">'),
         ("test/tools", "/test/directory/", '<meta name="robots" content="noindex, nofollow">', "")):
     out_page = (page.replace("/*SITE_URL*/", LIVE).replace("/*SITE_VERSION*/", f"{name.split('/')[0]} {STAMP}")
-                    .replace("/*DIRECTORY*/", directory))
+                    .replace("/*DIRECTORY*/", directory).replace("/*DIRECTORY_URL*/", BASE + directory).replace("/*SITE_BASE*/", BASE))
     out_page = put(put(out_page, "<!--ROBOTS-->", robots), "<!--CANONICAL-->", canonical)
     if name.startswith("test"): out_page = out_page.replace("<title>Signposting Somerset: tools</title>", "<title>Signposting Somerset: tools (test)</title>", 1)
     out = HERE / "out" / name
