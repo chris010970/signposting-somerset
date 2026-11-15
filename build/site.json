@@ -1,0 +1,4 @@
+{
+  "_about": "Where the site is served. base_path is the folder the site lives under: \"\" on signpostingsomerset.org.uk, \"/signposting-somerset-v2\" on the github.io preview of this repo. The build adds it to every link and image that starts with /.",
+  "base_path": "/signposting-somerset-v2"
+}

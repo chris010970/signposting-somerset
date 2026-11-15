@@ -8,7 +8,7 @@ Last updated: 15 November 2026.
 
 ## 1. What it is
 
-- **The site:** https://signpostingsomerset.org.uk. The directory is at `/directory/`; the root and the old `/main/` address forward to it (keeping any tab, e.g. `/main/#about`). `/test/` is the test copy (not indexed by Google). Planned: `/browse/` (simple pages by town) and `/analytics/` (coverage analysis, desktop only).
+- **The site:** https://signpostingsomerset.org.uk. The directory is at `/directory/`; the root and the old `/main/` address forward to it (keeping any tab, e.g. `/main/#about`). `/test/` mirrors the site for trying changes first (`/test/directory/`, `/test/browse/`; not indexed by Google; `/test/` itself forwards to `/test/directory/`). Planned: `/browse/` (simple pages by town) and `/analytics/` (coverage analysis, desktop only).
 - **Coverage:** Somerset (Somerset Council area), North Somerset, and Bath and North East Somerset (B&NES), plus national phone and online services.
 - **Audience:** support workers, volunteers and anyone looking for help, activities or community connections.
 - **Data:** one Google Sheet (published as CSV). The site reads it live; nothing needs rebuilding when the sheet changes.
@@ -18,7 +18,7 @@ Last updated: 15 November 2026.
 
 | What | Where |
 |---|---|
-| Live pages | repo `docs/directory/index.html` (live), `docs/test/index.html` (test); `docs/index.html` and `docs/main/index.html` are forwarders to `/directory/` |
+| Live pages | repo `docs/directory/index.html` (live), `docs/test/directory/index.html` (test); `docs/test/browse/` (test town pages); `docs/index.html` and `docs/main/index.html` are forwarders to `/directory/` |
 | Site assets | `docs/assets/` (icons, `share.png` link-preview image), `docs/favicon.ico`, `docs/sitemap.xml` |
 | Build sources | repo `build/`, one folder per part of the site (see section 7) |
 | Worker | Cloudflare: Workers & Pages → `signposting-assist`. Copy of the code in `src/cloudflare-worker.js` and `build/directory/assist/` |
@@ -109,9 +109,10 @@ python directory/build_assist.py                   # rebuilds the worker: direct
 
 - Edit the sources above; never edit the generated files.
 - Each build stamps a version (`directory 2026-11-15 12:50`), visible on the site and in Assist, so you can tell which build is live.
-- **Deploy the site:** copy `build/directory/github/directory/index.html` → repo `docs/directory/index.html` and `build/directory/github/test/index.html` → `docs/test/index.html`, commit, push. GitHub Pages updates in a few minutes.
+- **Deploy the site:** copy `build/directory/github/directory/index.html` → repo `docs/directory/index.html` and `build/directory/github/test/directory/index.html` → `docs/test/directory/index.html`, commit, push. GitHub Pages updates in a few minutes.
 - **Deploy the worker:** Cloudflare → `signposting-assist` → Edit code → paste `build/directory/assist/cloudflare-worker.js` → Deploy. Also copy it to `src/`. Check the version shown on the Assist tab.
-- Test on `/test/` first, then build the live directory.
+- Test on `/test/directory/` first, then build the live directory.
+- **Where the site is served:** `build/site.json` → `base_path`. It is `"/signposting-somerset-v2"` while this repo is previewed on github.io, and must be `""` on signpostingsomerset.org.uk. Every build adds it to links and images that start with `/` (`build/shared/site_config.py`).
 - Setup from scratch: `build/directory/assist/ASSIST-SETUP.md`.
 - The domain's DNS is at 123-reg and points straight at GitHub Pages (no Cloudflare in front), so redirects are small forwarding pages, not server redirects.
 

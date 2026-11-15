@@ -27,7 +27,7 @@ Open to everyone. Built mainly for support workers and volunteers helping someon
 
 ### 🧭 Assist (for invited support workers)
 
-The **Assist** tab turns a short description of someone's situation into a support plan drawn from the checked directory: specialist help for the core need first, then gentle next steps, each with a reason it might help. Plans can be copied, shared or printed. An access code is required. [More about Assist](docs/test/README.md)
+The **Assist** tab turns a short description of someone's situation into a support plan drawn from the checked directory: specialist help for the core need first, then gentle next steps, each with a reason it might help. Plans can be copied, shared or printed. An access code is required. [More about Assist](https://signpostingsomerset.org.uk/directory/#about)
 
 - **Privacy first:** names, contact details and other personal information are removed in the browser before anything is sent to the AI, and only a rounded location (about 1 km) is used.
 - **Needs first:** risk and specialist needs (such as gambling, drinking or an eating disorder) and practical problems (debt, housing, food) are each covered by their best service before wellbeing groups, which go alongside, never instead.
@@ -45,7 +45,7 @@ Spotted something out of date, or know a service that should be listed? [**Sugge
 <summary><b>How it's built</b></summary>
 
 - **Records** live in a shared Google Sheet, so people with local knowledge can keep them up to date. The site reads the published sheet directly, so changes appear within minutes.
-- **The site** is a single static page hosted on GitHub Pages (`docs/main/` is live; `docs/test/` is for trying changes first), with images in `docs/assets/`.
+- **The site** is static pages hosted on GitHub Pages: the directory in `docs/directory/`, with `docs/test/` mirroring the site for trying changes first (`docs/test/directory/`, `docs/test/browse/`), and images in `docs/assets/`.
 - **Assist** runs through a small Cloudflare Worker (`src/cloudflare-worker.js`) that checks the access code, chooses candidate services by distance (removing personal details again before any online search), and asks Claude (Anthropic) for the plan. The API key and access code are kept in Cloudflare, never in this repository.
 - **Tools** in `src/` help check the sheet and add map locations.
 

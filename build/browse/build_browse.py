@@ -12,6 +12,8 @@ none are shown; distances are straight lines; 'next session' is worked out in th
 on that. Everything else is as of the build date shown on each page.
 """
 import csv, datetime, html, io, json, math, pathlib, re, sys, urllib.request, zoneinfo
+sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent.parent / "shared"))
+from site_config import rebase
 
 HERE = pathlib.Path(__file__).parent
 BUILD = HERE.parent
@@ -155,8 +157,8 @@ def town_main(town, items, dirbase):
         btns.append(f'<a href="#{c["id"]}" data-k="{c["id"]}">{e(c["button"])} <span>{n}</span></a>')
         inn = [row(d, r, town) for d, r in items if c["id"] in r["_cats"] and r.get("town") == town]
         near = [row(d, r, town) for d, r in items if c["id"] in r["_cats"] and r.get("town") != town]
-        maplink = f'{dirbase}?' + (f'support={urllib.request.quote(c["map"])}&' if c["map"] else "") + f'town={urllib.request.quote(town)}#near'
-        secs.append(f'<section class="bsec" id="{c["id"]}" data-k="{c["id"]}"><div class="bsh"><h2>{e(c["label"])} support in {e(town)}</h2>'
+        maplink = f'{dirbase}?' + (f'support={urllib.request.quote(c["map"])}&' if c["map"] else "") + f'town={urllib.request.quote(town)}&lat={TOWNS[town][0]}&lon={TOWNS[town][1]}&label={urllib.request.quote(town)}#near'   # town if the directory lists it, otherwise its centre
+        secs.append(f'<section class="bsec" id="{c["id"]}" data-k="{c["id"]}"><div class="bsh"><h2>{e(c["heading"].replace("{town}", town))}</h2>'
                     f'<a class="bmap" href="{maplink}">View on the map →</a></div>'
                     + (f'<h3>In {e(town)}</h3><ul class="blist">{"".join(inn)}</ul>' if inn else "")
                     + (f'<h3>Nearby</h3><ul class="blist">{"".join(near)}</ul>' if near else "") + "</section>")
@@ -341,7 +343,7 @@ def page(title, desc, canonical, robots, main_html, nav_html, sel_html, dirbase,
     ld = {"@context": "https://schema.org", "@type": "BreadcrumbList", "itemListElement": [
         {"@type": "ListItem", "position": i + 1, "name": n, "item": u} for i, (n, u) in enumerate(crumbs)]}
     head_extra = (f'<link rel="canonical" href="{canonical}">\n' if canonical else "") + (robots or "")
-    return f"""<!doctype html>
+    return rebase(f"""<!doctype html>
 <html lang="en">
 <head>
 <meta charset="utf-8">
@@ -392,7 +394,7 @@ def page(title, desc, canonical, robots, main_html, nav_html, sel_html, dirbase,
 </script>
 </body>
 </html>
-"""
+""")
 
 def town_select(base, current):
     opts = "".join(f'<optgroup label="{e(a)}">' + "".join(
@@ -401,7 +403,7 @@ def town_select(base, current):
     return f'<div class="btownsel"><label for="btown">Town</label><select id="btown">{first}{opts}</select></div>'
 
 # ---------- build ----------
-TARGETS = [("test", "/test/browse/", "/test/", None, '<meta name="robots" content="noindex, nofollow">\n')]
+TARGETS = [("test", "/test/browse/", "/test/directory/", None, '<meta name="robots" content="noindex, nofollow">\n')]
 if not ONLY_TEST:
     TARGETS.insert(0, ("browse", "/browse/", "/directory/", SITE, ""))
 OUT = HERE / "out"

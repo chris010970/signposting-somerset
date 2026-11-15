@@ -10,7 +10,7 @@ build/ holds one folder per part of the site:
 
 Today this builds the directory: directory/build.py, then directory/build_v2.py (adds Assist),
 writing directory/github/directory/index.html (live, published to docs/directory/) and
-directory/github/test/index.html (test, published to docs/test/)."""
+directory/github/test/directory/index.html (test, published to docs/test/directory/)."""
 import subprocess, sys, pathlib
 HERE = pathlib.Path(__file__).parent
 args = [a for a in sys.argv[1:] if a != "test"]

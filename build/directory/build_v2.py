@@ -2,10 +2,12 @@
 
 Run build.py first (it makes github/index.html), then: python build_v2.py
 (or run build_all.py, which does both).
-Writes github/directory/index.html (the live site, published at /directory/) and github/test/index.html (the test copy).
+Writes github/directory/index.html (the live site, published at /directory/) and github/test/directory/index.html (the test copy, published at /test/directory/).
 Plans always link to the live site.
 """
-import pathlib, re
+import pathlib, re, sys
+sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent.parent / "shared"))
+from site_config import rebase
 
 HERE = pathlib.Path(__file__).parent
 base = (HERE / "github" / "index.html").read_text(encoding="utf-8")
@@ -46,7 +48,7 @@ for name, title in TARGETS:
     out_page = out_page.replace("<!--ROBOTS-->", '<meta name="robots" content="noindex, nofollow">' if name == "test" else "", 1)
     if name == "test":   # noindex page: no canonical, so the signals don't conflict
         out_page = out_page.replace('<link rel="canonical" href="https://signpostingsomerset.org.uk/directory/">\n', "", 1)
-    out = HERE / "github" / name
+    out = HERE / "github" / ("test/directory" if name == "test" else name)
     out.mkdir(parents=True, exist_ok=True)
-    (out / "index.html").write_text(out_page, encoding="utf-8")
-    print(f"github/{name}/index.html", f"({len(out_page) // 1024} KB, Assist relay: {worker_url or 'NOT SET'})")
+    (out / "index.html").write_text(rebase(out_page), encoding="utf-8")
+    print(f"{out.relative_to(HERE)}/index.html", f"({len(out_page) // 1024} KB, Assist relay: {worker_url or 'NOT SET'})")
