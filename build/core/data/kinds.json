@@ -1,0 +1,11 @@
+{
+ "_about": "Kinds of service (the sheet's type column) in five groups, each with its colour: the map pins, the map key and the line under a card's name. Services of any other type get the grey 'other' colour.",
+ "kinds": [
+  {"kind": "Activities", "colour": "#3F6FB0", "types": ["Activity group", "Volunteering"]},
+  {"kind": "Groups and community", "colour": "#3A9488", "types": ["Peer group", "Community"]},
+  {"kind": "Advice and practical help", "colour": "#D08A2E", "types": ["Advocacy", "Practical support"]},
+  {"kind": "One-to-one and therapy", "colour": "#93549B", "types": ["One-to-one support", "Counselling or therapy"]},
+  {"kind": "Courses", "colour": "#B5577A", "types": ["Course"]}
+ ],
+ "other": "#64748B"
+}

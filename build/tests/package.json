@@ -1,0 +1,11 @@
+{
+  "name": "signposting-somerset-tests",
+  "private": true,
+  "description": "Browser tests for the published pages (browser.test.mjs). Setup: npm install && npx playwright install chromium",
+  "type": "module",
+  "devDependencies": {
+    "axe-core": "4.10.2",
+    "html-validate": "8.24.1",
+    "playwright": "1.56.0"
+  }
+}

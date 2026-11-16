@@ -1,0 +1,12 @@
+{
+ "_about": "Wording on the service cards (In person, Places) and in Copy details. access: the badge for each value of the sheet's access column (class sets its colour). A 'call' service reads 'Call first' for groups and activities, and 'Phone line' for anything else; any other value reads 'Contact provider'.",
+ "access": {
+  "drop in": {"class": "b-drop", "label": "Just turn up"},
+  "sign up": {"class": "b-sign", "label": "Contact to join"},
+  "book": {"class": "b-book", "label": "Book first"},
+  "referral": {"class": "b-ref", "label": "Needs a referral"},
+  "call": {"class": "b-ref", "label": "Call first", "label_not_group": "Phone line"}
+ },
+ "access_other": {"class": "b-ref", "label": "Contact provider"},
+ "group_types": ["group", "community", "course", "volunteering"]
+}

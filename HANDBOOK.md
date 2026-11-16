@@ -107,16 +107,17 @@ These are decisions, not accidents. Keep to them unless deliberately changed (an
 cd build
 python build_all.py path/to/services.csv          # the directory and the tools page, live and test
 python build_all.py path/to/services.csv test     # the directory's test copy only (and tools)
-python places/build_places.py path/to/services.csv  # the Places pages and the sitemap (no CSV: reads the published sheet)
+python places/publish_places.py                    # the Places pages and the sitemap, from the sheet, copied into docs/ (also done nightly by GitHub)
 python tools/assist/build_worker.py               # rebuilds the worker: tools/assist/cloudflare-worker.js
 ```
 
 - Edit the sources above; never edit the generated files.
-- **Check:** `python build/tests/run_tests.py` (from the repo root) runs the tests, rebuilds the directory and tools pages, and checks every link in `docs/`. GitHub runs the same on every push: a red cross by a commit means a check failed (click it to see which).
+- **Check:** `python build/tests/run_tests.py` (from the repo root) runs the tests, rebuilds the directory and tools pages, checks every link in `docs/`, and (once set up) opens the pages in a browser: what each tab shows for a made-up sheet, the Places cards, valid HTML and accessibility. Browser tests setup, once: install Node.js, then `cd build/tests`, `npm install`, `npx playwright install chromium`. GitHub runs all of it on every push: a red cross by a commit means a check failed (click it to see which).
+- **Places rebuild nightly:** GitHub rebuilds the Places pages from the sheet at about 3am and commits them if anything changed (Actions → "Rebuild Places"; it can also be run from there by hand). After it has committed, GitHub Desktop asks you to pull before your next push: "Fetch origin", then "Pull origin".
 - **Once a year:** add the next year's bank holidays to `build/core/data/bank-holidays.json` (from gov.uk/bank-holidays). The tests fail six months before the list runs out, as a reminder.
 - Site settings are in `build/site.json`: `base_path` (below) and `feedback_form_url` (the About tab's Suggest a change form).
 - Each build stamps a version (`directory 2026-11-15 12:50`), visible on the site and in Assist, so you can tell which build is live.
-- **Deploy the site:** copy `build/directory/github/directory/index.html` → repo `docs/directory/index.html` and `build/directory/github/test/directory/index.html` → `docs/test/directory/index.html`, and `build/tools/out/tools/index.html` → `docs/tools/index.html`, `build/tools/out/test/tools/index.html` → `docs/test/tools/index.html`; and `build/places/out/directory/places/` → `docs/directory/places/`, `build/places/out/test/directory/places/` → `docs/test/directory/places/`, `build/places/out/sitemap.xml` → `docs/sitemap.xml`. Commit, push. GitHub Pages updates in a few minutes.
+- **Deploy the site:** copy `build/directory/github/directory/index.html` → repo `docs/directory/index.html` and `build/directory/github/test/directory/index.html` → `docs/test/directory/index.html`, and `build/tools/out/tools/index.html` → `docs/tools/index.html`, `build/tools/out/test/tools/index.html` → `docs/test/tools/index.html`. The Places pages copy themselves (`publish_places.py`, above). Commit, push. GitHub Pages updates in a few minutes.
 - **Deploy the worker:** Cloudflare → `signposting-assist` → Edit code → paste `build/tools/assist/cloudflare-worker.js` → Deploy. Also copy it to `src/`. Check the version shown on the Assist tab.
 - Test on `/test/directory/` first, then build the live directory.
 - **Where the site is served:** `build/site.json` → `base_path`. It is `"/signposting-somerset-v2"` while this repo is previewed on github.io, and must be `""` on signpostingsomerset.org.uk. Every build adds it to links and images that start with `/` (`build/shared/site_config.py`).

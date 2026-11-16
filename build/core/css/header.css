@@ -5,7 +5,7 @@
 .hero > :not(.illus) { position: relative; z-index: 1; max-width: min(48%, 680px); }
 .hero h1 { font-size: 24px; line-height: 1.1; display: flex; align-items: center; gap: 9px; }
 .hero h1 .logo { height: 34px; width: auto; flex: none; margin: -2px 0 -1px; }
-.hero .lede { font-size: 13.5px; color: #78716C; margin: 3px 0 2px; max-width: 60ch; }
+.hero .lede { font-size: 13.5px; color: #6B645F; margin: 3px 0 2px; max-width: 60ch; }
 /* The tagline stays on one line: a shorter version on narrow screens */
 .hero .lede { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: none; }
 .hero .lede .sh { display: none; }

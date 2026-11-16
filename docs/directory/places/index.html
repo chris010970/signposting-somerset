@@ -38,7 +38,7 @@ button, select { font: inherit; }
 .hero > :not(.illus) { position: relative; z-index: 1; max-width: min(48%, 680px); }
 .hero h1 { font-size: 24px; line-height: 1.1; display: flex; align-items: center; gap: 9px; }
 .hero h1 .logo { height: 34px; width: auto; flex: none; margin: -2px 0 -1px; }
-.hero .lede { font-size: 13.5px; color: #78716C; margin: 3px 0 2px; max-width: 60ch; }
+.hero .lede { font-size: 13.5px; color: #6B645F; margin: 3px 0 2px; max-width: 60ch; }
 /* The tagline stays on one line: a shorter version on narrow screens */
 .hero .lede { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: none; }
 .hero .lede .sh { display: none; }
@@ -62,8 +62,8 @@ button, select { font: inherit; }
 header.top { position: relative; overflow: hidden; background: var(--white); border-bottom: 1px solid var(--line); padding-block: 10px 10px; }
 .inner { max-width: 1400px; margin: 0 auto; }
 h1 { font-family: var(--serif); color: var(--b900); font-size: 26px; margin: 0; }
-.lede { color: #78716C; margin: 2px 0 14px; }
-.datasrc { color: #78716C; font-size: 12px; margin: -10px 0 12px; }
+.lede { color: #6B645F; margin: 2px 0 14px; }
+.datasrc { color: #6B645F; font-size: 12px; margin: -10px 0 12px; }
 .qs { display: grid; grid-template-columns: 27% 33% minmax(0, 1fr) auto; gap: 10px; }
 @media (max-width: 899px) { .qs { grid-template-columns: 1fr; } }
 .q { background: var(--b50); border: 2px solid transparent; border-radius: 10px; padding: 5px 10px; min-width: 0; }
@@ -92,7 +92,7 @@ h1 { font-family: var(--serif); color: var(--b900); font-size: 26px; margin: 0; 
 .summary b { color: var(--ink); background: #F1F5F9; padding: 1px 6px; border-radius: 4px; }
 .sort { display: flex; gap: 6px; align-items: center; font-size: 12px; color: var(--muted); }
 .seg { display: inline-flex; background: #E7E5E4; border-radius: 8px; padding: 3px; }
-.seg button { border: 0; background: transparent; padding: 4px 10px; border-radius: 6px; font-size: 12px; font-weight: 600; color: #78716C; cursor: pointer; }
+.seg button { border: 0; background: transparent; padding: 4px 10px; border-radius: 6px; font-size: 12px; font-weight: 600; color: #6B645F; cursor: pointer; }
 .seg button[aria-pressed="true"] { background: var(--white); color: var(--b900); box-shadow: 0 1px 2px rgba(0,0,0,.08); }
 .seg button:disabled { opacity: .4; cursor: default; }
 .tabs { display: none; }
@@ -114,11 +114,11 @@ h1 { font-family: var(--serif); color: var(--b900); font-size: 26px; margin: 0; 
 .aboutpage .acols section > h3:first-child { margin-top: 0; }
 .aboutpage .stats { font-weight: 700; color: var(--b800); }
 .aboutpage .btn { display: inline-block; margin-top: 6px; background: var(--b700); color: #fff; text-decoration: none; font-weight: 700; padding: 10px 16px; border-radius: 10px; }
-.aboutpage .small { font-size: 13px; color: #78716C; }
+.aboutpage .small { font-size: 13px; color: #6B645F; }
 .aboutpage a:not(.btn) { color: var(--b700); text-decoration-color: var(--b200); text-underline-offset: 2px; }   /* same as Assist */
 .aboutpage a:not(.btn):hover { color: var(--b900); text-decoration-color: currentColor; }
-.sitetabs button { border: 0; background: none; padding: 9px 14px 10px; font-weight: 700; font-size: 14px; color: #78716C; cursor: pointer; border-bottom: 3px solid transparent; margin-bottom: -1px; }
-.sitetabs button[aria-selected="true"] { color: var(--b900); border-bottom-color: var(--b600); }
+.sitetabs button { border: 0; background: none; padding: 9px 14px 10px; font-weight: 700; font-size: 14px; color: #6B645F; cursor: pointer; border-bottom: 3px solid transparent; margin-bottom: -1px; }
+.sitetabs button[aria-current="page"] { color: var(--b900); border-bottom-color: var(--b600); }
 /* Tabs in groups: Browse (In person, Phone and online, Courses) | Assist | About */
 .sitetabs { align-items: flex-end; }
 .sitetabs .tgrp { display: inline-flex; align-items: flex-end; gap: 4px; position: relative; flex: none; }
@@ -128,7 +128,7 @@ h1 { font-family: var(--serif); color: var(--b900); font-size: 26px; margin: 0; 
 .sitetabs.more { -webkit-mask-image: linear-gradient(to right, #000 calc(100% - 36px), transparent); mask-image: linear-gradient(to right, #000 calc(100% - 36px), transparent); }
 @media (max-width: 420px) { .sitetabs { gap: 0; } .sitetabs .tgrp { gap: 0; } .sitetabs button { padding-inline: 5px; font-size: 13px; } .sitetabs #tab-assist, .sitetabs #tab-about { margin-left: 1px; padding-left: 7px; } .sitetabs #tab-assist { gap: 4px; } .sitetabs .lg { display: none; } .sitetabs .sh { display: inline; } }
 /* Tabs that are links to other pages (Places in the directory; every tab on the town pages), looking like the tab buttons */
-.sitetabs a.tab { white-space: nowrap; padding: 9px 14px 10px; font-weight: 700; font-size: 14px; color: #78716C; text-decoration: none; border-bottom: 3px solid transparent; margin-bottom: -1px; }
+.sitetabs a.tab { white-space: nowrap; padding: 9px 14px 10px; font-weight: 700; font-size: 14px; color: #6B645F; text-decoration: none; border-bottom: 3px solid transparent; margin-bottom: -1px; }
 .sitetabs a.tab:hover, .sitetabs a.tab:focus-visible { color: var(--b900); }
 .sitetabs a.tab[aria-current] { color: var(--b900); border-bottom-color: var(--b600); }
 .sitetabs a.tab.sep { margin-left: 6px; padding-left: 14px; position: relative; }
@@ -155,14 +155,14 @@ h1 { font-family: var(--serif); color: var(--b900); font-size: 26px; margin: 0; 
 .maplegend { padding: 8px 10px 6px !important; min-width: 230px; font-family: var(--sans); }
 .maplegend button { font-family: inherit; }
 .leaflet-container .leaflet-tooltip, .leaflet-container .leaflet-popup-content { font-family: var(--sans); }
-.maplegend b span { text-transform: none; letter-spacing: 0; font-weight: 500; color: #78716C; margin-left: 4px; }
+.maplegend b span { text-transform: none; letter-spacing: 0; font-weight: 500; color: #6B645F; margin-left: 4px; }
 .maplegend button { display: flex; align-items: center; gap: 9px; width: 100%; background: none; border: 0; border-bottom: 1px solid #F5F5F4; padding: 5px 4px; margin: 0; border-radius: 6px; font-size: 13px; line-height: 1.25; color: var(--ink); cursor: pointer; text-align: left; }
 .maplegend button:last-child { border-bottom: 0; }
 .maplegend button:hover { background: var(--b50); }
 .maplegend button i { flex: none; width: 26px; height: 13px; border-radius: 4px; background: var(--c); border: 0; box-shadow: none; margin: 0; vertical-align: 0; }
 .maplegend .lt { display: flex; flex-direction: column; min-width: 0; }
-.maplegend .lt small { font-size: 11px; color: #78716C; white-space: nowrap; }
-.maplegend button em { margin-left: auto; padding-left: 10px; font-style: normal; font-size: 11px; color: #78716C; font-variant-numeric: tabular-nums; }
+.maplegend .lt small { font-size: 11px; color: #6B645F; white-space: nowrap; }
+.maplegend button em { margin-left: auto; padding-left: 10px; font-style: normal; font-size: 11px; color: #6B645F; font-variant-numeric: tabular-nums; }
 .maplegend button[aria-pressed="false"] { color: #A8A29E; }
 .maplegend button.zero:not([aria-pressed="false"]) { color: #A8A29E; }
 .maplegend button[aria-pressed="false"] .lt { text-decoration: line-through; }
@@ -170,7 +170,7 @@ h1 { font-family: var(--serif); color: var(--b900); font-size: 26px; margin: 0; 
 .maplegend button.all { justify-content: center; color: var(--b700); font-weight: 700; text-decoration: underline; margin-top: 2px; }
 .maplegend button.lghead { border: 0; padding: 2px 2px 4px; margin: 0; gap: 6px; font-size: 10px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: var(--b700); }
 .maplegend button.lghead:hover { background: none; }
-.maplegend button.lghead span { text-transform: none; letter-spacing: 0; font-weight: 500; color: #78716C; }
+.maplegend button.lghead span { text-transform: none; letter-spacing: 0; font-weight: 500; color: #6B645F; }
 .maplegend button.lghead .dots { display: inline-flex; gap: 3px; text-transform: none; }
 .maplegend button.lghead .dots i { width: 9px; height: 9px; border-radius: 50%; }
 .maplegend button.lghead svg { margin-left: auto; width: 14px; height: 14px; flex: none; color: var(--b700); transition: transform .15s; }
@@ -190,10 +190,10 @@ h1 { font-family: var(--serif); color: var(--b900); font-size: 26px; margin: 0; 
 .card.open .desc { -webkit-line-clamp: unset; display: block; }
 .who { font-size: 12px; color: var(--ink); margin-bottom: 8px; }
 .who em { font-style: normal; color: #92400E; }
-.foot { font-size: 12px; color: #78716C; border-top: 1px solid #F5F5F4; padding-top: 8px; display: grid; gap: 3px; }
+.foot { font-size: 12px; color: #6B645F; border-top: 1px solid #F5F5F4; padding-top: 8px; display: grid; gap: 3px; }
 .foot a { color: var(--b700); }
 a.copy.dirs { text-decoration: none; }
-.approx { color: #A8A29E; }
+.approx { color: #78716C; }
 .morehint { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 8px 12px; margin: 14px 0 6px; padding: 12px 14px; border: 1px dashed var(--line); border-radius: 12px; background: var(--white); font-size: 14px; color: var(--muted); }
 .morehint b { color: inherit; }
 .morehint button { font: inherit; font-size: 13px; font-weight: 600; padding: 6px 12px; border-radius: 999px; border: 1px solid var(--line); background: var(--white); cursor: pointer; }
@@ -218,14 +218,14 @@ a.copy.dirs { text-decoration: none; }
 footer.help { position: fixed; left: 0; right: 0; bottom: 0; z-index: 1000; background: var(--b800); color: #fff; padding-block: 9px calc(9px + env(safe-area-inset-bottom, 0px)); transition: background .3s; }
 footer.help.urgent { background: var(--urgent); }
 footer .inner { display: flex; justify-content: space-between; align-items: center; gap: 10px; flex-wrap: wrap; }
-footer h4 { margin: 0; font-size: 13px; }
+footer h2 { margin: 0; font-size: 13px; }
 footer p { margin: 1px 0 0; font-size: 11px; color: var(--b100); }
 footer.urgent p { color: #FEE2E2; }
 @media (max-width: 600px) {
   footer.help { padding-block: 6px calc(6px + env(safe-area-inset-bottom, 0px)); }
   footer .inner { flex-wrap: nowrap; gap: 8px; }
   footer .inner > div:first-child { flex: 1; min-width: 0; }
-  footer h4 { font-size: 12px; line-height: 1.25; }
+  footer h2 { font-size: 12px; line-height: 1.25; }
   footer p, footer .line .num { display: none; }
   footer .lines { flex-wrap: nowrap; gap: 6px; }
   footer .line { padding: 6px 10px; }
@@ -294,15 +294,15 @@ footer.urgent p { color: #FEE2E2; }
 
 /* In person: the list beside the map (on phones, one or the other, with the List / Map switch) */
 @media (max-width: 899px) { .tabs { display: inline-flex; } }
-main { flex: 1; min-height: 0; display: grid; grid-template-columns: minmax(0, 42%) minmax(0, 1fr); max-width: 1400px; width: 100%; margin: 0 auto var(--footh, 50px); }
+#main { flex: 1; min-height: 0; display: grid; grid-template-columns: minmax(0, 42%) minmax(0, 1fr); max-width: 1400px; width: 100%; margin: 0 auto var(--footh, 50px); }
 @media (max-width: 899px) {
-  main { grid-template-columns: 1fr; }
-  main.show-map #list { display: none; }
-  main:not(.show-map) #mapwrap { display: none; }
+  #main { grid-template-columns: 1fr; }
+  #main.show-map #list { display: none; }
+  #main:not(.show-map) #mapwrap { display: none; }
 }
 #list { overflow-y: auto; padding: 14px 14px 90px; border-right: 1px solid var(--line); min-height: 0; }
 /* Line the list and map up with the header's edges (same 16px gutter and width) */
-@media (min-width: 900px) { main { max-width: 1432px; padding-inline: max(16px, env(safe-area-inset-left, 0px)); } #list { padding-left: 0; } }
+@media (min-width: 900px) { #main { max-width: 1432px; padding-inline: max(16px, env(safe-area-inset-left, 0px)); } #list { padding-left: 0; } }
 #mapwrap { position: relative; min-height: 360px; }
 #map { position: absolute; inset: 0; background: #EEF0EC; }
 .tilenote { position: absolute; left: 12px; bottom: 12px; z-index: 500; pointer-events: none; background: rgba(255,255,255,.95); border: 1px solid var(--line); border-radius: 8px; padding: 6px 10px; font-size: 12px; color: var(--muted); max-width: 70%; }
@@ -324,7 +324,7 @@ main { flex: 1; min-height: 0; display: grid; grid-template-columns: minmax(0, 4
 
 /* Filter boxes: three equal boxes, running to the right-hand edge like the directory's */
 @media (min-width: 900px) { #hdr-towns .qs { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
-#bq-when .btoday { float: right; text-transform: none; letter-spacing: 0; color: #78716C; font-weight: 500; }
+#bq-when .btoday { float: right; text-transform: none; letter-spacing: 0; color: #6B645F; font-weight: 500; }
 
 /* The Places page (no town chosen): two cards, what to do (left) and the map to choose from (right) */
 .bpick { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.3fr); gap: 12px; align-items: stretch; margin-top: 4px; }
@@ -373,10 +373,10 @@ main { flex: 1; min-height: 0; display: grid; grid-template-columns: minmax(0, 4
 </style>
 </head>
 <body>
-<div class="crisis gut">
+<aside class="crisis gut" aria-label="Crisis help">
   <div><b>Crisis</b>Immediate danger or medical emergency: call <a href="tel:999">999</a> or NHS <a href="tel:111">111 (option 2)</a></div>
   <a class="exit" href="https://www.bbc.co.uk/weather" rel="noopener">Quick exit</a>
-</div>
+</aside>
 <header class="top gut">
   <div class="inner">
     <div class="masthead">
@@ -392,13 +392,13 @@ main { flex: 1; min-height: 0; display: grid; grid-template-columns: minmax(0, 4
 </header>
 <span id="copy-live" role="status" aria-live="polite" class="vh"></span>
 <div class="bw gut">
-<div class="bmain" role="main">
-<div class="bpick"><div class="bpicktxt"><h1 class="bt">Places</h1><p>Choose your nearest town above, or on the map, to see free and low-cost groups, activities and services in and around it, with times, places and how to get in touch.</p><p class="otowns"><a href="/signposting-somerset-v2/directory/places/bridgwater/">Bridgwater</a> · <a href="/signposting-somerset-v2/directory/places/burnham-on-sea/">Burnham-on-Sea</a> · <a href="/signposting-somerset-v2/directory/places/chard/">Chard</a> · <a href="/signposting-somerset-v2/directory/places/crewkerne/">Crewkerne</a> · <a href="/signposting-somerset-v2/directory/places/frome/">Frome</a> · <a href="/signposting-somerset-v2/directory/places/glastonbury/">Glastonbury</a> · <a href="/signposting-somerset-v2/directory/places/minehead/">Minehead</a> · <a href="/signposting-somerset-v2/directory/places/shepton-mallet/">Shepton Mallet</a> · <a href="/signposting-somerset-v2/directory/places/street/">Street</a> · <a href="/signposting-somerset-v2/directory/places/taunton/">Taunton</a> · <a href="/signposting-somerset-v2/directory/places/wellington/">Wellington</a> · <a href="/signposting-somerset-v2/directory/places/wells/">Wells</a> · <a href="/signposting-somerset-v2/directory/places/yeovil/">Yeovil</a> · <a href="/signposting-somerset-v2/directory/places/clevedon/">Clevedon</a> · <a href="/signposting-somerset-v2/directory/places/nailsea/">Nailsea</a> · <a href="/signposting-somerset-v2/directory/places/portishead/">Portishead</a> · <a href="/signposting-somerset-v2/directory/places/weston-super-mare/">Weston-super-Mare</a> · <a href="/signposting-somerset-v2/directory/places/bath/">Bath</a> · <a href="/signposting-somerset-v2/directory/places/keynsham/">Keynsham</a> · <a href="/signposting-somerset-v2/directory/places/midsomer-norton/">Midsomer Norton</a></p></div><div class="bmapwrap"><svg class="bmapsvg" viewBox="-70 -10 740 428" role="img" aria-label="Map of Somerset, North Somerset and Bath and North East Somerset with the towns marked"><path class="land" d="M0.0,195.2 L12.6,194.5 L20.1,198.1 L43.0,193.6 L40.5,186.6 L42.7,181.5 L40.1,167.6 L44.9,161.4 L77.7,166.9 L82.1,171.2 L93.1,167.6 L98.2,162.0 L107.3,161.4 L129.0,166.8 L139.5,176.4 L149.6,177.3 L161.0,190.9 L198.0,193.5 L212.1,193.3 L239.8,180.3 L248.0,181.3 L266.4,174.8 L287.1,180.4 L308.6,170.3 L304.9,175.2 L306.6,173.9 L303.5,184.6 L298.8,184.5 L294.6,189.3 L292.8,196.8 L294.6,197.2 L296.7,189.0 L305.6,185.6 L314.6,166.2 L315.2,154.4 L307.6,139.8 L311.6,109.1 L302.3,104.2 L314.7,106.2 L320.9,113.8 L317.8,117.4 L320.3,116.8 L321.7,114.1 L321.5,110.3 L318.7,109.0 L322.0,91.1 L318.1,87.0 L327.7,83.3 L329.6,79.3 L329.9,71.8 L323.1,68.2 L338.6,62.7 L339.1,66.0 L349.5,64.9 L362.9,44.1 L361.3,42.2 L391.0,10.4 L401.1,4.5 L416.2,5.8 L417.1,0.0 L434.4,13.0 L442.5,9.5 L453.3,21.2 L456.1,33.3 L451.4,36.9 L454.9,37.6 L452.4,47.3 L455.3,51.7 L453.1,57.2 L455.1,59.9 L470.0,62.7 L477.2,61.6 L481.8,54.6 L487.6,56.8 L495.1,45.6 L494.0,40.4 L500.9,46.4 L506.5,43.7 L508.2,45.4 L506.8,50.1 L511.0,48.3 L515.3,51.8 L562.8,37.6 L569.7,39.1 L574.4,47.7 L581.1,44.0 L587.2,51.8 L582.6,57.8 L585.9,63.0 L580.3,64.5 L582.7,77.7 L579.1,84.0 L576.3,82.3 L575.3,86.8 L562.8,93.7 L570.0,92.6 L575.9,97.4 L579.9,95.4 L581.2,98.7 L579.1,101.5 L588.5,106.5 L589.6,112.7 L585.0,115.9 L587.8,118.9 L586.6,125.6 L592.1,123.5 L596.6,127.4 L600.0,143.4 L590.5,169.7 L591.6,171.9 L578.8,196.8 L567.0,214.1 L567.0,218.5 L561.9,221.2 L562.4,226.4 L554.9,230.0 L555.6,240.3 L569.3,253.4 L560.6,258.9 L560.5,264.2 L566.6,270.3 L568.0,275.9 L556.3,286.1 L548.5,299.9 L550.2,306.7 L558.4,306.6 L562.6,310.5 L562.3,313.9 L535.9,324.8 L532.0,319.0 L524.0,320.4 L525.3,325.3 L520.6,331.6 L516.4,325.3 L513.4,326.4 L503.0,304.9 L493.9,306.0 L486.2,301.5 L484.4,304.8 L487.1,306.2 L486.8,310.1 L482.7,313.5 L476.0,309.4 L470.3,315.0 L467.8,312.4 L465.2,315.1 L468.2,323.9 L466.9,332.0 L460.8,336.9 L464.8,345.1 L460.7,347.2 L457.3,356.5 L462.6,366.0 L462.1,370.1 L457.2,373.5 L455.7,369.3 L443.5,368.9 L423.3,378.5 L422.9,382.8 L407.9,381.1 L395.2,389.1 L386.8,383.2 L380.3,391.8 L358.6,390.8 L342.1,396.6 L333.0,408.4 L327.2,400.6 L327.7,390.5 L325.6,387.8 L316.4,390.5 L311.5,386.8 L302.0,390.5 L303.5,384.0 L295.2,376.4 L296.1,356.3 L268.3,360.2 L263.5,366.1 L258.3,364.9 L257.1,361.1 L251.7,360.9 L251.6,356.6 L245.2,354.9 L250.9,345.7 L253.9,333.5 L220.0,336.0 L205.3,328.1 L190.3,311.5 L173.4,314.7 L172.6,290.1 L160.1,289.4 L159.5,284.5 L155.3,282.3 L141.4,286.0 L133.7,280.9 L120.2,285.6 L120.7,292.3 L114.6,299.1 L86.5,296.4 L84.7,291.9 L90.9,279.0 L90.1,270.8 L91.9,268.0 L70.5,265.4 L71.1,262.7 L55.4,252.8 L45.1,252.7 L27.2,237.7 L13.4,231.8 L1.9,216.4 L2.9,210.5 L0.0,195.2Z"/><a href="/signposting-somerset-v2/directory/places/bridgwater/" aria-label="Bridgwater: 92 groups and services"><circle cx="314.5" cy="224.5" r="5.5"/><text x="305.5" y="228.5" text-anchor="end">Bridgwater</text></a><a href="/signposting-somerset-v2/directory/places/burnham-on-sea/" aria-label="Burnham-on-Sea: 114 groups and services"><circle cx="316.9" cy="158.2" r="5.5"/><text x="307.9" y="162.2" text-anchor="end">Burnham-on-Sea</text></a><a href="/signposting-somerset-v2/directory/places/chard/" aria-label="Chard: 68 groups and services"><circle cx="330.3" cy="377.8" r="5.5"/><text x="321.3" y="381.8" text-anchor="end">Chard</text></a><a href="/signposting-somerset-v2/directory/places/crewkerne/" aria-label="Crewkerne: 92 groups and services"><circle cx="392.9" cy="370.7" r="5.5"/><text x="401.9" y="374.7" text-anchor="start">Crewkerne</text></a><a href="/signposting-somerset-v2/directory/places/frome/" aria-label="Frome: 62 groups and services"><circle cx="570.9" cy="164.3" r="5.5"/><text x="579.9" y="168.3" text-anchor="start">Frome</text></a><a href="/signposting-somerset-v2/directory/places/glastonbury/" aria-label="Glastonbury: 128 groups and services"><circle cx="423.2" cy="212.1" r="5.5"/><text x="414.2" y="216.1" text-anchor="end">Glastonbury</text></a><a href="/signposting-somerset-v2/directory/places/minehead/" aria-label="Minehead: 36 groups and services"><circle cx="135.5" cy="178.8" r="5.5"/><text x="126.5" y="182.8" text-anchor="end">Minehead</text></a><a href="/signposting-somerset-v2/directory/places/shepton-mallet/" aria-label="Shepton Mallet: 111 groups and services"><circle cx="486.5" cy="186.9" r="5.5"/><text x="495.5" y="190.9" text-anchor="start">Shepton Mallet</text></a><a href="/signposting-somerset-v2/directory/places/street/" aria-label="Street: 109 groups and services"><circle cx="413.9" cy="225.1" r="5.5"/><text x="422.9" y="229.1" text-anchor="start">Street</text></a><a href="/signposting-somerset-v2/directory/places/taunton/" aria-label="Taunton: 119 groups and services"><circle cx="277.1" cy="292.2" r="5.5"/><text x="286.1" y="296.2" text-anchor="start">Taunton</text></a><a href="/signposting-somerset-v2/directory/places/wellington/" aria-label="Wellington: 114 groups and services"><circle cx="230.7" cy="313.9" r="5.5"/><text x="221.7" y="317.9" text-anchor="end">Wellington</text></a><a href="/signposting-somerset-v2/directory/places/wells/" aria-label="Wells: 128 groups and services"><circle cx="448.4" cy="175.6" r="5.5"/><text x="457.4" y="179.6" text-anchor="start">Wells</text></a><a href="/signposting-somerset-v2/directory/places/yeovil/" aria-label="Yeovil: 59 groups and services"><circle cx="453.9" cy="335.9" r="5.5"/><text x="462.9" y="339.9" text-anchor="start">Yeovil</text></a><a href="/signposting-somerset-v2/directory/places/clevedon/" aria-label="Clevedon: 68 groups and services"><circle cx="370.7" cy="40.3" r="5.5"/><text x="361.7" y="44.3" text-anchor="end">Clevedon</text></a><a href="/signposting-somerset-v2/directory/places/nailsea/" aria-label="Nailsea: 57 groups and services"><circle cx="407.2" cy="42.1" r="5.5"/><text x="416.2" y="46.1" text-anchor="start">Nailsea</text></a><a href="/signposting-somerset-v2/directory/places/portishead/" aria-label="Portishead: 53 groups and services"><circle cx="403.8" cy="9.7" r="5.5"/><text x="412.8" y="13.7" text-anchor="start">Portishead</text></a><a href="/signposting-somerset-v2/directory/places/weston-super-mare/" aria-label="Weston-super-Mare: 79 groups and services"><circle cx="324.5" cy="93.7" r="5.5"/><text x="315.5" y="97.7" text-anchor="end">Weston-super-Mare</text></a><a href="/signposting-somerset-v2/directory/places/bath/" aria-label="Bath: 110 groups and services"><circle cx="556.9" cy="72.7" r="5.5"/><text x="565.9" y="76.7" text-anchor="start">Bath</text></a><a href="/signposting-somerset-v2/directory/places/keynsham/" aria-label="Keynsham: 109 groups and services"><circle cx="504.6" cy="52.9" r="5.5"/><text x="513.6" y="56.9" text-anchor="start">Keynsham</text></a><a href="/signposting-somerset-v2/directory/places/midsomer-norton/" aria-label="Midsomer Norton: 121 groups and services"><circle cx="510.6" cy="130.9" r="5.5"/><text x="519.6" y="134.9" text-anchor="start">Midsomer Norton</text></a></svg></div></div><p class="otowns">Version: places 2026-11-16 12:29</p>
-</div>
+<main class="bmain">
+<div class="bpick"><div class="bpicktxt"><h1 class="bt">Places</h1><p>Choose your nearest town above, or on the map, to see free and low-cost groups, activities and services in and around it, with times, places and how to get in touch.</p><p class="otowns"><a href="/signposting-somerset-v2/directory/places/bridgwater/">Bridgwater</a> · <a href="/signposting-somerset-v2/directory/places/burnham-on-sea/">Burnham-on-Sea</a> · <a href="/signposting-somerset-v2/directory/places/chard/">Chard</a> · <a href="/signposting-somerset-v2/directory/places/crewkerne/">Crewkerne</a> · <a href="/signposting-somerset-v2/directory/places/frome/">Frome</a> · <a href="/signposting-somerset-v2/directory/places/glastonbury/">Glastonbury</a> · <a href="/signposting-somerset-v2/directory/places/minehead/">Minehead</a> · <a href="/signposting-somerset-v2/directory/places/shepton-mallet/">Shepton Mallet</a> · <a href="/signposting-somerset-v2/directory/places/street/">Street</a> · <a href="/signposting-somerset-v2/directory/places/taunton/">Taunton</a> · <a href="/signposting-somerset-v2/directory/places/wellington/">Wellington</a> · <a href="/signposting-somerset-v2/directory/places/wells/">Wells</a> · <a href="/signposting-somerset-v2/directory/places/yeovil/">Yeovil</a> · <a href="/signposting-somerset-v2/directory/places/clevedon/">Clevedon</a> · <a href="/signposting-somerset-v2/directory/places/nailsea/">Nailsea</a> · <a href="/signposting-somerset-v2/directory/places/portishead/">Portishead</a> · <a href="/signposting-somerset-v2/directory/places/weston-super-mare/">Weston-super-Mare</a> · <a href="/signposting-somerset-v2/directory/places/bath/">Bath</a> · <a href="/signposting-somerset-v2/directory/places/keynsham/">Keynsham</a> · <a href="/signposting-somerset-v2/directory/places/midsomer-norton/">Midsomer Norton</a></p></div><div class="bmapwrap"><svg class="bmapsvg" viewBox="-70 -10 740 428" role="group" aria-label="Map of Somerset, North Somerset and Bath and North East Somerset with the towns marked"><path class="land" d="M0.0,195.2 L12.6,194.5 L20.1,198.1 L43.0,193.6 L40.5,186.6 L42.7,181.5 L40.1,167.6 L44.9,161.4 L77.7,166.9 L82.1,171.2 L93.1,167.6 L98.2,162.0 L107.3,161.4 L129.0,166.8 L139.5,176.4 L149.6,177.3 L161.0,190.9 L198.0,193.5 L212.1,193.3 L239.8,180.3 L248.0,181.3 L266.4,174.8 L287.1,180.4 L308.6,170.3 L304.9,175.2 L306.6,173.9 L303.5,184.6 L298.8,184.5 L294.6,189.3 L292.8,196.8 L294.6,197.2 L296.7,189.0 L305.6,185.6 L314.6,166.2 L315.2,154.4 L307.6,139.8 L311.6,109.1 L302.3,104.2 L314.7,106.2 L320.9,113.8 L317.8,117.4 L320.3,116.8 L321.7,114.1 L321.5,110.3 L318.7,109.0 L322.0,91.1 L318.1,87.0 L327.7,83.3 L329.6,79.3 L329.9,71.8 L323.1,68.2 L338.6,62.7 L339.1,66.0 L349.5,64.9 L362.9,44.1 L361.3,42.2 L391.0,10.4 L401.1,4.5 L416.2,5.8 L417.1,0.0 L434.4,13.0 L442.5,9.5 L453.3,21.2 L456.1,33.3 L451.4,36.9 L454.9,37.6 L452.4,47.3 L455.3,51.7 L453.1,57.2 L455.1,59.9 L470.0,62.7 L477.2,61.6 L481.8,54.6 L487.6,56.8 L495.1,45.6 L494.0,40.4 L500.9,46.4 L506.5,43.7 L508.2,45.4 L506.8,50.1 L511.0,48.3 L515.3,51.8 L562.8,37.6 L569.7,39.1 L574.4,47.7 L581.1,44.0 L587.2,51.8 L582.6,57.8 L585.9,63.0 L580.3,64.5 L582.7,77.7 L579.1,84.0 L576.3,82.3 L575.3,86.8 L562.8,93.7 L570.0,92.6 L575.9,97.4 L579.9,95.4 L581.2,98.7 L579.1,101.5 L588.5,106.5 L589.6,112.7 L585.0,115.9 L587.8,118.9 L586.6,125.6 L592.1,123.5 L596.6,127.4 L600.0,143.4 L590.5,169.7 L591.6,171.9 L578.8,196.8 L567.0,214.1 L567.0,218.5 L561.9,221.2 L562.4,226.4 L554.9,230.0 L555.6,240.3 L569.3,253.4 L560.6,258.9 L560.5,264.2 L566.6,270.3 L568.0,275.9 L556.3,286.1 L548.5,299.9 L550.2,306.7 L558.4,306.6 L562.6,310.5 L562.3,313.9 L535.9,324.8 L532.0,319.0 L524.0,320.4 L525.3,325.3 L520.6,331.6 L516.4,325.3 L513.4,326.4 L503.0,304.9 L493.9,306.0 L486.2,301.5 L484.4,304.8 L487.1,306.2 L486.8,310.1 L482.7,313.5 L476.0,309.4 L470.3,315.0 L467.8,312.4 L465.2,315.1 L468.2,323.9 L466.9,332.0 L460.8,336.9 L464.8,345.1 L460.7,347.2 L457.3,356.5 L462.6,366.0 L462.1,370.1 L457.2,373.5 L455.7,369.3 L443.5,368.9 L423.3,378.5 L422.9,382.8 L407.9,381.1 L395.2,389.1 L386.8,383.2 L380.3,391.8 L358.6,390.8 L342.1,396.6 L333.0,408.4 L327.2,400.6 L327.7,390.5 L325.6,387.8 L316.4,390.5 L311.5,386.8 L302.0,390.5 L303.5,384.0 L295.2,376.4 L296.1,356.3 L268.3,360.2 L263.5,366.1 L258.3,364.9 L257.1,361.1 L251.7,360.9 L251.6,356.6 L245.2,354.9 L250.9,345.7 L253.9,333.5 L220.0,336.0 L205.3,328.1 L190.3,311.5 L173.4,314.7 L172.6,290.1 L160.1,289.4 L159.5,284.5 L155.3,282.3 L141.4,286.0 L133.7,280.9 L120.2,285.6 L120.7,292.3 L114.6,299.1 L86.5,296.4 L84.7,291.9 L90.9,279.0 L90.1,270.8 L91.9,268.0 L70.5,265.4 L71.1,262.7 L55.4,252.8 L45.1,252.7 L27.2,237.7 L13.4,231.8 L1.9,216.4 L2.9,210.5 L0.0,195.2Z"/><a href="/signposting-somerset-v2/directory/places/bridgwater/" aria-label="Bridgwater: 92 groups and services"><circle cx="314.5" cy="224.5" r="5.5"/><text x="305.5" y="228.5" text-anchor="end">Bridgwater</text></a><a href="/signposting-somerset-v2/directory/places/burnham-on-sea/" aria-label="Burnham-on-Sea: 114 groups and services"><circle cx="316.9" cy="158.2" r="5.5"/><text x="307.9" y="162.2" text-anchor="end">Burnham-on-Sea</text></a><a href="/signposting-somerset-v2/directory/places/chard/" aria-label="Chard: 68 groups and services"><circle cx="330.3" cy="377.8" r="5.5"/><text x="321.3" y="381.8" text-anchor="end">Chard</text></a><a href="/signposting-somerset-v2/directory/places/crewkerne/" aria-label="Crewkerne: 92 groups and services"><circle cx="392.9" cy="370.7" r="5.5"/><text x="401.9" y="374.7" text-anchor="start">Crewkerne</text></a><a href="/signposting-somerset-v2/directory/places/frome/" aria-label="Frome: 62 groups and services"><circle cx="570.9" cy="164.3" r="5.5"/><text x="579.9" y="168.3" text-anchor="start">Frome</text></a><a href="/signposting-somerset-v2/directory/places/glastonbury/" aria-label="Glastonbury: 128 groups and services"><circle cx="423.2" cy="212.1" r="5.5"/><text x="414.2" y="216.1" text-anchor="end">Glastonbury</text></a><a href="/signposting-somerset-v2/directory/places/minehead/" aria-label="Minehead: 36 groups and services"><circle cx="135.5" cy="178.8" r="5.5"/><text x="126.5" y="182.8" text-anchor="end">Minehead</text></a><a href="/signposting-somerset-v2/directory/places/shepton-mallet/" aria-label="Shepton Mallet: 111 groups and services"><circle cx="486.5" cy="186.9" r="5.5"/><text x="495.5" y="190.9" text-anchor="start">Shepton Mallet</text></a><a href="/signposting-somerset-v2/directory/places/street/" aria-label="Street: 109 groups and services"><circle cx="413.9" cy="225.1" r="5.5"/><text x="422.9" y="229.1" text-anchor="start">Street</text></a><a href="/signposting-somerset-v2/directory/places/taunton/" aria-label="Taunton: 119 groups and services"><circle cx="277.1" cy="292.2" r="5.5"/><text x="286.1" y="296.2" text-anchor="start">Taunton</text></a><a href="/signposting-somerset-v2/directory/places/wellington/" aria-label="Wellington: 114 groups and services"><circle cx="230.7" cy="313.9" r="5.5"/><text x="221.7" y="317.9" text-anchor="end">Wellington</text></a><a href="/signposting-somerset-v2/directory/places/wells/" aria-label="Wells: 128 groups and services"><circle cx="448.4" cy="175.6" r="5.5"/><text x="457.4" y="179.6" text-anchor="start">Wells</text></a><a href="/signposting-somerset-v2/directory/places/yeovil/" aria-label="Yeovil: 59 groups and services"><circle cx="453.9" cy="335.9" r="5.5"/><text x="462.9" y="339.9" text-anchor="start">Yeovil</text></a><a href="/signposting-somerset-v2/directory/places/clevedon/" aria-label="Clevedon: 68 groups and services"><circle cx="370.7" cy="40.3" r="5.5"/><text x="361.7" y="44.3" text-anchor="end">Clevedon</text></a><a href="/signposting-somerset-v2/directory/places/nailsea/" aria-label="Nailsea: 57 groups and services"><circle cx="407.2" cy="42.1" r="5.5"/><text x="416.2" y="46.1" text-anchor="start">Nailsea</text></a><a href="/signposting-somerset-v2/directory/places/portishead/" aria-label="Portishead: 53 groups and services"><circle cx="403.8" cy="9.7" r="5.5"/><text x="412.8" y="13.7" text-anchor="start">Portishead</text></a><a href="/signposting-somerset-v2/directory/places/weston-super-mare/" aria-label="Weston-super-Mare: 79 groups and services"><circle cx="324.5" cy="93.7" r="5.5"/><text x="315.5" y="97.7" text-anchor="end">Weston-super-Mare</text></a><a href="/signposting-somerset-v2/directory/places/bath/" aria-label="Bath: 110 groups and services"><circle cx="556.9" cy="72.7" r="5.5"/><text x="565.9" y="76.7" text-anchor="start">Bath</text></a><a href="/signposting-somerset-v2/directory/places/keynsham/" aria-label="Keynsham: 109 groups and services"><circle cx="504.6" cy="52.9" r="5.5"/><text x="513.6" y="56.9" text-anchor="start">Keynsham</text></a><a href="/signposting-somerset-v2/directory/places/midsomer-norton/" aria-label="Midsomer Norton: 121 groups and services"><circle cx="510.6" cy="130.9" r="5.5"/><text x="519.6" y="134.9" text-anchor="start">Midsomer Norton</text></a></svg></div></div><p class="otowns">Version: places 2026-11-16 13:00</p>
+</main>
 </div>
 <footer class="help gut" id="help">
   <div class="inner">
-    <div><h4 id="help-title">Always available: 24/7 helpline</h4><p>Free listening support when someone needs to talk right now.</p></div>
+    <div><h2 id="help-title">Always available: 24/7 helpline</h2><p>Free listening support when someone needs to talk right now.</p></div>
     <div class="lines"><a class="line" href="tel:116123" aria-label="Call Samaritans on 116 123">Samaritans<span class="num">: 116 123</span></a></div>
   </div>
 </footer>
@@ -407,16 +407,34 @@ main { flex: 1; min-height: 0; display: grid; grid-template-columns: minmax(0, 4
 (() => { const f = document.getElementById("help"); const set = () => document.documentElement.style.setProperty("--footh", f.offsetHeight + "px");
   set(); if (window.ResizeObserver) new ResizeObserver(set).observe(f); else addEventListener("resize", set); })();
 /* ---------- support types and text helpers ---------- */
-// The "Support for" choices, in three groups. Specialist: mental health, crisis, bereavement and other specific needs.
-// Practical: housing, finances and food. Everyday wellbeing: connection, activity, learning, mindfulness and giving.
-const GROUPS = [
-  ["Specialist support", ["crisis prevention", "low mood", "anxiety", "bereavement", "hearing voices", "eating disorders",
-    "long-term pain", "dementia", "addiction", "abuse", "caring for someone"]],
-  ["Practical help and support", ["housing", "finances", "food"]],
-  ["Everyday wellbeing", ["connect", "be active", "take notice", "keep learning", "giving"]]];
-// How a support type is shown, where it isn't just the sheet's word with a capital letter
-const LABEL = { "hearing voices": "Psychosis and hearing voices", "crisis prevention": "Crisis support",
-  "addiction": "Addiction (alcohol, drugs, gambling)", "abuse": "Abuse (domestic, child or adult)" };
+// The "Support for" choices, in three groups: [group, [types]], and how a type is shown where it isn't just the sheet's
+// word with a capital letter (build/core/data/support-types.json)
+const SUPPORT_TYPES = ({
+ "_about": "The support types (the sheet's support_for column), in the three groups the 'Support for' boxes show, and how a type is shown where it isn't just the sheet's word with a capital letter. Used by the pages (core/js/text.js), the Places build and the tests.",
+ "groups": [
+  {"group": "Specialist support", "types": ["crisis prevention", "low mood", "anxiety", "bereavement", "hearing voices", "eating disorders", "long-term pain", "dementia", "addiction", "abuse", "caring for someone"]},
+  {"group": "Practical help and support", "types": ["housing", "finances", "food"]},
+  {"group": "Everyday wellbeing", "types": ["connect", "be active", "take notice", "keep learning", "giving"]}
+ ],
+ "labels": {"hearing voices": "Psychosis and hearing voices", "crisis prevention": "Crisis support", "addiction": "Addiction (alcohol, drugs, gambling)", "abuse": "Abuse (domestic, child or adult)"}
+});
+const GROUPS = SUPPORT_TYPES.groups.map(g => [g.group, g.types]);
+const LABEL = SUPPORT_TYPES.labels;
+// Card wording: the access badges (build/core/data/card-text.json)
+const CARD_TEXT = ({
+ "_about": "Wording on the service cards (In person, Places) and in Copy details. access: the badge for each value of the sheet's access column (class sets its colour). A 'call' service reads 'Call first' for groups and activities, and 'Phone line' for anything else; any other value reads 'Contact provider'.",
+ "access": {
+  "drop in": {"class": "b-drop", "label": "Just turn up"},
+  "sign up": {"class": "b-sign", "label": "Contact to join"},
+  "book": {"class": "b-book", "label": "Book first"},
+  "referral": {"class": "b-ref", "label": "Needs a referral"},
+  "call": {"class": "b-ref", "label": "Call first", "label_not_group": "Phone line"}
+ },
+ "access_other": {"class": "b-ref", "label": "Contact provider"},
+ "group_types": ["group", "community", "course", "volunteering"]
+});
+// Groups, activities, courses and volunteering (by type), as opposed to one-to-one services and phone lines
+const isGroupType = s => new RegExp(CARD_TEXT.group_types.join("|"), "i").test(s.type || "");
 const cap = s => LABEL[s] || s[0].toUpperCase() + s.slice(1);
 // Text from the sheet, made safe to put in the page
 const esc = s => String(s ?? "").replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
@@ -424,6 +442,8 @@ const esc = s => String(s ?? "").replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "
 const split = s => (s || "").split(";").map(x => x.trim()).filter(Boolean);
 // A website address only if it's a web page (http or https), so nothing else in the url column becomes a link
 const webUrl = u => /^https?:\/\//i.test(u || "") ? u : "";
+// The tab showing is marked aria-current="page" (styled in core/css/page.css)
+const currentTab = (el, on) => on ? el.setAttribute("aria-current", "page") : el.removeAttribute("aria-current");
 /* ---------- schedules: when a service next meets ----------
    Used by the directory, the tools page and the Places pages, so they always agree. A record's schedule is its
    days ("Mon-Fri", "Tue;Thu"), times ("10:00-12:00" or a start time), frequency (blank = every week,
@@ -531,7 +551,7 @@ function nextText(s, now, from = now) {
   if (s._kind === "website") return { cls: "chk", txt: "Times vary: see website" };
   if (s._kind === "appointment") return { cls: "chk", txt: "By appointment" };
   // Booked, phoned or referred with no set time: there's no session to turn up to, so give the days instead of a next date
-  if (!s._times && s.days && ["book", "call", "referral"].includes(s.access) && !/group|community|course|volunteering/i.test(s.type || ""))
+  if (!s._times && s.days && ["book", "call", "referral"].includes(s.access) && !isGroupType(s))
     return { cls: "chk", txt: `By appointment · ${s.days.replace(/;/g, ", ").replace(/-/g, "–")}` };
   if (s._kind === "check") return { cls: "chk", txt: `Check dates${s.frequency ? ` (${s.frequency})` : ""}${s.days ? ` · ${s.days} ${s.times}` : ""}` };
   const o = occurrences(s, from, 70).find(x => x.en > from);
@@ -576,16 +596,21 @@ const supportOptions = list => `<option value="">Anything</option>` + GROUPS.map
   const v = vals.filter(x => list.some(s => s._sf.includes(x)));
   return v.length ? `<optgroup label="${g}">${v.map(x => `<option value="${x}">${esc(cap(x))}</option>`).join("")}</optgroup>` : "";
 }).join("");
-// Pin colours by kind of service (type), in five groups
-const KINDS = [
-  ["Activities", "#3F6FB0", ["Activity group", "Volunteering"]],
-  ["Groups and community", "#3A9488", ["Peer group", "Community"]],
-  ["Advice and practical help", "#D08A2E", ["Advocacy", "Practical support"]],
-  ["One-to-one and therapy", "#93549B", ["One-to-one support", "Counselling or therapy"]],
-  ["Courses", "#B5577A", ["Course"]],
-];
+// Kinds of service and their colours, for map pins, the map key and cards (build/core/data/kinds.json): [kind, colour, [types]]
+const KIND_DATA = ({
+ "_about": "Kinds of service (the sheet's type column) in five groups, each with its colour: the map pins, the map key and the line under a card's name. Services of any other type get the grey 'other' colour.",
+ "kinds": [
+  {"kind": "Activities", "colour": "#3F6FB0", "types": ["Activity group", "Volunteering"]},
+  {"kind": "Groups and community", "colour": "#3A9488", "types": ["Peer group", "Community"]},
+  {"kind": "Advice and practical help", "colour": "#D08A2E", "types": ["Advocacy", "Practical support"]},
+  {"kind": "One-to-one and therapy", "colour": "#93549B", "types": ["One-to-one support", "Counselling or therapy"]},
+  {"kind": "Courses", "colour": "#B5577A", "types": ["Course"]}
+ ],
+ "other": "#64748B"
+});
+const KINDS = KIND_DATA.kinds.map(k => [k.kind, k.colour, k.types]);
 const kindOf = s => KINDS.findIndex(k => k[2].includes(s.type));
-const pinCol = s => (KINDS[kindOf(s)] || [, "#64748B"])[1];
+const pinCol = s => (KINDS[kindOf(s)] || [, KIND_DATA.other])[1];
 /* ---------- Copy details ---------- */
 // Plain text for a text message, email or case notes: the regular pattern rather than the next date, so it stays right
 const COPY_ICON = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>';
@@ -604,7 +629,7 @@ function copyWhen(s) {
   return [when, tm].filter(Boolean).join(", ");
 }
 function copyText(s, when) {
-  const ACC = { "drop in": "Just turn up", "sign up": "Contact to join", "book": "Book first", "referral": "Needs a referral" }[s.access];
+  const ACC = s.access !== "call" && CARD_TEXT.access[s.access]?.label;   // how to get in (a phone number says it for "call")
   const modes = split(s.mode), inPerson = modes.includes("in-person");
   const how = !inPerson && modes.length ? modes.map(m => m === "phone" ? "Phone" : m === "online" ? "Online" : m).join(" or ") : "";
   return [
@@ -652,28 +677,27 @@ document.addEventListener("click", e => {
 });
 /* ---------- the card for a service with a place: the directory's In person tab and the Places pages ----------
    Needs text.js, kinds.js and cards.js (copy details, tap-to-call, directions). */
-// Badge wording by how people get in
-const ACCESS_BADGE = { "drop in": ["b-drop", "Just turn up"], "sign up": ["b-sign", "Contact to join"], "book": ["b-book", "Book first"],
-  "referral": ["b-ref", "Needs a referral"] };
+// The access badge: [class, wording] (build/core/data/card-text.json)
 function accessBadge(s) {
-  if (s.access === "call") return ["b-ref", /group|community|course|volunteering/i.test(s.type || "") ? "Call first" : "Phone line"];
-  return ACCESS_BADGE[s.access] || ["b-ref", "Contact provider"];
+  const a = CARD_TEXT.access[s.access] || CARD_TEXT.access_other;
+  return [a.class, a.label_not_group && !isGroupType(s) ? a.label_not_group : a.label];
 }
 // The kind of service, in the same colour as its map pin
 const kindTag = s => { const k = KINDS[kindOf(s)]; return k ? `<div class="kind"><i style="background:${k[1]}"></i>${esc(k[0])}</div>` : ""; };
 // One card. r: { s: the record, d: miles from the search point (or null), nx: its "Next" line (nextText) }.
-// h: the name's heading level (h2 on the directory; lower where the card sits under section headings)
-function serviceCard(r, h = "h2") {
+// h: the name's heading level (h2 on the directory; lower where the card sits under section headings).
+// withId: give the card an id (c + record id) for the map to find it; off where a service can appear more than once.
+function serviceCard(r, h = "h2", withId = true) {
   const s = r.s, [badgeCls, badge] = accessBadge(s), url = webUrl(s.url);
   const contact = [
     url ? `<a href="${esc(url)}" target="_blank" rel="noopener">Website</a>` : "",
     telLink(s.phone),
     s.email ? `<a href="mailto:${esc(s.email.split(";")[0].trim())}">${esc(s.email)}</a>` : ""].filter(Boolean).join(" · ");
-  const dist = r.d != null ? `<span class="chip dist">${r.d < .1 ? "<0.1" : r.d.toFixed(1)} mi${s.approx ? " approx." : ""}</span>` : "";
+  const dist = r.d != null ? `<span class="chip dist">${r.d < .1 ? "&lt;0.1" : r.d.toFixed(1)} mi${s.approx ? " approx." : ""}</span>` : "";
   const cost = s.cost ? `<span class="chip">${esc(s.cost)}</span>` : "";
   const types = s._sf.length ? " · " + s._sf.map(cap).map(esc).join(", ") : "";
   const place = esc([s.address, s.town, s.postcode].filter(Boolean).join(", ")) + (s.approx ? ` <span class="approx">(approx. location)</span>` : "");
-  return `<article class="card" id="c${s.id}" data-id="${s.id}">
+  return `<article class="card"${withId ? ` id="c${s.id}"` : ""} data-id="${s.id}">
       <div class="row1"><span class="badge ${badgeCls}">${badge}</span><span class="chipr">${dist}${cost}${directionsLink(s)}${copyBtn(s)}</span></div>
       <${h} class="cname">${esc(s.name)}</${h}>
       ${kindTag(s)}<div class="meta">${esc(s.provider)} · ${esc(s.type)}${types}</div>
@@ -720,7 +744,7 @@ let ALL = [];   // this page's records (copy details finds them here)
         ul.querySelectorAll("li[data-i]").forEach(li => {
           const s = byId(li.dataset.i), ok = !!s && meets(s, w, now);   // no record: its dates have all passed since the build
           li.hidden = !ok; m += ok;
-          if (ok && s) li.innerHTML = serviceCard({ s, d: +li.dataset.d, nx: nextText(s, now, from) }, "h4");
+          if (ok && s) li.innerHTML = serviceCard({ s, d: +li.dataset.d, nx: nextText(s, now, from) }, "h4", false);
         });
         h.hidden = ul.hidden = !m; h.textContent = h.dataset.l + " · " + m; n += m;
       });

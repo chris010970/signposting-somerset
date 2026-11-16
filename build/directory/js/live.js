@@ -34,7 +34,7 @@ fetchRecords()
     if (kept) return;   // still showing the records from earlier in this visit
     panelMessage(liveMsg = `<strong>Services can't be loaded right now.</strong><br>Please <a href="" onclick="location.reload();return false">try again</a> in a moment. ` +
       `If you need to talk to someone now, call Samaritans on <a href="tel:116123">116 123</a>.` +
-      `<br><small style="color:#78716C">Technical detail: ${esc(String(e && e.message || e))}</small>`);
+      `<br><small style="color:#6B645F">Technical detail: ${esc(String(e && e.message || e))}</small>`);
   });
 // Every five minutes, redraw: "open now", "today" and the next sessions move on with the clock
 setInterval(() => {

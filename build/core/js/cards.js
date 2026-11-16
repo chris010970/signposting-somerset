@@ -16,7 +16,7 @@ function copyWhen(s) {
   return [when, tm].filter(Boolean).join(", ");
 }
 function copyText(s, when) {
-  const ACC = { "drop in": "Just turn up", "sign up": "Contact to join", "book": "Book first", "referral": "Needs a referral" }[s.access];
+  const ACC = s.access !== "call" && CARD_TEXT.access[s.access]?.label;   // how to get in (a phone number says it for "call")
   const modes = split(s.mode), inPerson = modes.includes("in-person");
   const how = !inPerson && modes.length ? modes.map(m => m === "phone" ? "Phone" : m === "online" ? "Online" : m).join(" or ") : "";
   return [

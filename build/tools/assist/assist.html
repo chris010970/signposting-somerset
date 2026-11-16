@@ -1,5 +1,5 @@
 <!--TAB-->
-      <button type="button" role="tab" id="tab-assist" aria-selected="false" aria-controls="panel-assist" title="Assist: for invited support workers (access code needed)"><svg class="lock" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M12 2a5 5 0 0 1 5 5v3h1a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2v-8a2 2 0 0 1 2-2h1V7a5 5 0 0 1 5-5zm0 2a3 3 0 0 0-3 3v3h6V7a3 3 0 0 0-3-3z"/></svg><span>Assist</span><span class="sr-lock" id="tab-assist-sr" style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)"> (access code needed)</span></button>
+      <button type="button" id="tab-assist" aria-controls="panel-assist" title="Assist: for invited support workers (access code needed)"><svg class="lock" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M12 2a5 5 0 0 1 5 5v3h1a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2v-8a2 2 0 0 1 2-2h1V7a5 5 0 0 1 5-5zm0 2a3 3 0 0 0-3 3v3h6V7a3 3 0 0 0-3-3z"/></svg><span>Assist</span><span class="sr-lock" id="tab-assist-sr" style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)"> (access code needed)</span></button>
 <!--HDR-->
     <div id="hdr-assist" hidden>
     <div class="qs">
@@ -15,7 +15,7 @@
     </div>
     </div>
 <!--PANEL-->
-<section id="panel-assist" role="tabpanel" aria-labelledby="tab-assist" hidden style="flex:1;min-height:0;overflow-y:auto"><div class="gut"><div class="a-wrap">
+<main id="panel-assist" aria-labelledby="tab-assist" hidden style="flex:1;min-height:0;overflow-y:auto"><div class="gut"><div class="a-wrap">
 
   <form class="a-card a-gate" id="a-gate" hidden>
     <label class="a-h" for="a-code">Access code</label>
@@ -55,5 +55,5 @@
   <section id="a-out" hidden></section>
 
   </div>
-</div></div></section>
+</div></div></main>
 <div id="a-printplan"></div>

@@ -2,8 +2,8 @@
 header.top { position: relative; overflow: hidden; background: var(--white); border-bottom: 1px solid var(--line); padding-block: 10px 10px; }
 .inner { max-width: 1400px; margin: 0 auto; }
 h1 { font-family: var(--serif); color: var(--b900); font-size: 26px; margin: 0; }
-.lede { color: #78716C; margin: 2px 0 14px; }
-.datasrc { color: #78716C; font-size: 12px; margin: -10px 0 12px; }
+.lede { color: #6B645F; margin: 2px 0 14px; }
+.datasrc { color: #6B645F; font-size: 12px; margin: -10px 0 12px; }
 .qs { display: grid; grid-template-columns: 27% 33% minmax(0, 1fr) auto; gap: 10px; }
 @media (max-width: 899px) { .qs { grid-template-columns: 1fr; } }
 .q { background: var(--b50); border: 2px solid transparent; border-radius: 10px; padding: 5px 10px; min-width: 0; }
@@ -32,7 +32,7 @@ h1 { font-family: var(--serif); color: var(--b900); font-size: 26px; margin: 0; 
 .summary b { color: var(--ink); background: #F1F5F9; padding: 1px 6px; border-radius: 4px; }
 .sort { display: flex; gap: 6px; align-items: center; font-size: 12px; color: var(--muted); }
 .seg { display: inline-flex; background: #E7E5E4; border-radius: 8px; padding: 3px; }
-.seg button { border: 0; background: transparent; padding: 4px 10px; border-radius: 6px; font-size: 12px; font-weight: 600; color: #78716C; cursor: pointer; }
+.seg button { border: 0; background: transparent; padding: 4px 10px; border-radius: 6px; font-size: 12px; font-weight: 600; color: #6B645F; cursor: pointer; }
 .seg button[aria-pressed="true"] { background: var(--white); color: var(--b900); box-shadow: 0 1px 2px rgba(0,0,0,.08); }
 .seg button:disabled { opacity: .4; cursor: default; }
 .tabs { display: none; }
@@ -54,11 +54,11 @@ h1 { font-family: var(--serif); color: var(--b900); font-size: 26px; margin: 0; 
 .aboutpage .acols section > h3:first-child { margin-top: 0; }
 .aboutpage .stats { font-weight: 700; color: var(--b800); }
 .aboutpage .btn { display: inline-block; margin-top: 6px; background: var(--b700); color: #fff; text-decoration: none; font-weight: 700; padding: 10px 16px; border-radius: 10px; }
-.aboutpage .small { font-size: 13px; color: #78716C; }
+.aboutpage .small { font-size: 13px; color: #6B645F; }
 .aboutpage a:not(.btn) { color: var(--b700); text-decoration-color: var(--b200); text-underline-offset: 2px; }   /* same as Assist */
 .aboutpage a:not(.btn):hover { color: var(--b900); text-decoration-color: currentColor; }
-.sitetabs button { border: 0; background: none; padding: 9px 14px 10px; font-weight: 700; font-size: 14px; color: #78716C; cursor: pointer; border-bottom: 3px solid transparent; margin-bottom: -1px; }
-.sitetabs button[aria-selected="true"] { color: var(--b900); border-bottom-color: var(--b600); }
+.sitetabs button { border: 0; background: none; padding: 9px 14px 10px; font-weight: 700; font-size: 14px; color: #6B645F; cursor: pointer; border-bottom: 3px solid transparent; margin-bottom: -1px; }
+.sitetabs button[aria-current="page"] { color: var(--b900); border-bottom-color: var(--b600); }
 /* Tabs in groups: Browse (In person, Phone and online, Courses) | Assist | About */
 .sitetabs { align-items: flex-end; }
 .sitetabs .tgrp { display: inline-flex; align-items: flex-end; gap: 4px; position: relative; flex: none; }
@@ -68,7 +68,7 @@ h1 { font-family: var(--serif); color: var(--b900); font-size: 26px; margin: 0; 
 .sitetabs.more { -webkit-mask-image: linear-gradient(to right, #000 calc(100% - 36px), transparent); mask-image: linear-gradient(to right, #000 calc(100% - 36px), transparent); }
 @media (max-width: 420px) { .sitetabs { gap: 0; } .sitetabs .tgrp { gap: 0; } .sitetabs button { padding-inline: 5px; font-size: 13px; } .sitetabs #tab-assist, .sitetabs #tab-about { margin-left: 1px; padding-left: 7px; } .sitetabs #tab-assist { gap: 4px; } .sitetabs .lg { display: none; } .sitetabs .sh { display: inline; } }
 /* Tabs that are links to other pages (Places in the directory; every tab on the town pages), looking like the tab buttons */
-.sitetabs a.tab { white-space: nowrap; padding: 9px 14px 10px; font-weight: 700; font-size: 14px; color: #78716C; text-decoration: none; border-bottom: 3px solid transparent; margin-bottom: -1px; }
+.sitetabs a.tab { white-space: nowrap; padding: 9px 14px 10px; font-weight: 700; font-size: 14px; color: #6B645F; text-decoration: none; border-bottom: 3px solid transparent; margin-bottom: -1px; }
 .sitetabs a.tab:hover, .sitetabs a.tab:focus-visible { color: var(--b900); }
 .sitetabs a.tab[aria-current] { color: var(--b900); border-bottom-color: var(--b600); }
 .sitetabs a.tab.sep { margin-left: 6px; padding-left: 14px; position: relative; }

@@ -154,3 +154,4 @@
 
 /* Desktop only: no Analytics tab on narrow screens */
 @media (max-width: 759px) { .sitetabs #tab-analytics { display: none; } }
+.an-chips button[aria-pressed="true"] em { opacity: .9; }

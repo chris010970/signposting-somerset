@@ -713,7 +713,7 @@ button, select { font: inherit; }
 .hero > :not(.illus) { position: relative; z-index: 1; max-width: min(48%, 680px); }
 .hero h1 { font-size: 24px; line-height: 1.1; display: flex; align-items: center; gap: 9px; }
 .hero h1 .logo { height: 34px; width: auto; flex: none; margin: -2px 0 -1px; }
-.hero .lede { font-size: 13.5px; color: #78716C; margin: 3px 0 2px; max-width: 60ch; }
+.hero .lede { font-size: 13.5px; color: #6B645F; margin: 3px 0 2px; max-width: 60ch; }
 /* The tagline stays on one line: a shorter version on narrow screens */
 .hero .lede { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: none; }
 .hero .lede .sh { display: none; }
@@ -737,8 +737,8 @@ button, select { font: inherit; }
 header.top { position: relative; overflow: hidden; background: var(--white); border-bottom: 1px solid var(--line); padding-block: 10px 10px; }
 .inner { max-width: 1400px; margin: 0 auto; }
 h1 { font-family: var(--serif); color: var(--b900); font-size: 26px; margin: 0; }
-.lede { color: #78716C; margin: 2px 0 14px; }
-.datasrc { color: #78716C; font-size: 12px; margin: -10px 0 12px; }
+.lede { color: #6B645F; margin: 2px 0 14px; }
+.datasrc { color: #6B645F; font-size: 12px; margin: -10px 0 12px; }
 .qs { display: grid; grid-template-columns: 27% 33% minmax(0, 1fr) auto; gap: 10px; }
 @media (max-width: 899px) { .qs { grid-template-columns: 1fr; } }
 .q { background: var(--b50); border: 2px solid transparent; border-radius: 10px; padding: 5px 10px; min-width: 0; }
@@ -767,7 +767,7 @@ h1 { font-family: var(--serif); color: var(--b900); font-size: 26px; margin: 0; 
 .summary b { color: var(--ink); background: #F1F5F9; padding: 1px 6px; border-radius: 4px; }
 .sort { display: flex; gap: 6px; align-items: center; font-size: 12px; color: var(--muted); }
 .seg { display: inline-flex; background: #E7E5E4; border-radius: 8px; padding: 3px; }
-.seg button { border: 0; background: transparent; padding: 4px 10px; border-radius: 6px; font-size: 12px; font-weight: 600; color: #78716C; cursor: pointer; }
+.seg button { border: 0; background: transparent; padding: 4px 10px; border-radius: 6px; font-size: 12px; font-weight: 600; color: #6B645F; cursor: pointer; }
 .seg button[aria-pressed="true"] { background: var(--white); color: var(--b900); box-shadow: 0 1px 2px rgba(0,0,0,.08); }
 .seg button:disabled { opacity: .4; cursor: default; }
 .tabs { display: none; }
@@ -789,11 +789,11 @@ h1 { font-family: var(--serif); color: var(--b900); font-size: 26px; margin: 0; 
 .aboutpage .acols section > h3:first-child { margin-top: 0; }
 .aboutpage .stats { font-weight: 700; color: var(--b800); }
 .aboutpage .btn { display: inline-block; margin-top: 6px; background: var(--b700); color: #fff; text-decoration: none; font-weight: 700; padding: 10px 16px; border-radius: 10px; }
-.aboutpage .small { font-size: 13px; color: #78716C; }
+.aboutpage .small { font-size: 13px; color: #6B645F; }
 .aboutpage a:not(.btn) { color: var(--b700); text-decoration-color: var(--b200); text-underline-offset: 2px; }   /* same as Assist */
 .aboutpage a:not(.btn):hover { color: var(--b900); text-decoration-color: currentColor; }
-.sitetabs button { border: 0; background: none; padding: 9px 14px 10px; font-weight: 700; font-size: 14px; color: #78716C; cursor: pointer; border-bottom: 3px solid transparent; margin-bottom: -1px; }
-.sitetabs button[aria-selected="true"] { color: var(--b900); border-bottom-color: var(--b600); }
+.sitetabs button { border: 0; background: none; padding: 9px 14px 10px; font-weight: 700; font-size: 14px; color: #6B645F; cursor: pointer; border-bottom: 3px solid transparent; margin-bottom: -1px; }
+.sitetabs button[aria-current="page"] { color: var(--b900); border-bottom-color: var(--b600); }
 /* Tabs in groups: Browse (In person, Phone and online, Courses) | Assist | About */
 .sitetabs { align-items: flex-end; }
 .sitetabs .tgrp { display: inline-flex; align-items: flex-end; gap: 4px; position: relative; flex: none; }
@@ -803,7 +803,7 @@ h1 { font-family: var(--serif); color: var(--b900); font-size: 26px; margin: 0; 
 .sitetabs.more { -webkit-mask-image: linear-gradient(to right, #000 calc(100% - 36px), transparent); mask-image: linear-gradient(to right, #000 calc(100% - 36px), transparent); }
 @media (max-width: 420px) { .sitetabs { gap: 0; } .sitetabs .tgrp { gap: 0; } .sitetabs button { padding-inline: 5px; font-size: 13px; } .sitetabs #tab-assist, .sitetabs #tab-about { margin-left: 1px; padding-left: 7px; } .sitetabs #tab-assist { gap: 4px; } .sitetabs .lg { display: none; } .sitetabs .sh { display: inline; } }
 /* Tabs that are links to other pages (Places in the directory; every tab on the town pages), looking like the tab buttons */
-.sitetabs a.tab { white-space: nowrap; padding: 9px 14px 10px; font-weight: 700; font-size: 14px; color: #78716C; text-decoration: none; border-bottom: 3px solid transparent; margin-bottom: -1px; }
+.sitetabs a.tab { white-space: nowrap; padding: 9px 14px 10px; font-weight: 700; font-size: 14px; color: #6B645F; text-decoration: none; border-bottom: 3px solid transparent; margin-bottom: -1px; }
 .sitetabs a.tab:hover, .sitetabs a.tab:focus-visible { color: var(--b900); }
 .sitetabs a.tab[aria-current] { color: var(--b900); border-bottom-color: var(--b600); }
 .sitetabs a.tab.sep { margin-left: 6px; padding-left: 14px; position: relative; }
@@ -830,14 +830,14 @@ h1 { font-family: var(--serif); color: var(--b900); font-size: 26px; margin: 0; 
 .maplegend { padding: 8px 10px 6px !important; min-width: 230px; font-family: var(--sans); }
 .maplegend button { font-family: inherit; }
 .leaflet-container .leaflet-tooltip, .leaflet-container .leaflet-popup-content { font-family: var(--sans); }
-.maplegend b span { text-transform: none; letter-spacing: 0; font-weight: 500; color: #78716C; margin-left: 4px; }
+.maplegend b span { text-transform: none; letter-spacing: 0; font-weight: 500; color: #6B645F; margin-left: 4px; }
 .maplegend button { display: flex; align-items: center; gap: 9px; width: 100%; background: none; border: 0; border-bottom: 1px solid #F5F5F4; padding: 5px 4px; margin: 0; border-radius: 6px; font-size: 13px; line-height: 1.25; color: var(--ink); cursor: pointer; text-align: left; }
 .maplegend button:last-child { border-bottom: 0; }
 .maplegend button:hover { background: var(--b50); }
 .maplegend button i { flex: none; width: 26px; height: 13px; border-radius: 4px; background: var(--c); border: 0; box-shadow: none; margin: 0; vertical-align: 0; }
 .maplegend .lt { display: flex; flex-direction: column; min-width: 0; }
-.maplegend .lt small { font-size: 11px; color: #78716C; white-space: nowrap; }
-.maplegend button em { margin-left: auto; padding-left: 10px; font-style: normal; font-size: 11px; color: #78716C; font-variant-numeric: tabular-nums; }
+.maplegend .lt small { font-size: 11px; color: #6B645F; white-space: nowrap; }
+.maplegend button em { margin-left: auto; padding-left: 10px; font-style: normal; font-size: 11px; color: #6B645F; font-variant-numeric: tabular-nums; }
 .maplegend button[aria-pressed="false"] { color: #A8A29E; }
 .maplegend button.zero:not([aria-pressed="false"]) { color: #A8A29E; }
 .maplegend button[aria-pressed="false"] .lt { text-decoration: line-through; }
@@ -845,7 +845,7 @@ h1 { font-family: var(--serif); color: var(--b900); font-size: 26px; margin: 0; 
 .maplegend button.all { justify-content: center; color: var(--b700); font-weight: 700; text-decoration: underline; margin-top: 2px; }
 .maplegend button.lghead { border: 0; padding: 2px 2px 4px; margin: 0; gap: 6px; font-size: 10px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: var(--b700); }
 .maplegend button.lghead:hover { background: none; }
-.maplegend button.lghead span { text-transform: none; letter-spacing: 0; font-weight: 500; color: #78716C; }
+.maplegend button.lghead span { text-transform: none; letter-spacing: 0; font-weight: 500; color: #6B645F; }
 .maplegend button.lghead .dots { display: inline-flex; gap: 3px; text-transform: none; }
 .maplegend button.lghead .dots i { width: 9px; height: 9px; border-radius: 50%; }
 .maplegend button.lghead svg { margin-left: auto; width: 14px; height: 14px; flex: none; color: var(--b700); transition: transform .15s; }
@@ -865,10 +865,10 @@ h1 { font-family: var(--serif); color: var(--b900); font-size: 26px; margin: 0; 
 .card.open .desc { -webkit-line-clamp: unset; display: block; }
 .who { font-size: 12px; color: var(--ink); margin-bottom: 8px; }
 .who em { font-style: normal; color: #92400E; }
-.foot { font-size: 12px; color: #78716C; border-top: 1px solid #F5F5F4; padding-top: 8px; display: grid; gap: 3px; }
+.foot { font-size: 12px; color: #6B645F; border-top: 1px solid #F5F5F4; padding-top: 8px; display: grid; gap: 3px; }
 .foot a { color: var(--b700); }
 a.copy.dirs { text-decoration: none; }
-.approx { color: #A8A29E; }
+.approx { color: #78716C; }
 .morehint { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 8px 12px; margin: 14px 0 6px; padding: 12px 14px; border: 1px dashed var(--line); border-radius: 12px; background: var(--white); font-size: 14px; color: var(--muted); }
 .morehint b { color: inherit; }
 .morehint button { font: inherit; font-size: 13px; font-weight: 600; padding: 6px 12px; border-radius: 999px; border: 1px solid var(--line); background: var(--white); cursor: pointer; }
@@ -893,14 +893,14 @@ a.copy.dirs { text-decoration: none; }
 footer.help { position: fixed; left: 0; right: 0; bottom: 0; z-index: 1000; background: var(--b800); color: #fff; padding-block: 9px calc(9px + env(safe-area-inset-bottom, 0px)); transition: background .3s; }
 footer.help.urgent { background: var(--urgent); }
 footer .inner { display: flex; justify-content: space-between; align-items: center; gap: 10px; flex-wrap: wrap; }
-footer h4 { margin: 0; font-size: 13px; }
+footer h2 { margin: 0; font-size: 13px; }
 footer p { margin: 1px 0 0; font-size: 11px; color: var(--b100); }
 footer.urgent p { color: #FEE2E2; }
 @media (max-width: 600px) {
   footer.help { padding-block: 6px calc(6px + env(safe-area-inset-bottom, 0px)); }
   footer .inner { flex-wrap: nowrap; gap: 8px; }
   footer .inner > div:first-child { flex: 1; min-width: 0; }
-  footer h4 { font-size: 12px; line-height: 1.25; }
+  footer h2 { font-size: 12px; line-height: 1.25; }
   footer p, footer .line .num { display: none; }
   footer .lines { flex-wrap: nowrap; gap: 6px; }
   footer .line { padding: 6px 10px; }
@@ -969,15 +969,15 @@ footer.urgent p { color: #FEE2E2; }
 
 /* In person: the list beside the map (on phones, one or the other, with the List / Map switch) */
 @media (max-width: 899px) { .tabs { display: inline-flex; } }
-main { flex: 1; min-height: 0; display: grid; grid-template-columns: minmax(0, 42%) minmax(0, 1fr); max-width: 1400px; width: 100%; margin: 0 auto var(--footh, 50px); }
+#main { flex: 1; min-height: 0; display: grid; grid-template-columns: minmax(0, 42%) minmax(0, 1fr); max-width: 1400px; width: 100%; margin: 0 auto var(--footh, 50px); }
 @media (max-width: 899px) {
-  main { grid-template-columns: 1fr; }
-  main.show-map #list { display: none; }
-  main:not(.show-map) #mapwrap { display: none; }
+  #main { grid-template-columns: 1fr; }
+  #main.show-map #list { display: none; }
+  #main:not(.show-map) #mapwrap { display: none; }
 }
 #list { overflow-y: auto; padding: 14px 14px 90px; border-right: 1px solid var(--line); min-height: 0; }
 /* Line the list and map up with the header's edges (same 16px gutter and width) */
-@media (min-width: 900px) { main { max-width: 1432px; padding-inline: max(16px, env(safe-area-inset-left, 0px)); } #list { padding-left: 0; } }
+@media (min-width: 900px) { #main { max-width: 1432px; padding-inline: max(16px, env(safe-area-inset-left, 0px)); } #list { padding-left: 0; } }
 #mapwrap { position: relative; min-height: 360px; }
 #map { position: absolute; inset: 0; background: #EEF0EC; }
 .tilenote { position: absolute; left: 12px; bottom: 12px; z-index: 500; pointer-events: none; background: rgba(255,255,255,.95); border: 1px solid var(--line); border-radius: 8px; padding: 6px 10px; font-size: 12px; color: var(--muted); max-width: 70%; }
@@ -989,10 +989,10 @@ main { flex: 1; min-height: 0; display: grid; grid-template-columns: minmax(0, 4
 <body>
 
 
-<div class="crisis gut">
+<aside class="crisis gut" aria-label="Crisis help">
   <div><b>Crisis</b>Immediate danger or medical emergency: call <a href="tel:999">999</a> or NHS <a href="tel:111">111 (option 2)</a></div>
   <a class="exit" href="https://www.bbc.co.uk/weather" rel="noopener">Quick exit</a>
-</div>
+</aside>
 
 <header class="top gut">
   <div class="inner">
@@ -1004,11 +1004,11 @@ main { flex: 1; min-height: 0; display: grid; grid-template-columns: minmax(0, 4
       <p class="datasrc" id="datasrc" hidden></p>
       <span id="copy-live" role="status" aria-live="polite" style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)"></span>
     </div>
-    <nav class="sitetabs" role="tablist" aria-label="Kind of support">
-      <span class="tgrp" role="presentation"><button type="button" role="tab" id="tab-near" aria-selected="false" aria-controls="panel-near">In person</button>
-      <button type="button" role="tab" id="tab-talk" aria-selected="false" aria-controls="panel-talk"><span class="lg">Phone and online</span><span class="sh">Phone &amp; online</span></button>
-      <button type="button" role="tab" id="tab-course" aria-selected="false" aria-controls="panel-course">Courses</button><a class="tab" id="tab-places" href="places/">Places</a></span>
-      <button type="button" role="tab" id="tab-about" aria-selected="false" aria-controls="panel-about">About</button>
+    <nav class="sitetabs" aria-label="Site">
+      <span class="tgrp"><button type="button" id="tab-near" aria-controls="panel-near">In person</button>
+      <button type="button" id="tab-talk" aria-controls="panel-talk"><span class="lg">Phone and online</span><span class="sh">Phone &amp; online</span></button>
+      <button type="button" id="tab-course" aria-controls="panel-course">Courses</button><a class="tab" id="tab-places" href="places/">Places</a></span>
+      <button type="button" id="tab-about" aria-controls="panel-about">About</button>
       <a class="tolink" href="/signposting-somerset-v2/test/tools/">Tools →</a>    </nav>
     </div>
     <div id="hdr-talk" class="tq">
@@ -1037,7 +1037,7 @@ main { flex: 1; min-height: 0; display: grid; grid-template-columns: minmax(0, 4
         </div>
         <div class="pointnote" id="pointnote"></div>
       </div>
-      <div class="q" id="q-when"><label for="f-when">3. When? <span id="today" style="float:right;text-transform:none;letter-spacing:0;color:#78716C;font-weight:500"></span></label>
+      <div class="q" id="q-when"><label for="f-when">3. When? <span id="today" style="float:right;text-transform:none;letter-spacing:0;color:#6B645F;font-weight:500"></span></label>
         <select id="f-when">
           <option value="any">Any time</option><option value="now">Open now (drop-ins)</option><option value="today">Today</option>
           <option value="evening">This evening (after 5pm)</option><option value="tomorrow">Tomorrow</option>
@@ -1055,20 +1055,20 @@ main { flex: 1; min-height: 0; display: grid; grid-template-columns: minmax(0, 4
   </div>
 </header>
 
-<section id="panel-talk" role="tabpanel" aria-labelledby="tab-talk"><div class="talk gut" id="talk"></div></section>
-<section id="panel-about" role="tabpanel" aria-labelledby="tab-about" hidden style="flex:1;min-height:0;overflow-y:auto"><div class="talk gut" id="about"></div></section>
-<section id="panel-course" role="tabpanel" aria-labelledby="tab-course" hidden style="flex:1;min-height:0;overflow-y:auto"><div class="talk gut" id="courses"></div></section>
-<div id="panel-near" role="tabpanel" aria-labelledby="tab-near" hidden style="flex:1;min-height:0;display:flex;flex-direction:column">
+<main id="panel-talk" aria-labelledby="tab-talk"><div class="talk gut" id="talk"></div></main>
+<main id="panel-about" aria-labelledby="tab-about" hidden style="flex:1;min-height:0;overflow-y:auto"><div class="talk gut" id="about"></div></main>
+<main id="panel-course" aria-labelledby="tab-course" hidden style="flex:1;min-height:0;overflow-y:auto"><div class="talk gut" id="courses"></div></main>
+<main id="panel-near" aria-labelledby="tab-near" hidden style="flex:1;min-height:0;display:flex;flex-direction:column">
 
-<main id="main">
+<div id="main">
   <section id="list" aria-live="polite"></section>
-  <div id="mapwrap"><div id="map" role="region" aria-label="Map of services"></div><div class="tilenote" id="tilenote" hidden>Map tiles can't load here, so only the pins show. They load normally when the page is opened from your computer or a website.</div></div>
-</main>
+  <div id="mapwrap"><section id="map" aria-label="Map of services"></section><div class="tilenote" id="tilenote" hidden>Map tiles can't load here, so only the pins show. They load normally when the page is opened from your computer or a website.</div></div>
 </div>
+</main>
 
 <footer class="help gut" id="help">
   <div class="inner">
-    <div><h4 id="help-title">Always available: 24/7 helpline</h4><p>Free listening support when someone needs to talk right now.</p></div>
+    <div><h2 id="help-title">Always available: 24/7 helpline</h2><p>Free listening support when someone needs to talk right now.</p></div>
     <div class="lines"><a class="line" href="tel:116123" aria-label="Call Samaritans on 116 123">Samaritans<span class="num">: 116 123</span></a></div>
   </div>
 </footer>
@@ -1077,16 +1077,34 @@ main { flex: 1; min-height: 0; display: grid; grid-template-columns: minmax(0, 4
 <script>
 /* The directory's script: shared code from build/core/js/, then the directory's own, from build/directory/js/ */
 /* ---------- support types and text helpers ---------- */
-// The "Support for" choices, in three groups. Specialist: mental health, crisis, bereavement and other specific needs.
-// Practical: housing, finances and food. Everyday wellbeing: connection, activity, learning, mindfulness and giving.
-const GROUPS = [
-  ["Specialist support", ["crisis prevention", "low mood", "anxiety", "bereavement", "hearing voices", "eating disorders",
-    "long-term pain", "dementia", "addiction", "abuse", "caring for someone"]],
-  ["Practical help and support", ["housing", "finances", "food"]],
-  ["Everyday wellbeing", ["connect", "be active", "take notice", "keep learning", "giving"]]];
-// How a support type is shown, where it isn't just the sheet's word with a capital letter
-const LABEL = { "hearing voices": "Psychosis and hearing voices", "crisis prevention": "Crisis support",
-  "addiction": "Addiction (alcohol, drugs, gambling)", "abuse": "Abuse (domestic, child or adult)" };
+// The "Support for" choices, in three groups: [group, [types]], and how a type is shown where it isn't just the sheet's
+// word with a capital letter (build/core/data/support-types.json)
+const SUPPORT_TYPES = ({
+ "_about": "The support types (the sheet's support_for column), in the three groups the 'Support for' boxes show, and how a type is shown where it isn't just the sheet's word with a capital letter. Used by the pages (core/js/text.js), the Places build and the tests.",
+ "groups": [
+  {"group": "Specialist support", "types": ["crisis prevention", "low mood", "anxiety", "bereavement", "hearing voices", "eating disorders", "long-term pain", "dementia", "addiction", "abuse", "caring for someone"]},
+  {"group": "Practical help and support", "types": ["housing", "finances", "food"]},
+  {"group": "Everyday wellbeing", "types": ["connect", "be active", "take notice", "keep learning", "giving"]}
+ ],
+ "labels": {"hearing voices": "Psychosis and hearing voices", "crisis prevention": "Crisis support", "addiction": "Addiction (alcohol, drugs, gambling)", "abuse": "Abuse (domestic, child or adult)"}
+});
+const GROUPS = SUPPORT_TYPES.groups.map(g => [g.group, g.types]);
+const LABEL = SUPPORT_TYPES.labels;
+// Card wording: the access badges (build/core/data/card-text.json)
+const CARD_TEXT = ({
+ "_about": "Wording on the service cards (In person, Places) and in Copy details. access: the badge for each value of the sheet's access column (class sets its colour). A 'call' service reads 'Call first' for groups and activities, and 'Phone line' for anything else; any other value reads 'Contact provider'.",
+ "access": {
+  "drop in": {"class": "b-drop", "label": "Just turn up"},
+  "sign up": {"class": "b-sign", "label": "Contact to join"},
+  "book": {"class": "b-book", "label": "Book first"},
+  "referral": {"class": "b-ref", "label": "Needs a referral"},
+  "call": {"class": "b-ref", "label": "Call first", "label_not_group": "Phone line"}
+ },
+ "access_other": {"class": "b-ref", "label": "Contact provider"},
+ "group_types": ["group", "community", "course", "volunteering"]
+});
+// Groups, activities, courses and volunteering (by type), as opposed to one-to-one services and phone lines
+const isGroupType = s => new RegExp(CARD_TEXT.group_types.join("|"), "i").test(s.type || "");
 const cap = s => LABEL[s] || s[0].toUpperCase() + s.slice(1);
 // Text from the sheet, made safe to put in the page
 const esc = s => String(s ?? "").replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
@@ -1094,6 +1112,8 @@ const esc = s => String(s ?? "").replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "
 const split = s => (s || "").split(";").map(x => x.trim()).filter(Boolean);
 // A website address only if it's a web page (http or https), so nothing else in the url column becomes a link
 const webUrl = u => /^https?:\/\//i.test(u || "") ? u : "";
+// The tab showing is marked aria-current="page" (styled in core/css/page.css)
+const currentTab = (el, on) => on ? el.setAttribute("aria-current", "page") : el.removeAttribute("aria-current");
 /* ---------- schedules: when a service next meets ----------
    Used by the directory, the tools page and the Places pages, so they always agree. A record's schedule is its
    days ("Mon-Fri", "Tue;Thu"), times ("10:00-12:00" or a start time), frequency (blank = every week,
@@ -1201,7 +1221,7 @@ function nextText(s, now, from = now) {
   if (s._kind === "website") return { cls: "chk", txt: "Times vary: see website" };
   if (s._kind === "appointment") return { cls: "chk", txt: "By appointment" };
   // Booked, phoned or referred with no set time: there's no session to turn up to, so give the days instead of a next date
-  if (!s._times && s.days && ["book", "call", "referral"].includes(s.access) && !/group|community|course|volunteering/i.test(s.type || ""))
+  if (!s._times && s.days && ["book", "call", "referral"].includes(s.access) && !isGroupType(s))
     return { cls: "chk", txt: `By appointment · ${s.days.replace(/;/g, ", ").replace(/-/g, "–")}` };
   if (s._kind === "check") return { cls: "chk", txt: `Check dates${s.frequency ? ` (${s.frequency})` : ""}${s.days ? ` · ${s.days} ${s.times}` : ""}` };
   const o = occurrences(s, from, 70).find(x => x.en > from);
@@ -1271,16 +1291,21 @@ const supportOptions = list => `<option value="">Anything</option>` + GROUPS.map
   const v = vals.filter(x => list.some(s => s._sf.includes(x)));
   return v.length ? `<optgroup label="${g}">${v.map(x => `<option value="${x}">${esc(cap(x))}</option>`).join("")}</optgroup>` : "";
 }).join("");
-// Pin colours by kind of service (type), in five groups
-const KINDS = [
-  ["Activities", "#3F6FB0", ["Activity group", "Volunteering"]],
-  ["Groups and community", "#3A9488", ["Peer group", "Community"]],
-  ["Advice and practical help", "#D08A2E", ["Advocacy", "Practical support"]],
-  ["One-to-one and therapy", "#93549B", ["One-to-one support", "Counselling or therapy"]],
-  ["Courses", "#B5577A", ["Course"]],
-];
+// Kinds of service and their colours, for map pins, the map key and cards (build/core/data/kinds.json): [kind, colour, [types]]
+const KIND_DATA = ({
+ "_about": "Kinds of service (the sheet's type column) in five groups, each with its colour: the map pins, the map key and the line under a card's name. Services of any other type get the grey 'other' colour.",
+ "kinds": [
+  {"kind": "Activities", "colour": "#3F6FB0", "types": ["Activity group", "Volunteering"]},
+  {"kind": "Groups and community", "colour": "#3A9488", "types": ["Peer group", "Community"]},
+  {"kind": "Advice and practical help", "colour": "#D08A2E", "types": ["Advocacy", "Practical support"]},
+  {"kind": "One-to-one and therapy", "colour": "#93549B", "types": ["One-to-one support", "Counselling or therapy"]},
+  {"kind": "Courses", "colour": "#B5577A", "types": ["Course"]}
+ ],
+ "other": "#64748B"
+});
+const KINDS = KIND_DATA.kinds.map(k => [k.kind, k.colour, k.types]);
 const kindOf = s => KINDS.findIndex(k => k[2].includes(s.type));
-const pinCol = s => (KINDS[kindOf(s)] || [, "#64748B"])[1];
+const pinCol = s => (KINDS[kindOf(s)] || [, KIND_DATA.other])[1];
 /* ---------- map background (tiles) for every map on the site ---------- */
 // CARTO basemaps need an API key (free tier). Light (Positron) first; the directory's map falls back to Voyager if it fails.
 const CARTO_KEY = "cb1_4v7b_1_0f5ea1a12b0919dd5e3cbbb7";
@@ -1294,7 +1319,7 @@ const spotKey = s => s.lat.toFixed(4) + "," + s.lon.toFixed(4);
 function clusterBg(g) {
   const n = new Array(KINDS.length + 1).fill(0);
   g.forEach(s => { const i = kindOf(s); n[i < 0 ? KINDS.length : i]++; });
-  const cols = [...KINDS.map(k => k[1]), "#64748B"];
+  const cols = [...KINDS.map(k => k[1]), KIND_DATA.other];
   let at = 0; const stops = [];
   n.forEach((c, i) => { if (c) { const to = at + c / g.length * 360; stops.push(`${cols[i]} ${at}deg ${to}deg`); at = to; } });
   return stops.length === 1 ? stops[0].split(" ")[0] : `conic-gradient(${stops.join(", ")})`;
@@ -1328,7 +1353,7 @@ function copyWhen(s) {
   return [when, tm].filter(Boolean).join(", ");
 }
 function copyText(s, when) {
-  const ACC = { "drop in": "Just turn up", "sign up": "Contact to join", "book": "Book first", "referral": "Needs a referral" }[s.access];
+  const ACC = s.access !== "call" && CARD_TEXT.access[s.access]?.label;   // how to get in (a phone number says it for "call")
   const modes = split(s.mode), inPerson = modes.includes("in-person");
   const how = !inPerson && modes.length ? modes.map(m => m === "phone" ? "Phone" : m === "online" ? "Online" : m).join(" or ") : "";
   return [
@@ -1376,28 +1401,27 @@ document.addEventListener("click", e => {
 });
 /* ---------- the card for a service with a place: the directory's In person tab and the Places pages ----------
    Needs text.js, kinds.js and cards.js (copy details, tap-to-call, directions). */
-// Badge wording by how people get in
-const ACCESS_BADGE = { "drop in": ["b-drop", "Just turn up"], "sign up": ["b-sign", "Contact to join"], "book": ["b-book", "Book first"],
-  "referral": ["b-ref", "Needs a referral"] };
+// The access badge: [class, wording] (build/core/data/card-text.json)
 function accessBadge(s) {
-  if (s.access === "call") return ["b-ref", /group|community|course|volunteering/i.test(s.type || "") ? "Call first" : "Phone line"];
-  return ACCESS_BADGE[s.access] || ["b-ref", "Contact provider"];
+  const a = CARD_TEXT.access[s.access] || CARD_TEXT.access_other;
+  return [a.class, a.label_not_group && !isGroupType(s) ? a.label_not_group : a.label];
 }
 // The kind of service, in the same colour as its map pin
 const kindTag = s => { const k = KINDS[kindOf(s)]; return k ? `<div class="kind"><i style="background:${k[1]}"></i>${esc(k[0])}</div>` : ""; };
 // One card. r: { s: the record, d: miles from the search point (or null), nx: its "Next" line (nextText) }.
-// h: the name's heading level (h2 on the directory; lower where the card sits under section headings)
-function serviceCard(r, h = "h2") {
+// h: the name's heading level (h2 on the directory; lower where the card sits under section headings).
+// withId: give the card an id (c + record id) for the map to find it; off where a service can appear more than once.
+function serviceCard(r, h = "h2", withId = true) {
   const s = r.s, [badgeCls, badge] = accessBadge(s), url = webUrl(s.url);
   const contact = [
     url ? `<a href="${esc(url)}" target="_blank" rel="noopener">Website</a>` : "",
     telLink(s.phone),
     s.email ? `<a href="mailto:${esc(s.email.split(";")[0].trim())}">${esc(s.email)}</a>` : ""].filter(Boolean).join(" · ");
-  const dist = r.d != null ? `<span class="chip dist">${r.d < .1 ? "<0.1" : r.d.toFixed(1)} mi${s.approx ? " approx." : ""}</span>` : "";
+  const dist = r.d != null ? `<span class="chip dist">${r.d < .1 ? "&lt;0.1" : r.d.toFixed(1)} mi${s.approx ? " approx." : ""}</span>` : "";
   const cost = s.cost ? `<span class="chip">${esc(s.cost)}</span>` : "";
   const types = s._sf.length ? " · " + s._sf.map(cap).map(esc).join(", ") : "";
   const place = esc([s.address, s.town, s.postcode].filter(Boolean).join(", ")) + (s.approx ? ` <span class="approx">(approx. location)</span>` : "");
-  return `<article class="card" id="c${s.id}" data-id="${s.id}">
+  return `<article class="card"${withId ? ` id="c${s.id}"` : ""} data-id="${s.id}">
       <div class="row1"><span class="badge ${badgeCls}">${badge}</span><span class="chipr">${dist}${cost}${directionsLink(s)}${copyBtn(s)}</span></div>
       <${h} class="cname">${esc(s.name)}</${h}>
       ${kindTag(s)}<div class="meta">${esc(s.provider)} · ${esc(s.type)}${types}</div>
@@ -1944,7 +1968,7 @@ function renderAbout() {
     </section>
     </div></div>
     <p class="small">Service information belongs to the providers listed. Map data © <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap</a> contributors, © <a href="https://carto.com/attributions" target="_blank" rel="noopener">CARTO</a>.</p>
-    <p class="small" id="site-version">Version: test 2026-11-16 12:18</p>
+    <p class="small" id="site-version">Version: test 2026-11-16 12:54</p>
   </article>`;
 }
 /* ---------- tabs: In person, Phone and online, Courses, About (Places and Tools → are links to other pages) ---------- */
@@ -1952,7 +1976,7 @@ const SITE_TABS = ["talk", "near", "course", "about"];
 function setSiteTab(t) {
   tab = t;
   try { $("tab-" + t).scrollIntoView({ block: "nearest", inline: "nearest" }); } catch (e) {}
-  for (const k of SITE_TABS) { $("tab-" + k).setAttribute("aria-selected", k === t); $("panel-" + k).hidden = k !== t; $("hdr-" + k).hidden = k !== t; }
+  for (const k of SITE_TABS) { currentTab($("tab-" + k), k === t); $("panel-" + k).hidden = k !== t; $("hdr-" + k).hidden = k !== t; }
   if (t === "talk") renderTalk();
   else if (t === "course") renderCourses();
   else if (t === "about") renderAbout();
@@ -2094,7 +2118,7 @@ fetchRecords()
     if (kept) return;   // still showing the records from earlier in this visit
     panelMessage(liveMsg = `<strong>Services can't be loaded right now.</strong><br>Please <a href="" onclick="location.reload();return false">try again</a> in a moment. ` +
       `If you need to talk to someone now, call Samaritans on <a href="tel:116123">116 123</a>.` +
-      `<br><small style="color:#78716C">Technical detail: ${esc(String(e && e.message || e))}</small>`);
+      `<br><small style="color:#6B645F">Technical detail: ${esc(String(e && e.message || e))}</small>`);
   });
 // Every five minutes, redraw: "open now", "today" and the next sessions move on with the clock
 setInterval(() => {

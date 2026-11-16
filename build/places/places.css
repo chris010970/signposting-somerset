@@ -12,7 +12,7 @@
 
 /* Filter boxes: three equal boxes, running to the right-hand edge like the directory's */
 @media (min-width: 900px) { #hdr-towns .qs { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
-#bq-when .btoday { float: right; text-transform: none; letter-spacing: 0; color: #78716C; font-weight: 500; }
+#bq-when .btoday { float: right; text-transform: none; letter-spacing: 0; color: #6B645F; font-weight: 500; }
 
 /* The Places page (no town chosen): two cards, what to do (left) and the map to choose from (right) */
 .bpick { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.3fr); gap: 12px; align-items: stretch; margin-top: 4px; }

@@ -1,0 +1,34 @@
+# Rebuilds the Places pages from the published sheet every night, so they keep up with the sheet without anyone
+# running the build. Commits only when the pages actually change (build/places/publish_places.py), and only after
+# the site check passes. Also runs on demand: GitHub → Actions → "Rebuild Places" → Run workflow.
+# After it has committed, GitHub Desktop will ask you to pull before your next push ("Fetch origin", then "Pull origin").
+name: Rebuild Places
+on:
+  schedule:
+    - cron: "17 3 * * *"   # 03:17 UTC every day
+  workflow_dispatch:
+permissions:
+  contents: write
+concurrency:
+  group: places
+jobs:
+  rebuild:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install shapely   # the county outline on the Places map
+      - name: Rebuild from the sheet
+        run: python build/places/publish_places.py
+      - name: Check the site before publishing
+        run: python build/tests/check_site.py
+      - name: Commit the new pages
+        run: |
+          if [ -z "$(git status --porcelain docs)" ]; then echo "Places unchanged: nothing to commit"; exit 0; fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add docs
+          git commit -m "Places: nightly rebuild from the sheet"
+          git push

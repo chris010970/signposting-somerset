@@ -27,6 +27,9 @@ ONLY_TEST = "test" in sys.argv[1:]
 
 # ---------- inputs ----------
 recs = read_records(args[0] if args else None)   # dates and times cleaned up as the directory does
+# As the pages do: stop rather than publish pages from a sheet that looks wrong (unreachable, columns renamed, emptied)
+missing = [c for c in ("name", "type", "mode", "town", "support_for") if not any(c in r for r in recs)]
+assert not missing and len(recs) >= 10, f"the records look wrong ({len(recs)} rows; missing columns: {', '.join(missing) or 'none'}): nothing built"
 TOWNS = json.loads((BUILD / "directory" / "towns.json").read_text(encoding="utf-8"))["TOWNS"]
 CONF = json.loads((HERE / "towns.json").read_text(encoding="utf-8"))
 CATS = json.loads((HERE / "categories.json").read_text(encoding="utf-8"))["categories"]
@@ -83,8 +86,6 @@ def services_for(town):
     return out
 
 # ---------- pieces ----------
-# The directory's wording and badge colours
-ACCESS = {"drop in": ("b-drop", "Just turn up"), "sign up": ("b-sign", "Contact to join"), "book": ("b-book", "Book first"), "call": ("b-ref", "Call first"), "referral": ("b-ref", "Needs a referral")}
 
 def pattern(r):
     if r.get("days") == "Mon-Sun" and r.get("times") == "00:00-23:59":
@@ -101,24 +102,43 @@ def pattern(r):
 PAGE_FIELDS = ["name", "provider", "type", "access", "support_for", "mode", "url", "description", "who", "eligibility", "days", "times",
                "frequency", "dates", "address", "town", "postcode", "phone", "email", "cost", "area", "lat", "lon"]
 
+CORE_DATA = BUILD / "core" / "data"
+SUPPORT_LABELS = json.loads((CORE_DATA / "support-types.json").read_text(encoding="utf-8"))["labels"]
+KIND_LIST = json.loads((CORE_DATA / "kinds.json").read_text(encoding="utf-8"))["kinds"]
+CARD_TEXT = json.loads((CORE_DATA / "card-text.json").read_text(encoding="utf-8"))
+GROUP_TYPE = re.compile("|".join(CARD_TEXT["group_types"]), re.I)
+cap = lambda t: SUPPORT_LABELS.get(t) or t[:1].upper() + t[1:]
+
+def badge(r):
+    """[class, wording] for the access badge, as core/js/service-card.js does."""
+    a = CARD_TEXT["access"].get(r.get("access", ""), CARD_TEXT["access_other"])
+    return a["class"], (a["label_not_group"] if a.get("label_not_group") and not GROUP_TYPE.search(r.get("type", "")) else a["label"])
+
 def card(d, r, i):
-    """The plain card for record number i on the page, d miles from the town centre."""
-    acc = ACCESS.get(r.get("access", ""), ("b-ref", "Contact provider"))
-    chips = f'<span class="chip dist">{"<0.1" if d < .1 else f"{d:.1f}"} mi{" approx." if r["_approx"] else ""}</span>'
-    if r.get("cost"): chips += f'<span class="chip">{e(r["cost"])}</span>'
+    """The plain card for record number i on the page, d miles from the town centre: the same markup as the In person card
+    (core/js/service-card.js), without the parts worked out in the browser (next session, Copy details, Directions).
+    build/tests/ checks the two agree."""
+    cls, label = badge(r)
+    d = round(d, 1)   # to a tenth of a mile, here and in the page's data, so the browser shows exactly the same
+    dist = f'<span class="chip dist">{"&lt;0.1" if d < .1 else f"{d:.1f}"} mi{" approx." if r["_approx"] else ""}</span>'
+    cost = f'<span class="chip">{e(r["cost"])}</span>' if r.get("cost") else ""
+    kind = next((k for k in KIND_LIST if r.get("type") in k["types"]), None)
+    kind_tag = f'<div class="kind"><i style="background:{kind["colour"]}"></i>{e(kind["kind"])}</div>' if kind else ""
+    types = " · " + ", ".join(e(cap(t)) for t in split(r.get("support_for", ""))) if split(r.get("support_for", "")) else ""
     contact = []
     url = web_url(r.get("url"))
     if url: contact.append(f'<a href="{e(url)}" target="_blank" rel="noopener">Website</a>')
     if r.get("phone"):
         tel = re.sub(r"[^\d+]", "", r["phone"].split(" (")[0].split(" or ")[0].split(";")[0])
-        contact.append(f'<a href="tel:{e(tel)}">{e(r["phone"])}</a>' if len(tel) >= 5 and not r["phone"].lower().startswith("text") else e(r["phone"]))
+        contact.append(e(r["phone"]) if re.match(r"text", r["phone"], re.I) or len(tel) < 5 else f'<a href="tel:{tel}">{e(r["phone"])}</a>')
     if r.get("email"): contact.append(f'<a href="mailto:{e(r["email"].split(";")[0].strip())}">{e(r["email"])}</a>')
     place = e(", ".join(x for x in (r.get("address", ""), r.get("town", ""), r.get("postcode", "")) if x))
+    if r["_approx"]: place += ' <span class="approx">(approx. location)</span>'
     who = (f'<div class="who">For: {e(r.get("who", ""))}' + (f' · <em>{e(r["eligibility"])}</em>' if r.get("eligibility") else "") + "</div>"
            if r.get("who") or r.get("eligibility") else "")
-    return (f'<li data-i="{i}" data-d="{d:.3f}"><article class="card" data-id="{i}">'
-            f'<div class="row1"><span class="badge {acc[0]}">{e(acc[1])}</span><span class="chipr">{chips}</span></div>'
-            f'<h4 class="cname">{e(r["name"])}</h4><div class="meta">{e(r.get("provider", ""))} · {e(r.get("type", ""))}</div>'
+    return (f'<li data-i="{i}" data-d="{d:.1f}"><article class="card" data-id="{i}">'
+            f'<div class="row1"><span class="badge {cls}">{label}</span><span class="chipr">{dist}{cost}</span></div>'
+            f'<h4 class="cname">{e(r["name"])}</h4>{kind_tag}<div class="meta">{e(r.get("provider", ""))} · {e(r.get("type", ""))}{types}</div>'
             f'<div class="next"><div class="lab">When</div><div class="val">{e(pattern(r))}</div></div>'
             f'<p class="desc">{e(r.get("description", ""))}</p>{who}'
             f'<div class="foot"><span>{place}</span>' + (f'<span>{" · ".join(contact)}</span>' if contact else "") + '</div></article></li>')
@@ -210,7 +230,7 @@ def area_map(base, totals):
             x, y = xy(TOWNS[t][1], TOWNS[t][0]); l = t in LABEL_LEFT
             pins.append(f'<a href="{base}{slug(t)}/" aria-label="{e(t)}: {totals[t]} groups and services"><circle cx="{x:.1f}" cy="{y:.1f}" r="5.5"/>'
                         f'<text x="{x + (-9 if l else 9):.1f}" y="{y + 4:.1f}" text-anchor="{"end" if l else "start"}">{e(t)}</text></a>')
-    return (f'<svg class="bmapsvg" viewBox="-70 -10 {W + 140:.0f} {H + 20:.0f}" role="img" aria-label="Map of Somerset, North Somerset and Bath and North East Somerset with the towns marked">'
+    return (f'<svg class="bmapsvg" viewBox="-70 -10 {W + 140:.0f} {H + 20:.0f}" role="group" aria-label="Map of Somerset, North Somerset and Bath and North East Somerset with the towns marked">'
             f'<path class="land" d="{path}"/>{"".join(pins)}</svg>')
 
 def landing_main(base, dirbase, totals):
@@ -270,9 +290,9 @@ def page(title, desc, canonical, robots, main_html, filters_html, dirbase, crumb
 </header>
 <span id="copy-live" role="status" aria-live="polite" class="vh"></span>
 <div class="bw gut">
-<div class="bmain" role="main">
+<main class="bmain">
 {main_html}
-</div>
+</main>
 </div>
 {HELPLINE}<script>
 {PAGE_JS}

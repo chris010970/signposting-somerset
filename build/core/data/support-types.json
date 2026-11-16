@@ -1,0 +1,9 @@
+{
+ "_about": "The support types (the sheet's support_for column), in the three groups the 'Support for' boxes show, and how a type is shown where it isn't just the sheet's word with a capital letter. Used by the pages (core/js/text.js), the Places build and the tests.",
+ "groups": [
+  {"group": "Specialist support", "types": ["crisis prevention", "low mood", "anxiety", "bereavement", "hearing voices", "eating disorders", "long-term pain", "dementia", "addiction", "abuse", "caring for someone"]},
+  {"group": "Practical help and support", "types": ["housing", "finances", "food"]},
+  {"group": "Everyday wellbeing", "types": ["connect", "be active", "take notice", "keep learning", "giving"]}
+ ],
+ "labels": {"hearing voices": "Psychosis and hearing voices", "crisis prevention": "Crisis support", "addiction": "Addiction (alcohol, drugs, gambling)", "abuse": "Abuse (domestic, child or adult)"}
+}

@@ -14,14 +14,14 @@
 .maplegend { padding: 8px 10px 6px !important; min-width: 230px; font-family: var(--sans); }
 .maplegend button { font-family: inherit; }
 .leaflet-container .leaflet-tooltip, .leaflet-container .leaflet-popup-content { font-family: var(--sans); }
-.maplegend b span { text-transform: none; letter-spacing: 0; font-weight: 500; color: #78716C; margin-left: 4px; }
+.maplegend b span { text-transform: none; letter-spacing: 0; font-weight: 500; color: #6B645F; margin-left: 4px; }
 .maplegend button { display: flex; align-items: center; gap: 9px; width: 100%; background: none; border: 0; border-bottom: 1px solid #F5F5F4; padding: 5px 4px; margin: 0; border-radius: 6px; font-size: 13px; line-height: 1.25; color: var(--ink); cursor: pointer; text-align: left; }
 .maplegend button:last-child { border-bottom: 0; }
 .maplegend button:hover { background: var(--b50); }
 .maplegend button i { flex: none; width: 26px; height: 13px; border-radius: 4px; background: var(--c); border: 0; box-shadow: none; margin: 0; vertical-align: 0; }
 .maplegend .lt { display: flex; flex-direction: column; min-width: 0; }
-.maplegend .lt small { font-size: 11px; color: #78716C; white-space: nowrap; }
-.maplegend button em { margin-left: auto; padding-left: 10px; font-style: normal; font-size: 11px; color: #78716C; font-variant-numeric: tabular-nums; }
+.maplegend .lt small { font-size: 11px; color: #6B645F; white-space: nowrap; }
+.maplegend button em { margin-left: auto; padding-left: 10px; font-style: normal; font-size: 11px; color: #6B645F; font-variant-numeric: tabular-nums; }
 .maplegend button[aria-pressed="false"] { color: #A8A29E; }
 .maplegend button.zero:not([aria-pressed="false"]) { color: #A8A29E; }
 .maplegend button[aria-pressed="false"] .lt { text-decoration: line-through; }
@@ -29,7 +29,7 @@
 .maplegend button.all { justify-content: center; color: var(--b700); font-weight: 700; text-decoration: underline; margin-top: 2px; }
 .maplegend button.lghead { border: 0; padding: 2px 2px 4px; margin: 0; gap: 6px; font-size: 10px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: var(--b700); }
 .maplegend button.lghead:hover { background: none; }
-.maplegend button.lghead span { text-transform: none; letter-spacing: 0; font-weight: 500; color: #78716C; }
+.maplegend button.lghead span { text-transform: none; letter-spacing: 0; font-weight: 500; color: #6B645F; }
 .maplegend button.lghead .dots { display: inline-flex; gap: 3px; text-transform: none; }
 .maplegend button.lghead .dots i { width: 9px; height: 9px; border-radius: 50%; }
 .maplegend button.lghead svg { margin-left: auto; width: 14px; height: 14px; flex: none; color: var(--b700); transition: transform .15s; }
@@ -49,10 +49,10 @@
 .card.open .desc { -webkit-line-clamp: unset; display: block; }
 .who { font-size: 12px; color: var(--ink); margin-bottom: 8px; }
 .who em { font-style: normal; color: #92400E; }
-.foot { font-size: 12px; color: #78716C; border-top: 1px solid #F5F5F4; padding-top: 8px; display: grid; gap: 3px; }
+.foot { font-size: 12px; color: #6B645F; border-top: 1px solid #F5F5F4; padding-top: 8px; display: grid; gap: 3px; }
 .foot a { color: var(--b700); }
 a.copy.dirs { text-decoration: none; }
-.approx { color: #A8A29E; }
+.approx { color: #78716C; }
 .morehint { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 8px 12px; margin: 14px 0 6px; padding: 12px 14px; border: 1px dashed var(--line); border-radius: 12px; background: var(--white); font-size: 14px; color: var(--muted); }
 .morehint b { color: inherit; }
 .morehint button { font: inherit; font-size: 13px; font-weight: 600; padding: 6px 12px; border-radius: 999px; border: 1px solid var(--line); background: var(--white); cursor: pointer; }

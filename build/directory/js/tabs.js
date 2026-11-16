@@ -3,7 +3,7 @@ const SITE_TABS = ["talk", "near", "course", "about"];
 function setSiteTab(t) {
   tab = t;
   try { $("tab-" + t).scrollIntoView({ block: "nearest", inline: "nearest" }); } catch (e) {}
-  for (const k of SITE_TABS) { $("tab-" + k).setAttribute("aria-selected", k === t); $("panel-" + k).hidden = k !== t; $("hdr-" + k).hidden = k !== t; }
+  for (const k of SITE_TABS) { currentTab($("tab-" + k), k === t); $("panel-" + k).hidden = k !== t; $("hdr-" + k).hidden = k !== t; }
   if (t === "talk") renderTalk();
   else if (t === "course") renderCourses();
   else if (t === "about") renderAbout();

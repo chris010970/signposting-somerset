@@ -1,5 +1,5 @@
 <!--TAB-->
-      <button type="button" role="tab" id="tab-analytics" aria-selected="false" aria-controls="panel-analytics">Analytics</button>
+      <button type="button" id="tab-analytics" aria-controls="panel-analytics">Analytics</button>
 <!--HDR-->
     <div id="hdr-analytics" hidden>
     <div class="qs an-qs">
@@ -10,7 +10,7 @@
     </div>
     </div>
 <!--PANEL-->
-<section id="panel-analytics" role="tabpanel" aria-labelledby="tab-analytics" hidden class="an">
+<main id="panel-analytics" aria-labelledby="tab-analytics" hidden class="an">
   <div class="an-col">
     <div class="an-box an-left">
       <div class="an-ltabs" role="tablist" aria-label="Explore"><button type="button" role="tab" data-lt="list" aria-selected="true">List</button><button type="button" role="tab" data-lt="chart" aria-selected="false">Chart</button></div>
@@ -18,14 +18,14 @@
       <div class="an-pane" id="an-plist">
         <div class="an-tools an-tools2"><p class="an-rule" id="an-rule"></p><input class="an-find" id="an-find" type="search" placeholder="Find a place…" aria-label="Find a place"></div>
         <div class="an-cellbar" id="an-cellbar" hidden></div>
-        <div class="an-scroll" id="an-scroll"><table><thead id="an-thead"></thead><tbody id="an-tbody"></tbody></table></div>
+        <section class="an-scroll" id="an-scroll" tabindex="0" aria-label="Areas, ranked"><table><thead id="an-thead"></thead><tbody id="an-tbody"></tbody></table></section>
       </div>
-      <div class="an-pane an-pchart" id="an-pchart" hidden><h2 class="an-ct" id="an-ctitle"></h2><p class="an-gsub">Click squares, a row or a column to select those areas; click again to remove them.</p><div class="an-svg" id="an-svg"></div><div class="an-cap" id="an-cap"></div></div>
+      <div class="an-pane an-pchart" id="an-pchart" hidden><h2 class="an-ct" id="an-ctitle">Need and distance to support</h2><p class="an-gsub">Click squares, a row or a column to select those areas; click again to remove them.</p><div class="an-svg" id="an-svg"></div><div class="an-cap" id="an-cap"></div></div>
     </div>
   </div>
-  <div class="an-mapwrap"><div id="amap" role="region" aria-label="Map of LSOAs and services"></div><div class="an-loading" id="an-loading">Loading LSOAs…</div></div>
+  <div class="an-mapwrap"><section id="amap" aria-label="Map of LSOAs and services"></section><div class="an-loading" id="an-loading">Loading LSOAs…</div></div>
   <div class="an-col"><div class="an-box an-prof" id="an-prof"></div></div>
-</section>
+</main>
 <!--ABOUT-->
     <section id="how-analytics">
     <h3>How Analytics works</h3>

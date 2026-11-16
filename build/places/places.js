@@ -34,7 +34,7 @@ let ALL = [];   // this page's records (copy details finds them here)
         ul.querySelectorAll("li[data-i]").forEach(li => {
           const s = byId(li.dataset.i), ok = !!s && meets(s, w, now);   // no record: its dates have all passed since the build
           li.hidden = !ok; m += ok;
-          if (ok && s) li.innerHTML = serviceCard({ s, d: +li.dataset.d, nx: nextText(s, now, from) }, "h4");
+          if (ok && s) li.innerHTML = serviceCard({ s, d: +li.dataset.d, nx: nextText(s, now, from) }, "h4", false);
         });
         h.hidden = ul.hidden = !m; h.textContent = h.dataset.l + " · " + m; n += m;
       });

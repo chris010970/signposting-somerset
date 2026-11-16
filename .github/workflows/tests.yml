@@ -1,5 +1,6 @@
 # Runs build/tests/run_tests.py on every push and pull request: the builds' tests, the schedule rules,
-# that the directory and tools pages still build, and that every link in docs/ works.
+# that the directory and tools pages still build, that every link in docs/ works, and the browser tests
+# (what the pages show, the Places cards, valid HTML, accessibility).
 # A red cross next to a commit on GitHub means something failed: open it to see which check.
 name: Tests
 on:
@@ -17,4 +18,7 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: "22"
+      - name: Set up the browser tests
+        working-directory: build/tests
+        run: npm install && npx playwright install --with-deps chromium
       - run: python build/tests/run_tests.py

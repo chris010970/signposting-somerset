@@ -13,7 +13,7 @@
 /*@core:css/pins.css*/
 /*@core:css/helpline.css*/
 /* The way back to the directory, in the tab row: a link, styled like the tabs */
-.sitetabs a.back { white-space: nowrap; padding: 9px 14px 10px; font-weight: 700; font-size: 14px; color: #78716C; text-decoration: none; border-bottom: 3px solid transparent; margin-bottom: -1px; margin-right: 6px; }
+.sitetabs a.back { white-space: nowrap; padding: 9px 14px 10px; font-weight: 700; font-size: 14px; color: #6B645F; text-decoration: none; border-bottom: 3px solid transparent; margin-bottom: -1px; margin-right: 6px; }
 .sitetabs a.back:hover, .sitetabs a.back:focus-visible { color: var(--b900); }
 #about.talk { max-width: 1432px; margin: 0 auto; padding-block: 14px 110px; }
 @media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
@@ -28,11 +28,11 @@
     <div class="masthead">
 <!--@core:html/brand.html-->
     </div>
-    <nav class="sitetabs" role="tablist" aria-label="Tools">
+    <nav class="sitetabs" aria-label="Tools">
       <a class="back" href="/*DIRECTORY*/">← Find support</a>
 <!--ASSIST_TAB-->
 <!--ANALYTICS_TAB-->
-      <button type="button" role="tab" id="tab-about" aria-selected="false" aria-controls="panel-about">About</button>
+      <button type="button" id="tab-about" aria-controls="panel-about">About</button>
     </nav>
     </div>
 <!--ASSIST_HDR-->
@@ -43,7 +43,7 @@
 
 <!--ASSIST_PANEL-->
 <!--ANALYTICS_PANEL-->
-<section id="panel-about" role="tabpanel" aria-labelledby="tab-about" hidden style="flex:1;min-height:0;overflow-y:auto"><div class="talk gut" id="about"></div></section>
+<main id="panel-about" aria-labelledby="tab-about" hidden style="flex:1;min-height:0;overflow-y:auto"><div class="talk gut" id="about"></div></main>
 
 <!--@core:html/helpline.html-->
 

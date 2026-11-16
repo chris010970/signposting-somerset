@@ -12,7 +12,7 @@ The Places page itself (no town chosen yet) is two cards: what to do, with plain
   `out/test/directory/places/` (test, not indexed) and `out/sitemap.xml`. Add `test` to build the test copy only.
 - `towns.json`: which towns get a page, by area, the radius, and which town names sit left of their pin on the map. `categories.json`: the sections, headings and buttons, mapped from `support_for`.
 - Styles, header and colours come from the directory's template and `build/core/` at build time, so they always match.
-- Publish: `out/directory/places/` -> `docs/directory/places/`, `out/test/directory/places/` -> `docs/test/directory/places/`, `out/sitemap.xml` -> `docs/sitemap.xml`.
+- Publish: `python build/places/publish_places.py` (from the repo root; add a CSV path to build from a file) rebuilds the pages and copies them into `docs/`, but only if something besides the date stamps changed. GitHub also does this every night (`.github/workflows/places.yml`) and commits any change, so the pages keep up with the sheet on their own.
 
 - `places.css`, `places.js`: the pages' own styles and script. As on the directory, the header (tabs and filter boxes) stays put and only the listings scroll.
 - The cards are the In person tab's (`build/core/js/service-card.js`), with Copy details and Directions: the build writes a plain version of each card (what search engines, and anyone without JavaScript, see) and the page's records as JSON, and in the browser each card is redrawn from its record by the directory's own code. Next sessions and 3. When? use the directory's schedule rules (`build/core/js/schedule.js`), so the two always agree; a group whose dates have all passed since the build is hidden.

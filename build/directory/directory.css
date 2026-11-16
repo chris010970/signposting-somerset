@@ -59,15 +59,15 @@
 
 /* In person: the list beside the map (on phones, one or the other, with the List / Map switch) */
 @media (max-width: 899px) { .tabs { display: inline-flex; } }
-main { flex: 1; min-height: 0; display: grid; grid-template-columns: minmax(0, 42%) minmax(0, 1fr); max-width: 1400px; width: 100%; margin: 0 auto var(--footh, 50px); }
+#main { flex: 1; min-height: 0; display: grid; grid-template-columns: minmax(0, 42%) minmax(0, 1fr); max-width: 1400px; width: 100%; margin: 0 auto var(--footh, 50px); }
 @media (max-width: 899px) {
-  main { grid-template-columns: 1fr; }
-  main.show-map #list { display: none; }
-  main:not(.show-map) #mapwrap { display: none; }
+  #main { grid-template-columns: 1fr; }
+  #main.show-map #list { display: none; }
+  #main:not(.show-map) #mapwrap { display: none; }
 }
 #list { overflow-y: auto; padding: 14px 14px 90px; border-right: 1px solid var(--line); min-height: 0; }
 /* Line the list and map up with the header's edges (same 16px gutter and width) */
-@media (min-width: 900px) { main { max-width: 1432px; padding-inline: max(16px, env(safe-area-inset-left, 0px)); } #list { padding-left: 0; } }
+@media (min-width: 900px) { #main { max-width: 1432px; padding-inline: max(16px, env(safe-area-inset-left, 0px)); } #list { padding-left: 0; } }
 #mapwrap { position: relative; min-height: 360px; }
 #map { position: absolute; inset: 0; background: #EEF0EC; }
 .tilenote { position: absolute; left: 12px; bottom: 12px; z-index: 500; pointer-events: none; background: rgba(255,255,255,.95); border: 1px solid var(--line); border-radius: 8px; padding: 6px 10px; font-size: 12px; color: var(--muted); max-width: 70%; }

@@ -35,11 +35,11 @@
       <p class="datasrc" id="datasrc" hidden></p>
       <span id="copy-live" role="status" aria-live="polite" style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)"></span>
     </div>
-    <nav class="sitetabs" role="tablist" aria-label="Kind of support">
-      <span class="tgrp" role="presentation"><button type="button" role="tab" id="tab-near" aria-selected="false" aria-controls="panel-near">In person</button>
-      <button type="button" role="tab" id="tab-talk" aria-selected="false" aria-controls="panel-talk"><span class="lg">Phone and online</span><span class="sh">Phone &amp; online</span></button>
-      <button type="button" role="tab" id="tab-course" aria-selected="false" aria-controls="panel-course">Courses</button><a class="tab" id="tab-places" href="places/">Places</a></span>
-      <button type="button" role="tab" id="tab-about" aria-selected="false" aria-controls="panel-about">About</button>
+    <nav class="sitetabs" aria-label="Site">
+      <span class="tgrp"><button type="button" id="tab-near" aria-controls="panel-near">In person</button>
+      <button type="button" id="tab-talk" aria-controls="panel-talk"><span class="lg">Phone and online</span><span class="sh">Phone &amp; online</span></button>
+      <button type="button" id="tab-course" aria-controls="panel-course">Courses</button><a class="tab" id="tab-places" href="places/">Places</a></span>
+      <button type="button" id="tab-about" aria-controls="panel-about">About</button>
       <a class="tolink" href="/tools/">Tools →</a>    </nav>
     </div>
     <div id="hdr-talk" class="tq">
@@ -68,7 +68,7 @@
         </div>
         <div class="pointnote" id="pointnote"></div>
       </div>
-      <div class="q" id="q-when"><label for="f-when">3. When? <span id="today" style="float:right;text-transform:none;letter-spacing:0;color:#78716C;font-weight:500"></span></label>
+      <div class="q" id="q-when"><label for="f-when">3. When? <span id="today" style="float:right;text-transform:none;letter-spacing:0;color:#6B645F;font-weight:500"></span></label>
         <select id="f-when">
           <option value="any">Any time</option><option value="now">Open now (drop-ins)</option><option value="today">Today</option>
           <option value="evening">This evening (after 5pm)</option><option value="tomorrow">Tomorrow</option>
@@ -86,16 +86,16 @@
   </div>
 </header>
 
-<section id="panel-talk" role="tabpanel" aria-labelledby="tab-talk"><div class="talk gut" id="talk"></div></section>
-<section id="panel-about" role="tabpanel" aria-labelledby="tab-about" hidden style="flex:1;min-height:0;overflow-y:auto"><div class="talk gut" id="about"></div></section>
-<section id="panel-course" role="tabpanel" aria-labelledby="tab-course" hidden style="flex:1;min-height:0;overflow-y:auto"><div class="talk gut" id="courses"></div></section>
-<div id="panel-near" role="tabpanel" aria-labelledby="tab-near" hidden style="flex:1;min-height:0;display:flex;flex-direction:column">
+<main id="panel-talk" aria-labelledby="tab-talk"><div class="talk gut" id="talk"></div></main>
+<main id="panel-about" aria-labelledby="tab-about" hidden style="flex:1;min-height:0;overflow-y:auto"><div class="talk gut" id="about"></div></main>
+<main id="panel-course" aria-labelledby="tab-course" hidden style="flex:1;min-height:0;overflow-y:auto"><div class="talk gut" id="courses"></div></main>
+<main id="panel-near" aria-labelledby="tab-near" hidden style="flex:1;min-height:0;display:flex;flex-direction:column">
 
-<main id="main">
+<div id="main">
   <section id="list" aria-live="polite"></section>
-  <div id="mapwrap"><div id="map" role="region" aria-label="Map of services"></div><div class="tilenote" id="tilenote" hidden>Map tiles can't load here, so only the pins show. They load normally when the page is opened from your computer or a website.</div></div>
-</main>
+  <div id="mapwrap"><section id="map" aria-label="Map of services"></section><div class="tilenote" id="tilenote" hidden>Map tiles can't load here, so only the pins show. They load normally when the page is opened from your computer or a website.</div></div>
 </div>
+</main>
 
 <!--@core:html/helpline.html-->
 

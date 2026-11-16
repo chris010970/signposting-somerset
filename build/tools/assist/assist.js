@@ -253,7 +253,7 @@ let lastPicks = [];
 const STEPS = ["First step", "Next step", "When ready"];
 const normStep = s => STEPS.find(x => x.toLowerCase() === String(s).toLowerCase()) || "Next step";
 const HOW = { "drop in": "Just turn up", "sign up": "Contact to join", "book": "Book first", "referral": "Needs a referral", "call": "Phone line" };
-const how_ = s => s.access === "call" && /group|community|course|volunteering/i.test(s.type || "") ? "Call first" : (HOW[s.access] || s.access);   // groups you phone before joining aren't phone lines
+const how_ = s => s.access === "call" && isGroupType(s) ? "Call first" : (HOW[s.access] || s.access);   // groups you phone before joining aren't phone lines
 const HOWCLS = { "drop in": "ab-drop", "sign up": "ab-sign", "book": "ab-book", "referral": "ab-ref", "call": "ab-ref" };
 
 let lastResult = null;

@@ -4,7 +4,7 @@ const spotKey = s => s.lat.toFixed(4) + "," + s.lon.toFixed(4);
 function clusterBg(g) {
   const n = new Array(KINDS.length + 1).fill(0);
   g.forEach(s => { const i = kindOf(s); n[i < 0 ? KINDS.length : i]++; });
-  const cols = [...KINDS.map(k => k[1]), "#64748B"];
+  const cols = [...KINDS.map(k => k[1]), KIND_DATA.other];
   let at = 0; const stops = [];
   n.forEach((c, i) => { if (c) { const to = at + c / g.length * 360; stops.push(`${cols[i]} ${at}deg ${to}deg`); at = to; } });
   return stops.length === 1 ? stops[0].split(" ")[0] : `conic-gradient(${stops.join(", ")})`;

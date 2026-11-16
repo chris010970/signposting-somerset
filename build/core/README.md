@@ -15,7 +15,7 @@ in `build/directory/template.html` is `build/directory/js/map.js`).
 | `css/page.css` | page frame, the filter boxes (1. Support for, 2. Where?), the tab row, the About page |
 | `css/cards.css` | service cards: badges, chips, kind tag, details, footer line |
 | `css/helpline.css`, `html/helpline.html`, `js/helpline-height.js` | the 24/7 helpline bar at the bottom (and keeping content clear of it) |
-| `js/text.js` | the support types and their labels, and text helpers (`esc`, `split`, `webUrl`) |
+| `js/text.js` | the support types and their labels, card wording, and text helpers (`esc`, `split`, `webUrl`) |
 | `js/schedule.js` | schedule rules: next session, "1st Tue of month", the 3. When? windows, bank holidays |
 | `js/places.js` | town centres (records without a postcode), county outline, the 2. Where? places, distances |
 | `js/records.js` | records as the pages use them (`shapeRecords`), and the grouped 1. Support for choices (`supportOptions`) |
@@ -24,9 +24,15 @@ in `build/directory/template.html` is `build/directory/js/map.js`).
 | `js/map-tiles.js` | the map background (CARTO tiles and their credit) for every map |
 | `css/pins.css`, `js/map-pins.js` | map pins, numbered spots and area circles (directory map and Analytics map) |
 | `js/cards.js` | copy details, tap-to-call, directions |
+| `js/service-card.js` | the card for a service with a place: the In person tab and the Places pages |
 | `data/where.json` | the 2. Where? places and their centre points |
+| `data/support-types.json` | the support types, their three groups and their labels (pages, Places build, tests) |
+| `data/kinds.json` | kinds of service and their colours (map pins, map key, cards) |
+| `data/card-text.json` | card wording: the access badges ("Just turn up"…), also used in Copy details |
 | `data/bank-holidays.json` | bank holiday dates. **Add the next year's** before they run out (the tests warn six months ahead) |
 
+Data files are read by the pages and by the Places build (Python) alike, so wording and colours are set once.
+
 Used by: `build/directory/template.html` (the directory), `build/tools/template.html` (the tools page) and the Places pages
-(`build/places/build_places.py`: the styles, crisis and helpline bars, and `js/text.js` + `js/schedule.js` for next sessions and 3. When?).
+(`build/places/build_places.py`: the styles, crisis and helpline bars, the data files, and the card, schedule and copy code).
 The schedule rules and the sheet clean-up are tested in `build/tests/schedule.test.mjs`.

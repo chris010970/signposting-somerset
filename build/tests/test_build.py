@@ -12,8 +12,8 @@ from page import put, section
 from records import clean, fix_date, fix_time, web_url
 
 load = lambda p: json.loads((BUILD / p).read_text(encoding="utf-8"))
-# The support types the site knows (the "Support for" groups in core/js/text.js)
-VOCAB = set(re.findall(r'"([a-z][a-z -]+)"', re.search(r"const GROUPS = \[(.*?)\];", (BUILD / "core/js/text.js").read_text(), re.S).group(1)))
+# The support types the site knows (core/data/support-types.json)
+VOCAB = {t for g in load("core/data/support-types.json")["groups"] for t in g["types"]}
 
 
 class Records(unittest.TestCase):

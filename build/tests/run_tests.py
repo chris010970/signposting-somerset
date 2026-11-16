@@ -4,6 +4,8 @@
 2. the pages' schedule rules and sheet clean-up (schedule.test.mjs; needs Node.js, skipped with a note if it isn't installed)
 3. the directory and tools pages still build (into their out folders; docs/ is not touched)
 4. the published site in docs/: links, titles, nothing left unfilled (check_site.py)
+5. the pages in a real browser: what they show, the Places cards, valid HTML, accessibility (browser.test.mjs;
+   needs Node.js and a one-off setup: cd build/tests && npm install && npx playwright install chromium)
 
 GitHub runs this on every push (.github/workflows/tests.yml). Exit code 0 means everything passed.
 """
@@ -18,11 +20,14 @@ steps = [
     ("Directory builds", [sys.executable, str(BUILD / "directory" / "build.py")]),
     ("Tools page builds", [sys.executable, str(BUILD / "tools" / "build_tools.py")]),
     ("Site check", [sys.executable, str(HERE / "check_site.py")]),
+    ("Browser tests", ["node", "--test", "--test-reporter=spec", str(HERE / "browser.test.mjs")]
+        if shutil.which("node") and (HERE / "node_modules" / "playwright").is_dir() else None),
 ]
 failed = []
 for name, cmd in steps:
     if cmd is None:
-        print(f"--- {name}: skipped (Node.js isn't installed)"); continue
+        why = "Node.js isn't installed" if not shutil.which("node") else "set up with: cd build/tests && npm install && npx playwright install chromium"
+        print(f"--- {name}: skipped ({why})"); continue
     print(f"--- {name}", flush=True)
     if subprocess.run(cmd, cwd=BUILD).returncode: failed.append(name)
 print("\nAll passed." if not failed else "\nFAILED: " + ", ".join(failed))

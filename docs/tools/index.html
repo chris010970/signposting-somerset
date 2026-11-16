@@ -703,7 +703,7 @@ button, select { font: inherit; }
 .hero > :not(.illus) { position: relative; z-index: 1; max-width: min(48%, 680px); }
 .hero h1 { font-size: 24px; line-height: 1.1; display: flex; align-items: center; gap: 9px; }
 .hero h1 .logo { height: 34px; width: auto; flex: none; margin: -2px 0 -1px; }
-.hero .lede { font-size: 13.5px; color: #78716C; margin: 3px 0 2px; max-width: 60ch; }
+.hero .lede { font-size: 13.5px; color: #6B645F; margin: 3px 0 2px; max-width: 60ch; }
 /* The tagline stays on one line: a shorter version on narrow screens */
 .hero .lede { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: none; }
 .hero .lede .sh { display: none; }
@@ -727,8 +727,8 @@ button, select { font: inherit; }
 header.top { position: relative; overflow: hidden; background: var(--white); border-bottom: 1px solid var(--line); padding-block: 10px 10px; }
 .inner { max-width: 1400px; margin: 0 auto; }
 h1 { font-family: var(--serif); color: var(--b900); font-size: 26px; margin: 0; }
-.lede { color: #78716C; margin: 2px 0 14px; }
-.datasrc { color: #78716C; font-size: 12px; margin: -10px 0 12px; }
+.lede { color: #6B645F; margin: 2px 0 14px; }
+.datasrc { color: #6B645F; font-size: 12px; margin: -10px 0 12px; }
 .qs { display: grid; grid-template-columns: 27% 33% minmax(0, 1fr) auto; gap: 10px; }
 @media (max-width: 899px) { .qs { grid-template-columns: 1fr; } }
 .q { background: var(--b50); border: 2px solid transparent; border-radius: 10px; padding: 5px 10px; min-width: 0; }
@@ -757,7 +757,7 @@ h1 { font-family: var(--serif); color: var(--b900); font-size: 26px; margin: 0; 
 .summary b { color: var(--ink); background: #F1F5F9; padding: 1px 6px; border-radius: 4px; }
 .sort { display: flex; gap: 6px; align-items: center; font-size: 12px; color: var(--muted); }
 .seg { display: inline-flex; background: #E7E5E4; border-radius: 8px; padding: 3px; }
-.seg button { border: 0; background: transparent; padding: 4px 10px; border-radius: 6px; font-size: 12px; font-weight: 600; color: #78716C; cursor: pointer; }
+.seg button { border: 0; background: transparent; padding: 4px 10px; border-radius: 6px; font-size: 12px; font-weight: 600; color: #6B645F; cursor: pointer; }
 .seg button[aria-pressed="true"] { background: var(--white); color: var(--b900); box-shadow: 0 1px 2px rgba(0,0,0,.08); }
 .seg button:disabled { opacity: .4; cursor: default; }
 .tabs { display: none; }
@@ -779,11 +779,11 @@ h1 { font-family: var(--serif); color: var(--b900); font-size: 26px; margin: 0; 
 .aboutpage .acols section > h3:first-child { margin-top: 0; }
 .aboutpage .stats { font-weight: 700; color: var(--b800); }
 .aboutpage .btn { display: inline-block; margin-top: 6px; background: var(--b700); color: #fff; text-decoration: none; font-weight: 700; padding: 10px 16px; border-radius: 10px; }
-.aboutpage .small { font-size: 13px; color: #78716C; }
+.aboutpage .small { font-size: 13px; color: #6B645F; }
 .aboutpage a:not(.btn) { color: var(--b700); text-decoration-color: var(--b200); text-underline-offset: 2px; }   /* same as Assist */
 .aboutpage a:not(.btn):hover { color: var(--b900); text-decoration-color: currentColor; }
-.sitetabs button { border: 0; background: none; padding: 9px 14px 10px; font-weight: 700; font-size: 14px; color: #78716C; cursor: pointer; border-bottom: 3px solid transparent; margin-bottom: -1px; }
-.sitetabs button[aria-selected="true"] { color: var(--b900); border-bottom-color: var(--b600); }
+.sitetabs button { border: 0; background: none; padding: 9px 14px 10px; font-weight: 700; font-size: 14px; color: #6B645F; cursor: pointer; border-bottom: 3px solid transparent; margin-bottom: -1px; }
+.sitetabs button[aria-current="page"] { color: var(--b900); border-bottom-color: var(--b600); }
 /* Tabs in groups: Browse (In person, Phone and online, Courses) | Assist | About */
 .sitetabs { align-items: flex-end; }
 .sitetabs .tgrp { display: inline-flex; align-items: flex-end; gap: 4px; position: relative; flex: none; }
@@ -793,7 +793,7 @@ h1 { font-family: var(--serif); color: var(--b900); font-size: 26px; margin: 0; 
 .sitetabs.more { -webkit-mask-image: linear-gradient(to right, #000 calc(100% - 36px), transparent); mask-image: linear-gradient(to right, #000 calc(100% - 36px), transparent); }
 @media (max-width: 420px) { .sitetabs { gap: 0; } .sitetabs .tgrp { gap: 0; } .sitetabs button { padding-inline: 5px; font-size: 13px; } .sitetabs #tab-assist, .sitetabs #tab-about { margin-left: 1px; padding-left: 7px; } .sitetabs #tab-assist { gap: 4px; } .sitetabs .lg { display: none; } .sitetabs .sh { display: inline; } }
 /* Tabs that are links to other pages (Places in the directory; every tab on the town pages), looking like the tab buttons */
-.sitetabs a.tab { white-space: nowrap; padding: 9px 14px 10px; font-weight: 700; font-size: 14px; color: #78716C; text-decoration: none; border-bottom: 3px solid transparent; margin-bottom: -1px; }
+.sitetabs a.tab { white-space: nowrap; padding: 9px 14px 10px; font-weight: 700; font-size: 14px; color: #6B645F; text-decoration: none; border-bottom: 3px solid transparent; margin-bottom: -1px; }
 .sitetabs a.tab:hover, .sitetabs a.tab:focus-visible { color: var(--b900); }
 .sitetabs a.tab[aria-current] { color: var(--b900); border-bottom-color: var(--b600); }
 .sitetabs a.tab.sep { margin-left: 6px; padding-left: 14px; position: relative; }
@@ -820,14 +820,14 @@ h1 { font-family: var(--serif); color: var(--b900); font-size: 26px; margin: 0; 
 .maplegend { padding: 8px 10px 6px !important; min-width: 230px; font-family: var(--sans); }
 .maplegend button { font-family: inherit; }
 .leaflet-container .leaflet-tooltip, .leaflet-container .leaflet-popup-content { font-family: var(--sans); }
-.maplegend b span { text-transform: none; letter-spacing: 0; font-weight: 500; color: #78716C; margin-left: 4px; }
+.maplegend b span { text-transform: none; letter-spacing: 0; font-weight: 500; color: #6B645F; margin-left: 4px; }
 .maplegend button { display: flex; align-items: center; gap: 9px; width: 100%; background: none; border: 0; border-bottom: 1px solid #F5F5F4; padding: 5px 4px; margin: 0; border-radius: 6px; font-size: 13px; line-height: 1.25; color: var(--ink); cursor: pointer; text-align: left; }
 .maplegend button:last-child { border-bottom: 0; }
 .maplegend button:hover { background: var(--b50); }
 .maplegend button i { flex: none; width: 26px; height: 13px; border-radius: 4px; background: var(--c); border: 0; box-shadow: none; margin: 0; vertical-align: 0; }
 .maplegend .lt { display: flex; flex-direction: column; min-width: 0; }
-.maplegend .lt small { font-size: 11px; color: #78716C; white-space: nowrap; }
-.maplegend button em { margin-left: auto; padding-left: 10px; font-style: normal; font-size: 11px; color: #78716C; font-variant-numeric: tabular-nums; }
+.maplegend .lt small { font-size: 11px; color: #6B645F; white-space: nowrap; }
+.maplegend button em { margin-left: auto; padding-left: 10px; font-style: normal; font-size: 11px; color: #6B645F; font-variant-numeric: tabular-nums; }
 .maplegend button[aria-pressed="false"] { color: #A8A29E; }
 .maplegend button.zero:not([aria-pressed="false"]) { color: #A8A29E; }
 .maplegend button[aria-pressed="false"] .lt { text-decoration: line-through; }
@@ -835,7 +835,7 @@ h1 { font-family: var(--serif); color: var(--b900); font-size: 26px; margin: 0; 
 .maplegend button.all { justify-content: center; color: var(--b700); font-weight: 700; text-decoration: underline; margin-top: 2px; }
 .maplegend button.lghead { border: 0; padding: 2px 2px 4px; margin: 0; gap: 6px; font-size: 10px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: var(--b700); }
 .maplegend button.lghead:hover { background: none; }
-.maplegend button.lghead span { text-transform: none; letter-spacing: 0; font-weight: 500; color: #78716C; }
+.maplegend button.lghead span { text-transform: none; letter-spacing: 0; font-weight: 500; color: #6B645F; }
 .maplegend button.lghead .dots { display: inline-flex; gap: 3px; text-transform: none; }
 .maplegend button.lghead .dots i { width: 9px; height: 9px; border-radius: 50%; }
 .maplegend button.lghead svg { margin-left: auto; width: 14px; height: 14px; flex: none; color: var(--b700); transition: transform .15s; }
@@ -855,10 +855,10 @@ h1 { font-family: var(--serif); color: var(--b900); font-size: 26px; margin: 0; 
 .card.open .desc { -webkit-line-clamp: unset; display: block; }
 .who { font-size: 12px; color: var(--ink); margin-bottom: 8px; }
 .who em { font-style: normal; color: #92400E; }
-.foot { font-size: 12px; color: #78716C; border-top: 1px solid #F5F5F4; padding-top: 8px; display: grid; gap: 3px; }
+.foot { font-size: 12px; color: #6B645F; border-top: 1px solid #F5F5F4; padding-top: 8px; display: grid; gap: 3px; }
 .foot a { color: var(--b700); }
 a.copy.dirs { text-decoration: none; }
-.approx { color: #A8A29E; }
+.approx { color: #78716C; }
 .morehint { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 8px 12px; margin: 14px 0 6px; padding: 12px 14px; border: 1px dashed var(--line); border-radius: 12px; background: var(--white); font-size: 14px; color: var(--muted); }
 .morehint b { color: inherit; }
 .morehint button { font: inherit; font-size: 13px; font-weight: 600; padding: 6px 12px; border-radius: 999px; border: 1px solid var(--line); background: var(--white); cursor: pointer; }
@@ -883,14 +883,14 @@ a.copy.dirs { text-decoration: none; }
 footer.help { position: fixed; left: 0; right: 0; bottom: 0; z-index: 1000; background: var(--b800); color: #fff; padding-block: 9px calc(9px + env(safe-area-inset-bottom, 0px)); transition: background .3s; }
 footer.help.urgent { background: var(--urgent); }
 footer .inner { display: flex; justify-content: space-between; align-items: center; gap: 10px; flex-wrap: wrap; }
-footer h4 { margin: 0; font-size: 13px; }
+footer h2 { margin: 0; font-size: 13px; }
 footer p { margin: 1px 0 0; font-size: 11px; color: var(--b100); }
 footer.urgent p { color: #FEE2E2; }
 @media (max-width: 600px) {
   footer.help { padding-block: 6px calc(6px + env(safe-area-inset-bottom, 0px)); }
   footer .inner { flex-wrap: nowrap; gap: 8px; }
   footer .inner > div:first-child { flex: 1; min-width: 0; }
-  footer h4 { font-size: 12px; line-height: 1.25; }
+  footer h2 { font-size: 12px; line-height: 1.25; }
   footer p, footer .line .num { display: none; }
   footer .lines { flex-wrap: nowrap; gap: 6px; }
   footer .line { padding: 6px 10px; }
@@ -899,7 +899,7 @@ footer.urgent p { color: #FEE2E2; }
 .line { font-size: 12px; font-weight: 700; padding: 6px 12px; border-radius: 8px; background: #fff; color: var(--b900); text-decoration: none; white-space: nowrap; }
 .line.ghost { background: transparent; color: #fff; border: 1px solid rgba(255,255,255,.45); }
 /* The way back to the directory, in the tab row: a link, styled like the tabs */
-.sitetabs a.back { white-space: nowrap; padding: 9px 14px 10px; font-weight: 700; font-size: 14px; color: #78716C; text-decoration: none; border-bottom: 3px solid transparent; margin-bottom: -1px; margin-right: 6px; }
+.sitetabs a.back { white-space: nowrap; padding: 9px 14px 10px; font-weight: 700; font-size: 14px; color: #6B645F; text-decoration: none; border-bottom: 3px solid transparent; margin-bottom: -1px; margin-right: 6px; }
 .sitetabs a.back:hover, .sitetabs a.back:focus-visible { color: var(--b900); }
 #about.talk { max-width: 1432px; margin: 0 auto; padding-block: 14px 110px; }
 @media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
@@ -1268,15 +1268,16 @@ footer.urgent p { color: #FEE2E2; }
 
 /* Desktop only: no Analytics tab on narrow screens */
 @media (max-width: 759px) { .sitetabs #tab-analytics { display: none; } }
+.an-chips button[aria-pressed="true"] em { opacity: .9; }
 </style>
 </head>
 <body>
 
 
-<div class="crisis gut">
+<aside class="crisis gut" aria-label="Crisis help">
   <div><b>Crisis</b>Immediate danger or medical emergency: call <a href="tel:999">999</a> or NHS <a href="tel:111">111 (option 2)</a></div>
   <a class="exit" href="https://www.bbc.co.uk/weather" rel="noopener">Quick exit</a>
-</div>
+</aside>
 
 <header class="top gut">
   <div class="inner">
@@ -1286,11 +1287,11 @@ footer.urgent p { color: #FEE2E2; }
       <h1><img class="logo" src="/signposting-somerset-v2/assets/logo-signpost.webp" alt="" width="31" height="34">Signposting Somerset</h1>
       <p class="lede" id="lede"><span class="lg">Connecting people with local mental health and wellbeing support.</span><span class="sh">Local mental health and wellbeing support.</span></p>
     </div>
-    <nav class="sitetabs" role="tablist" aria-label="Tools">
+    <nav class="sitetabs" aria-label="Tools">
       <a class="back" href="/signposting-somerset-v2/directory/">← Find support</a>
-      <button type="button" role="tab" id="tab-assist" aria-selected="false" aria-controls="panel-assist" title="Assist: for invited support workers (access code needed)"><svg class="lock" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M12 2a5 5 0 0 1 5 5v3h1a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2v-8a2 2 0 0 1 2-2h1V7a5 5 0 0 1 5-5zm0 2a3 3 0 0 0-3 3v3h6V7a3 3 0 0 0-3-3z"/></svg><span>Assist</span><span class="sr-lock" id="tab-assist-sr" style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)"> (access code needed)</span></button>
-      <button type="button" role="tab" id="tab-analytics" aria-selected="false" aria-controls="panel-analytics">Analytics</button>
-      <button type="button" role="tab" id="tab-about" aria-selected="false" aria-controls="panel-about">About</button>
+      <button type="button" id="tab-assist" aria-controls="panel-assist" title="Assist: for invited support workers (access code needed)"><svg class="lock" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M12 2a5 5 0 0 1 5 5v3h1a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2v-8a2 2 0 0 1 2-2h1V7a5 5 0 0 1 5-5zm0 2a3 3 0 0 0-3 3v3h6V7a3 3 0 0 0-3-3z"/></svg><span>Assist</span><span class="sr-lock" id="tab-assist-sr" style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)"> (access code needed)</span></button>
+      <button type="button" id="tab-analytics" aria-controls="panel-analytics">Analytics</button>
+      <button type="button" id="tab-about" aria-controls="panel-about">About</button>
     </nav>
     </div>
     <div id="hdr-assist" hidden>
@@ -1318,7 +1319,7 @@ footer.urgent p { color: #FEE2E2; }
   </div>
 </header>
 
-<section id="panel-assist" role="tabpanel" aria-labelledby="tab-assist" hidden style="flex:1;min-height:0;overflow-y:auto"><div class="gut"><div class="a-wrap">
+<main id="panel-assist" aria-labelledby="tab-assist" hidden style="flex:1;min-height:0;overflow-y:auto"><div class="gut"><div class="a-wrap">
 
   <form class="a-card a-gate" id="a-gate" hidden>
     <label class="a-h" for="a-code">Access code</label>
@@ -1358,9 +1359,9 @@ footer.urgent p { color: #FEE2E2; }
   <section id="a-out" hidden></section>
 
   </div>
-</div></div></section>
+</div></div></main>
 <div id="a-printplan"></div>
-<section id="panel-analytics" role="tabpanel" aria-labelledby="tab-analytics" hidden class="an">
+<main id="panel-analytics" aria-labelledby="tab-analytics" hidden class="an">
   <div class="an-col">
     <div class="an-box an-left">
       <div class="an-ltabs" role="tablist" aria-label="Explore"><button type="button" role="tab" data-lt="list" aria-selected="true">List</button><button type="button" role="tab" data-lt="chart" aria-selected="false">Chart</button></div>
@@ -1368,19 +1369,19 @@ footer.urgent p { color: #FEE2E2; }
       <div class="an-pane" id="an-plist">
         <div class="an-tools an-tools2"><p class="an-rule" id="an-rule"></p><input class="an-find" id="an-find" type="search" placeholder="Find a place…" aria-label="Find a place"></div>
         <div class="an-cellbar" id="an-cellbar" hidden></div>
-        <div class="an-scroll" id="an-scroll"><table><thead id="an-thead"></thead><tbody id="an-tbody"></tbody></table></div>
+        <section class="an-scroll" id="an-scroll" tabindex="0" aria-label="Areas, ranked"><table><thead id="an-thead"></thead><tbody id="an-tbody"></tbody></table></section>
       </div>
-      <div class="an-pane an-pchart" id="an-pchart" hidden><h2 class="an-ct" id="an-ctitle"></h2><p class="an-gsub">Click squares, a row or a column to select those areas; click again to remove them.</p><div class="an-svg" id="an-svg"></div><div class="an-cap" id="an-cap"></div></div>
+      <div class="an-pane an-pchart" id="an-pchart" hidden><h2 class="an-ct" id="an-ctitle">Need and distance to support</h2><p class="an-gsub">Click squares, a row or a column to select those areas; click again to remove them.</p><div class="an-svg" id="an-svg"></div><div class="an-cap" id="an-cap"></div></div>
     </div>
   </div>
-  <div class="an-mapwrap"><div id="amap" role="region" aria-label="Map of LSOAs and services"></div><div class="an-loading" id="an-loading">Loading LSOAs…</div></div>
+  <div class="an-mapwrap"><section id="amap" aria-label="Map of LSOAs and services"></section><div class="an-loading" id="an-loading">Loading LSOAs…</div></div>
   <div class="an-col"><div class="an-box an-prof" id="an-prof"></div></div>
-</section>
-<section id="panel-about" role="tabpanel" aria-labelledby="tab-about" hidden style="flex:1;min-height:0;overflow-y:auto"><div class="talk gut" id="about"></div></section>
+</main>
+<main id="panel-about" aria-labelledby="tab-about" hidden style="flex:1;min-height:0;overflow-y:auto"><div class="talk gut" id="about"></div></main>
 
 <footer class="help gut" id="help">
   <div class="inner">
-    <div><h4 id="help-title">Always available: 24/7 helpline</h4><p>Free listening support when someone needs to talk right now.</p></div>
+    <div><h2 id="help-title">Always available: 24/7 helpline</h2><p>Free listening support when someone needs to talk right now.</p></div>
     <div class="lines"><a class="line" href="tel:116123" aria-label="Call Samaritans on 116 123">Samaritans<span class="num">: 116 123</span></a></div>
   </div>
 </footer>
@@ -1390,16 +1391,34 @@ footer.urgent p { color: #FEE2E2; }
 /* The tools page's script: shared code from build/core/js/, then the page's own (tools.js: tabs, About, records),
    then Analytics. Assist follows in a script of its own. */
 /* ---------- support types and text helpers ---------- */
-// The "Support for" choices, in three groups. Specialist: mental health, crisis, bereavement and other specific needs.
-// Practical: housing, finances and food. Everyday wellbeing: connection, activity, learning, mindfulness and giving.
-const GROUPS = [
-  ["Specialist support", ["crisis prevention", "low mood", "anxiety", "bereavement", "hearing voices", "eating disorders",
-    "long-term pain", "dementia", "addiction", "abuse", "caring for someone"]],
-  ["Practical help and support", ["housing", "finances", "food"]],
-  ["Everyday wellbeing", ["connect", "be active", "take notice", "keep learning", "giving"]]];
-// How a support type is shown, where it isn't just the sheet's word with a capital letter
-const LABEL = { "hearing voices": "Psychosis and hearing voices", "crisis prevention": "Crisis support",
-  "addiction": "Addiction (alcohol, drugs, gambling)", "abuse": "Abuse (domestic, child or adult)" };
+// The "Support for" choices, in three groups: [group, [types]], and how a type is shown where it isn't just the sheet's
+// word with a capital letter (build/core/data/support-types.json)
+const SUPPORT_TYPES = ({
+ "_about": "The support types (the sheet's support_for column), in the three groups the 'Support for' boxes show, and how a type is shown where it isn't just the sheet's word with a capital letter. Used by the pages (core/js/text.js), the Places build and the tests.",
+ "groups": [
+  {"group": "Specialist support", "types": ["crisis prevention", "low mood", "anxiety", "bereavement", "hearing voices", "eating disorders", "long-term pain", "dementia", "addiction", "abuse", "caring for someone"]},
+  {"group": "Practical help and support", "types": ["housing", "finances", "food"]},
+  {"group": "Everyday wellbeing", "types": ["connect", "be active", "take notice", "keep learning", "giving"]}
+ ],
+ "labels": {"hearing voices": "Psychosis and hearing voices", "crisis prevention": "Crisis support", "addiction": "Addiction (alcohol, drugs, gambling)", "abuse": "Abuse (domestic, child or adult)"}
+});
+const GROUPS = SUPPORT_TYPES.groups.map(g => [g.group, g.types]);
+const LABEL = SUPPORT_TYPES.labels;
+// Card wording: the access badges (build/core/data/card-text.json)
+const CARD_TEXT = ({
+ "_about": "Wording on the service cards (In person, Places) and in Copy details. access: the badge for each value of the sheet's access column (class sets its colour). A 'call' service reads 'Call first' for groups and activities, and 'Phone line' for anything else; any other value reads 'Contact provider'.",
+ "access": {
+  "drop in": {"class": "b-drop", "label": "Just turn up"},
+  "sign up": {"class": "b-sign", "label": "Contact to join"},
+  "book": {"class": "b-book", "label": "Book first"},
+  "referral": {"class": "b-ref", "label": "Needs a referral"},
+  "call": {"class": "b-ref", "label": "Call first", "label_not_group": "Phone line"}
+ },
+ "access_other": {"class": "b-ref", "label": "Contact provider"},
+ "group_types": ["group", "community", "course", "volunteering"]
+});
+// Groups, activities, courses and volunteering (by type), as opposed to one-to-one services and phone lines
+const isGroupType = s => new RegExp(CARD_TEXT.group_types.join("|"), "i").test(s.type || "");
 const cap = s => LABEL[s] || s[0].toUpperCase() + s.slice(1);
 // Text from the sheet, made safe to put in the page
 const esc = s => String(s ?? "").replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
@@ -1407,6 +1426,8 @@ const esc = s => String(s ?? "").replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "
 const split = s => (s || "").split(";").map(x => x.trim()).filter(Boolean);
 // A website address only if it's a web page (http or https), so nothing else in the url column becomes a link
 const webUrl = u => /^https?:\/\//i.test(u || "") ? u : "";
+// The tab showing is marked aria-current="page" (styled in core/css/page.css)
+const currentTab = (el, on) => on ? el.setAttribute("aria-current", "page") : el.removeAttribute("aria-current");
 /* ---------- schedules: when a service next meets ----------
    Used by the directory, the tools page and the Places pages, so they always agree. A record's schedule is its
    days ("Mon-Fri", "Tue;Thu"), times ("10:00-12:00" or a start time), frequency (blank = every week,
@@ -1514,7 +1535,7 @@ function nextText(s, now, from = now) {
   if (s._kind === "website") return { cls: "chk", txt: "Times vary: see website" };
   if (s._kind === "appointment") return { cls: "chk", txt: "By appointment" };
   // Booked, phoned or referred with no set time: there's no session to turn up to, so give the days instead of a next date
-  if (!s._times && s.days && ["book", "call", "referral"].includes(s.access) && !/group|community|course|volunteering/i.test(s.type || ""))
+  if (!s._times && s.days && ["book", "call", "referral"].includes(s.access) && !isGroupType(s))
     return { cls: "chk", txt: `By appointment · ${s.days.replace(/;/g, ", ").replace(/-/g, "–")}` };
   if (s._kind === "check") return { cls: "chk", txt: `Check dates${s.frequency ? ` (${s.frequency})` : ""}${s.days ? ` · ${s.days} ${s.times}` : ""}` };
   const o = occurrences(s, from, 70).find(x => x.en > from);
@@ -1584,16 +1605,21 @@ const supportOptions = list => `<option value="">Anything</option>` + GROUPS.map
   const v = vals.filter(x => list.some(s => s._sf.includes(x)));
   return v.length ? `<optgroup label="${g}">${v.map(x => `<option value="${x}">${esc(cap(x))}</option>`).join("")}</optgroup>` : "";
 }).join("");
-// Pin colours by kind of service (type), in five groups
-const KINDS = [
-  ["Activities", "#3F6FB0", ["Activity group", "Volunteering"]],
-  ["Groups and community", "#3A9488", ["Peer group", "Community"]],
-  ["Advice and practical help", "#D08A2E", ["Advocacy", "Practical support"]],
-  ["One-to-one and therapy", "#93549B", ["One-to-one support", "Counselling or therapy"]],
-  ["Courses", "#B5577A", ["Course"]],
-];
+// Kinds of service and their colours, for map pins, the map key and cards (build/core/data/kinds.json): [kind, colour, [types]]
+const KIND_DATA = ({
+ "_about": "Kinds of service (the sheet's type column) in five groups, each with its colour: the map pins, the map key and the line under a card's name. Services of any other type get the grey 'other' colour.",
+ "kinds": [
+  {"kind": "Activities", "colour": "#3F6FB0", "types": ["Activity group", "Volunteering"]},
+  {"kind": "Groups and community", "colour": "#3A9488", "types": ["Peer group", "Community"]},
+  {"kind": "Advice and practical help", "colour": "#D08A2E", "types": ["Advocacy", "Practical support"]},
+  {"kind": "One-to-one and therapy", "colour": "#93549B", "types": ["One-to-one support", "Counselling or therapy"]},
+  {"kind": "Courses", "colour": "#B5577A", "types": ["Course"]}
+ ],
+ "other": "#64748B"
+});
+const KINDS = KIND_DATA.kinds.map(k => [k.kind, k.colour, k.types]);
 const kindOf = s => KINDS.findIndex(k => k[2].includes(s.type));
-const pinCol = s => (KINDS[kindOf(s)] || [, "#64748B"])[1];
+const pinCol = s => (KINDS[kindOf(s)] || [, KIND_DATA.other])[1];
 /* ---------- map background (tiles) for every map on the site ---------- */
 // CARTO basemaps need an API key (free tier). Light (Positron) first; the directory's map falls back to Voyager if it fails.
 const CARTO_KEY = "cb1_4v7b_1_0f5ea1a12b0919dd5e3cbbb7";
@@ -1607,7 +1633,7 @@ const spotKey = s => s.lat.toFixed(4) + "," + s.lon.toFixed(4);
 function clusterBg(g) {
   const n = new Array(KINDS.length + 1).fill(0);
   g.forEach(s => { const i = kindOf(s); n[i < 0 ? KINDS.length : i]++; });
-  const cols = [...KINDS.map(k => k[1]), "#64748B"];
+  const cols = [...KINDS.map(k => k[1]), KIND_DATA.other];
   let at = 0; const stops = [];
   n.forEach((c, i) => { if (c) { const to = at + c / g.length * 360; stops.push(`${cols[i]} ${at}deg ${to}deg`); at = to; } });
   return stops.length === 1 ? stops[0].split(" ")[0] : `conic-gradient(${stops.join(", ")})`;
@@ -1641,7 +1667,7 @@ function copyWhen(s) {
   return [when, tm].filter(Boolean).join(", ");
 }
 function copyText(s, when) {
-  const ACC = { "drop in": "Just turn up", "sign up": "Contact to join", "book": "Book first", "referral": "Needs a referral" }[s.access];
+  const ACC = s.access !== "call" && CARD_TEXT.access[s.access]?.label;   // how to get in (a phone number says it for "call")
   const modes = split(s.mode), inPerson = modes.includes("in-person");
   const how = !inPerson && modes.length ? modes.map(m => m === "phone" ? "Phone" : m === "online" ? "Online" : m).join(" or ") : "";
   return [
@@ -1761,7 +1787,7 @@ const TABS = ["assist", "analytics", "about"];
 const wideEnough = () => matchMedia("(min-width: 760px)").matches;   // Analytics is desktop only
 let tab = TABS.includes(location.hash.slice(1)) ? location.hash.slice(1) : "assist";
 if (tab === "analytics" && !wideEnough()) { tab = "assist"; try { history.replaceState(null, "", location.pathname + location.search + "#assist"); } catch (e) {} }
-function showTab(t) { for (const k of TABS) { $("tab-" + k).setAttribute("aria-selected", k === t); $("panel-" + k).hidden = k !== t; $("hdr-" + k).hidden = k !== t; } }
+function showTab(t) { for (const k of TABS) { currentTab($("tab-" + k), k === t); $("panel-" + k).hidden = k !== t; $("hdr-" + k).hidden = k !== t; } }
 function setTab(t) {
   if (t === "analytics" && !wideEnough()) t = "assist";
   tab = t; showTab(t);
@@ -1795,7 +1821,7 @@ function renderAbout() {
       <li><strong>Data:</strong> ONS boundaries, population (mid-2022) and urban/rural classification; MHCLG Indices of Deprivation 2025; Census 2021; open postcode data (2016). Open Government Licence.</li>
     </ul>
     </div></div>
-    <p class="small" id="site-version">Version: tools 2026-11-16 12:18${typeof window.assistRelayVersion === "function" ? window.assistRelayVersion() : ""}</p>
+    <p class="small" id="site-version">Version: tools 2026-11-16 12:54${typeof window.assistRelayVersion === "function" ? window.assistRelayVersion() : ""}</p>
   </article>`;
 }
 
@@ -2277,7 +2303,7 @@ async function initAnalytics() {
    this page only remembers it for the current browser session. */
 (() => {
 const WORKER_URL = "https://signposting-assist.c-r-williams0109.workers.dev";
-const PAGE_VERSION = "tools 2026-11-16 12:18";
+const PAGE_VERSION = "tools 2026-11-16 12:54";
 let relayVersion = "";
 // The version line is at the bottom of the About tab: "Version: test 2026-11-06 11:30 · Assist relay 2026-11-06 11:07"
 window.assistRelayVersion = () => relayVersion ? ` · Assist relay ${relayVersion}` : "";
@@ -2557,7 +2583,7 @@ let lastPicks = [];
 const STEPS = ["First step", "Next step", "When ready"];
 const normStep = s => STEPS.find(x => x.toLowerCase() === String(s).toLowerCase()) || "Next step";
 const HOW = { "drop in": "Just turn up", "sign up": "Contact to join", "book": "Book first", "referral": "Needs a referral", "call": "Phone line" };
-const how_ = s => s.access === "call" && /group|community|course|volunteering/i.test(s.type || "") ? "Call first" : (HOW[s.access] || s.access);   // groups you phone before joining aren't phone lines
+const how_ = s => s.access === "call" && isGroupType(s) ? "Call first" : (HOW[s.access] || s.access);   // groups you phone before joining aren't phone lines
 const HOWCLS = { "drop in": "ab-drop", "sign up": "ab-sign", "book": "ab-book", "referral": "ab-ref", "call": "ab-ref" };
 
 let lastResult = null;

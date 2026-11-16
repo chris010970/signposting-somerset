@@ -6,7 +6,7 @@ const TABS = ["assist", "analytics", "about"];
 const wideEnough = () => matchMedia("(min-width: 760px)").matches;   // Analytics is desktop only
 let tab = TABS.includes(location.hash.slice(1)) ? location.hash.slice(1) : "assist";
 if (tab === "analytics" && !wideEnough()) { tab = "assist"; try { history.replaceState(null, "", location.pathname + location.search + "#assist"); } catch (e) {} }
-function showTab(t) { for (const k of TABS) { $("tab-" + k).setAttribute("aria-selected", k === t); $("panel-" + k).hidden = k !== t; $("hdr-" + k).hidden = k !== t; } }
+function showTab(t) { for (const k of TABS) { currentTab($("tab-" + k), k === t); $("panel-" + k).hidden = k !== t; $("hdr-" + k).hidden = k !== t; } }
 function setTab(t) {
   if (t === "analytics" && !wideEnough()) t = "assist";
   tab = t; showTab(t);
