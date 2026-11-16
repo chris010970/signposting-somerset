@@ -692,10 +692,11 @@ body { margin: 0; background: var(--cream); color: var(--ink); font-family: var(
 .gut { padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
 button, select { font: inherit; }
 :focus-visible { outline: 2px solid var(--b500); outline-offset: 2px; }
-.crisis { background: #0F172A; color: #E7E5E4; padding-block: 7px; display: flex; align-items: center; justify-content: space-between; gap: 10px; font-size: 13px; }
+/* Fixed line heights, so the bar is exactly the same height on every page whatever font the browser ends up using */
+.crisis { background: #0F172A; color: #E7E5E4; padding-block: 7px; display: flex; align-items: center; justify-content: space-between; gap: 10px; font-size: 13px; line-height: 18px; }
 .crisis b { color: var(--amber); text-transform: uppercase; letter-spacing: .08em; font-size: 11px; margin-right: 8px; }
 .crisis a { color: #fff; }
-.exit { background: #1E293B; color: #fff; border: 1px solid #334155; border-radius: 6px; padding: 5px 10px; font-size: 12px; font-weight: 600; text-decoration: none; white-space: nowrap; }
+.exit { background: #1E293B; color: #fff; border: 1px solid #334155; border-radius: 6px; padding: 5px 10px; font-size: 12px; font-weight: 600; text-decoration: none; white-space: nowrap; line-height: 15px; }
 /* Header: slim, so the lists and plans get the room. A watercolour strip on the right (computers); text only on phones */
 :root { --strip: url("/signposting-somerset-v2/assets/banner.webp"); }
 .hero { position: relative; display: flex; flex-direction: column; justify-content: center; margin-bottom: 2px; }
@@ -1828,7 +1829,7 @@ function renderAbout() {
       <li><strong>Data:</strong> ONS boundaries, population (mid-2022) and urban/rural classification; MHCLG Indices of Deprivation 2025; Census 2021; open postcode data (2016). Open Government Licence.</li>
     </ul>
     </div></div>
-    <p class="small" id="site-version">Version: test 2026-11-16 15:00${typeof window.assistRelayVersion === "function" ? window.assistRelayVersion() : ""}</p>
+    <p class="small" id="site-version">Version: test 2026-11-16 15:21${typeof window.assistRelayVersion === "function" ? window.assistRelayVersion() : ""}</p>
   </article>`;
 }
 
@@ -2310,7 +2311,7 @@ async function initAnalytics() {
    this page only remembers it for the current browser session. */
 (() => {
 const WORKER_URL = "https://signposting-assist.c-r-williams0109.workers.dev";
-const PAGE_VERSION = "test 2026-11-16 15:00";
+const PAGE_VERSION = "test 2026-11-16 15:21";
 let relayVersion = "";
 // The version line is at the bottom of the About tab: "Version: test 2026-11-06 11:30 · Assist relay 2026-11-06 11:07"
 window.assistRelayVersion = () => relayVersion ? ` · Assist relay ${relayVersion}` : "";
