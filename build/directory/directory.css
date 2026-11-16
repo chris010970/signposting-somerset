@@ -35,7 +35,6 @@
 .tcard .row1 { flex-wrap: nowrap; align-items: center; }
 .tcard .row1 .mode { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .tcard .row1 .openp { flex-shrink: 0; white-space: nowrap; }
-@media (max-width: 380px) { .tcard .row1 { flex-wrap: wrap; } .tcard .row1 .mode { white-space: normal; } }   /* narrow phones: the line wraps rather than cut "Phone · UK-wide" */
 
 /* Status pill: open now = green; not open yet: later today = amber, this week = blue, further off stays grey */
 .openp { display: inline-flex; align-items: center; gap: 6px; font-size: 12px; font-weight: 700; padding: 3px 9px; border-radius: 999px; }

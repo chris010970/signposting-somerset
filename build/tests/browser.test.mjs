@@ -99,7 +99,7 @@ test("In person: a town, distances, the card's details and Copy details", async 
   assert.equal(await text(p, "#summary"), "Showing 3 services within 10 miles of Wells · 1 need times checking");
   assert.deepEqual(await cards(p), ["Test Weekly Drop-in", "Test Town Centre Group", "Test Counselling"]);
   const c = await p.$("#c0");
-  assert.match(await c.innerText(), /Just turn up[\s\S]*FREE[\s\S]*Test Weekly Drop-in[\s\S]*GROUPS AND COMMUNITY[\s\S]*Low mood, Anxiety[\s\S]*Wed, 18 Nov, 10:00–12:00/);
+  assert.match(await c.innerText(), /Just turn up[\s\S]*Test Weekly Drop-in[\s\S]*GROUPS AND COMMUNITY[\s\S]*Low mood, Anxiety[\s\S]*Wed, 18 Nov, 10:00–12:00[\s\S]*For: anyone · Free/);
   assert.ok(await p.$("#c0 a.dirs"), "directions for a service with a postcode");
   assert.ok(!(await p.$("#c9 a.dirs")), "no directions for a town-centre (approximate) place");
   assert.match(await text(p, "#c9 .foot"), /approx\. location/);
@@ -321,9 +321,23 @@ test("Details checked: a tick when checked in the last 90 days, saying how long 
   await p.waitForTimeout(200);
   assert.match(await p.evaluate(() => navigator.clipboard.readText()), /\nDetails checked 6 Nov 2026$/, "Copy details: the date, as notes outlive \"days ago\"");
   await p.click("#tab-near"); await p.waitForTimeout(500);
-  assert.equal(await p.$eval("#list .card .row1 .checked", e => e.title), "Details checked today", "In person cards too");
+  assert.equal(await p.$eval("#list .card .next .checked", e => e.title), "Details checked today", "In person cards too, beside the date and time");
   assert.deepEqual(p.errors, []);
   await p.done();
+});
+
+test("Every card's top row is one line (the cost sits on the For line), wide screens and narrow phones", async () => {
+  for (const width of [1400, 320]) for (const [path, sel] of [["/test/directory/?when=any#near", "#list .card"], ["/test/directory/#talk", "#panel-talk .tcard"],
+      ["/test/directory/#course", "#panel-course .tcard"], ["/test/directory/places/wells/", "li[data-i]:not([hidden]) .card"]]) {
+    const p = await open(path, { width });
+    const bad = await p.$$eval(sel, cs => cs.filter(c => {
+      const row = c.querySelector(".row1"), items = [...row.querySelectorAll(":scope > *, .chipr > *")];
+      return row.getBoundingClientRect().height > Math.max(...items.map(i => i.getBoundingClientRect().height)) + 4;
+    }).map(c => c.querySelector(".cname, h3").textContent));
+    assert.ok(await p.$$eval(sel, cs => cs.length) > 0, `${width}px ${path}: cards to check`);
+    assert.deepEqual(bad, [], `${width}px ${path}`);
+    await p.done();
+  }
 });
 
 // The Places pages, as built from the real sheet

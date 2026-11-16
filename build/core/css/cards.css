@@ -44,16 +44,20 @@
 .kind { display: flex; align-items: center; gap: 6px; font-size: 11px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; color: #57534E; margin: 0 0 3px; }
 .kind i { width: 10px; height: 10px; border-radius: 50%; flex: none; box-shadow: 0 0 0 2px #fff, 0 0 0 3px rgba(0,0,0,.12); }
 .meta { font-size: 12px; color: var(--muted); font-weight: 500; margin-bottom: 10px; }
-.next { background: rgba(242,246,244,.7); border: 1px solid var(--b100); border-radius: 10px; padding: 8px 10px; margin-bottom: 10px; }
+.next { background: rgba(242,246,244,.7); border: 1px solid var(--b100); border-radius: 10px; padding: 8px 10px; margin-bottom: 10px; position: relative; }
+.next > .checked { position: absolute; right: 10px; top: 50%; transform: translateY(-50%); }   /* details checked: beside the date and time (In person, Places) */
+.next:has(> .checked) { padding-right: 38px; }
 .next .lab { font-size: 10px; letter-spacing: .1em; text-transform: uppercase; font-weight: 700; color: var(--b700); }
 .next .val { font-weight: 600; font-size: 14px; }
 .next .val.today { color: #047857; }
 .next .val.chk { color: #92400E; }
 .desc { font-size: 13px; color: #57534E; line-height: 1.5; margin: 0 0 8px; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+@media (max-width: 360px) { .card { padding-inline: 12px; } }   /* very narrow screens (phones, or a laptop zoomed in): the top row still fits on one line */
 .card.open .desc, .desc.full { -webkit-line-clamp: unset; display: block; }
 .cname .cbtn { font: inherit; color: inherit; background: none; border: 0; padding: 0; margin: 0; text-align: left; cursor: pointer; }   /* the name: a button that opens the card */
 .who { font-size: 12px; color: var(--ink); margin-bottom: 8px; }
 .who em { font-style: normal; color: #92400E; }
+.who .cost { font-weight: 600; }
 .foot { font-size: 12px; color: #6B645F; border-top: 1px solid #F5F5F4; padding-top: 8px; display: grid; gap: 3px; }
 .foot a { color: var(--b700); }
 a.copy.dirs { text-decoration: none; }

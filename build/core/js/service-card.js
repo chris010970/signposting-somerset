@@ -16,17 +16,19 @@ function serviceCard(r, h = "h2", withId = true) {
     url ? `<a href="${esc(url)}" target="_blank" rel="noopener">Website</a>` : "",
     telLink(s.phone),
     s.email ? `<a href="mailto:${esc(s.email.split(";")[0].trim())}">${esc(s.email)}</a>` : ""].filter(Boolean).join(" · ");
-  const dist = r.d != null ? `<span class="chip dist">${r.d < .1 ? "&lt;0.1" : r.d.toFixed(1)} mi${s.approx ? " approx." : ""}</span>` : "";
-  const cost = s.cost ? `<span class="chip">${esc(s.cost)}</span>` : "";
+  const dist = r.d != null ? `<span class="chip dist">${r.d < .1 ? "&lt;0.1" : r.d.toFixed(1)} mi</span>` : "";   // (an approximate place says so in the footer)
+  // Who it's for, what it costs and any restriction: a line of any length under the description, so the top row stays one line
+  const forLine = [s.who ? `For: ${esc(s.who)}` : "", s.cost ? `<span class="cost">${esc(s.cost)}</span>` : "",
+    s.eligibility ? `<em>${esc(s.eligibility)}</em>` : ""].filter(Boolean).join(" · ");
   const types = s._sf.length ? " · " + s._sf.map(cap).map(esc).join(", ") : "";
   const place = esc([s.address, s.town, s.postcode].filter(Boolean).join(", ")) + (s.approx ? ` <span class="approx">(approx. location)</span>` : "");
   return `<article class="card"${withId ? ` id="c${s.id}"` : ""} data-id="${s.id}">
-      <div class="row1"><span class="badge ${badgeCls}">${badge}</span><span class="chipr">${checkedTick(s)}${dist}${cost}${directionsLink(s)}${copyBtn(s)}</span></div>
+      <div class="row1"><span class="badge ${badgeCls}">${badge}</span><span class="chipr">${dist}${directionsLink(s)}${copyBtn(s)}</span></div>
       <${h} class="cname"><button type="button" class="cbtn" aria-expanded="false">${esc(s.name)}</button></${h}>
       ${kindTag(s)}<div class="meta">${esc(s.provider)} · ${esc(s.type)}${types}</div>
-      <div class="next"><div class="lab">Next</div><div class="val ${r.nx.cls}">${esc(r.nx.txt)}</div></div>
+      <div class="next">${checkedTick(s)}<div class="lab">Next</div><div class="val ${r.nx.cls}">${esc(r.nx.txt)}</div></div>
       <p class="desc">${esc(s.description)}</p>
-      ${s.who || s.eligibility ? `<div class="who">For: ${esc(s.who)}${s.eligibility ? ` · <em>${esc(s.eligibility)}</em>` : ""}</div>` : ""}
+      ${forLine ? `<div class="who">${forLine}</div>` : ""}
       <div class="foot"><span>${place}</span>${contact ? `<span>${contact}</span>` : ""}</div>
     </article>`;
 }

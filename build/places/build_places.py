@@ -141,8 +141,7 @@ def card(d, r, i):
     build/tests/ checks the two agree."""
     cls, label = badge(r)
     d = round(d, 1)   # to a tenth of a mile, here and in the page's data, so the browser shows exactly the same
-    dist = f'<span class="chip dist">{"&lt;0.1" if d < .1 else f"{d:.1f}"} mi{" approx." if r["_approx"] else ""}</span>'
-    cost = f'<span class="chip">{e(r["cost"])}</span>' if r.get("cost") else ""
+    dist = f'<span class="chip dist">{"&lt;0.1" if d < .1 else f"{d:.1f}"} mi</span>'   # (an approximate place says so in the footer)
     tick = checked_tick(r)
     kind = next((k for k in KIND_LIST if r.get("type") in k["types"]), None)
     kind_tag = f'<div class="kind"><i style="background:{kind["colour"]}"></i>{e(kind["kind"])}</div>' if kind else ""
@@ -156,12 +155,14 @@ def card(d, r, i):
     if r.get("email"): contact.append(f'<a href="mailto:{e(r["email"].split(";")[0].strip())}">{e(r["email"])}</a>')
     place = e(", ".join(x for x in (r.get("address", ""), r.get("town", ""), r.get("postcode", "")) if x))
     if r["_approx"]: place += ' <span class="approx">(approx. location)</span>'
-    who = (f'<div class="who">For: {e(r.get("who", ""))}' + (f' · <em>{e(r["eligibility"])}</em>' if r.get("eligibility") else "") + "</div>"
-           if r.get("who") or r.get("eligibility") else "")
+    # who it's for, what it costs and any restriction, as core/js/service-card.js (so the top row stays one line)
+    for_line = " · ".join(x for x in (f'For: {e(r["who"])}' if r.get("who") else "", f'<span class="cost">{e(r["cost"])}</span>' if r.get("cost") else "",
+                                      f'<em>{e(r["eligibility"])}</em>' if r.get("eligibility") else "") if x)
+    who = f'<div class="who">{for_line}</div>' if for_line else ""
     return (f'<li data-i="{i}" data-d="{d:.1f}"><article class="card" data-id="{i}">'
-            f'<div class="row1"><span class="badge {cls}">{label}</span><span class="chipr">{tick}{dist}{cost}</span></div>'
+            f'<div class="row1"><span class="badge {cls}">{label}</span><span class="chipr">{dist}</span></div>'
             f'<h4 class="cname">{e(r["name"])}</h4>{kind_tag}<div class="meta">{e(r.get("provider", ""))} · {e(r.get("type", ""))}{types}</div>'
-            f'<div class="next"><div class="lab">When</div><div class="val">{e(pattern(r))}</div></div>'
+            f'<div class="next">{tick}<div class="lab">When</div><div class="val">{e(pattern(r))}</div></div>'
             f'<p class="desc full">{e(r.get("description", ""))}</p>{who}'   # (in full: without JavaScript a card can't open)
             f'<div class="foot"><span>{place}</span>' + (f'<span>{" · ".join(contact)}</span>' if contact else "") + '</div></article></li>')
 
