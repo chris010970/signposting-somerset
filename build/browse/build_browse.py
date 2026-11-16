@@ -44,6 +44,7 @@ for _, ts in AREAS:
 NOW = datetime.datetime.now(zoneinfo.ZoneInfo("Europe/London"))
 TODAY = NOW.date().isoformat()
 UPDATED = f"{NOW.day} {NOW:%B %Y}"
+STAMP = f"{NOW:%Y-%m-%d %H:%M}"   # the version line, as on the directory and tools pages
 
 # Shared look: the directory's own stylesheet, taken from its template at build time, so the two never drift apart.
 tpl = inline_core((BUILD / "directory" / "template.html").read_text(encoding="utf-8"))   # with the shared code from build/core/
@@ -173,14 +174,15 @@ def town_main(town, items, dirbase, base):
         maplink = f'{dirbase}?' + (f'support={urllib.request.quote(c["map"])}&' if c["map"] else "") + f'town={urllib.request.quote(town)}&lat={TOWNS[town][0]}&lon={TOWNS[town][1]}&label={urllib.request.quote(town)}#near'   # town if the directory lists it, otherwise its centre
         secs.append(f'<section class="bsec" id="{c["id"]}" data-k="{c["id"]}"><div class="bsh"><h2>{e(c["label"])} <span>{n}</span></h2>'
                     f'<a class="bmap" href="{maplink}">On the map →</a></div>'
-                    + (f'<h3 data-l="In {e(town)}">In {e(town)} · {len(inn)}</h3><ul class="blist">{"".join(inn)}</ul>' if inn else "")
+                    + (f'<h3 class="vh" data-l="In {e(town)}">In {e(town)} · {len(inn)}</h3><ul class="blist">{"".join(inn)}</ul>' if inn else "")   # (the page heading already names the town: label for screen readers only)
                     + (f'<h3 data-l="Nearby">Nearby · {len(near)}</h3><ul class="blist">{"".join(near)}</ul>' if near else "") + "</section>")
     return (f'<div class="bhead"><h1 class="bt">Support in and around {e(town)}</h1>'
             f'<span>{total} free and low-cost groups and services within about {RADIUS} miles</span></div>'
             f'<p class="bnone" hidden>Nothing listed for that time. Many groups ask you to get in touch for times: try <b>Any time</b>.</p>'
             + "".join(secs) +
             f'<p class="bfoot">Also: <a href="{dirbase}#talk">phone and online support</a> you can use from anywhere. '
-            f'Distances are straight lines. Please check with the service before going, as details can change. Updated {UPDATED}.</p>' + other_towns(base, town))
+            f'Distances are straight lines. Please check with the service before going, as details can change. Updated {UPDATED}.</p>' + other_towns(base, town)
+            + f'<p class="otowns">Version: {{VERSION}}</p>')
 
 def load_outline():
     """All three council areas, merged from the LSOA boundaries (docs/assets/analytics-lsoa.geojson) and simplified."""
@@ -221,7 +223,8 @@ def landing_main(base, dirbase, totals):
             f'<p>Choose your nearest town above, or on the map, to see free and low-cost groups, activities and services in and around it, '
             f'with times, places and how to get in touch.</p>'
             f'<p class="otowns">{links}</p></div>'
-            f'<div class="bmapwrap">{area_map(base, totals)}</div></div>')
+            f'<div class="bmapwrap">{area_map(base, totals)}</div></div>'
+            f'<p class="otowns">Version: {{VERSION}}</p>')
 
 PAGE_CSS = """
 html, body { height: auto; } body { display: block; padding-bottom: calc(var(--footh, 56px) + 16px); }
@@ -237,16 +240,19 @@ html, body { height: auto; } body { display: block; padding-bottom: calc(var(--f
 .bpick .bt { margin-top: 0; } .bpick p { color: var(--muted); max-width: 52ch; } .bpick .otowns { margin-top: 14px; }
 .bpick .bmapwrap { display: flex; align-items: center; justify-content: center; } .bpick .bmapsvg { max-height: calc(100vh - 380px); }
 @media (max-width: 760px) { .bpick { grid-template-columns: 1fr; } .bpick > div { padding: 18px; } }
+@media (min-width: 900px) { #hdr-towns .qs { grid-template-columns: repeat(3, minmax(0, 1fr)); } }   /* three equal boxes, running to the right-hand edge like the directory's */
 #bq-when .btoday { float: right; text-transform: none; letter-spacing: 0; color: #78716C; font-weight: 500; }
 .bnone { background: var(--white); border: 1px solid var(--line); border-radius: 16px; padding: 18px 20px; color: var(--muted); margin-top: 12px; }
+.bsec h3.vh { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; margin: 0; }
+.bsec h3.vh + .blist { margin-top: 12px; }
 .otowns { font-size: 12.5px; color: var(--muted); margin-top: 10px; line-height: 1.7; } .otowns a { color: var(--b700); }
 .bmain { min-width: 0; } .bmain.loading { opacity: .5; transition: opacity .15s; }
 .bt { font-family: var(--serif); color: var(--b900); font-size: 22px; line-height: 1.25; margin: 4px 0 4px; }
 .blead { font-size: 14px; color: var(--ink); margin: 0 0 4px; line-height: 1.5; max-width: 75ch; } .bnote { font-size: 13px; color: var(--muted); margin: 0 0 12px; } .bnote a, .bfoot a { color: var(--b700); }
 .bsec { margin-top: 10px; }
-.bsh { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; flex-wrap: wrap; margin: 20px 0 2px; padding-bottom: 6px; border-bottom: 1px solid var(--line); }
+.bsh { display: flex; justify-content: flex-start; align-items: baseline; gap: 6px 18px; flex-wrap: wrap; margin: 20px 0 2px; padding-bottom: 6px; border-bottom: 1px solid var(--line); }
 .bhead { display: flex; align-items: baseline; gap: 6px 14px; flex-wrap: wrap; margin: 2px 0 6px; } .bhead .bt { margin: 0; font-size: 20px; } .bhead span { font-size: 13px; color: var(--muted); }
-.bsh h2 { font-family: var(--serif); color: var(--b900); font-size: 17px; margin: 0; } .bsh h2 span { font-family: var(--sans); font-size: 12px; font-weight: 600; color: var(--muted); margin-left: 4px; } .bmap { color: var(--b700); font-weight: 600; font-size: 12.5px; }
+.bsh h2 { font-family: var(--serif); color: var(--b900); font-size: 17px; margin: 0; } .bsh h2 span { font-family: var(--sans); font-size: 12px; font-weight: 600; color: var(--muted); margin-left: 4px; } .bmap { font-weight: 700; font-size: 14px; color: var(--b700); text-decoration: underline; text-underline-offset: 3px; white-space: nowrap; } .bmap:hover, .bmap:focus-visible { color: var(--b900); }
 .bsec h3 { font-size: 11px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); margin: 10px 0 8px; font-family: var(--sans); }
 .blist { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(340px, 1fr)); gap: 12px; }
 .br { background: var(--white); border-radius: 16px; padding: 14px 16px; box-shadow: 0 1px 2px rgba(0,0,0,.05); border: 1px solid var(--line); display: flex; flex-direction: column; gap: 3px; }
@@ -441,16 +447,20 @@ for name, base, dirbase, site, robots in TARGETS:
     root = OUT / base.strip("/")
     root.mkdir(parents=True, exist_ok=True)
     canon = (lambda p: site + p) if site else (lambda p: None)
-    title = "Find mental health and wellbeing support by town | Signposting Somerset"
+    # Titles start "Signposting Somerset", like the directory's and the tools page's, so the browser tabs match;
+    # the rest keeps what people search for (town, "mental health and wellbeing support"). Test copies say so.
+    test = " (test)" if name == "test" else ""
+    ver = ("test " if name == "test" else "places ") + STAMP
+    title = f"Signposting Somerset: places{test}"
     desc = "Free and low-cost mental health and wellbeing support across Somerset, North Somerset and Bath & North East Somerset, by town: groups, activities and services with times and contacts."
     (root / "index.html").write_text(page(title, desc, canon(base), robots, landing_main(base, dirbase, totals), filters(base), dirbase,
-        [("Signposting Somerset", SITE + "/directory/"), ("Places", SITE + "/directory/places/")], base), encoding="utf-8")
+        [("Signposting Somerset", SITE + "/directory/"), ("Places", SITE + "/directory/places/")], base).replace("{VERSION}", ver), encoding="utf-8")
     for t, items in data.items():
         counts = {c["id"]: len({id(r) for _, r in items if c["id"] in r["_cats"]}) for c in CATS}
         d = root / slug(t); d.mkdir(exist_ok=True)
-        (d / "index.html").write_text(page(f"Mental health and wellbeing support in {t} | Signposting Somerset", summary(t, counts), canon(base + slug(t) + "/"), robots,
+        (d / "index.html").write_text(page(f"Signposting Somerset: mental health and wellbeing support in {t}{test}", summary(t, counts), canon(base + slug(t) + "/"), robots,
             town_main(t, items, dirbase, base), filters(base, t, counts, len(items)), dirbase,
-            [("Signposting Somerset", SITE + "/directory/"), ("Places", SITE + "/directory/places/"), (t, SITE + "/directory/places/" + slug(t) + "/")], base), encoding="utf-8")
+            [("Signposting Somerset", SITE + "/directory/"), ("Places", SITE + "/directory/places/"), (t, SITE + "/directory/places/" + slug(t) + "/")], base).replace("{VERSION}", ver), encoding="utf-8")
     print(f"out/{base.strip('/')}/: landing + {len(data)} towns")
 if not ONLY_TEST:
     urls = [SITE + "/directory/", SITE + "/directory/places/"] + [SITE + "/directory/places/" + slug(t) + "/" for t in data]
