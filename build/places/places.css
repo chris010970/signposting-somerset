@@ -16,7 +16,7 @@
 #bq-when .btoday { float: right; text-transform: none; letter-spacing: 0; color: #6B645F; font-weight: 500; }
 
 /* The Places page (no town chosen): two cards, what to do (left) and the map to choose from (right) */
-.bpick { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.3fr); gap: 12px; align-items: stretch; margin-top: 4px; }
+.bpick { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.3fr); gap: 12px; align-items: stretch; margin-top: 0;   /* starts where the directory's first card does */ }
 .bpick > div { background: var(--white); border: 1px solid var(--line); border-radius: 16px; padding: 24px 28px; }
 .bpicktxt { align-self: start; }
 .bpick .bt { margin-top: 0; }
@@ -34,7 +34,7 @@
 
 /* A town's page: heading, then a section per kind of support, each with "On the map →" */
 .bt { font-family: var(--serif); color: var(--b900); font-size: 22px; line-height: 1.25; margin: 4px 0 4px; }
-.bhead { display: flex; align-items: baseline; gap: 6px 14px; flex-wrap: wrap; margin: 2px 0 6px; }
+.bhead { display: flex; align-items: baseline; gap: 6px 14px; flex-wrap: wrap; margin: 0 0 6px; }
 .bhead .bt { margin: 0; font-size: 20px; }
 .bhead span { font-size: 13px; color: var(--muted); }
 .bnone { background: var(--white); border: 1px solid var(--line); border-radius: 16px; padding: 18px 20px; color: var(--muted); margin-top: 12px; }

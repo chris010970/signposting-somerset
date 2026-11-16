@@ -8,6 +8,7 @@
    with the checkbox at the right, where Sort is on In person */
 @media (min-width: 900px) { .qs { grid-template-columns: minmax(0, 1fr) minmax(0, 1.3fr) var(--lastdd) var(--endcol); } }
 .tq { display: flex; gap: 10px; align-items: stretch; }
+@media (min-width: 900px) { .tq { min-height: var(--filters-h); } }   /* the same height as In person's (core/css/page.css) */
 .tq > .q { flex: 1 1 0; min-width: 0; }
 .tq > div.q:last-of-type:not(:first-child) { flex: 0 0 var(--lastdd); }
 .tq > .toggle { flex: 0 0 var(--endcol); white-space: nowrap; }

@@ -9,6 +9,10 @@ h1 { font-family: var(--serif); color: var(--b900); font-size: 26px; margin: 0; 
 .datasrc { color: #6B645F; font-size: 12px; margin: -10px 0 12px; }
 .qs { display: grid; grid-template-columns: 27% 33% minmax(0, 1fr) auto; gap: 10px; }
 @media (max-width: 899px) { .qs { grid-template-columns: 1fr; } }
+/* Every tab's row of filter boxes is the same height on a computer (In person's, where the Sort switch sets it), so
+   nothing below moves up or down between tabs. The Places pages use .qs too; the other tabs' rows (.tq) are in directory.css */
+:root { --filters-h: 55px; }
+@media (min-width: 900px) { .qs { min-height: var(--filters-h); } }
 .q { background: var(--b50); border: 2px solid transparent; border-radius: 10px; padding: 5px 10px; min-width: 0; }
 .q.on { background: var(--white); border-color: var(--b500); }
 .q label, .q .lab { display: block; font-size: 10px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: var(--b700); margin: 0 0 2px 2px; }

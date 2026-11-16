@@ -158,15 +158,22 @@ test("Scroll positions: each tab, and Places, are where they were left", async (
   await p.done();
 });
 
-test("Alignment: on every tab and Places, the content lines up with the header (with real scrollbars, as on Windows)", async () => {
+test("Alignment: on every tab and Places, nothing moves sideways or up and down (with real scrollbars, as on Windows)", async () => {
+  const tops = {};
   for (const width of [1000, 1400, 1464, 1920]) for (const path of ["/test/directory/#near", "/test/directory/#talk", "/test/directory/#course",
-      "/test/directory/#about", "/test/directory/places/wells/", "/test/tools/#about"]) {
+      "/test/directory/#about", "/test/directory/places/", "/test/directory/places/wells/", "/test/tools/#about"]) {
     const p = await open(path, { width });
     const off = await p.evaluate(() => {
-      const el = document.querySelector("#list .card, main:not([hidden]) .tcard, main:not([hidden]) .aboutpage, .bmain .card");
+      const el = document.querySelector("#list .card, main:not([hidden]) .tcard, main:not([hidden]) .aboutpage, .bmain > :first-child");
       return Math.round(el.getBoundingClientRect().left - document.querySelector("header .inner").getBoundingClientRect().left);
     });
     assert.equal(off, 0, `${width}px ${path}`);
+    if (!path.endsWith("#about")) {   // About has no filter boxes, so its header is shorter by design
+      const [below, first] = await p.evaluate(() => [document.querySelector("header.top").getBoundingClientRect().bottom,
+        document.querySelector("#list .card, main:not([hidden]) .talk > :first-child, .bmain > :first-child").getBoundingClientRect().top].map(Math.round));
+      tops[width] ??= [below, first];
+      assert.deepEqual([below, first], tops[width], `${width}px ${path}: the header, and the content under it, start at the same height as on the other tabs`);
+    }
     assert.ok(await p.evaluate(() => document.documentElement.scrollHeight <= innerHeight), `${width}px ${path}: the page itself has nothing to scroll`);
     await p.done();
   }
