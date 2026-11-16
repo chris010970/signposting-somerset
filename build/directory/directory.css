@@ -20,7 +20,7 @@
 
 /* Phone and online, Courses, About: a scrolling page of cards */
 #panel-talk { flex: 1; min-height: 0; overflow-y: auto; }
-.talk { max-width: 1400px; margin: 0 auto; padding-block: 14px 110px; }
+.talk { max-width: 1432px; margin: 0 auto 0 var(--page-left); padding-block: 14px 110px; }   /* lined up with the header (core/css/page.css) */
 .tgrid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 12px; }
 .gh { font-family: var(--serif); color: var(--b900); font-size: 18px; margin: 20px 4px 10px; }
 .talk > .gh:first-child { margin-top: 0; }  /* first heading sits as close to the filters as the In person cards */

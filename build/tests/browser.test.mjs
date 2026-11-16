@@ -37,7 +37,7 @@ before(async () => {
     res.writeHead(200, { "Content-Type": TYPES[extname(f)] || "application/octet-stream" }); res.end(readFileSync(f));
   }).listen(0);
   H = `http://localhost:${server.address().port}${BASE}`;
-  browser = await chromium.launch();
+  browser = await chromium.launch({ ignoreDefaultArgs: ["--hide-scrollbars"] });   // real scrollbars, as on Windows
 });
 after(async () => { await browser?.close(); server?.close(); });
 
@@ -158,6 +158,20 @@ test("Scroll positions: each tab, and Places, are where they were left", async (
   await p.done();
 });
 
+test("Alignment: on every tab and Places, the content lines up with the header (with real scrollbars, as on Windows)", async () => {
+  for (const width of [1000, 1400, 1464, 1920]) for (const path of ["/test/directory/#near", "/test/directory/#talk", "/test/directory/#course",
+      "/test/directory/#about", "/test/directory/places/wells/", "/test/tools/#about"]) {
+    const p = await open(path, { width });
+    const off = await p.evaluate(() => {
+      const el = document.querySelector("#list .card, main:not([hidden]) .tcard, main:not([hidden]) .aboutpage, .bmain .card");
+      return Math.round(el.getBoundingClientRect().left - document.querySelector("header .inner").getBoundingClientRect().left);
+    });
+    assert.equal(off, 0, `${width}px ${path}`);
+    assert.ok(await p.evaluate(() => document.documentElement.scrollHeight <= innerHeight), `${width}px ${path}: the page itself has nothing to scroll`);
+    await p.done();
+  }
+});
+
 test("Tools page: Assist asks for the access code; Analytics opens", async () => {
   const p = await open("/test/tools/#assist");
   assert.ok(await p.isVisible("#a-gate"), "the access code form");
@@ -199,6 +213,8 @@ test("Places: the counts match the cards shown, for every When? choice; switchin
   await p.selectOption("#b-when", "tomorrow");
   await p.evaluate(() => document.querySelector(".bw").scrollTop = 1500);
   assert.equal(await p.evaluate(() => document.querySelector("header.top").getBoundingClientRect().top > 0 && document.scrollingElement.scrollTop), 0, "the header stays; only the listings scroll");
+  assert.ok(await p.evaluate(() => document.documentElement.scrollHeight <= innerHeight), "the page itself has nothing to scroll");
+  assert.equal(await p.evaluate(() => Math.round(document.querySelector(".bmain").getBoundingClientRect().left - document.querySelector("header .inner").getBoundingClientRect().left)), 0, "the cards line up with the header");
   await p.selectOption("#b-town", { label: "Frome" }); await p.waitForTimeout(500);
   assert.deepEqual(await p.evaluate(() => [location.pathname.endsWith("/frome/"), document.getElementById("b-when").value, document.querySelector(".bw").scrollTop]), [true, "tomorrow", 0]);
   await p.done();

@@ -726,6 +726,9 @@ button, select { font: inherit; }
 .aboutpage { overflow: hidden; }
 header.top { position: relative; overflow: hidden; background: var(--white); border-bottom: 1px solid var(--line); padding-block: 10px 10px; }
 .inner { max-width: 1400px; margin: 0 auto; }
+/* Where the header's content starts, measured on the window: content below the header that scrolls in its own panel
+   uses it, so a panel's scrollbar (Windows) can't move it out of line with the header. 1432px = 1400 + the 16px gutters. */
+:root { --page-left: max(0px, calc((100vw - 1432px) / 2)); }
 h1 { font-family: var(--serif); color: var(--b900); font-size: 26px; margin: 0; }
 .lede { color: #6B645F; margin: 2px 0 14px; }
 .datasrc { color: #6B645F; font-size: 12px; margin: -10px 0 12px; }
@@ -901,7 +904,7 @@ footer.urgent p { color: #FEE2E2; }
 /* The way back to the directory, in the tab row: a link, styled like the tabs */
 .sitetabs a.back { white-space: nowrap; padding: 9px 14px 10px; font-weight: 700; font-size: 14px; color: #6B645F; text-decoration: none; border-bottom: 3px solid transparent; margin-bottom: -1px; margin-right: 6px; }
 .sitetabs a.back:hover, .sitetabs a.back:focus-visible { color: var(--b900); }
-#about-page.talk { max-width: 1432px; margin: 0 auto; padding-block: 14px 110px; }
+#about-page.talk { max-width: 1432px; margin: 0 auto 0 var(--page-left); padding-block: 14px 110px; }
 @media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
 /* ---------- Assist tab (v2 only). Everything is scoped to #panel-assist or prefixed a- so it can't affect the rest of the site. ---------- */
 .sitetabs #tab-assist { display: inline-flex; align-items: center; gap: 6px; }
@@ -1821,7 +1824,7 @@ function renderAbout() {
       <li><strong>Data:</strong> ONS boundaries, population (mid-2022) and urban/rural classification; MHCLG Indices of Deprivation 2025; Census 2021; open postcode data (2016). Open Government Licence.</li>
     </ul>
     </div></div>
-    <p class="small" id="site-version">Version: test 2026-11-16 13:35${typeof window.assistRelayVersion === "function" ? window.assistRelayVersion() : ""}</p>
+    <p class="small" id="site-version">Version: test 2026-11-16 14:32${typeof window.assistRelayVersion === "function" ? window.assistRelayVersion() : ""}</p>
   </article>`;
 }
 
@@ -2303,7 +2306,7 @@ async function initAnalytics() {
    this page only remembers it for the current browser session. */
 (() => {
 const WORKER_URL = "https://signposting-assist.c-r-williams0109.workers.dev";
-const PAGE_VERSION = "test 2026-11-16 13:35";
+const PAGE_VERSION = "test 2026-11-16 14:32";
 let relayVersion = "";
 // The version line is at the bottom of the About tab: "Version: test 2026-11-06 11:30 · Assist relay 2026-11-06 11:07"
 window.assistRelayVersion = () => relayVersion ? ` · Assist relay ${relayVersion}` : "";

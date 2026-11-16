@@ -24,4 +24,7 @@ jobs:
       - name: Install the browser (Chromium)
         working-directory: build/tests
         run: npx playwright install --with-deps chromium
+      - run: pip install shapely   # the county outline on the Places map
+      - name: Rebuild Places from the sheet (so the tests see them built by this code)
+        run: python build/places/publish_places.py
       - run: python build/tests/run_tests.py

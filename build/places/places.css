@@ -1,8 +1,9 @@
 /* ---------- the Places pages' own styles (the rest are the directory's: build/core/css/ and directory.css) ---------- */
 :root { --strip: url("/assets/banner.webp"); }
 /* As on the directory: the header (tabs and filter boxes) stays put and only the listings scroll, between it and the helpline bar */
-.bw { flex: 1; min-height: 0; overflow-y: auto; padding-top: 14px; padding-bottom: calc(var(--footh, 56px) + 16px); }
-.bmain { max-width: 1400px; margin: 0 auto; min-width: 0; }
+.bw { flex: 1; min-height: 0; overflow-y: auto; padding-top: 14px; padding-bottom: calc(var(--footh, 56px) + 16px);
+  position: relative; }   /* keeps hidden headings inside, so the page itself never scrolls */
+.bmain { max-width: 1400px; margin: 0 auto 0 var(--page-left); min-width: 0; }   /* lined up with the header (core/css/page.css) */
 .bmain.loading { opacity: .5; transition: opacity .15s; }
 .vh { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; margin: 0; }   /* for screen readers only */
 
