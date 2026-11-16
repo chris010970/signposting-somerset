@@ -113,7 +113,7 @@ def row(d, r, town):
             f'<span class="bwhen" data-days="{e(r.get("days",""))}" data-times="{e(r.get("times",""))}" data-freq="{e(r.get("frequency",""))}" data-mode="{e(r.get("mode",""))}">{e(pattern(r))}</span>']
     meta = " · ".join(b for b in bits if b)
     contact = []
-    if r.get("url"): contact.append(f'<a href="{e(r["url"])}" rel="noopener">Website</a>')
+    if r.get("url"): contact.append(f'<a href="{e(r["url"])}" target="_blank" rel="noopener">Website</a>')
     if r.get("phone"):
         tel = re.sub(r"[^\d+]", "", r["phone"].split(" or ")[0].split("(")[0])
         contact.append(f'<a href="tel:{e(tel)}">{e(r["phone"])}</a>' if len(tel) >= 10 else e(r["phone"]))
@@ -123,7 +123,7 @@ def row(d, r, town):
     if who and who != "anyone": extra.append("For " + who.replace(";", ", "))
     if r.get("eligibility"): extra.append(r["eligibility"])
     if r.get("cost"): extra.append(r["cost"])
-    name = f'<a href="{e(r["url"])}" rel="noopener">{e(r["name"])}</a>' if r.get("url") else e(r["name"])
+    name = f'<a href="{e(r["url"])}" target="_blank" rel="noopener">{e(r["name"])}</a>' if r.get("url") else e(r["name"])
     chip = f'<span class="badge {acc[0]}">{e(acc[1])}</span>' if acc else ""
     return (f'<li class="br"><div class="brow"><h4 class="bn">{name}</h4>{chip}</div><div class="bmeta">{meta}</div><p>{e(r.get("description",""))}</p>'
             + (f'<p class="bextra">{e(" · ".join(extra))}</p>' if extra else "")
