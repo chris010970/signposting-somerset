@@ -22,7 +22,7 @@ function serviceCard(r, h = "h2", withId = true) {
     s.eligibility ? `<em>${esc(s.eligibility)}</em>` : ""].filter(Boolean).join(" · ");
   const types = s._sf.length ? " · " + s._sf.map(cap).map(esc).join(", ") : "";
   const place = esc([s.address, s.town, s.postcode].filter(Boolean).join(", ")) + (s.approx ? ` <span class="approx">(approx. location)</span>` : "");
-  return `<article class="card fold${foldAttrs(s)}"${withId ? ` id="c${s.id}"` : ""} data-id="${s.id}">
+  return `<article class="card fold${foldClass(s)}"${keyAttr(s)}${withId ? ` id="c${s.id}"` : ""} data-id="${s.id}">
       <div class="row1"><span class="badge ${badgeCls}">${badge}</span><span class="chipr">${dist}${directionsLink(s)}${copyBtn(s)}</span></div>
       <${h} class="cname">${nameButton(s)}</${h}>
       ${kindTag(s)}<div class="meta">${esc(s.provider)} · ${esc(s.type)}${types}</div>

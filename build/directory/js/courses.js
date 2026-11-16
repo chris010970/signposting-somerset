@@ -18,7 +18,7 @@ function courseInfo(s, now) {
 }
 function courseCard({ s, ci }) {
   const url = webUrl(s.url);
-  return `<article class="tcard fold${foldAttrs(s)}">
+  return `<article class="tcard fold${foldClass(s)}"${keyAttr(s)}>
       <div class="row1"><span class="mode">${split(s.mode).includes("online") ? "Online" : esc(s.town || "In person")}</span><span class="chipr"><span class="openp ${ci.join ? "yes" : "no"}">${esc(ci.status)}</span>${copyBtn(s, ci.when)}</span></div>
       <div class="tname"><h3>${nameButton(s)}</h3>${checkedTick(s)}</div>
       <div class="cwhen">${esc(ci.when)}</div>

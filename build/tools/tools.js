@@ -6,7 +6,11 @@ const TABS = ["assist", "analytics", "about"];
 const wideEnough = () => matchMedia("(min-width: 760px)").matches;   // Analytics is desktop only
 let tab = TABS.includes(location.hash.slice(1)) ? location.hash.slice(1) : "assist";
 if (tab === "analytics" && !wideEnough()) { tab = "assist"; try { history.replaceState(null, "", location.pathname + location.search + "#assist"); } catch (e) {} }
-function showTab(t) { for (const k of TABS) { currentTab($("tab-" + k), k === t); $("panel-" + k).hidden = k !== t; $("hdr-" + k).hidden = k !== t; } }
+function showTab(t) {
+  for (const k of TABS) { currentTab($("tab-" + k), k === t); $("panel-" + k).hidden = k !== t; $("hdr-" + k).hidden = k !== t; }
+  document.documentElement.classList.toggle("noflow", t === "analytics"); pageFit();   // Analytics keeps its fixed layout (core/js/page-flow.js)
+}
+$("skip").onclick = e => { e.preventDefault(); $("panel-" + tab).focus(); };   // Skip to results: past the tabs and filters
 function setTab(t) {
   if (t === "analytics" && !wideEnough()) t = "assist";
   tab = t; showTab(t);

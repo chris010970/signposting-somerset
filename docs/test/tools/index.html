@@ -1030,41 +1030,20 @@ footer.urgent p { color: #FEE2E2; }
 #panel-assist .a-rung { position: relative; margin: 0 0 14px; }
 #panel-assist .a-rdot { position: absolute; left: -38px; top: 0; width: 28px; height: 28px; border-radius: 50%; background: var(--b700); color: #fff; font-weight: 700; font-size: 14px; display: grid; place-items: center; box-shadow: 0 0 0 4px var(--cream); }
 #panel-assist .a-rung h3 { font-size: 12px; text-transform: uppercase; letter-spacing: .08em; color: var(--b600); margin: 6px 0 8px; }
-#panel-assist details.a-pick { background: var(--white); border: 1px solid var(--line); border-left: 4px solid var(--b500); border-radius: 12px; margin-bottom: 8px; }
-#panel-assist details.a-pick summary { list-style: none; cursor: pointer; padding: 12px 40px 12px 14px; position: relative; display: flex; flex-direction: column; gap: 2px; }
-#panel-assist details.a-pick summary::-webkit-details-marker { display: none; }
-#panel-assist details.a-pick summary::after { content: ""; position: absolute; right: 16px; top: 18px; width: 8px; height: 8px; border-right: 2px solid var(--b600); border-bottom: 2px solid var(--b600); transform: rotate(45deg); transition: transform .15s; }
-#panel-assist details.a-pick[open] summary::after { transform: rotate(-135deg); top: 22px; }
-#panel-assist details.a-pick summary:focus { outline: none; }
-#panel-assist details.a-pick summary:focus-visible { outline: 2px solid var(--b500); outline-offset: -2px; border-radius: 12px; }
-#panel-assist .a-pk-name { font-family: var(--serif); font-weight: 700; font-size: 17px; color: var(--b900); line-height: 1.25; }
-#panel-assist .a-pk-badges { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; margin: 4px 0 2px; }
-#panel-assist .a-chip { display: inline-flex; align-items: center; font-size: 12px; font-weight: 600; color: #57534E; background: #F5F5F4; border: 1px solid var(--line); padding: 3px 8px; border-radius: 6px; }
-#panel-assist .a-chip.dist { color: var(--b800); background: var(--b50); border-color: var(--b100); }
-#panel-assist .a-m { display: inline-flex; align-items: center; gap: 4px; }
-#panel-assist .a-chip svg, #panel-assist .a-act svg, #panel-assist .a-pb-lab svg { width: 13px; height: 13px; fill: currentColor; flex: none; }
-#panel-assist .a-pk-when { font-size: 14px; color: var(--ink); font-weight: 600; margin-top: 4px; }
-#panel-assist .a-pk-when .a-wl { font-size: 10px; letter-spacing: .1em; text-transform: uppercase; font-weight: 700; color: var(--b700); margin-right: 8px; }
+/* A suggestion: the directory's folding card (core/css/cards.css), plus why it was chosen and its contact buttons */
+#panel-assist .a-pick .cname { font-size: 17px; }
+#panel-assist .a-pick .a-m { display: inline-flex; align-items: center; gap: 4px; }
+#panel-assist .a-pick .chip svg, #panel-assist .a-act svg { width: 13px; height: 13px; fill: currentColor; flex: none; }
+#panel-assist .a-pick .next { margin-bottom: 0; }
+#panel-assist .a-desc { font-size: 14px; color: var(--ink); line-height: 1.5; margin: 10px 0 8px; }
+#panel-assist .fold:not(.open) .a-desc { display: none; }
+#panel-assist .a-pick .meta { margin: 10px 0 0; }
+#panel-assist .a-pick .restrict { margin-top: 8px; }
 #panel-assist .a-pk-why { font-size: 14px; color: var(--b900); background: rgba(242,246,244,.8); border: 1px solid var(--b100); border-radius: 10px; padding: 8px 10px; margin-top: 8px; }
 #panel-assist .a-pk-acts { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px; }
 #panel-assist .a-pk-acts:empty { display: none; }
 #panel-assist .a-act { display: inline-flex; align-items: center; gap: 6px; font-size: 13px; font-weight: 700; text-decoration: none; color: var(--b800); background: var(--b50); border: 1px solid var(--b200); border-radius: 999px; padding: 4px 11px; }
 #panel-assist .a-act:hover { background: var(--b100); }
-#panel-assist .a-pk-body { padding: 10px 14px 14px; border-top: 1px solid var(--line); background: linear-gradient(var(--b50), #fff 120px); border-radius: 0 0 12px 0; }
-#panel-assist .a-pb-prov { font-size: 12px; font-weight: 700; color: var(--b700); text-transform: uppercase; letter-spacing: .06em; display: flex; flex-wrap: wrap; gap: 4px 8px; align-items: center; }
-#panel-assist .a-pb-prov span { text-transform: none; letter-spacing: 0; font-weight: 600; color: var(--muted); background: #fff; border: 1px solid var(--line); border-radius: 999px; padding: 1px 8px; }
-#panel-assist .a-pb-desc { font-size: 15px; margin: 8px 0 12px; color: var(--ink); }
-#panel-assist .a-pb-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 8px; }
-#panel-assist .a-pb-tile { background: #fff; border: 1px solid var(--b100); border-radius: 10px; padding: 8px 10px; min-width: 0; }
-#panel-assist .a-pb-tile.wide { grid-column: 1 / -1; }
-#panel-assist .a-pb-tile.warn { background: #FFFBEB; border-color: #FDE68A; }
-#panel-assist .a-pb-tile.warn .a-pb-lab { color: #92400E; }
-#panel-assist .a-pb-lab { display: flex; align-items: center; gap: 5px; font-size: 10px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; color: var(--b700); margin-bottom: 3px; }
-#panel-assist .a-pb-val { font-size: 14px; overflow-wrap: anywhere; }
-#panel-assist .a-pb-foot { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 8px; margin-top: 12px; }
-#panel-assist .a-pb-tags { display: flex; flex-wrap: wrap; gap: 5px; }
-#panel-assist .a-tag { font-size: 12px; background: var(--b100); color: var(--b900); border-radius: 999px; padding: 2px 9px; font-weight: 600; }
-#panel-assist .a-pb-checked { font-size: 12px; color: var(--muted); }
 @media (max-width: 560px) { #panel-assist .a-rowr .a-go, #panel-assist .a-refine .a-go { margin-left: 0; width: 100%; } }
 /* print just the plan */
 #a-printplan { display: none; }
@@ -1142,7 +1121,7 @@ footer.urgent p { color: #FEE2E2; }
 #panel-assist .a-spin { width: 14px; height: 14px; border: 2px solid currentColor; border-right-color: transparent; border-radius: 50%; display: inline-block; animation: a-spin .8s linear infinite; }
 @keyframes a-spin { to { transform: rotate(360deg); } }
 #panel-assist .a-webtag { display: inline-block; font-size: 11.5px; font-weight: 600; padding: 2px 8px; border-radius: 999px; border: 1px dashed #B45309; color: #92400E; background: color-mix(in srgb, #F59E0B 10%, transparent); }
-#panel-assist .a-webpick { border-style: dashed; }
+#panel-assist .a-webpick { border: 2px dashed #F59E0B; }
 @media (prefers-color-scheme: dark) { #panel-assist .a-webtag { color: #FCD34D; border-color: #FCD34D; } }
 
 /* "Search online" toggle in the prompt box */
@@ -1317,6 +1296,7 @@ footer.urgent p { color: #FEE2E2; }
 <body>
 
 
+<a class="skip" id="skip" href="#">Skip to results</a>
 <aside class="crisis gut" aria-label="Crisis help">
   <div><b>Crisis</b>Immediate danger or medical emergency: call <a href="tel:999">999</a> or NHS <a href="tel:111">111 (option 2)</a></div>
   <!-- Quick exit replaces this page, so Back doesn't return to the site (it can't clear the browser's history) -->
@@ -1363,7 +1343,7 @@ footer.urgent p { color: #FEE2E2; }
   </div>
 </header>
 
-<main id="panel-assist" aria-labelledby="tab-assist" hidden style="flex:1;min-height:0;overflow-y:auto"><div class="gut"><div class="a-wrap">
+<main id="panel-assist" class="pane" aria-labelledby="tab-assist" hidden tabindex="-1"><div class="gut"><div class="a-wrap">
 
   <form class="a-card a-gate" id="a-gate" hidden>
     <label class="a-h" for="a-code">Access code</label>
@@ -1421,7 +1401,7 @@ footer.urgent p { color: #FEE2E2; }
   <div class="an-mapwrap"><section id="amap" aria-label="Map of LSOAs and services"></section><div class="an-loading" id="an-loading">Loading LSOAs…</div></div>
   <div class="an-col"><div class="an-box an-prof" id="an-prof"></div></div>
 </main>
-<main id="panel-about" aria-labelledby="tab-about" hidden style="flex:1;min-height:0;overflow-y:auto"><div class="talk gut" id="about-page"></div></main>
+<main id="panel-about" class="pane" aria-labelledby="tab-about" hidden tabindex="-1"><div class="talk gut" id="about-page"></div></main>
 
 <footer class="help gut" id="help">
   <div class="inner">
@@ -1779,11 +1759,11 @@ function nameButton(s) {
 }
 // The cards someone has opened stay open when a list is drawn again (back from another tab or a Places page, a new filter), so
 // nothing they were reading closes, and each tab's scroll position still fits. Kept for this browser session, like the scroll
-// positions. A card: class "fold" + foldAttrs(s); toggleCard keeps the list.
+// positions. A card: class="card fold${foldClass(s)}"${keyAttr(s)}; toggleCard keeps the list.
 const OPENED_KEY = "ss-opened";
 const OPENED = new Set((() => { try { return JSON.parse(sessionStorage.getItem(OPENED_KEY)) || []; } catch (e) { return []; } })()), cardKey = s => `${s.name}|${s.postcode || s.town || ""}`;
 const isOpen = s => OPENED.has(cardKey(s));
-const foldAttrs = s => `${isOpen(s) ? " open" : ""}" data-key="${esc(cardKey(s))}`;   // (inside the class attribute: class="card fold${foldAttrs(s)}")
+const foldClass = s => isOpen(s) ? " open" : "", keyAttr = s => ` data-key="${esc(cardKey(s))}"`;
 // A restriction ("Over 18s only", "Currently full: referrals paused"): shown on a closed card too, so nobody misses it
 const restrictLine = s => s.eligibility ? `<div class="restrict">${esc(s.eligibility)}</div>` : "";
 // Open or close a service card's full details (a click anywhere on it, or its name button by keyboard), saying so to screen readers
@@ -1827,7 +1807,7 @@ function serviceCard(r, h = "h2", withId = true) {
     s.eligibility ? `<em>${esc(s.eligibility)}</em>` : ""].filter(Boolean).join(" · ");
   const types = s._sf.length ? " · " + s._sf.map(cap).map(esc).join(", ") : "";
   const place = esc([s.address, s.town, s.postcode].filter(Boolean).join(", ")) + (s.approx ? ` <span class="approx">(approx. location)</span>` : "");
-  return `<article class="card fold${foldAttrs(s)}"${withId ? ` id="c${s.id}"` : ""} data-id="${s.id}">
+  return `<article class="card fold${foldClass(s)}"${keyAttr(s)}${withId ? ` id="c${s.id}"` : ""} data-id="${s.id}">
       <div class="row1"><span class="badge ${badgeCls}">${badge}</span><span class="chipr">${dist}${directionsLink(s)}${copyBtn(s)}</span></div>
       <${h} class="cname">${nameButton(s)}</${h}>
       ${kindTag(s)}<div class="meta">${esc(s.provider)} · ${esc(s.type)}${types}</div>
@@ -1840,6 +1820,26 @@ function serviceCard(r, h = "h2", withId = true) {
 // Keep the map and list clear of the fixed helpline bar, whatever its height
 (() => { const f = document.getElementById("help"); const set = () => document.documentElement.style.setProperty("--footh", f.offsetHeight + "px");
   set(); if (window.ResizeObserver) new ResizeObserver(set).observe(f); else addEventListener("resize", set); })();
+// One scrolling page or a fixed header (the directory and the Places pages; core/css/page.css)
+// Usually the header and filters stay put and only the results scroll. On phones and narrow windows, and wherever the header
+// would leave the results under 40% of the screen's height (a laptop zoomed in, a phone on its side), the whole page scrolls
+// instead (class "flow" on <html>), so the results always get the screen. On very short screens the helpline bar sits at the
+// end of the page rather than over the content (class "short"). Every tab's header is the same height on wide screens
+// (the alignment tests), so all tabs make the same choice. A page can keep its fixed layout with class "noflow" on <html> (the tools
+// page's Analytics, a desktop-only map), then calls pageFit().
+let pageFit = () => {};
+const pageFlows = () => document.documentElement.classList.contains("flow");
+const scrollerFor = el => pageFlows() ? document.scrollingElement : el;   // what scrolls a panel's content now
+(() => {
+  const root = document.documentElement, header = document.querySelector("header.top"), help = document.getElementById("help");
+  const fit = () => {
+    const room = innerHeight - (header.offsetTop + header.offsetHeight) - (help ? help.offsetHeight : 0);
+    root.classList.toggle("flow", !root.classList.contains("noflow") && (innerWidth < 900 || room < 0.4 * innerHeight));
+    root.classList.toggle("short", innerHeight < 500);
+  };
+  pageFit = fit; fit(); addEventListener("resize", fit);
+  if (window.ResizeObserver) new ResizeObserver(fit).observe(header);   // the filter boxes change with the tab
+})();
 /* ---------- live records: read from the published Google Sheet (CSV) ---------- */
 // The sheet's "Publish to web → CSV" link, from build/directory/sheet_url.txt (filled in by the build)
 const SHEET_CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQOdzHvjorJsKwgMF6itFW5CKbpzfge4fXlJXxmFiVBTQJdodYABCJS5hxxu8nGp_tqWU-kVsByaMbw/pub?output=csv";
@@ -1911,7 +1911,11 @@ const TABS = ["assist", "analytics", "about"];
 const wideEnough = () => matchMedia("(min-width: 760px)").matches;   // Analytics is desktop only
 let tab = TABS.includes(location.hash.slice(1)) ? location.hash.slice(1) : "assist";
 if (tab === "analytics" && !wideEnough()) { tab = "assist"; try { history.replaceState(null, "", location.pathname + location.search + "#assist"); } catch (e) {} }
-function showTab(t) { for (const k of TABS) { currentTab($("tab-" + k), k === t); $("panel-" + k).hidden = k !== t; $("hdr-" + k).hidden = k !== t; } }
+function showTab(t) {
+  for (const k of TABS) { currentTab($("tab-" + k), k === t); $("panel-" + k).hidden = k !== t; $("hdr-" + k).hidden = k !== t; }
+  document.documentElement.classList.toggle("noflow", t === "analytics"); pageFit();   // Analytics keeps its fixed layout (core/js/page-flow.js)
+}
+$("skip").onclick = e => { e.preventDefault(); $("panel-" + tab).focus(); };   // Skip to results: past the tabs and filters
 function setTab(t) {
   if (t === "analytics" && !wideEnough()) t = "assist";
   tab = t; showTab(t);
@@ -1945,7 +1949,7 @@ function renderAbout() {
       <li><strong>Data:</strong> ONS boundaries, population (mid-2022) and urban/rural classification; MHCLG Indices of Deprivation 2025; Census 2021; open postcode data (2016). Open Government Licence.</li>
     </ul>
     </div></div>
-    <p class="small" id="site-version">Version: test 2026-11-16 22:32${typeof window.assistRelayVersion === "function" ? window.assistRelayVersion() : ""}</p>
+    <p class="small" id="site-version">Version: test 2026-11-16 22:56${typeof window.assistRelayVersion === "function" ? window.assistRelayVersion() : ""}</p>
   </article>`;
 }
 
@@ -2427,7 +2431,7 @@ async function initAnalytics() {
    this page only remembers it for the current browser session. */
 (() => {
 const WORKER_URL = "https://signposting-assist.c-r-williams0109.workers.dev";
-const PAGE_VERSION = "test 2026-11-16 22:32";
+const PAGE_VERSION = "test 2026-11-16 22:56";
 let relayVersion = "";
 // The version line is at the bottom of the About tab: "Version: test 2026-11-06 11:30 · Assist relay 2026-11-06 11:07"
 window.assistRelayVersion = () => relayVersion ? ` · Assist relay ${relayVersion}` : "";
@@ -2811,7 +2815,7 @@ function showPins() {
     const icon = L.divIcon({ className: "", html: `<span class="a-pin${p.ll.approx ? " approx" : ""}" style="--pc:${kindCol(p.record)}"><b>${p.n}</b></span>`, iconSize: [26, 26], iconAnchor: [13, 30] });
     L.marker([p.ll.lat, p.ll.lon], { icon, title: p.record.name, keyboard: true, riseOnHover: true })
       .bindTooltip(e_(p.record.name) + (p.ll.approx ? " (town centre: exact spot not listed)" : ""), { direction: "top", offset: [0, -28] })
-      .on("click", () => { const d = document.getElementById("a-pick-" + p.n); if (d) { d.open = true; d.scrollIntoView({ behavior: "smooth", block: "center" }); d.classList.add("a-flash"); setTimeout(() => d.classList.remove("a-flash"), 1200); } })
+      .on("click", () => { const d = document.getElementById("a-pick-" + p.n); if (d) { if (!d.classList.contains("open")) toggleCard(d); d.scrollIntoView({ behavior: "smooth", block: "center" }); d.classList.add("a-flash"); setTimeout(() => d.classList.remove("a-flash"), 1200); } })
       .addTo(pinLayer);
   });
   const pts = pins.map(p => [p.ll.lat, p.ll.lon]); if (place.lat) pts.push([place.lat, place.lon]);
@@ -2835,8 +2839,6 @@ const ICON = {
   online: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5h16a1 1 0 0 1 1 1v10a1 1 0 0 1-1 1h-6l1 2h2v2H7v-2h2l1-2H4a1 1 0 0 1-1-1V6a1 1 0 0 1 1-1zm1 2v8h14V7z"/></svg>',
   place: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2a7 7 0 0 1 7 7c0 5-7 13-7 13S5 14 5 9a7 7 0 0 1 7-7zm0 4.5a2.5 2.5 0 1 0 0 5 2.5 2.5 0 0 0 0-5z"/></svg>',
   web: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14 3h7v7h-2V6.4l-9.3 9.3-1.4-1.4L17.6 5H14zM5 5h6v2H6v11h11v-5h2v6a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V6a1 1 0 0 1 1-1z"/></svg>',
-  person: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3a4.5 4.5 0 1 1 0 9 4.5 4.5 0 0 1 0-9zm0 11c4.4 0 8 2.2 8 5v2H4v-2c0-2.8 3.6-5 8-5z"/></svg>',
-  cost: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14.5 3A5.5 5.5 0 0 1 20 8.5h-2A3.5 3.5 0 0 0 14.5 5 3.5 3.5 0 0 0 11 8.5V11h5v2h-5v4h8v2H6v-2h3v-4H6v-2h3V8.5A5.5 5.5 0 0 1 14.5 3z"/></svg>',
   dirs: '<svg viewBox="0 0 24 24" aria-hidden="true" style="fill:none;stroke:currentColor;stroke-width:2.2;stroke-linejoin:round"><polygon points="3 11 22 2 13 21 11 13 3 11"/></svg>',
   mail: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 5h18a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1V6a1 1 0 0 1 1-1zm1 3.2V17h16V8.2l-8 5-8-5zM5.2 7 12 11.3 18.8 7z"/></svg>',
 };
@@ -2854,45 +2856,35 @@ function actions(s) {
   else if (s.email) a.push(`<a class="a-act" href="mailto:${e_(s.email)}">${ICON.mail}Email</a>`);
   return a.join("");
 }
-function tile(icon, label, html, cls = "") { return `<div class="a-pb-tile ${cls}"><div class="a-pb-lab">${ICON[icon] || ""}${label}</div><div class="a-pb-val">${html}</div></div>`; }
+// A suggestion: the directory's folding card (core/js/service-card.js, cards.js), with why it was chosen and how to get in touch.
+// Closed: how to get in, where or how, the name, when, why, any restriction and the contact buttons; opening it adds the
+// description, who it's for, the cost, the address and the details (toggleCard, by its name button or a click on the card).
 function card(p) {
-  const s = p.record, w = whenOf(p), mode = s.mode || "", [badgeCls, badge] = accessBadge(s);
-  const inPerson = mode.includes("in-person");
-  const where = [s.address, s.town, s.postcode].filter(Boolean).join(", ");
-  const dist = p.distance !== null && s.address ? ` (${p.distance} miles)` : "";
-  const contact = [s.phone && `<a href="tel:${e_(telOf(s))}">${e_(s.phone)}</a>`, s.email && `<a href="mailto:${e_(s.email)}">${e_(s.email)}</a>`, isUrl(s.url) && `<a href="${e_(s.url)}" target="_blank" rel="noopener">Website</a>`].filter(Boolean).join(" · ");
-  const modeBit = inPerson
-    ? `<span class="a-m">${ICON.place}${e_(p.distance !== null && s.address ? `${p.distance} mi` : s.town)}</span>`
-    : `<span class="a-m">${mode.includes("phone") ? ICON.phone : ""}${mode.includes("online") ? ICON.online : ""}${e_(mode.replace(/;/g, " / ").replace("phone", "Phone").replace("online", "Online"))}</span>`;
-  const badges = (p.web ? `<span class="a-webtag">Found online, not checked</span>` : "") +
-    (s.access ? `<span class="badge ${badgeCls}">${e_(badge)}</span>` : "") +
-    `<span class="a-chip dist">${modeBit}</span>` + (s.cost ? `<span class="a-chip">${e_(s.cost)}</span>` : "");
-  return `<details class="a-pick${p.web ? " a-webpick" : ""}" id="a-pick-${p.n}">
-    <summary>
-      <span class="a-pk-name">${p.ll ? `<span class="a-pk-num" style="--pc:${kindCol(s)}" title="Number ${p.n} on the map">${ICON.place}${p.n}</span>` : ""}${e_(s.name)}</span>
-      <span class="a-pk-badges">${badges}</span>
-      ${w ? `<span class="a-pk-when"><span class="a-wl">When</span>${e_(w)}</span>` : ""}
-      <span class="a-pk-why">${e_(p.why)}</span>
-      <span class="a-pk-acts">${actions(s)}</span>
-    </summary>
-    <div class="a-pk-body">
-      ${s.provider || s.type ? `<div class="a-pb-prov">${e_(s.provider)}${s.type ? `<span>${e_(s.type)}</span>` : ""}</div>` : ""}
-      <p class="a-pb-desc">${e_(s.description)}</p>
-      <div class="a-pb-grid">
-        ${inPerson && where ? tile("place", "Where", `${e_(where)}${dist}${s.address ? `<br><a href="https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(where)}" target="_blank" rel="noopener">Open in maps</a>` : ""}`) : ""}
-        ${!inPerson ? tile(mode.includes("phone") ? "phone" : "online", "How", e_(mode.replace(/;/g, ", ").replace("phone", "Phone").replace("online", "Online"))) : ""}
-        ${s.who || s.eligibility ? tile("person", "For", e_([s.who && s.who.replace(/;/g, ", "), s.eligibility].filter(Boolean).join(". ")), s.eligibility ? "warn" : "") : ""}
-        ${s.cost ? tile("cost", "Cost", e_(s.cost)) : ""}
-        ${contact ? tile("mail", "Contact", contact, "wide") : ""}
-        ${s.note ? tile("person", "Note", e_(s.note), "wide warn") : ""}
-      </div>
-      <div class="a-pb-foot">${p.web ? `<span class="a-pb-tags">Found by an online search (${e_(p.web.source)}). Signposting Somerset hasn't checked it: please confirm the details with the service.</span>` : `
-        <span class="a-pb-tags">${(s.support_for || "").split(";").filter(Boolean).map(t => `<span class="a-tag">${e_(cap(t))}</span>`).join("")}</span>
-        ${checkedText(s) ? `<span class="a-pb-checked">${e_(checkedText(s))}</span>` : ""}`}
-      </div>
-    </div>
-  </details>`;
+  const s = p.record, w = whenOf(p), mode = s.mode || "", inPerson = mode.includes("in-person"), [badgeCls, badge] = accessBadge(s);
+  const where = [s.address, s.town, s.postcode].filter(Boolean).join(", "), near = p.distance !== null && !!s.address;
+  const place = inPerson
+    ? `<span class="chip dist">${e_(near ? `${p.distance} mi` : s.town || "In person")}</span>`
+    : `<span class="chip dist a-m">${mode.includes("phone") ? ICON.phone : ""}${mode.includes("online") ? ICON.online : ""}${e_(mode.replace(/;/g, " / ").replace("phone", "Phone").replace("online", "Online"))}</span>`;
+  const contact = [s.phone && telLink(s.phone), s.email && `<a href="mailto:${e_(s.email)}">${e_(s.email)}</a>`, isUrl(s.url) && `<a href="${e_(s.url)}" target="_blank" rel="noopener">Website</a>`].filter(Boolean).join(" · ");
+  const forLine = [s.who ? `For: ${e_(s.who.replace(/;/g, ", "))}` : "", s.cost ? `<span class="cost">${e_(s.cost)}</span>` : "", s.eligibility ? `<em>${e_(s.eligibility)}</em>` : ""].filter(Boolean).join(" · ");
+  const types = (s.support_for || "").split(";").filter(Boolean).map(cap).map(e_).join(", ");
+  const about = [e_(s.provider), e_(s.type), types].filter(Boolean).join(" · ");
+  return `<article class="card fold a-pick${p.web ? " a-webpick" : ""}${foldClass(s)}"${keyAttr(s)} id="a-pick-${p.n}">
+    <div class="row1">${s.access ? `<span class="badge ${badgeCls}">${e_(badge)}</span>` : "<span></span>"}<span class="chipr">${p.web ? `<span class="a-webtag">Found online, not checked</span>` : ""}${place}</span></div>
+    <h4 class="cname">${p.ll ? `<span class="a-pk-num" style="--pc:${kindCol(s)}" title="Number ${p.n} on the map">${ICON.place}${p.n}</span>` : ""}${nameButton(s)}</h4>
+    ${w ? `<div class="next a-pk-when"><div class="lab">When</div><div class="val">${e_(w)}</div></div>` : ""}
+    <p class="a-pk-why">${e_(p.why)}</p>${restrictLine(s)}
+    <div class="a-pk-acts">${actions(s)}</div>
+    ${about ? `<div class="meta">${about}</div>` : ""}
+    ${s.description ? `<p class="a-desc">${e_(s.description)}</p>` : ""}
+    ${forLine ? `<div class="who">${forLine}</div>` : ""}
+    ${s.note ? `<div class="who"><em>${e_(s.note)}</em></div>` : ""}
+    <div class="foot">${inPerson && where ? `<span>${e_(where)}${near ? ` (${p.distance} miles)` : ""}</span>` : ""}${contact ? `<span>${contact}</span>` : ""}
+      <span>${p.web ? `Found by an online search (${e_(p.web.source)}). Signposting Somerset hasn't checked it: please confirm the details with the service.` : e_(checkedText(s))}</span></div>
+  </article>`;
 }
+// Open or close a suggestion: a click on the card or its name button (not its links)
+$a("a-out").addEventListener("click", ev => { const c = ev.target.closest(".a-pick"); if (c && !ev.target.closest("a, button:not(.cbtn)")) toggleCard(c); });
 
 // ---- the plan: a short summary to give to the person (email, text, print) ----
 const STEP_TITLE = { "First step": "A good place to start", "Next step": "Next", "When ready": "When you feel ready" };

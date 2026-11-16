@@ -29,7 +29,7 @@ function talkCard({ s, st }) {
   const reach = s.phone ? (/^text/i.test(s.phone) ? esc(s.phone) : `<a href="tel:${esc(tel)}">${esc(s.phone)}</a>`)
     : s.email ? `<a href="mailto:${esc(s.email)}">${esc(s.email)}</a>` : "";
   const url = webUrl(s.url);
-  return `<article class="tcard fold${foldAttrs(s)}">
+  return `<article class="tcard fold${foldClass(s)}"${keyAttr(s)}>
       <div class="row1"><span class="mode" title="${modes} · ${s.area === "national" ? "UK-wide" : "Local"}">${modes} · ${s.area === "national" ? "UK-wide" : "Local"}</span><span class="chipr"><span class="openp ${st.open ? "yes" : st.when || "no"}">${esc(st.txt)}</span>${copyBtn(s)}</span></div>
       <div class="tname"><h3>${nameButton(s)}</h3>${checkedTick(s)}</div>
       ${reach ? `<div class="reach${s.phone ? "" : " email"}">${reach}</div>` : ""}

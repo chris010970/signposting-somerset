@@ -77,41 +77,20 @@
 #panel-assist .a-rung { position: relative; margin: 0 0 14px; }
 #panel-assist .a-rdot { position: absolute; left: -38px; top: 0; width: 28px; height: 28px; border-radius: 50%; background: var(--b700); color: #fff; font-weight: 700; font-size: 14px; display: grid; place-items: center; box-shadow: 0 0 0 4px var(--cream); }
 #panel-assist .a-rung h3 { font-size: 12px; text-transform: uppercase; letter-spacing: .08em; color: var(--b600); margin: 6px 0 8px; }
-#panel-assist details.a-pick { background: var(--white); border: 1px solid var(--line); border-left: 4px solid var(--b500); border-radius: 12px; margin-bottom: 8px; }
-#panel-assist details.a-pick summary { list-style: none; cursor: pointer; padding: 12px 40px 12px 14px; position: relative; display: flex; flex-direction: column; gap: 2px; }
-#panel-assist details.a-pick summary::-webkit-details-marker { display: none; }
-#panel-assist details.a-pick summary::after { content: ""; position: absolute; right: 16px; top: 18px; width: 8px; height: 8px; border-right: 2px solid var(--b600); border-bottom: 2px solid var(--b600); transform: rotate(45deg); transition: transform .15s; }
-#panel-assist details.a-pick[open] summary::after { transform: rotate(-135deg); top: 22px; }
-#panel-assist details.a-pick summary:focus { outline: none; }
-#panel-assist details.a-pick summary:focus-visible { outline: 2px solid var(--b500); outline-offset: -2px; border-radius: 12px; }
-#panel-assist .a-pk-name { font-family: var(--serif); font-weight: 700; font-size: 17px; color: var(--b900); line-height: 1.25; }
-#panel-assist .a-pk-badges { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; margin: 4px 0 2px; }
-#panel-assist .a-chip { display: inline-flex; align-items: center; font-size: 12px; font-weight: 600; color: #57534E; background: #F5F5F4; border: 1px solid var(--line); padding: 3px 8px; border-radius: 6px; }
-#panel-assist .a-chip.dist { color: var(--b800); background: var(--b50); border-color: var(--b100); }
-#panel-assist .a-m { display: inline-flex; align-items: center; gap: 4px; }
-#panel-assist .a-chip svg, #panel-assist .a-act svg, #panel-assist .a-pb-lab svg { width: 13px; height: 13px; fill: currentColor; flex: none; }
-#panel-assist .a-pk-when { font-size: 14px; color: var(--ink); font-weight: 600; margin-top: 4px; }
-#panel-assist .a-pk-when .a-wl { font-size: 10px; letter-spacing: .1em; text-transform: uppercase; font-weight: 700; color: var(--b700); margin-right: 8px; }
+/* A suggestion: the directory's folding card (core/css/cards.css), plus why it was chosen and its contact buttons */
+#panel-assist .a-pick .cname { font-size: 17px; }
+#panel-assist .a-pick .a-m { display: inline-flex; align-items: center; gap: 4px; }
+#panel-assist .a-pick .chip svg, #panel-assist .a-act svg { width: 13px; height: 13px; fill: currentColor; flex: none; }
+#panel-assist .a-pick .next { margin-bottom: 0; }
+#panel-assist .a-desc { font-size: 14px; color: var(--ink); line-height: 1.5; margin: 10px 0 8px; }
+#panel-assist .fold:not(.open) .a-desc { display: none; }
+#panel-assist .a-pick .meta { margin: 10px 0 0; }
+#panel-assist .a-pick .restrict { margin-top: 8px; }
 #panel-assist .a-pk-why { font-size: 14px; color: var(--b900); background: rgba(242,246,244,.8); border: 1px solid var(--b100); border-radius: 10px; padding: 8px 10px; margin-top: 8px; }
 #panel-assist .a-pk-acts { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px; }
 #panel-assist .a-pk-acts:empty { display: none; }
 #panel-assist .a-act { display: inline-flex; align-items: center; gap: 6px; font-size: 13px; font-weight: 700; text-decoration: none; color: var(--b800); background: var(--b50); border: 1px solid var(--b200); border-radius: 999px; padding: 4px 11px; }
 #panel-assist .a-act:hover { background: var(--b100); }
-#panel-assist .a-pk-body { padding: 10px 14px 14px; border-top: 1px solid var(--line); background: linear-gradient(var(--b50), #fff 120px); border-radius: 0 0 12px 0; }
-#panel-assist .a-pb-prov { font-size: 12px; font-weight: 700; color: var(--b700); text-transform: uppercase; letter-spacing: .06em; display: flex; flex-wrap: wrap; gap: 4px 8px; align-items: center; }
-#panel-assist .a-pb-prov span { text-transform: none; letter-spacing: 0; font-weight: 600; color: var(--muted); background: #fff; border: 1px solid var(--line); border-radius: 999px; padding: 1px 8px; }
-#panel-assist .a-pb-desc { font-size: 15px; margin: 8px 0 12px; color: var(--ink); }
-#panel-assist .a-pb-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 8px; }
-#panel-assist .a-pb-tile { background: #fff; border: 1px solid var(--b100); border-radius: 10px; padding: 8px 10px; min-width: 0; }
-#panel-assist .a-pb-tile.wide { grid-column: 1 / -1; }
-#panel-assist .a-pb-tile.warn { background: #FFFBEB; border-color: #FDE68A; }
-#panel-assist .a-pb-tile.warn .a-pb-lab { color: #92400E; }
-#panel-assist .a-pb-lab { display: flex; align-items: center; gap: 5px; font-size: 10px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; color: var(--b700); margin-bottom: 3px; }
-#panel-assist .a-pb-val { font-size: 14px; overflow-wrap: anywhere; }
-#panel-assist .a-pb-foot { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 8px; margin-top: 12px; }
-#panel-assist .a-pb-tags { display: flex; flex-wrap: wrap; gap: 5px; }
-#panel-assist .a-tag { font-size: 12px; background: var(--b100); color: var(--b900); border-radius: 999px; padding: 2px 9px; font-weight: 600; }
-#panel-assist .a-pb-checked { font-size: 12px; color: var(--muted); }
 @media (max-width: 560px) { #panel-assist .a-rowr .a-go, #panel-assist .a-refine .a-go { margin-left: 0; width: 100%; } }
 /* print just the plan */
 #a-printplan { display: none; }
@@ -189,7 +168,7 @@
 #panel-assist .a-spin { width: 14px; height: 14px; border: 2px solid currentColor; border-right-color: transparent; border-radius: 50%; display: inline-block; animation: a-spin .8s linear infinite; }
 @keyframes a-spin { to { transform: rotate(360deg); } }
 #panel-assist .a-webtag { display: inline-block; font-size: 11.5px; font-weight: 600; padding: 2px 8px; border-radius: 999px; border: 1px dashed #B45309; color: #92400E; background: color-mix(in srgb, #F59E0B 10%, transparent); }
-#panel-assist .a-webpick { border-style: dashed; }
+#panel-assist .a-webpick { border: 2px dashed #F59E0B; }
 @media (prefers-color-scheme: dark) { #panel-assist .a-webtag { color: #FCD34D; border-color: #FCD34D; } }
 
 /* "Search online" toggle in the prompt box */

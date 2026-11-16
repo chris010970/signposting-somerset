@@ -202,6 +202,9 @@ test("Alignment: on every tab and Places, nothing moves sideways or up and down 
 });
 
 test("Tools page: Assist asks for the access code; Analytics opens", async () => {
+  const phone = await open("/test/tools/#assist", { width: 390, height: 664 });
+  assert.ok(await phone.evaluate(() => pageFlows()), "on a phone, the whole page scrolls (as the directory)");
+  await phone.done();
   const p = await open("/test/tools/#assist");
   assert.ok(await p.isVisible("#a-gate"), "the access code form");
   await p.click("#tab-about");
@@ -248,6 +251,14 @@ test("Assist, with a stand-in relay: unlock, a plan from the records, Copy plan,
   assert.match(await text(p, "#a-pick-1 .a-pk-when"), /^WhenEvery Wed, 10am–12pm$/);
   assert.match(copied, /Test Weekly Drop-in\n   Every Wed, 10am–12pm, Wells, BA5 1AA\n   Just turn up\. Free\n/);
   assert.match(copied, /Example Befriending[^\n]*\n   Mon-Fri, By phone\n   Phone line\. Free\n/);
+  // The suggestions are the directory's folding cards: closed until the name is clicked (no links inside a <summary> any more)
+  const pick = () => p.$eval("#a-pick-1", c => [c.classList.contains("open"), c.querySelector(".cbtn").getAttribute("aria-expanded"), c.querySelector(".who").offsetParent !== null, c.querySelector(".a-pk-why").offsetParent !== null]);
+  assert.deepEqual(await pick(), [false, "false", false, true], "closed: why it was chosen shows; who it's for waits");
+  await p.click("#a-pick-1 .cbtn");
+  assert.deepEqual(await pick(), [true, "true", true, true], "opened");
+  assert.equal(await p.$$eval("#a-out summary", s => s.length), 0);
+  await p.focus("#skip"); await p.keyboard.press("Enter");
+  assert.equal(await p.evaluate(() => document.activeElement.id), "panel-assist", "Skip to results: into Assist");
   assert.deepEqual(p.errors, []);
   await p.done();
 });

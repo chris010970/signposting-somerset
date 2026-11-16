@@ -82,11 +82,11 @@ function nameButton(s) {
 }
 // The cards someone has opened stay open when a list is drawn again (back from another tab or a Places page, a new filter), so
 // nothing they were reading closes, and each tab's scroll position still fits. Kept for this browser session, like the scroll
-// positions. A card: class "fold" + foldAttrs(s); toggleCard keeps the list.
+// positions. A card: class="card fold${foldClass(s)}"${keyAttr(s)}; toggleCard keeps the list.
 const OPENED_KEY = "ss-opened";
 const OPENED = new Set((() => { try { return JSON.parse(sessionStorage.getItem(OPENED_KEY)) || []; } catch (e) { return []; } })()), cardKey = s => `${s.name}|${s.postcode || s.town || ""}`;
 const isOpen = s => OPENED.has(cardKey(s));
-const foldAttrs = s => `${isOpen(s) ? " open" : ""}" data-key="${esc(cardKey(s))}`;   // (inside the class attribute: class="card fold${foldAttrs(s)}")
+const foldClass = s => isOpen(s) ? " open" : "", keyAttr = s => ` data-key="${esc(cardKey(s))}"`;
 // A restriction ("Over 18s only", "Currently full: referrals paused"): shown on a closed card too, so nobody misses it
 const restrictLine = s => s.eligibility ? `<div class="restrict">${esc(s.eligibility)}</div>` : "";
 // Open or close a service card's full details (a click anywhere on it, or its name button by keyboard), saying so to screen readers

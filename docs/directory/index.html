@@ -1538,11 +1538,11 @@ function nameButton(s) {
 }
 // The cards someone has opened stay open when a list is drawn again (back from another tab or a Places page, a new filter), so
 // nothing they were reading closes, and each tab's scroll position still fits. Kept for this browser session, like the scroll
-// positions. A card: class "fold" + foldAttrs(s); toggleCard keeps the list.
+// positions. A card: class="card fold${foldClass(s)}"${keyAttr(s)}; toggleCard keeps the list.
 const OPENED_KEY = "ss-opened";
 const OPENED = new Set((() => { try { return JSON.parse(sessionStorage.getItem(OPENED_KEY)) || []; } catch (e) { return []; } })()), cardKey = s => `${s.name}|${s.postcode || s.town || ""}`;
 const isOpen = s => OPENED.has(cardKey(s));
-const foldAttrs = s => `${isOpen(s) ? " open" : ""}" data-key="${esc(cardKey(s))}`;   // (inside the class attribute: class="card fold${foldAttrs(s)}")
+const foldClass = s => isOpen(s) ? " open" : "", keyAttr = s => ` data-key="${esc(cardKey(s))}"`;
 // A restriction ("Over 18s only", "Currently full: referrals paused"): shown on a closed card too, so nobody misses it
 const restrictLine = s => s.eligibility ? `<div class="restrict">${esc(s.eligibility)}</div>` : "";
 // Open or close a service card's full details (a click anywhere on it, or its name button by keyboard), saying so to screen readers
@@ -1586,7 +1586,7 @@ function serviceCard(r, h = "h2", withId = true) {
     s.eligibility ? `<em>${esc(s.eligibility)}</em>` : ""].filter(Boolean).join(" · ");
   const types = s._sf.length ? " · " + s._sf.map(cap).map(esc).join(", ") : "";
   const place = esc([s.address, s.town, s.postcode].filter(Boolean).join(", ")) + (s.approx ? ` <span class="approx">(approx. location)</span>` : "");
-  return `<article class="card fold${foldAttrs(s)}"${withId ? ` id="c${s.id}"` : ""} data-id="${s.id}">
+  return `<article class="card fold${foldClass(s)}"${keyAttr(s)}${withId ? ` id="c${s.id}"` : ""} data-id="${s.id}">
       <div class="row1"><span class="badge ${badgeCls}">${badge}</span><span class="chipr">${dist}${directionsLink(s)}${copyBtn(s)}</span></div>
       <${h} class="cname">${nameButton(s)}</${h}>
       ${kindTag(s)}<div class="meta">${esc(s.provider)} · ${esc(s.type)}${types}</div>
@@ -1707,17 +1707,19 @@ function placesView({ main, hdr, scroller, onChange = () => {}, onLink = () => f
 // would leave the results under 40% of the screen's height (a laptop zoomed in, a phone on its side), the whole page scrolls
 // instead (class "flow" on <html>), so the results always get the screen. On very short screens the helpline bar sits at the
 // end of the page rather than over the content (class "short"). Every tab's header is the same height on wide screens
-// (the alignment tests), so all tabs make the same choice.
+// (the alignment tests), so all tabs make the same choice. A page can keep its fixed layout with class "noflow" on <html> (the tools
+// page's Analytics, a desktop-only map), then calls pageFit().
+let pageFit = () => {};
 const pageFlows = () => document.documentElement.classList.contains("flow");
 const scrollerFor = el => pageFlows() ? document.scrollingElement : el;   // what scrolls a panel's content now
 (() => {
   const root = document.documentElement, header = document.querySelector("header.top"), help = document.getElementById("help");
   const fit = () => {
     const room = innerHeight - (header.offsetTop + header.offsetHeight) - (help ? help.offsetHeight : 0);
-    root.classList.toggle("flow", innerWidth < 900 || room < 0.4 * innerHeight);
+    root.classList.toggle("flow", !root.classList.contains("noflow") && (innerWidth < 900 || room < 0.4 * innerHeight));
     root.classList.toggle("short", innerHeight < 500);
   };
-  fit(); addEventListener("resize", fit);
+  pageFit = fit; fit(); addEventListener("resize", fit);
   if (window.ResizeObserver) new ResizeObserver(fit).observe(header);   // the filter boxes change with the tab
 })();
 /* ---------- live records: read from the published Google Sheet (CSV) ---------- */
@@ -2134,7 +2136,7 @@ function talkCard({ s, st }) {
   const reach = s.phone ? (/^text/i.test(s.phone) ? esc(s.phone) : `<a href="tel:${esc(tel)}">${esc(s.phone)}</a>`)
     : s.email ? `<a href="mailto:${esc(s.email)}">${esc(s.email)}</a>` : "";
   const url = webUrl(s.url);
-  return `<article class="tcard fold${foldAttrs(s)}">
+  return `<article class="tcard fold${foldClass(s)}"${keyAttr(s)}>
       <div class="row1"><span class="mode" title="${modes} · ${s.area === "national" ? "UK-wide" : "Local"}">${modes} · ${s.area === "national" ? "UK-wide" : "Local"}</span><span class="chipr"><span class="openp ${st.open ? "yes" : st.when || "no"}">${esc(st.txt)}</span>${copyBtn(s)}</span></div>
       <div class="tname"><h3>${nameButton(s)}</h3>${checkedTick(s)}</div>
       ${reach ? `<div class="reach${s.phone ? "" : " email"}">${reach}</div>` : ""}
@@ -2189,7 +2191,7 @@ function courseInfo(s, now) {
 }
 function courseCard({ s, ci }) {
   const url = webUrl(s.url);
-  return `<article class="tcard fold${foldAttrs(s)}">
+  return `<article class="tcard fold${foldClass(s)}"${keyAttr(s)}>
       <div class="row1"><span class="mode">${split(s.mode).includes("online") ? "Online" : esc(s.town || "In person")}</span><span class="chipr"><span class="openp ${ci.join ? "yes" : "no"}">${esc(ci.status)}</span>${copyBtn(s, ci.when)}</span></div>
       <div class="tname"><h3>${nameButton(s)}</h3>${checkedTick(s)}</div>
       <div class="cwhen">${esc(ci.when)}</div>
@@ -2267,7 +2269,7 @@ function renderAbout() {
     </section>
     </div></div>
     <p class="small">Service information belongs to the providers listed. Map data © <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap</a> contributors, © <a href="https://carto.com/attributions" target="_blank" rel="noopener">CARTO</a>.</p>
-    <p class="small" id="site-version">Version: directory 2026-11-16 22:32</p>
+    <p class="small" id="site-version">Version: directory 2026-11-16 22:56</p>
   </article>`;
 }
 /* ---------- Places: the town listings, as a tab of the directory ----------

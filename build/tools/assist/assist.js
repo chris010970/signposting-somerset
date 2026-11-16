@@ -357,7 +357,7 @@ function showPins() {
     const icon = L.divIcon({ className: "", html: `<span class="a-pin${p.ll.approx ? " approx" : ""}" style="--pc:${kindCol(p.record)}"><b>${p.n}</b></span>`, iconSize: [26, 26], iconAnchor: [13, 30] });
     L.marker([p.ll.lat, p.ll.lon], { icon, title: p.record.name, keyboard: true, riseOnHover: true })
       .bindTooltip(e_(p.record.name) + (p.ll.approx ? " (town centre: exact spot not listed)" : ""), { direction: "top", offset: [0, -28] })
-      .on("click", () => { const d = document.getElementById("a-pick-" + p.n); if (d) { d.open = true; d.scrollIntoView({ behavior: "smooth", block: "center" }); d.classList.add("a-flash"); setTimeout(() => d.classList.remove("a-flash"), 1200); } })
+      .on("click", () => { const d = document.getElementById("a-pick-" + p.n); if (d) { if (!d.classList.contains("open")) toggleCard(d); d.scrollIntoView({ behavior: "smooth", block: "center" }); d.classList.add("a-flash"); setTimeout(() => d.classList.remove("a-flash"), 1200); } })
       .addTo(pinLayer);
   });
   const pts = pins.map(p => [p.ll.lat, p.ll.lon]); if (place.lat) pts.push([place.lat, place.lon]);
@@ -381,8 +381,6 @@ const ICON = {
   online: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5h16a1 1 0 0 1 1 1v10a1 1 0 0 1-1 1h-6l1 2h2v2H7v-2h2l1-2H4a1 1 0 0 1-1-1V6a1 1 0 0 1 1-1zm1 2v8h14V7z"/></svg>',
   place: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2a7 7 0 0 1 7 7c0 5-7 13-7 13S5 14 5 9a7 7 0 0 1 7-7zm0 4.5a2.5 2.5 0 1 0 0 5 2.5 2.5 0 0 0 0-5z"/></svg>',
   web: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14 3h7v7h-2V6.4l-9.3 9.3-1.4-1.4L17.6 5H14zM5 5h6v2H6v11h11v-5h2v6a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V6a1 1 0 0 1 1-1z"/></svg>',
-  person: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3a4.5 4.5 0 1 1 0 9 4.5 4.5 0 0 1 0-9zm0 11c4.4 0 8 2.2 8 5v2H4v-2c0-2.8 3.6-5 8-5z"/></svg>',
-  cost: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14.5 3A5.5 5.5 0 0 1 20 8.5h-2A3.5 3.5 0 0 0 14.5 5 3.5 3.5 0 0 0 11 8.5V11h5v2h-5v4h8v2H6v-2h3v-4H6v-2h3V8.5A5.5 5.5 0 0 1 14.5 3z"/></svg>',
   dirs: '<svg viewBox="0 0 24 24" aria-hidden="true" style="fill:none;stroke:currentColor;stroke-width:2.2;stroke-linejoin:round"><polygon points="3 11 22 2 13 21 11 13 3 11"/></svg>',
   mail: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 5h18a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1V6a1 1 0 0 1 1-1zm1 3.2V17h16V8.2l-8 5-8-5zM5.2 7 12 11.3 18.8 7z"/></svg>',
 };
@@ -400,45 +398,35 @@ function actions(s) {
   else if (s.email) a.push(`<a class="a-act" href="mailto:${e_(s.email)}">${ICON.mail}Email</a>`);
   return a.join("");
 }
-function tile(icon, label, html, cls = "") { return `<div class="a-pb-tile ${cls}"><div class="a-pb-lab">${ICON[icon] || ""}${label}</div><div class="a-pb-val">${html}</div></div>`; }
+// A suggestion: the directory's folding card (core/js/service-card.js, cards.js), with why it was chosen and how to get in touch.
+// Closed: how to get in, where or how, the name, when, why, any restriction and the contact buttons; opening it adds the
+// description, who it's for, the cost, the address and the details (toggleCard, by its name button or a click on the card).
 function card(p) {
-  const s = p.record, w = whenOf(p), mode = s.mode || "", [badgeCls, badge] = accessBadge(s);
-  const inPerson = mode.includes("in-person");
-  const where = [s.address, s.town, s.postcode].filter(Boolean).join(", ");
-  const dist = p.distance !== null && s.address ? ` (${p.distance} miles)` : "";
-  const contact = [s.phone && `<a href="tel:${e_(telOf(s))}">${e_(s.phone)}</a>`, s.email && `<a href="mailto:${e_(s.email)}">${e_(s.email)}</a>`, isUrl(s.url) && `<a href="${e_(s.url)}" target="_blank" rel="noopener">Website</a>`].filter(Boolean).join(" · ");
-  const modeBit = inPerson
-    ? `<span class="a-m">${ICON.place}${e_(p.distance !== null && s.address ? `${p.distance} mi` : s.town)}</span>`
-    : `<span class="a-m">${mode.includes("phone") ? ICON.phone : ""}${mode.includes("online") ? ICON.online : ""}${e_(mode.replace(/;/g, " / ").replace("phone", "Phone").replace("online", "Online"))}</span>`;
-  const badges = (p.web ? `<span class="a-webtag">Found online, not checked</span>` : "") +
-    (s.access ? `<span class="badge ${badgeCls}">${e_(badge)}</span>` : "") +
-    `<span class="a-chip dist">${modeBit}</span>` + (s.cost ? `<span class="a-chip">${e_(s.cost)}</span>` : "");
-  return `<details class="a-pick${p.web ? " a-webpick" : ""}" id="a-pick-${p.n}">
-    <summary>
-      <span class="a-pk-name">${p.ll ? `<span class="a-pk-num" style="--pc:${kindCol(s)}" title="Number ${p.n} on the map">${ICON.place}${p.n}</span>` : ""}${e_(s.name)}</span>
-      <span class="a-pk-badges">${badges}</span>
-      ${w ? `<span class="a-pk-when"><span class="a-wl">When</span>${e_(w)}</span>` : ""}
-      <span class="a-pk-why">${e_(p.why)}</span>
-      <span class="a-pk-acts">${actions(s)}</span>
-    </summary>
-    <div class="a-pk-body">
-      ${s.provider || s.type ? `<div class="a-pb-prov">${e_(s.provider)}${s.type ? `<span>${e_(s.type)}</span>` : ""}</div>` : ""}
-      <p class="a-pb-desc">${e_(s.description)}</p>
-      <div class="a-pb-grid">
-        ${inPerson && where ? tile("place", "Where", `${e_(where)}${dist}${s.address ? `<br><a href="https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(where)}" target="_blank" rel="noopener">Open in maps</a>` : ""}`) : ""}
-        ${!inPerson ? tile(mode.includes("phone") ? "phone" : "online", "How", e_(mode.replace(/;/g, ", ").replace("phone", "Phone").replace("online", "Online"))) : ""}
-        ${s.who || s.eligibility ? tile("person", "For", e_([s.who && s.who.replace(/;/g, ", "), s.eligibility].filter(Boolean).join(". ")), s.eligibility ? "warn" : "") : ""}
-        ${s.cost ? tile("cost", "Cost", e_(s.cost)) : ""}
-        ${contact ? tile("mail", "Contact", contact, "wide") : ""}
-        ${s.note ? tile("person", "Note", e_(s.note), "wide warn") : ""}
-      </div>
-      <div class="a-pb-foot">${p.web ? `<span class="a-pb-tags">Found by an online search (${e_(p.web.source)}). Signposting Somerset hasn't checked it: please confirm the details with the service.</span>` : `
-        <span class="a-pb-tags">${(s.support_for || "").split(";").filter(Boolean).map(t => `<span class="a-tag">${e_(cap(t))}</span>`).join("")}</span>
-        ${checkedText(s) ? `<span class="a-pb-checked">${e_(checkedText(s))}</span>` : ""}`}
-      </div>
-    </div>
-  </details>`;
+  const s = p.record, w = whenOf(p), mode = s.mode || "", inPerson = mode.includes("in-person"), [badgeCls, badge] = accessBadge(s);
+  const where = [s.address, s.town, s.postcode].filter(Boolean).join(", "), near = p.distance !== null && !!s.address;
+  const place = inPerson
+    ? `<span class="chip dist">${e_(near ? `${p.distance} mi` : s.town || "In person")}</span>`
+    : `<span class="chip dist a-m">${mode.includes("phone") ? ICON.phone : ""}${mode.includes("online") ? ICON.online : ""}${e_(mode.replace(/;/g, " / ").replace("phone", "Phone").replace("online", "Online"))}</span>`;
+  const contact = [s.phone && telLink(s.phone), s.email && `<a href="mailto:${e_(s.email)}">${e_(s.email)}</a>`, isUrl(s.url) && `<a href="${e_(s.url)}" target="_blank" rel="noopener">Website</a>`].filter(Boolean).join(" · ");
+  const forLine = [s.who ? `For: ${e_(s.who.replace(/;/g, ", "))}` : "", s.cost ? `<span class="cost">${e_(s.cost)}</span>` : "", s.eligibility ? `<em>${e_(s.eligibility)}</em>` : ""].filter(Boolean).join(" · ");
+  const types = (s.support_for || "").split(";").filter(Boolean).map(cap).map(e_).join(", ");
+  const about = [e_(s.provider), e_(s.type), types].filter(Boolean).join(" · ");
+  return `<article class="card fold a-pick${p.web ? " a-webpick" : ""}${foldClass(s)}"${keyAttr(s)} id="a-pick-${p.n}">
+    <div class="row1">${s.access ? `<span class="badge ${badgeCls}">${e_(badge)}</span>` : "<span></span>"}<span class="chipr">${p.web ? `<span class="a-webtag">Found online, not checked</span>` : ""}${place}</span></div>
+    <h4 class="cname">${p.ll ? `<span class="a-pk-num" style="--pc:${kindCol(s)}" title="Number ${p.n} on the map">${ICON.place}${p.n}</span>` : ""}${nameButton(s)}</h4>
+    ${w ? `<div class="next a-pk-when"><div class="lab">When</div><div class="val">${e_(w)}</div></div>` : ""}
+    <p class="a-pk-why">${e_(p.why)}</p>${restrictLine(s)}
+    <div class="a-pk-acts">${actions(s)}</div>
+    ${about ? `<div class="meta">${about}</div>` : ""}
+    ${s.description ? `<p class="a-desc">${e_(s.description)}</p>` : ""}
+    ${forLine ? `<div class="who">${forLine}</div>` : ""}
+    ${s.note ? `<div class="who"><em>${e_(s.note)}</em></div>` : ""}
+    <div class="foot">${inPerson && where ? `<span>${e_(where)}${near ? ` (${p.distance} miles)` : ""}</span>` : ""}${contact ? `<span>${contact}</span>` : ""}
+      <span>${p.web ? `Found by an online search (${e_(p.web.source)}). Signposting Somerset hasn't checked it: please confirm the details with the service.` : e_(checkedText(s))}</span></div>
+  </article>`;
 }
+// Open or close a suggestion: a click on the card or its name button (not its links)
+$a("a-out").addEventListener("click", ev => { const c = ev.target.closest(".a-pick"); if (c && !ev.target.closest("a, button:not(.cbtn)")) toggleCard(c); });
 
 // ---- the plan: a short summary to give to the person (email, text, print) ----
 const STEP_TITLE = { "First step": "A good place to start", "Next step": "Next", "When ready": "When you feel ready" };
