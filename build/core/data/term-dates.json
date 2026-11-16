@@ -1,0 +1,10 @@
+{
+ "_about": "School terms, for services that run in term time only: the word 'term time' in the sheet's frequency (e.g. 'term time', '3rd Mon of month, term time') or eligibility ('Term time only'). Their sessions are left out in the school holidays of the record's area (the area column; 'default' for anything else). Terms as the councils publish them for community schools: somerset.gov.uk/children-families-and-education/school-term-dates-and-holidays, n-somerset.gov.uk (school term dates), bathnes.gov.uk/school-term-dates. Add the next school year before these run out: build/tests/ fails when fewer than three months are left.",
+ "match": "term[- ]?time",
+ "default": "Somerset",
+ "areas": {
+  "Somerset": [["2026-09-03", "2026-10-23"], ["2026-11-02", "2026-12-18"], ["2027-01-04", "2027-02-12"], ["2027-02-22", "2027-03-25"], ["2027-04-12", "2027-05-28"], ["2027-06-07", "2027-07-23"]],
+  "North Somerset": [["2026-09-03", "2026-10-23"], ["2026-11-02", "2026-12-18"], ["2027-01-04", "2027-02-12"], ["2027-02-22", "2027-03-25"], ["2027-04-12", "2027-05-28"], ["2027-06-07", "2027-07-23"]],
+  "Bath and North East Somerset": [["2026-09-02", "2026-10-23"], ["2026-11-02", "2026-12-18"], ["2027-01-04", "2027-02-12"], ["2027-02-22", "2027-03-25"], ["2027-04-12", "2027-05-28"], ["2027-06-07", "2027-07-22"]]
+ }
+}

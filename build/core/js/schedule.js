@@ -5,6 +5,9 @@
    "2026-11-02 to 2026-12-14" for a course). Tests: build/tests/schedule.test.mjs */
 const DOW = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 const BANK = new Set((/*@core:data/bank-holidays.json*/).dates);
+// School terms, for services that run in term time only (core/data/term-dates.json)
+const TERMS = (/*@core:data/term-dates.json*/), TERM_TIME = new RegExp(TERMS.match, "i");
+const inTerm = (s, d) => { const k = iso(d); return (TERMS.areas[s.area] || TERMS.areas[TERMS.default]).some(([a, b]) => k >= a && k <= b); };
 const iso = d => `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
 const dayStart = d => new Date(d.getFullYear(), d.getMonth(), d.getDate());
 const addDays = (d, n) => new Date(d.getFullYear(), d.getMonth(), d.getDate() + n);
@@ -47,7 +50,7 @@ function nthOk(d, freq) {
 // The kind of schedule: "dated" (its sessions can be worked out), "check" (times to check with the service),
 // "website" (see website), "appointment" (booked or referred, no set days) or "ended" (all its dates have passed)
 function schedKind(s, now = new Date()) {
-  const f = (s.frequency || "").toLowerCase();
+  const f = s._freq.toLowerCase();
   if (s.dates) return s._dates.last && s._dates.last < iso(now) ? "ended" : "dated";
   if (f === "see website") return "website";
   if (!s.days) return ["book", "referral"].includes(s.access) ? "appointment" : "check";
@@ -57,14 +60,19 @@ function schedKind(s, now = new Date()) {
 }
 // The schedule parts of a record, parsed, and its kind of schedule (the record itself is returned, with these added)
 function withSchedule(o, now = new Date()) {
-  o._days = parseDays(o.days); o._times = parseTimes(o.times); o._dates = parseDates(o.dates); o._kind = schedKind(o, now);
+  o._days = parseDays(o.days); o._times = parseTimes(o.times); o._dates = parseDates(o.dates);
+  // "term time" (in the frequency or the eligibility): only in school terms; the rest of the frequency is the pattern ("3rd Mon of month")
+  o._term = TERM_TIME.test(o.frequency || "") || TERM_TIME.test(o.eligibility || "");
+  o._freq = (o.frequency || "").replace(new RegExp(`,?\\s*${TERMS.match}(\\s+only)?`, "i"), "").trim();
+  o._kind = schedKind(o, now);
   return o;
 }
 // Does it meet on day d?
 function runsOn(s, d) {
   if (s._days.size && !s._days.has(d.getDay())) return false;
   if (s.dates) { const k = iso(d); return s._dates.list.has(k) || s._dates.ranges.some(([a, b]) => k >= a && k <= b); }
-  return s.frequency ? nthOk(d, s.frequency) === true : true;
+  if (s._term && !inTerm(s, d)) return false;   // a school holiday
+  return s._freq ? nthOk(d, s._freq) === true : true;
 }
 // Its sessions over `days` days from the start of `from`'s day, in order: { st, en, bank, timed }
 function* sessions(s, from, days) {
@@ -95,7 +103,7 @@ function nextText(s, now, from = now) {
   const day = dd === 0 ? "Today" : dd === 1 ? "Tomorrow" : DAY_DATE.format(o.st);
   const t = s._times ? `, ${fmtT(s._times.s)}${s._times.e != null ? "–" + fmtT(s._times.e) : ""}`
     : split(s.mode).includes("in-person") ? " (time not given: check)" : " (no set time)";
-  return { cls: dd === 0 ? "today" : "", txt: `${day}${t}${o.bank ? " (bank holiday: check it's running)" : ""}`, at: o.st };
+  return { cls: dd === 0 ? "today" : "", txt: `${day}${t}${o.bank ? " (bank holiday: check it's running)" : ""}${s._term ? " (term time)" : ""}`, at: o.st };
 }
 
 // The "3. When?" choices as a time window [from, to): today, this evening, tomorrow, this weekend, next 7 days, next 4 weeks

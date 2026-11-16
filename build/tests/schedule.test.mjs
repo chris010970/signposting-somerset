@@ -13,7 +13,7 @@ const read = p => readFileSync(new URL(p, BUILD), "utf8");
 const stitch = p => read(p).replace(/\/\*@core:(data\/[\w.-]+)\*\//g, (m, f) => read("core/" + f).trimEnd());
 const ctx = vm.createContext({ console });
 vm.runInContext(["core/js/text.js", "core/js/schedule.js", "core/js/sheet.js"].map(stitch).join("\n") +
-  "\nthis.api = { split, webUrl, parseDays, parseTimes, nthOk, withSchedule, occurrences, nextText, windowFor, meetsIn, BANK, iso, fixDate, fixTime, parseCSV, recordsFromCSV };", ctx);
+  "\nthis.api = { split, webUrl, parseDays, parseTimes, nthOk, withSchedule, occurrences, nextText, windowFor, meetsIn, BANK, TERMS, iso, fixDate, fixTime, parseCSV, recordsFromCSV };", ctx);
 const S = ctx.api;
 const at = s => new Date(s);   // a local (UK) time, e.g. "2026-11-16T10:30"
 const rec = (o, now) => S.withSchedule({ mode: "in-person", access: "drop in", type: "Peer group", ...o }, now);
@@ -103,6 +103,27 @@ test("bank holidays are flagged", () => {
 test("bank holiday dates: at least six months still listed (add next year's to core/data/bank-holidays.json)", () => {
   const last = [...S.BANK].sort().pop(), soon = new Date(); soon.setMonth(soon.getMonth() + 6);
   assert.ok(last >= S.iso(soon), `the last bank holiday listed is ${last}`);
+});
+
+test("term time: no sessions in the school holidays of the record's area; the rest of the frequency still applies", () => {
+  const wk = rec({ days: "Mon", times: "09:00-10:00", frequency: "term time", area: "Somerset" }, MON);   // (today's is over by 10:30)
+  assert.equal(wk._kind, "dated", "worked out, not 'Check dates'");
+  assert.match(S.nextText(wk, MON).txt, /^Mon,? 23 Nov, 09:00–10:00 \(term time\)$/);
+  assert.match(S.nextText(wk, at("2026-12-20T12:00")).txt, /^Mon,? 4 Jan, 09:00–10:00 \(term time\)$/, "the Christmas holiday is skipped");
+  // "3rd Mon of month, term time": the 3rd Monday, in term (15 Feb 2027, half term, is skipped: 15 Mar is next)
+  const nth = rec({ days: "Mon", times: "10:00-11:00", frequency: "3rd Mon of month, term time" }, MON);
+  assert.match(S.nextText(nth, at("2027-02-01T12:00")).txt, /^Mon,? 15 Mar, /);
+  // said in the eligibility ("Term time only"), and B&NES's own terms (it goes back on Wed 2 Sep, Somerset on Thu 3 Sep)
+  const elig = rec({ days: "Wed", times: "16:00-17:00", eligibility: "Ages 13-19; term time only", area: "Bath and North East Somerset" }, MON);
+  assert.equal(S.occurrences(elig, at("2026-12-21T09:00"), 14).length, 0, "nothing in the Christmas holiday");
+  assert.ok(S.occurrences(elig, at("2026-11-16T09:00"), 7).length === 1, "in term: as usual");
+  // with no term time, the holidays don't matter
+  assert.equal(S.occurrences(rec({ days: "Mon", times: "10:00-11:00" }, MON), at("2026-12-21T09:00"), 14).length, 2);
+});
+
+test("school terms: at least three months still listed for each area (add the next school year to core/data/term-dates.json)", () => {
+  const soon = new Date(); soon.setMonth(soon.getMonth() + 3);
+  for (const [area, terms] of Object.entries(S.TERMS.areas)) assert.ok(terms.at(-1)[1] >= S.iso(soon), `${area}: the last term listed ends ${terms.at(-1)[1]}`);
 });
 
 test("web links: only http and https addresses", () => {

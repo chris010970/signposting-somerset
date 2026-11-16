@@ -7,6 +7,8 @@ function accessBadge(s) {
 }
 // The kind of service, in the same colour as its map pin
 const kindTag = s => { const k = KINDS[kindOf(s)]; return k ? `<div class="kind"><i style="background:${k[1]}"></i>${esc(k[0])}</div>` : ""; };
+// The details-checked tick sits beside the Next line, so it's left off when that line says the times need checking
+// ("Check dates", "Times vary: see website"): a tick there would read as if the times were confirmed.
 // One card, folded until opened (class "fold": core/css/cards.css). Its name is a button that opens the full details (toggleCard, for keyboards and screen readers too). r: { s: the record, d: miles from the search point (or null), nx: its "Next" line (nextText) }.
 // h: the name's heading level (h2 on the directory; lower where the card sits under section headings).
 // withId: give the card an id (c + record id) for the map to find it; off where a service can appear more than once.
@@ -26,7 +28,7 @@ function serviceCard(r, h = "h2", withId = true) {
       <div class="row1"><span class="badge ${badgeCls}">${badge}</span><span class="chipr">${dist}${directionsLink(s)}${copyBtn(s)}</span></div>
       <${h} class="cname">${nameButton(s)}</${h}>
       ${kindTag(s)}<div class="meta">${esc(s.provider)} · ${esc(s.type)}${types}</div>
-      <div class="next">${checkedTick(s)}<div class="lab">Next</div><div class="val ${r.nx.cls}">${esc(r.nx.txt)}</div></div>
+      <div class="next">${["check", "website"].includes(s._kind) ? "" : checkedTick(s)}<div class="lab">Next</div><div class="val ${r.nx.cls}">${esc(r.nx.txt)}</div></div>
       <p class="desc">${esc(s.description)}</p>${restrictLine(s)}
       ${forLine ? `<div class="who">${forLine}</div>` : ""}
       <div class="foot"><span>${place}</span>${contact ? `<span>${contact}</span>` : ""}</div>

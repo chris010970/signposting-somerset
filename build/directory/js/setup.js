@@ -16,7 +16,7 @@ function prepare(rows) {
   ALL = shapeRecords(rows);
   C = ALL.filter(s => s.type === "Course");
   S = ALL.filter(s => s.type !== "Course" && split(s.mode).includes("in-person"));
-  T = ALL.filter(s => s.type !== "Course" && !split(s.mode).includes("in-person"));  // services with a place live on the In person tab
+  T = ALL.filter(s => s.type !== "Course" && split(s.mode).some(m => m === "phone" || m === "online"));   // by phone or online, with or without a place too
   fs.innerHTML = supportOptions(S);
   $("t-support").innerHTML = supportOptions(T);
   $("c-support").innerHTML = supportOptions(C);

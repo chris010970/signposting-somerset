@@ -250,7 +250,7 @@ test("Assist, with a stand-in relay: unlock, a plan from the records, Copy plan,
   assert.match(await text(p, "#a-pick-1 .badge"), /^Just turn up$/);
   assert.match(await text(p, "#a-pick-1 .a-pk-when"), /^WhenEvery Wed, 10am–12pm$/);
   assert.match(copied, /Test Weekly Drop-in\n   Every Wed, 10am–12pm, Wells, BA5 1AA\n   Just turn up\. Free\n/);
-  assert.match(copied, /Example Befriending[^\n]*\n   Mon-Fri, By phone\n   Phone line\. Free\n/);
+  assert.match(copied, /Example Befriending[^\n]*\n   By phone\. Mon-Fri\n   Phone line\. Free\n/, "not in person: how to take part first, then when");
   // The suggestions are the directory's folding cards: closed until the name is clicked (no links inside a <summary> any more)
   const pick = () => p.$eval("#a-pick-1", c => [c.classList.contains("open"), c.querySelector(".cbtn").getAttribute("aria-expanded"), c.querySelector(".who").offsetParent !== null, c.querySelector(".a-pk-why").offsetParent !== null]);
   assert.deepEqual(await pick(), [false, "false", false, true], "closed: why it was chosen shows; who it's for waits");
@@ -454,6 +454,23 @@ test("Keyboard and screen readers: Skip to results; the list isn't read out on e
   await q.keyboard.press("Tab"); await q.keyboard.press("Enter");
   assert.equal(await q.evaluate(() => document.activeElement.id), "listings", "the town pages too");
   await q.done();
+  assert.deepEqual(p.errors, []);
+  await p.done();
+});
+
+test("Phone and online lists services with a place too, if they can be phoned or joined online; no tick beside \"Check dates\"", async () => {
+  const p = await open("/test/directory/#talk");
+  const sheet = SHEET.replace(/^(Test Weekly Drop-in,(?:[^,]*,){4})in-person,/m, "$1in-person;online,");   // a drop-in that can also be joined online
+  await p.route(/docs\.google|googleusercontent/, r => r.fulfill({ status: 200, contentType: "text/csv", body: sheet }));
+  await p.evaluate(() => sessionStorage.clear()); await p.reload(); await p.waitForTimeout(1200);
+  const talk = await p.$$eval("#panel-talk .tcard h3", hs => hs.map(h => h.textContent));
+  assert.ok(talk.includes("Test Weekly Drop-in"), "on Phone and online");
+  assert.ok(!talk.includes("Test Evening Group"), "in person only: not");
+  await p.click("#tab-near"); await p.waitForTimeout(300);
+  await p.selectOption("#f-when", "any");
+  const tick = name => p.evaluate(n => { const c = [...document.querySelectorAll("#list .card")].find(c => c.querySelector(".cname").textContent === n); return c ? !!c.querySelector(".next .checked") : "not shown"; }, name);
+  assert.equal(await tick("Test Weekly Drop-in"), true, "and still on In person, with its tick");
+  assert.equal(await tick("Test Fortnightly Group"), false, "Check dates: no tick beside it");
   assert.deepEqual(p.errors, []);
   await p.done();
 });
