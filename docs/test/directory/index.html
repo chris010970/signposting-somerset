@@ -757,6 +757,7 @@ h1 { font-family: var(--serif); color: var(--b900); font-size: 26px; margin: 0; 
 .q select { width: 100%; border: 0; background: transparent; font-weight: 600; color: var(--ink); padding: 2px 0; cursor: pointer; }
 .where { display: grid; grid-template-columns: 1fr auto auto; gap: 8px; align-items: center; }
 .where select#within { width: auto; }
+@media (max-width: 380px) { .where { grid-template-columns: minmax(0, 1fr) auto; } .where select#within { grid-column: 1 / -1; } }   /* narrow phones: the distance under the town, so the town fits */
 #q-where { position: relative; }
 .pointnote { position: absolute; right: 10px; top: 6px; max-width: 70%; font-size: 11px; line-height: 1.2; color: #9A3412; text-align: right; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .pointnote:empty { display: none; }
@@ -873,7 +874,8 @@ h1 { font-family: var(--serif); color: var(--b900); font-size: 26px; margin: 0; 
 .next .val.today { color: #047857; }
 .next .val.chk { color: #92400E; }
 .desc { font-size: 13px; color: #57534E; line-height: 1.5; margin: 0 0 8px; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
-.card.open .desc { -webkit-line-clamp: unset; display: block; }
+.card.open .desc, .desc.full { -webkit-line-clamp: unset; display: block; }
+.cname .cbtn { font: inherit; color: inherit; background: none; border: 0; padding: 0; margin: 0; text-align: left; cursor: pointer; }   /* the name: a button that opens the card */
 .who { font-size: 12px; color: var(--ink); margin-bottom: 8px; }
 .who em { font-style: normal; color: #92400E; }
 .foot { font-size: 12px; color: #6B645F; border-top: 1px solid #F5F5F4; padding-top: 8px; display: grid; gap: 3px; }
@@ -963,8 +965,7 @@ footer.urgent p { color: #FEE2E2; }
 .bsec h3 { font-size: 11px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); margin: 10px 0 8px; font-family: var(--sans); }
 .bsec h3.vh + .blist { margin-top: 12px; }
 /* The cards are the In person tab's (build/core/css/cards.css), three or so across */
-.blist { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(340px, 1fr)); gap: 12px; }
-@media (max-width: 400px) { .blist { grid-template-columns: minmax(0, 1fr); } }
+.blist { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 340px), 1fr)); gap: 12px; }
 .blist .card { margin: 0; height: 100%; box-sizing: border-box; }
 
 /* Foot of the page */
@@ -997,7 +998,7 @@ footer.urgent p { color: #FEE2E2; }
 /* Phone and online, Courses, About: a scrolling page of cards */
 #panel-talk { flex: 1; min-height: 0; overflow-y: auto; }
 .talk { max-width: 1432px; margin: 0 auto 0 var(--page-left); padding-block: 14px 110px; }   /* lined up with the header (core/css/page.css) */
-.tgrid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 12px; }
+.tgrid { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 320px), 1fr)); gap: 12px; }   /* one column on the narrowest phones */
 .gh { font-family: var(--serif); color: var(--b900); font-size: 18px; margin: 20px 4px 10px; }
 .talk > .gh:first-child { margin-top: 0; }  /* first heading sits as close to the filters as the In person cards */
 .gh small { font-family: var(--sans); font-size: 12px; color: var(--muted); font-weight: 500; margin-left: 8px; }
@@ -1010,6 +1011,7 @@ footer.urgent p { color: #FEE2E2; }
 .tcard .row1 { flex-wrap: nowrap; align-items: center; }
 .tcard .row1 .mode { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .tcard .row1 .openp { flex-shrink: 0; white-space: nowrap; }
+@media (max-width: 380px) { .tcard .row1 { flex-wrap: wrap; } .tcard .row1 .mode { white-space: normal; } }   /* narrow phones: the line wraps rather than cut "Phone · UK-wide" */
 
 /* Status pill: open now = green; not open yet: later today = amber, this week = blue, further off stays grey */
 .openp { display: inline-flex; align-items: center; gap: 6px; font-size: 12px; font-weight: 700; padding: 3px 9px; border-radius: 999px; }
@@ -1464,6 +1466,11 @@ function copyFallback(txt) {
   document.body.appendChild(ta); ta.select(); try { document.execCommand("copy"); } catch (_) {} ta.remove();
 }
 // The record a Copy details button belongs to: a Places card's (places-view.js, ids "p0"...) or the page's own (ALL)
+// Open or close a service card's full details (a click anywhere on it, or its name button by keyboard), saying so to screen readers
+function toggleCard(card) {
+  card.classList.toggle("open");
+  card.querySelector(".cbtn")?.setAttribute("aria-expanded", card.classList.contains("open"));
+}
 let PLACE_RECS = [];   // the Places listing's records, when one is showing (core/js/places-view.js); ids "p0", "p1"... never clash
 const recordById = id => PLACE_RECS.find(x => x.id === id) || ALL.find(x => String(x.id) === id);
 document.addEventListener("click", e => {
@@ -1483,7 +1490,7 @@ function accessBadge(s) {
 }
 // The kind of service, in the same colour as its map pin
 const kindTag = s => { const k = KINDS[kindOf(s)]; return k ? `<div class="kind"><i style="background:${k[1]}"></i>${esc(k[0])}</div>` : ""; };
-// One card. r: { s: the record, d: miles from the search point (or null), nx: its "Next" line (nextText) }.
+// One card (its name is a button that opens the full details: toggleCard, for keyboards and screen readers too). r: { s: the record, d: miles from the search point (or null), nx: its "Next" line (nextText) }.
 // h: the name's heading level (h2 on the directory; lower where the card sits under section headings).
 // withId: give the card an id (c + record id) for the map to find it; off where a service can appear more than once.
 function serviceCard(r, h = "h2", withId = true) {
@@ -1498,7 +1505,7 @@ function serviceCard(r, h = "h2", withId = true) {
   const place = esc([s.address, s.town, s.postcode].filter(Boolean).join(", ")) + (s.approx ? ` <span class="approx">(approx. location)</span>` : "");
   return `<article class="card"${withId ? ` id="c${s.id}"` : ""} data-id="${s.id}">
       <div class="row1"><span class="badge ${badgeCls}">${badge}</span><span class="chipr">${dist}${cost}${directionsLink(s)}${copyBtn(s)}</span></div>
-      <${h} class="cname">${esc(s.name)}</${h}>
+      <${h} class="cname"><button type="button" class="cbtn" aria-expanded="false">${esc(s.name)}</button></${h}>
       ${kindTag(s)}<div class="meta">${esc(s.provider)} · ${esc(s.type)}${types}</div>
       <div class="next"><div class="lab">Next</div><div class="val ${r.nx.cls}">${esc(r.nx.txt)}</div></div>
       <p class="desc">${esc(s.description)}</p>
@@ -1589,10 +1596,10 @@ function placesView({ main, hdr, scroller, onChange = () => {}, onLink = () => f
       return false;
     } finally { main.classList.remove("loading"); }
   }
-  // Inside the listings: tap a card for its full description; Places links swap in place; other links: onLink
+  // Inside the listings: tap a card (or its name button) for its full description; Places links swap in place; other links: onLink
   main.addEventListener("click", ev => {
     const card = ev.target.closest(".card");
-    if (card && !ev.target.closest("a, button")) { card.classList.toggle("open"); return; }
+    if (card && !ev.target.closest("a, button:not(.cbtn)")) { toggleCard(card); return; }
     const a = ev.target.closest("a"); if (!a || ev.ctrlKey || ev.metaKey || ev.shiftKey || a.target) return;
     const u = new URL(a.getAttribute("href") || "", location.href);
     if (u.origin !== location.origin) return;
@@ -1981,7 +1988,7 @@ $("list").addEventListener("click", e => {
   if (e.target.closest("#show-month")) { $("f-when").value = "month"; refit(); return; }
   if (e.target.closest("a, .copy")) return;
   const c = e.target.closest(".card"); if (!c) return;
-  c.classList.toggle("open");
+  toggleCard(c);
   const m = markers[c.dataset.id];
   if (m && map && mapVisible()) { map.flyTo(m.getLatLng(), Math.max(map.getZoom(), 15), { duration: .5 }); m.openTooltip(); }
 });
@@ -2152,7 +2159,7 @@ function renderAbout() {
     </section>
     </div></div>
     <p class="small">Service information belongs to the providers listed. Map data © <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap</a> contributors, © <a href="https://carto.com/attributions" target="_blank" rel="noopener">CARTO</a>.</p>
-    <p class="small" id="site-version">Version: test 2026-11-16 17:48</p>
+    <p class="small" id="site-version">Version: test 2026-11-16 18:17</p>
   </article>`;
 }
 /* ---------- Places: the town listings, as a tab of the directory ----------

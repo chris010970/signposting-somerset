@@ -81,10 +81,10 @@ function placesView({ main, hdr, scroller, onChange = () => {}, onLink = () => f
       return false;
     } finally { main.classList.remove("loading"); }
   }
-  // Inside the listings: tap a card for its full description; Places links swap in place; other links: onLink
+  // Inside the listings: tap a card (or its name button) for its full description; Places links swap in place; other links: onLink
   main.addEventListener("click", ev => {
     const card = ev.target.closest(".card");
-    if (card && !ev.target.closest("a, button")) { card.classList.toggle("open"); return; }
+    if (card && !ev.target.closest("a, button:not(.cbtn)")) { toggleCard(card); return; }
     const a = ev.target.closest("a"); if (!a || ev.ctrlKey || ev.metaKey || ev.shiftKey || a.target) return;
     const u = new URL(a.getAttribute("href") || "", location.href);
     if (u.origin !== location.origin) return;

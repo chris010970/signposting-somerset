@@ -105,7 +105,7 @@ $("list").addEventListener("click", e => {
   if (e.target.closest("#show-month")) { $("f-when").value = "month"; refit(); return; }
   if (e.target.closest("a, .copy")) return;
   const c = e.target.closest(".card"); if (!c) return;
-  c.classList.toggle("open");
+  toggleCard(c);
   const m = markers[c.dataset.id];
   if (m && map && mapVisible()) { map.flyTo(m.getLatLng(), Math.max(map.getZoom(), 15), { duration: .5 }); m.openTooltip(); }
 });

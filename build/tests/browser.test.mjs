@@ -277,6 +277,33 @@ test("Quick exit: leaves the site, and Back doesn't return to it", async () => {
   await p.done();
 });
 
+test("Keyboard: a card's name is a button that opens and closes its details (In person and Places)", async () => {
+  const p = await open("/test/directory/#near");
+  for (const [tabId, sel] of [["#tab-near", "#list .card"], ["#tab-places", "#places-main li[data-i]:not([hidden]) .card"]]) {
+    await p.click(tabId); await p.waitForTimeout(600);
+    if (tabId === "#tab-places") { await p.selectOption("#b-town", { label: "Wells" }); await p.waitForTimeout(600); }
+    await p.focus(`${sel} .cbtn`);
+    const state = () => p.$eval(sel, c => [c.classList.contains("open"), c.querySelector(".cbtn").getAttribute("aria-expanded")]);
+    await p.keyboard.press("Enter"); assert.deepEqual(await state(), [true, "true"], `${tabId}: Enter opens it`);
+    await p.keyboard.press("Space"); assert.deepEqual(await state(), [false, "false"], `${tabId}: Space closes it`);
+  }
+  assert.deepEqual(p.errors, []);
+  await p.done();
+});
+
+test("Narrow phones (320px): nothing runs off the side, on every tab and page", async () => {
+  for (const path of ["/test/directory/#near", "/test/directory/#talk", "/test/directory/#course", "/test/directory/#places", "/test/directory/#about",
+      "/test/directory/places/", "/test/directory/places/wells/", "/test/tools/#about"]) {
+    const p = await open(path, { width: 320 });
+    if (path.endsWith("#places")) { await p.selectOption("#b-town", { label: "Wells" }); await p.waitForTimeout(600); }
+    const out = await p.evaluate(() => [...document.querySelectorAll(".card, .tcard, .q, .sitetabs, .crisis")].filter(e => e.offsetParent)
+      .map(e => e.getBoundingClientRect()).filter(r => r.width && (r.left < -0.5 || r.right > document.documentElement.clientWidth + 0.5)).length);
+    assert.equal(out, 0, `${path}: cards, filter boxes and bars fit across the screen`);
+    assert.ok(await p.evaluate(() => document.documentElement.scrollWidth <= document.documentElement.clientWidth), `${path}: no sideways scrolling`);
+    await p.done();
+  }
+});
+
 // The Places pages, as built from the real sheet
 const TOWN_PAGES = readdirSync(join(DOCS, "test", "directory", "places")).filter(t => existsSync(join(DOCS, "test", "directory", "places", t, "index.html")));
 

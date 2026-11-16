@@ -747,6 +747,7 @@ h1 { font-family: var(--serif); color: var(--b900); font-size: 26px; margin: 0; 
 .q select { width: 100%; border: 0; background: transparent; font-weight: 600; color: var(--ink); padding: 2px 0; cursor: pointer; }
 .where { display: grid; grid-template-columns: 1fr auto auto; gap: 8px; align-items: center; }
 .where select#within { width: auto; }
+@media (max-width: 380px) { .where { grid-template-columns: minmax(0, 1fr) auto; } .where select#within { grid-column: 1 / -1; } }   /* narrow phones: the distance under the town, so the town fits */
 #q-where { position: relative; }
 .pointnote { position: absolute; right: 10px; top: 6px; max-width: 70%; font-size: 11px; line-height: 1.2; color: #9A3412; text-align: right; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .pointnote:empty { display: none; }
@@ -863,7 +864,8 @@ h1 { font-family: var(--serif); color: var(--b900); font-size: 26px; margin: 0; 
 .next .val.today { color: #047857; }
 .next .val.chk { color: #92400E; }
 .desc { font-size: 13px; color: #57534E; line-height: 1.5; margin: 0 0 8px; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
-.card.open .desc { -webkit-line-clamp: unset; display: block; }
+.card.open .desc, .desc.full { -webkit-line-clamp: unset; display: block; }
+.cname .cbtn { font: inherit; color: inherit; background: none; border: 0; padding: 0; margin: 0; text-align: left; cursor: pointer; }   /* the name: a button that opens the card */
 .who { font-size: 12px; color: var(--ink); margin-bottom: 8px; }
 .who em { font-style: normal; color: #92400E; }
 .foot { font-size: 12px; color: #6B645F; border-top: 1px solid #F5F5F4; padding-top: 8px; display: grid; gap: 3px; }
@@ -1718,6 +1720,11 @@ function copyFallback(txt) {
   document.body.appendChild(ta); ta.select(); try { document.execCommand("copy"); } catch (_) {} ta.remove();
 }
 // The record a Copy details button belongs to: a Places card's (places-view.js, ids "p0"...) or the page's own (ALL)
+// Open or close a service card's full details (a click anywhere on it, or its name button by keyboard), saying so to screen readers
+function toggleCard(card) {
+  card.classList.toggle("open");
+  card.querySelector(".cbtn")?.setAttribute("aria-expanded", card.classList.contains("open"));
+}
 let PLACE_RECS = [];   // the Places listing's records, when one is showing (core/js/places-view.js); ids "p0", "p1"... never clash
 const recordById = id => PLACE_RECS.find(x => x.id === id) || ALL.find(x => String(x.id) === id);
 document.addEventListener("click", e => {
@@ -1836,7 +1843,7 @@ function renderAbout() {
       <li><strong>Data:</strong> ONS boundaries, population (mid-2022) and urban/rural classification; MHCLG Indices of Deprivation 2025; Census 2021; open postcode data (2016). Open Government Licence.</li>
     </ul>
     </div></div>
-    <p class="small" id="site-version">Version: tools 2026-11-16 17:48${typeof window.assistRelayVersion === "function" ? window.assistRelayVersion() : ""}</p>
+    <p class="small" id="site-version">Version: tools 2026-11-16 18:17${typeof window.assistRelayVersion === "function" ? window.assistRelayVersion() : ""}</p>
   </article>`;
 }
 
@@ -2318,7 +2325,7 @@ async function initAnalytics() {
    this page only remembers it for the current browser session. */
 (() => {
 const WORKER_URL = "https://signposting-assist.c-r-williams0109.workers.dev";
-const PAGE_VERSION = "tools 2026-11-16 17:48";
+const PAGE_VERSION = "tools 2026-11-16 18:17";
 let relayVersion = "";
 // The version line is at the bottom of the About tab: "Version: test 2026-11-06 11:30 · Assist relay 2026-11-06 11:07"
 window.assistRelayVersion = () => relayVersion ? ` · Assist relay ${relayVersion}` : "";

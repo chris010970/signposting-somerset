@@ -19,6 +19,7 @@ h1 { font-family: var(--serif); color: var(--b900); font-size: 26px; margin: 0; 
 .q select { width: 100%; border: 0; background: transparent; font-weight: 600; color: var(--ink); padding: 2px 0; cursor: pointer; }
 .where { display: grid; grid-template-columns: 1fr auto auto; gap: 8px; align-items: center; }
 .where select#within { width: auto; }
+@media (max-width: 380px) { .where { grid-template-columns: minmax(0, 1fr) auto; } .where select#within { grid-column: 1 / -1; } }   /* narrow phones: the distance under the town, so the town fits */
 #q-where { position: relative; }
 .pointnote { position: absolute; right: 10px; top: 6px; max-width: 70%; font-size: 11px; line-height: 1.2; color: #9A3412; text-align: right; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .pointnote:empty { display: none; }

@@ -152,7 +152,7 @@ def card(d, r, i):
             f'<div class="row1"><span class="badge {cls}">{label}</span><span class="chipr">{dist}{cost}</span></div>'
             f'<h4 class="cname">{e(r["name"])}</h4>{kind_tag}<div class="meta">{e(r.get("provider", ""))} · {e(r.get("type", ""))}{types}</div>'
             f'<div class="next"><div class="lab">When</div><div class="val">{e(pattern(r))}</div></div>'
-            f'<p class="desc">{e(r.get("description", ""))}</p>{who}'
+            f'<p class="desc full">{e(r.get("description", ""))}</p>{who}'   # (in full: without JavaScript a card can't open)
             f'<div class="foot"><span>{place}</span>' + (f'<span>{" · ".join(contact)}</span>' if contact else "") + '</div></article></li>')
 
 def page_data(items):

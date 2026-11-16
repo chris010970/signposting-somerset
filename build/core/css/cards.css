@@ -46,7 +46,8 @@
 .next .val.today { color: #047857; }
 .next .val.chk { color: #92400E; }
 .desc { font-size: 13px; color: #57534E; line-height: 1.5; margin: 0 0 8px; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
-.card.open .desc { -webkit-line-clamp: unset; display: block; }
+.card.open .desc, .desc.full { -webkit-line-clamp: unset; display: block; }
+.cname .cbtn { font: inherit; color: inherit; background: none; border: 0; padding: 0; margin: 0; text-align: left; cursor: pointer; }   /* the name: a button that opens the card */
 .who { font-size: 12px; color: var(--ink); margin-bottom: 8px; }
 .who em { font-style: normal; color: #92400E; }
 .foot { font-size: 12px; color: #6B645F; border-top: 1px solid #F5F5F4; padding-top: 8px; display: grid; gap: 3px; }

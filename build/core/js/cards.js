@@ -55,6 +55,11 @@ function copyFallback(txt) {
   document.body.appendChild(ta); ta.select(); try { document.execCommand("copy"); } catch (_) {} ta.remove();
 }
 // The record a Copy details button belongs to: a Places card's (places-view.js, ids "p0"...) or the page's own (ALL)
+// Open or close a service card's full details (a click anywhere on it, or its name button by keyboard), saying so to screen readers
+function toggleCard(card) {
+  card.classList.toggle("open");
+  card.querySelector(".cbtn")?.setAttribute("aria-expanded", card.classList.contains("open"));
+}
 let PLACE_RECS = [];   // the Places listing's records, when one is showing (core/js/places-view.js); ids "p0", "p1"... never clash
 const recordById = id => PLACE_RECS.find(x => x.id === id) || ALL.find(x => String(x.id) === id);
 document.addEventListener("click", e => {
