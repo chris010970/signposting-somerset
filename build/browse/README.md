@@ -2,7 +2,9 @@
 
 Plain pages by town, for people who prefer a simple list and for search engines: `/directory/places/` (choose a town) and `/directory/places/<town>/`.
 Their tab row is the directory's: In person, Phone and online and Courses link back to the directory; Places is selected.
-Under it are the same filter boxes as the directory's tabs: 1. Support for (with counts) and 2. Where? (the town). Changing the town
+Under it are the same filter boxes as the directory's In person tab: 1. Support for (with counts), 2. Where? (the town) and
+3. When? (Any time, Today, This evening, Tomorrow, This weekend, Next 7 days, Next 4 weeks; worked out in the browser,
+so groups with no set times show only under Any time). Changing the town
 swaps the page in place and keeps the support chosen; every town still has its own address, and plain links to the other towns sit at the foot of each page.
 The Places page itself (no town chosen yet) is two cards: what to do, with plain links to every town, and the map to pick one from.
 

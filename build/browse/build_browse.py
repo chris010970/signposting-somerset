@@ -106,10 +106,11 @@ def pattern(r):
 
 def row(d, r, town):
     local = r.get("town") == town
-    dist = ("in " + town if local and d < 1.5 else f"{d:.1f} mi" if d < 10 else f"{d:.0f} mi") + (" (approx.)" if r["_approx"] and not local else "")
+    # In-town cards sit under "In <town>", so they don't repeat it (a distance still shows if it's well out of the centre)
+    dist = ("" if local and d < 1.5 else f"{d:.1f} mi" if d < 10 else f"{d:.0f} mi") + (" (approx.)" if r["_approx"] and not local else "")
     acc = ACCESS.get(r.get("access", ""))
     who = r.get("who", "")
-    bits = [f'<span class="bwhere">{e(r.get("town") or "")}</span>' if not local else "", f"<span>{e(dist)}</span>",
+    bits = [f'<span class="bwhere">{e(r.get("town") or "")}</span>' if not local else "", f"<span>{e(dist)}</span>" if dist else "",
             f'<span class="bwhen" data-days="{e(r.get("days",""))}" data-times="{e(r.get("times",""))}" data-freq="{e(r.get("frequency",""))}" data-mode="{e(r.get("mode",""))}">{e(pattern(r))}</span>']
     meta = " · ".join(b for b in bits if b)
     contact = []
@@ -135,13 +136,18 @@ def town_options(base, current=None):
     return first + "".join(f'<optgroup label="{e(a)}">' + "".join(
         f'<option value="{base}{slug(t)}/"{" selected" if t == current else ""}>{e(t)}</option>' for t in sorted(ts)) + "</optgroup>" for a, ts in AREAS)
 
+WHEN_OPTIONS = ('<option value="any" selected>Any time</option><option value="today">Today</option>'
+                '<option value="evening">This evening (after 5pm)</option><option value="tomorrow">Tomorrow</option>'
+                '<option value="weekend">This weekend</option><option value="week">Next 7 days</option><option value="month">Next 4 weeks</option>')
+
 def filters(base, current=None, counts=None, total=0):
-    """The filter boxes, as on the directory's tabs: 1. Support for (with counts on a town page), 2. Where? (the town)."""
+    """The filter boxes, as on the directory's In person tab: 1. Support for (with counts on a town page), 2. Where? (the town), 3. When?"""
     if counts is None: sup = ['<option value="all">All support</option>'] + [f'<option value="{c["id"]}">{e(c["label"])}</option>' for c in CATS]
     else: sup = [f'<option value="all">All support ({total})</option>'] + [f'<option value="{c["id"]}">{e(c["label"])} ({counts[c["id"]]})</option>' for c in CATS if counts[c["id"]]]
     return (f'<div id="hdr-towns"><div class="qs">'
             f'<div class="q" id="bq-support"><label for="b-support">1. Support for</label><select id="b-support">{"".join(sup)}</select></div>'
             f'<div class="q{" on" if current else ""}" id="bq-town"><label for="b-town">2. Where?</label><select id="b-town">{town_options(base, current)}</select></div>'
+            f'<div class="q" id="bq-when"><label for="b-when">3. When? <span class="btoday"></span></label><select id="b-when">{WHEN_OPTIONS}</select></div>'
             f'</div></div>')
 
 def other_towns(base, current):
@@ -165,13 +171,13 @@ def town_main(town, items, dirbase, base):
         inn = [row(d, r, town) for d, r in items if c["id"] in r["_cats"] and r.get("town") == town]
         near = [row(d, r, town) for d, r in items if c["id"] in r["_cats"] and r.get("town") != town]
         maplink = f'{dirbase}?' + (f'support={urllib.request.quote(c["map"])}&' if c["map"] else "") + f'town={urllib.request.quote(town)}&lat={TOWNS[town][0]}&lon={TOWNS[town][1]}&label={urllib.request.quote(town)}#near'   # town if the directory lists it, otherwise its centre
-        secs.append(f'<section class="bsec" id="{c["id"]}" data-k="{c["id"]}"><div class="bsh"><h2>{e(c["heading"].replace("{town}", town))}</h2>'
-                    f'<a class="bmap" href="{maplink}">View on the map →</a></div>'
-                    + (f'<h3>In {e(town)}</h3><ul class="blist">{"".join(inn)}</ul>' if inn else "")
-                    + (f'<h3>Nearby</h3><ul class="blist">{"".join(near)}</ul>' if near else "") + "</section>")
-    return (f'<div class="bcrumb"><a href="../">Places</a> › {e(town)}</div>'
-            f'<h1 class="bt">Mental health and wellbeing support in and around {e(town)}</h1>'
-            f'<p class="bnote">{total} free and low-cost groups and services you can go to, within about {RADIUS} miles. Choose what you\'re looking for above.</p>'
+        secs.append(f'<section class="bsec" id="{c["id"]}" data-k="{c["id"]}"><div class="bsh"><h2>{e(c["label"])} <span>{n}</span></h2>'
+                    f'<a class="bmap" href="{maplink}">On the map →</a></div>'
+                    + (f'<h3 data-l="In {e(town)}">In {e(town)} · {len(inn)}</h3><ul class="blist">{"".join(inn)}</ul>' if inn else "")
+                    + (f'<h3 data-l="Nearby">Nearby · {len(near)}</h3><ul class="blist">{"".join(near)}</ul>' if near else "") + "</section>")
+    return (f'<div class="bhead"><h1 class="bt">Support in and around {e(town)}</h1>'
+            f'<span>{total} free and low-cost groups and services within about {RADIUS} miles</span></div>'
+            f'<p class="bnone" hidden>Nothing listed for that time. Many groups ask you to get in touch for times: try <b>Any time</b>.</p>'
             + "".join(secs) +
             f'<p class="bfoot">Also: <a href="{dirbase}#talk">phone and online support</a> you can use from anywhere. '
             f'Distances are straight lines. Please check with the service before going, as details can change. Updated {UPDATED}.</p>' + other_towns(base, town))
@@ -231,15 +237,17 @@ html, body { height: auto; } body { display: block; padding-bottom: calc(var(--f
 .bpick .bt { margin-top: 0; } .bpick p { color: var(--muted); max-width: 52ch; } .bpick .otowns { margin-top: 14px; }
 .bpick .bmapwrap { display: flex; align-items: center; justify-content: center; } .bpick .bmapsvg { max-height: calc(100vh - 380px); }
 @media (max-width: 760px) { .bpick { grid-template-columns: 1fr; } .bpick > div { padding: 18px; } }
+#bq-when .btoday { float: right; text-transform: none; letter-spacing: 0; color: #78716C; font-weight: 500; }
+.bnone { background: var(--white); border: 1px solid var(--line); border-radius: 16px; padding: 18px 20px; color: var(--muted); margin-top: 12px; }
 .otowns { font-size: 12.5px; color: var(--muted); margin-top: 10px; line-height: 1.7; } .otowns a { color: var(--b700); }
 .bmain { min-width: 0; } .bmain.loading { opacity: .5; transition: opacity .15s; }
-.bcrumb { font-size: 12px; color: var(--muted); } .bcrumb a { color: var(--b700); }
 .bt { font-family: var(--serif); color: var(--b900); font-size: 22px; line-height: 1.25; margin: 4px 0 4px; }
 .blead { font-size: 14px; color: var(--ink); margin: 0 0 4px; line-height: 1.5; max-width: 75ch; } .bnote { font-size: 13px; color: var(--muted); margin: 0 0 12px; } .bnote a, .bfoot a { color: var(--b700); }
 .bsec { margin-top: 10px; }
-.bsh { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; flex-wrap: wrap; margin: 18px 0 4px; }
-.bsh h2 { font-family: var(--serif); color: var(--b900); font-size: 18px; margin: 0; } .bmap { color: var(--b700); font-weight: 600; font-size: 12.5px; }
-.bsec h3 { font-size: 11px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); margin: 12px 0 8px; font-family: var(--sans); }
+.bsh { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; flex-wrap: wrap; margin: 20px 0 2px; padding-bottom: 6px; border-bottom: 1px solid var(--line); }
+.bhead { display: flex; align-items: baseline; gap: 6px 14px; flex-wrap: wrap; margin: 2px 0 6px; } .bhead .bt { margin: 0; font-size: 20px; } .bhead span { font-size: 13px; color: var(--muted); }
+.bsh h2 { font-family: var(--serif); color: var(--b900); font-size: 17px; margin: 0; } .bsh h2 span { font-family: var(--sans); font-size: 12px; font-weight: 600; color: var(--muted); margin-left: 4px; } .bmap { color: var(--b700); font-weight: 600; font-size: 12.5px; }
+.bsec h3 { font-size: 11px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); margin: 10px 0 8px; font-family: var(--sans); }
 .blist { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(340px, 1fr)); gap: 12px; }
 .br { background: var(--white); border-radius: 16px; padding: 14px 16px; box-shadow: 0 1px 2px rgba(0,0,0,.05); border: 1px solid var(--line); display: flex; flex-direction: column; gap: 3px; }
 .brow { display: flex; justify-content: space-between; align-items: flex-start; gap: 10px; }
@@ -252,6 +260,9 @@ html, body { height: auto; } body { display: block; padding-bottom: calc(var(--f
 /* These pages scroll and the directory doesn't, so centring on the page width would sit everything half a scrollbar
    to the left of the directory. Centre on the window width instead, as the directory effectively does. */
 .top .inner, footer .inner, .bw { margin-left: max(0px, calc((100vw - 32px - 1400px) / 2)); margin-right: auto; }
+/* ...and size the header on the window width too, so the filter boxes are exactly as wide as the directory's
+   (on a narrow window the header's right edge, the end of the illustration, goes under the scrollbar) */
+.top .inner { width: min(1400px, calc(100vw - 32px)); max-width: none; } header.top { overflow: hidden; }
 .bmapsvg { width: 100%; height: auto; display: block; } .bmapsvg .land { fill: #E1EBE5; stroke: #fff; stroke-width: 1.5; }
 .bmapsvg a circle { fill: #176B55; stroke: #fff; stroke-width: 2; } .bmapsvg a text { font-size: 13px; font-weight: 600; fill: var(--b900); paint-order: stroke; stroke: #F9F9F7; stroke-width: 3px; }
 .bmapsvg a:hover circle, .bmapsvg a:focus circle { fill: #14302A; r: 7; } .bmapsvg a:hover text { fill: #176B55; text-decoration: underline; }
@@ -273,6 +284,28 @@ PAGE_JS = r"""
   const nth = (d, f) => { const m = f.match(/^((?:1st|2nd|3rd|4th|last)(?: and (?:1st|2nd|3rd|4th|last))?) (\w{3}) of month$/i); if (!m) return null;
     const n = Math.ceil(d.getDate() / 7), last = new Date(d.getTime() + 7 * 864e5).getMonth() !== d.getMonth();
     return m[1].split(" and ").some(w => w.toLowerCase() === "last" ? last : ORD[w.toLowerCase()] === n); };
+  const NO_SET = el => !days(el.dataset.days).size || ((el.dataset.freq || "").trim() && nth(new Date(), el.dataset.freq.trim()) === null);
+  function slots(el) {   // the session's start and end, in minutes after midnight
+    const t = (el.dataset.times || "").match(/^(\d\d):(\d\d)(?:-(\d\d):(\d\d))?$/);
+    const start = t ? +t[1] * 60 + +t[2] : null;
+    return [start, t ? (t[3] ? +t[3] * 60 + +t[4] : start + 90) : (/in-person/.test(el.dataset.mode) ? 1080 : 1439)];
+  }
+  function meets(el, w, now) {   // 3. When?: does it meet in the chosen time (same windows as the directory's In person tab)?
+    if (w === "any") return true;
+    if (el.dataset.days === "Mon-Sun" && el.dataset.times === "00:00-23:59") return true;
+    if (NO_SET(el)) return false;   // no set times ("contact for times", "check dates"): only under Any time
+    const ds = days(el.dataset.days), f = (el.dataset.freq || "").trim(), [start, end] = slots(el), dow = now.getDay(), mins = now.getHours() * 60 + now.getMinutes();
+    const win = { today: [0, 1], evening: [0, 1], tomorrow: [1, 2], week: [0, 7], month: [0, 28],
+                  weekend: dow === 6 ? [0, 2] : dow === 0 ? [0, 1] : [6 - dow, 8 - dow] }[w];
+    for (let i = win[0]; i < win[1]; i++) {
+      const d = new Date(now.getFullYear(), now.getMonth(), now.getDate() + i);
+      if (!ds.has(d.getDay()) || (f && !nth(d, f))) continue;
+      if (i === 0 && mins >= end) continue;   // already over today
+      if (w === "evening" && end <= 17 * 60) continue;
+      return true;
+    }
+    return false;
+  }
   function next(el, now) {
     const ds = days(el.dataset.days), f = (el.dataset.freq || "").trim(), t = (el.dataset.times || "").match(/^(\d\d):(\d\d)(?:-(\d\d):(\d\d))?$/);
     if (!ds.size || (f && nth(now, f) === null) || (el.dataset.days === "Mon-Sun" && el.dataset.times === "00:00-23:59")) return "";
@@ -287,17 +320,31 @@ PAGE_JS = r"""
   }
   function dates(root) { const now = new Date(); root.querySelectorAll(".bwhen").forEach(el => { const n = next(el, now); if (n && !el.nextElementSibling?.classList.contains("bnext")) el.insertAdjacentHTML("afterend", ` · <span class="bnext">Next: ${n}</span>`); }); }
   const $ = id => document.getElementById(id);
-  function pick(k) {   // 1. Support for: show that section, or all of them
+  function pick(k) {   // 1. Support for: show that section, or all of them; 3. When?: only cards that meet then
     const sel = $("b-support"); if (!sel) return;
     if (![...sel.options].some(o => o.value === k)) k = "all";
     sel.value = k; $("bq-support").classList.toggle("on", k !== "all");
-    main.querySelectorAll(".bsec").forEach(s => s.hidden = k !== "all" && s.dataset.k !== k);
+    const w = $("b-when").value, now = new Date(); $("bq-when").classList.toggle("on", w !== "any");
+    let shown = 0;
+    main.querySelectorAll(".bsec").forEach(s => {
+      let n = 0;
+      s.querySelectorAll("h3").forEach(h => {
+        const ul = h.nextElementSibling; let m = 0;
+        ul.querySelectorAll(".br").forEach(c => { const ok = meets(c.querySelector(".bwhen"), w, now); c.hidden = !ok; m += ok; });
+        h.hidden = ul.hidden = !m; h.textContent = h.dataset.l + " · " + m; n += m;
+      });
+      const c = s.querySelector(".bsh h2 span"); if (c) c.textContent = n;
+      s.hidden = !n || (k !== "all" && s.dataset.k !== k); if (!s.hidden) shown++;
+    });
+    const none = main.querySelector(".bnone"); if (none) none.hidden = !!shown || !main.querySelector(".bsec");
   }
   function wire() {
     dates(main);
     pick(location.hash.slice(1) || "all");
     $("b-support").onchange = () => { const k = $("b-support").value; pick(k);
       history.replaceState(history.state, "", location.pathname + (k === "all" ? "" : "#" + k)); };
+    $("b-when").onchange = () => pick($("b-support").value);
+    const tl = hdr.querySelector(".btoday"); if (tl) tl.textContent = new Date().toLocaleDateString("en-GB", { weekday: "short", day: "numeric", month: "short" });
     $("b-town").onchange = () => { const v = $("b-town").value, k = $("b-support").value;   // 2. Where?: that town, keeping the support chosen
       if (v) go(v + (k && k !== "all" ? "#" + k : ""), true); };
   }
@@ -307,7 +354,9 @@ PAGE_JS = r"""
     try {
       const r = await fetch(href.split("#")[0], { cache: "no-cache" }); if (!r.ok) throw 0;
       const doc = new DOMParser().parseFromString(await r.text(), "text/html");
+      const when = $("b-when").value;   // keep 3. When? across towns
       main.innerHTML = doc.querySelector(".bmain").innerHTML; hdr.innerHTML = doc.getElementById("hdr-towns").innerHTML; document.title = doc.title;
+      $("b-when").value = when;
       const md = doc.querySelector('meta[name="description"]'); if (md) document.querySelector('meta[name="description"]')?.setAttribute("content", md.content);
       if (push) history.pushState({ b: 1 }, "", href); wire(); window.scrollTo(0, 0);
     } catch (_) { location.href = href; }
