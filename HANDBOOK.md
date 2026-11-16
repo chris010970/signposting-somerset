@@ -147,6 +147,7 @@ python run_scenarios.py --scenarios scenarios-helpline.json --all   # local 24/7
 - **Directions** link only for records with a postcode; Apple Maps on iPhone/iPad, Google Maps elsewhere. Phone numbers are tap-to-call.
 - **Search:** meta description "Discover mental health and wellbeing support across Somerset, North Somerset and B&NES: what's on, when and where. Built for anyone looking for help, activities or community connections."; canonical `/directory/`; test page `noindex`; sitemap lists `/directory/`.
 - **Assist answer limit:** `max_tokens` 8000 (lower values cut long plans off).
+- **Assist wording:** Assist's cards and plan use the directory's wording (the access badge, support types, and Copy details' regular pattern: "Every Wed, 10am–12pm"). A plan runs over a few weeks, so it gives the regular days, times and frequency rather than the next date.
 
 - **Analytics:** taken out of the directory on 15 Nov 2026, to be rebuilt as its own page `/analytics/` (desktop only). What was decided and why, the last working code and a screenshot are in `build/analytics/` (start with `DESIGN.md`). Data file: `docs/assets/analytics-lsoa.geojson`.
 

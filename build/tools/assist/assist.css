@@ -86,11 +86,6 @@
 #panel-assist details.a-pick summary:focus-visible { outline: 2px solid var(--b500); outline-offset: -2px; border-radius: 12px; }
 #panel-assist .a-pk-name { font-family: var(--serif); font-weight: 700; font-size: 17px; color: var(--b900); line-height: 1.25; }
 #panel-assist .a-pk-badges { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; margin: 4px 0 2px; }
-#panel-assist .a-badge { display: inline-flex; align-items: center; gap: 6px; font-size: 12px; font-weight: 700; padding: 3px 9px; border-radius: 7px; border: 1px solid; }
-#panel-assist .ab-drop { background: #D1FAE5; color: #064E3B; border-color: #A7F3D0; }
-#panel-assist .ab-sign { background: #E0F2FE; color: #0C4A6E; border-color: #BAE6FD; }
-#panel-assist .ab-book { background: #FEF3C7; color: #78350F; border-color: #FDE68A; }
-#panel-assist .ab-ref { background: #F1F5F9; color: #1E293B; border-color: #CBD5E1; }
 #panel-assist .a-chip { display: inline-flex; align-items: center; font-size: 12px; font-weight: 600; color: #57534E; background: #F5F5F4; border: 1px solid var(--line); padding: 3px 8px; border-radius: 6px; }
 #panel-assist .a-chip.dist { color: var(--b800); background: var(--b50); border-color: var(--b100); }
 #panel-assist .a-m { display: inline-flex; align-items: center; gap: 4px; }

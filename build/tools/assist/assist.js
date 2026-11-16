@@ -252,9 +252,6 @@ async function run() {
 let lastPicks = [];
 const STEPS = ["First step", "Next step", "When ready"];
 const normStep = s => STEPS.find(x => x.toLowerCase() === String(s).toLowerCase()) || "Next step";
-const HOW = { "drop in": "Just turn up", "sign up": "Contact to join", "book": "Book first", "referral": "Needs a referral", "call": "Phone line" };
-const how_ = s => s.access === "call" && isGroupType(s) ? "Call first" : (HOW[s.access] || s.access);   // groups you phone before joining aren't phone lines
-const HOWCLS = { "drop in": "ab-drop", "sign up": "ab-sign", "book": "ab-book", "referral": "ab-ref", "call": "ab-ref" };
 
 let lastResult = null;
 function show(r, keepScroll) {
@@ -368,32 +365,14 @@ function showPins() {
 }
 window.addEventListener("afterprint", () => document.body.classList.remove("a-printing"));
 
-// Dates read as "Thu 26 Nov, Thu 11 Feb 2027" (year only when it isn't this year); past dates are left out
-function shortDate(d) {
-  const t = new Date(d + "T12:00:00"); if (isNaN(t)) return d;
-  const o = { weekday: "short", day: "numeric", month: "short" }; if (t.getFullYear() !== new Date().getFullYear()) o.year = "numeric";
-  return t.toLocaleDateString("en-GB", o).replace(",", "").replace("Sept", "Sep");
-}
-function datesText(raw) {
-  const today = new Date().toISOString().slice(0, 10);
-  const parts = raw.split(";").map(x => x.trim()).filter(Boolean)
-    .filter(x => (x.split(" to ").pop()) >= today)
-    .map(x => x.includes(" to ") ? x.split(" to ").map(shortDate).join(" to ") : shortDate(x));
-  return parts.length > 5 ? parts.slice(0, 5).join(", ") + "…" : parts.join(", ");
-}
-// "Mon-Fri 09:00-20:00" reads as "Mon to Fri, 9am to 8pm"; "Mon-Sun 00:00-23:59" as "Every day, 24 hours"
-function clock(t) { const m = /^(\d\d):(\d\d)$/.exec(t); if (!m) return t; const h = +m[1], mi = +m[2]; if (h === 12 && !mi) return "noon"; return `${h % 12 || 12}${mi ? ":" + m[2] : ""}${h < 12 ? "am" : "pm"}`; }
-function timesText(t) { if (!t) return ""; if (/^00:00-23:59$/.test(t)) return "24 hours"; return t.split(/\s*[;,]\s*/).map(x => x.split("-").map(clock).join(" to ")).join(", "); }
-function daysText(d) {
-  d = (d || "").trim(); if (!d) return "";
-  if (d === "Mon-Sun") return "Every day"; if (d === "Mon-Fri") return "Mon to Fri"; if (d === "Sat-Sun" || d === "Sat;Sun") return "Weekends";
-  return d.split(";").map(x => x.trim().replace(/^(\w{3})-(\w{3})$/, "$1 to $2")).join(", ");
-}
-function whenText(s) {
-  if (s.dates) { const d = datesText(s.dates); return d ? (d.includes(",") ? "Dates: " : "") + d + (s.times ? ", " + timesText(s.times) : "") : ""; }
-  const f = (s.frequency || "").trim();
-  if (/^see website$/i.test(f) && !s.days) return "Times on the website";
-  return [[daysText(s.days), timesText(s.times)].filter(Boolean).join(", "), f && !/^see website$/i.test(f) ? f : ""].filter(Boolean).join(", ");
+// When, in the directory's words: the regular pattern as Copy details gives it (core copyWhen: "Every Wed, 10am–12pm",
+// "Fortnightly, Tue, 7pm", or the dates still to come). A plan runs over a few weeks, so it gives the pattern, not the next date.
+// Nothing regular to say: the directory's own words for it ("By appointment", "Times vary: see website").
+function whenOf(p) {
+  const s = p.record, w = copyWhen(s);
+  if (w || p.web) return w;
+  const nx = nextText(s._kind ? s : withSchedule(s), new Date());
+  return nx.at ? "" : nx.txt;
 }
 const telOf = s => s.phone ? s.phone.split(" (")[0].split(" or ")[0].replace(/\s/g, "") : "";
 const isUrl = u => !!webUrl(u);   // core/js/text.js
@@ -421,11 +400,9 @@ function actions(s) {
   else if (s.email) a.push(`<a class="a-act" href="mailto:${e_(s.email)}">${ICON.mail}Email</a>`);
   return a.join("");
 }
-const NICE = { "hearing voices": "Psychosis and hearing voices", "crisis prevention": "Crisis support", "addiction": "Addiction", "abuse": "Abuse" };
-function niceDate(d) { const t = new Date(d + "T12:00:00"); return isNaN(t) ? d : t.toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric" }); }
 function tile(icon, label, html, cls = "") { return `<div class="a-pb-tile ${cls}"><div class="a-pb-lab">${ICON[icon] || ""}${label}</div><div class="a-pb-val">${html}</div></div>`; }
 function card(p) {
-  const s = p.record, w = whenText(s), mode = s.mode || "";
+  const s = p.record, w = whenOf(p), mode = s.mode || "", [badgeCls, badge] = accessBadge(s);
   const inPerson = mode.includes("in-person");
   const where = [s.address, s.town, s.postcode].filter(Boolean).join(", ");
   const dist = p.distance !== null && s.address ? ` (${p.distance} miles)` : "";
@@ -434,7 +411,7 @@ function card(p) {
     ? `<span class="a-m">${ICON.place}${e_(p.distance !== null && s.address ? `${p.distance} mi` : s.town)}</span>`
     : `<span class="a-m">${mode.includes("phone") ? ICON.phone : ""}${mode.includes("online") ? ICON.online : ""}${e_(mode.replace(/;/g, " / ").replace("phone", "Phone").replace("online", "Online"))}</span>`;
   const badges = (p.web ? `<span class="a-webtag">Found online, not checked</span>` : "") +
-    (s.access ? `<span class="a-badge ${HOWCLS[s.access] || "ab-ref"}">${e_(how_(s))}</span>` : "") +
+    (s.access ? `<span class="badge ${badgeCls}">${e_(badge)}</span>` : "") +
     `<span class="a-chip dist">${modeBit}</span>` + (s.cost ? `<span class="a-chip">${e_(s.cost)}</span>` : "");
   return `<details class="a-pick${p.web ? " a-webpick" : ""}" id="a-pick-${p.n}">
     <summary>
@@ -456,8 +433,8 @@ function card(p) {
         ${s.note ? tile("person", "Note", e_(s.note), "wide warn") : ""}
       </div>
       <div class="a-pb-foot">${p.web ? `<span class="a-pb-tags">Found by an online search (${e_(p.web.source)}). Signposting Somerset hasn't checked it: please confirm the details with the service.</span>` : `
-        <span class="a-pb-tags">${(s.support_for || "").split(";").filter(Boolean).map(t => `<span class="a-tag">${e_(NICE[t] || t[0].toUpperCase() + t.slice(1))}</span>`).join("")}</span>
-        ${s.last_checked ? `<span class="a-pb-checked">Checked ${e_(niceDate(s.last_checked))}</span>` : ""}`}
+        <span class="a-pb-tags">${(s.support_for || "").split(";").filter(Boolean).map(t => `<span class="a-tag">${e_(cap(t))}</span>`).join("")}</span>
+        ${checkedText(s) ? `<span class="a-pb-checked">${e_(checkedText(s))}</span>` : ""}`}
       </div>
     </div>
   </details>`;
@@ -478,8 +455,8 @@ function plan() {
     for (const p of list) {
       n++;
       const s = p.record, inPerson = (s.mode || "").includes("in-person");
-      const when = whenText(s), where = inPerson ? [s.address, s.town, s.postcode].filter(Boolean).join(", ") : "";
-      const how = [how_(s), s.cost].filter(Boolean).join(". ");
+      const when = whenOf(p), where = inPerson ? [s.address, s.town, s.postcode].filter(Boolean).join(", ") : "";
+      const how = [s.access && accessBadge(s)[1], s.cost].filter(Boolean).join(". ");
       // Not in person: say how to take part, so a plan line is never just a time with no place
       const modes = (s.mode || "").split(";").map(m => m.trim());
       const remoteHow = inPerson ? "" : [modes.includes("online") && "online", modes.includes("phone") && "by phone"].filter(Boolean).join(" or ").replace(/^./, c => c.toUpperCase());

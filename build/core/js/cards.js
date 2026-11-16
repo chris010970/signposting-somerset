@@ -12,7 +12,11 @@ function copyWhen(s) {
   let when = "";
   if (f && !/^see /i.test(f)) when = hasDay ? f : cap(f) + (days ? ", " + days : "");
   else if (days) when = (/-/.test(days) ? "" : "Every ") + days;
-  else if (s.dates) when = "Dates: " + split(s.dates).slice(0, 3).map(d => /^\d{4}-\d\d-\d\d$/.test(d) ? new Date(d + "T12:00").toLocaleDateString("en-GB", { day: "numeric", month: "short" }) : d).join(", ") + (split(s.dates).length > 3 ? "…" : "");
+  else if (s.dates) {   // the dates still to come, a range by its ends: "Dates: 17 Dec, 14 Jan, 2 Feb to 9 Mar…"
+    const dm = d => /^\d{4}-\d\d-\d\d$/.test(d) ? new Date(d + "T12:00").toLocaleDateString("en-GB", { day: "numeric", month: "short" }) : d;
+    const left = split(s.dates).filter(d => d.split(" to ").pop() >= iso(new Date()));
+    if (left.length) when = "Dates: " + left.slice(0, 3).map(d => d.split(" to ").map(dm).join(" to ")).join(", ") + (left.length > 3 ? "…" : "");
+  }
   return [when, tm].filter(Boolean).join(", ");
 }
 // When a service's details were last checked (the sheet's last_checked; wording in core/data/card-text.json):

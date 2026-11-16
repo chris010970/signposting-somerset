@@ -241,6 +241,11 @@ test("Assist, with a stand-in relay: unlock, a plan from the records, Copy plan,
   await p.click("#a-copyPlan"); await p.waitForTimeout(200);
   const copied = await p.evaluate(() => navigator.clipboard.readText());
   assert.match(copied, /^Things that might help\n[\s\S]*Test Weekly Drop-in[\s\S]*Example Befriending \(found online, not checked\)[\s\S]*Samaritans/);
+  // The directory's wording: its access badge, and the regular pattern as Copy details gives it (a plan runs over weeks: no next date)
+  assert.match(await text(p, "#a-pick-1 .badge"), /^Just turn up$/);
+  assert.match(await text(p, "#a-pick-1 .a-pk-when"), /^WhenEvery Wed, 10am–12pm$/);
+  assert.match(copied, /Test Weekly Drop-in\n   Every Wed, 10am–12pm, Wells, BA5 1AA\n   Just turn up\. Free\n/);
+  assert.match(copied, /Example Befriending[^\n]*\n   Mon-Fri, By phone\n   Phone line\. Free\n/);
   assert.deepEqual(p.errors, []);
   await p.done();
 });
