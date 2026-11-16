@@ -22,4 +22,4 @@ code were written in the template.
 | `js/cards.js` | copy details, tap-to-call, directions |
 | `js/sheet.js` | reading records from the published Google Sheet (CSV): `fetchRecords()` |
 
-Used by: `build/directory/template.html` (the directory), `build/tools/template.html` (the tools page) and, for the town pages' styles, `build/browse/build_browse.py`.
+Used by: `build/directory/template.html` (the directory), `build/tools/template.html` (the tools page) and the Places pages (`build/places/build_places.py`: the styles, and `js/text-time.js` for next sessions and 3. When?).

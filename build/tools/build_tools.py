@@ -18,10 +18,10 @@ LIVE = "https://signpostingsomerset.org.uk"
 STAMP = datetime.datetime.now(zoneinfo.ZoneInfo("Europe/London")).strftime("%Y-%m-%d %H:%M")
 towns = json.loads((DIR / "towns.json").read_text(encoding="utf-8"))
 sheet = (DIR / "sheet_url.txt").read_text().strip()
-worker_url = (DIR / "assist" / "worker_url.txt").read_text().strip()
+worker_url = (HERE / "assist" / "worker_url.txt").read_text().strip()
 parts = (HERE / "assist" / "assist.html").read_text(encoding="utf-8")
 assist_css = (HERE / "assist" / "assist.css").read_text(encoding="utf-8")
-assist_js = (HERE / "assist" / "assist.js").read_text(encoding="utf-8").replace("/*SCRUB*/", (DIR / "assist" / "scrub.js").read_text(encoding="utf-8"))
+assist_js = (HERE / "assist" / "assist.js").read_text(encoding="utf-8").replace("/*SCRUB*/", (HERE / "assist" / "scrub.js").read_text(encoding="utf-8"))
 
 def part(name):   # one piece of assist.html (TAB, HDR or PANEL)
     m = re.search(rf"<!--{name}-->\n(.*?)(?=\n<!--[A-Z]+-->|\Z)", parts, re.S)

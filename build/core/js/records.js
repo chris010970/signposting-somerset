@@ -4,9 +4,7 @@ function shapeRecords(rows) {
   return rows.map((s, id) => {
     let lat = parseFloat(s.lat), lon = parseFloat(s.lon), approx = false;
     if (isNaN(lat) && TOWNS[s.town]) { [lat, lon] = TOWNS[s.town]; approx = true; }
-    const o = { ...s, id, _days: parseDays(s.days), _times: parseTimes(s.times), _dates: parseDates(s.dates), lat, lon, approx, _sf: split(s.support_for) };
-    o._kind = schedKind(o);
-    return o;
+    return withSchedule({ ...s, id, lat, lon, approx, _sf: split(s.support_for) });
   }).filter(s => s._kind !== "ended");
 }
 // "Support for" choices, grouped, offering only the types that appear in the list given

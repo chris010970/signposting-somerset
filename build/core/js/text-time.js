@@ -81,6 +81,22 @@ function nextText(s, now, from = now) {   // from: start of the chosen time wind
   return { cls: dd === 0 ? "today" : "", txt: `${day}${t}${o.bank ? " (bank holiday: check it's running)" : ""}`, at: o.st };
 }
 
+// The 3. When? choices as a time window [from, to): today, this evening, tomorrow, this weekend, next 7 days, next 4 weeks
+function windowFor(v, now) {
+  const d0 = dayStart(now);
+  if (v === "today") return [now, addDays(d0, 1)];
+  if (v === "evening") return [new Date(Math.max(now, d0.getTime() + 17 * 3600e3)), addDays(d0, 1)];
+  if (v === "tomorrow") return [addDays(d0, 1), addDays(d0, 2)];
+  if (v === "weekend") { const dow = now.getDay(); const sat = dow === 0 ? addDays(d0, -1) : addDays(d0, 6 - dow); return [new Date(Math.max(now, sat)), addDays(sat, 2)]; }
+  if (v === "week") return [now, addDays(d0, 7)];
+  if (v === "month") return [now, addDays(d0, 28)];
+  return null;
+}
+// Does it meet in that window? (only services whose dates can be worked out)
+const meetsIn = (s, win) => s._kind === "dated" && occurrences(s, win[0], Math.ceil((win[1] - dayStart(win[0])) / 864e5)).some(o => o.en > win[0] && o.st < win[1]);
+// The schedule parts of a record, parsed (days, times, dates), and its kind of schedule
+function withSchedule(o) { o._days = parseDays(o.days); o._times = parseTimes(o.times); o._dates = parseDates(o.dates); o._kind = schedKind(o); return o; }
+
 /* ---------- distance ---------- */
 function miles(a, b) { const R = 3958.8, r = Math.PI / 180, dLa = (b.lat - a.lat) * r, dLo = (b.lon - a.lon) * r;
   const h = Math.sin(dLa / 2) ** 2 + Math.cos(a.lat * r) * Math.cos(b.lat * r) * Math.sin(dLo / 2) ** 2; return 2 * R * Math.asin(Math.sqrt(h)); }

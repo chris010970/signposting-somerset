@@ -1164,6 +1164,22 @@ function nextText(s, now, from = now) {   // from: start of the chosen time wind
   return { cls: dd === 0 ? "today" : "", txt: `${day}${t}${o.bank ? " (bank holiday: check it's running)" : ""}`, at: o.st };
 }
 
+// The 3. When? choices as a time window [from, to): today, this evening, tomorrow, this weekend, next 7 days, next 4 weeks
+function windowFor(v, now) {
+  const d0 = dayStart(now);
+  if (v === "today") return [now, addDays(d0, 1)];
+  if (v === "evening") return [new Date(Math.max(now, d0.getTime() + 17 * 3600e3)), addDays(d0, 1)];
+  if (v === "tomorrow") return [addDays(d0, 1), addDays(d0, 2)];
+  if (v === "weekend") { const dow = now.getDay(); const sat = dow === 0 ? addDays(d0, -1) : addDays(d0, 6 - dow); return [new Date(Math.max(now, sat)), addDays(sat, 2)]; }
+  if (v === "week") return [now, addDays(d0, 7)];
+  if (v === "month") return [now, addDays(d0, 28)];
+  return null;
+}
+// Does it meet in that window? (only services whose dates can be worked out)
+const meetsIn = (s, win) => s._kind === "dated" && occurrences(s, win[0], Math.ceil((win[1] - dayStart(win[0])) / 864e5)).some(o => o.en > win[0] && o.st < win[1]);
+// The schedule parts of a record, parsed (days, times, dates), and its kind of schedule
+function withSchedule(o) { o._days = parseDays(o.days); o._times = parseTimes(o.times); o._dates = parseDates(o.dates); o._kind = schedKind(o); return o; }
+
 /* ---------- distance ---------- */
 function miles(a, b) { const R = 3958.8, r = Math.PI / 180, dLa = (b.lat - a.lat) * r, dLo = (b.lon - a.lon) * r;
   const h = Math.sin(dLa / 2) ** 2 + Math.cos(a.lat * r) * Math.cos(b.lat * r) * Math.sin(dLo / 2) ** 2; return 2 * R * Math.asin(Math.sqrt(h)); }
@@ -1174,9 +1190,7 @@ function shapeRecords(rows) {
   return rows.map((s, id) => {
     let lat = parseFloat(s.lat), lon = parseFloat(s.lon), approx = false;
     if (isNaN(lat) && TOWNS[s.town]) { [lat, lon] = TOWNS[s.town]; approx = true; }
-    const o = { ...s, id, _days: parseDays(s.days), _times: parseTimes(s.times), _dates: parseDates(s.dates), lat, lon, approx, _sf: split(s.support_for) };
-    o._kind = schedKind(o);
-    return o;
+    return withSchedule({ ...s, id, lat, lon, approx, _sf: split(s.support_for) });
   }).filter(s => s._kind !== "ended");
 }
 // "Support for" choices, grouped, offering only the types that appear in the list given
@@ -1249,16 +1263,6 @@ function initMap() {
 }
 
 /* ---------- render ---------- */
-function windowFor(v, now) {
-  const d0 = dayStart(now);
-  if (v === "today") return [now, addDays(d0, 1)];
-  if (v === "evening") return [new Date(Math.max(now, d0.getTime() + 17 * 3600e3)), addDays(d0, 1)];
-  if (v === "tomorrow") return [addDays(d0, 1), addDays(d0, 2)];
-  if (v === "weekend") { const dow = now.getDay(); const sat = dow === 0 ? addDays(d0, -1) : addDays(d0, 6 - dow); return [new Date(Math.max(now, sat)), addDays(sat, 2)]; }
-  if (v === "week") return [now, addDays(d0, 7)];
-  if (v === "month") return [now, addDays(d0, 28)];
-  return null;
-}
 function render() {
   setTimeout(syncLink, 0);   // keep the address bar in step with the filters
   if (LIVE_ONLY && !ALL.length) { panelMessage(liveMsg); return; }
@@ -1280,7 +1284,7 @@ function render() {
   if (when === "now") rows = rows.filter(r => r.s.access === "drop in" && occurrences(r.s, now, 1).some(o => o.timed && o.st <= now && o.en > now));
   else if (win) {
     checkRows = rows.filter(r => r.s._kind !== "dated");
-    rows = rows.filter(r => r.s._kind === "dated" && occurrences(r.s, win[0], Math.ceil((win[1] - dayStart(win[0])) / 864e5)).some(o => o.en > win[0] && o.st < win[1]));
+    rows = rows.filter(r => meetsIn(r.s, win));
   } else { checkRows = rows.filter(r => !r.nx.at); rows = rows.filter(r => r.nx.at); }
   // Counts for the map key follow every filter except the key itself
   kindCounts = KINDS.map((_, i) => rows.filter(r => kindOf(r.s) === i).length + checkRows.filter(r => kindOf(r.s) === i).length);
@@ -1643,7 +1647,7 @@ function renderAbout() {
     </section>
     </div></div>
     <p class="small">Service information belongs to the providers listed. Map data © <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap</a> contributors, © <a href="https://carto.com/attributions" target="_blank" rel="noopener">CARTO</a>.</p>
-    <p class="small" id="site-version">Version: directory 2026-11-16 10:59</p>
+    <p class="small" id="site-version">Version: directory 2026-11-16 11:09</p>
   </article>`;
 }
 let tab = "talk";

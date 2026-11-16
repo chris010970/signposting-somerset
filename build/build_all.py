@@ -2,9 +2,9 @@
 (add "test" to build only the test copy of the directory)
 
 build/ holds one folder per part of the site:
-  directory/  the interactive directory (template.html, build.py, build_v2.py, Assist sources)
+  directory/  the interactive directory (template.html, build.py, towns.json)
   tools/      the tools page, /tools/: Assist and Analytics (build_tools.py, template.html, tools.js, assist/, analytics/)
-  browse/     the town pages, the directory's Places tab (build_browse.py; run it separately, it reads the sheet or a CSV)
+  places/     the Places pages, the directory's Places tab (build_places.py; run it separately, it reads the sheet or a CSV)
   analytics/  Analytics design record and data (make_analytics_data.py rebuilds docs/assets/analytics-lsoa.geojson)
   core/       code shared by the directory and the tools page
   shared/     build helpers (base path, stitching core/ into pages)
@@ -15,7 +15,5 @@ directory/github/test/directory/index.html (docs/test/directory/),
 tools/out/tools/index.html (docs/tools/) and tools/out/test/tools/index.html (docs/test/tools/)."""
 import subprocess, sys, pathlib
 HERE = pathlib.Path(__file__).parent
-args = [a for a in sys.argv[1:] if a != "test"]
-subprocess.run([sys.executable, str(HERE / "directory" / "build.py"), *args], check=True)
-subprocess.run([sys.executable, str(HERE / "directory" / "build_v2.py"), *(["test"] if "test" in sys.argv[1:] else [])], check=True)
+subprocess.run([sys.executable, str(HERE / "directory" / "build.py"), *sys.argv[1:]], check=True)
 subprocess.run([sys.executable, str(HERE / "tools" / "build_tools.py")], check=True)

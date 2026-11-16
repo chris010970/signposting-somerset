@@ -1488,6 +1488,22 @@ function nextText(s, now, from = now) {   // from: start of the chosen time wind
   return { cls: dd === 0 ? "today" : "", txt: `${day}${t}${o.bank ? " (bank holiday: check it's running)" : ""}`, at: o.st };
 }
 
+// The 3. When? choices as a time window [from, to): today, this evening, tomorrow, this weekend, next 7 days, next 4 weeks
+function windowFor(v, now) {
+  const d0 = dayStart(now);
+  if (v === "today") return [now, addDays(d0, 1)];
+  if (v === "evening") return [new Date(Math.max(now, d0.getTime() + 17 * 3600e3)), addDays(d0, 1)];
+  if (v === "tomorrow") return [addDays(d0, 1), addDays(d0, 2)];
+  if (v === "weekend") { const dow = now.getDay(); const sat = dow === 0 ? addDays(d0, -1) : addDays(d0, 6 - dow); return [new Date(Math.max(now, sat)), addDays(sat, 2)]; }
+  if (v === "week") return [now, addDays(d0, 7)];
+  if (v === "month") return [now, addDays(d0, 28)];
+  return null;
+}
+// Does it meet in that window? (only services whose dates can be worked out)
+const meetsIn = (s, win) => s._kind === "dated" && occurrences(s, win[0], Math.ceil((win[1] - dayStart(win[0])) / 864e5)).some(o => o.en > win[0] && o.st < win[1]);
+// The schedule parts of a record, parsed (days, times, dates), and its kind of schedule
+function withSchedule(o) { o._days = parseDays(o.days); o._times = parseTimes(o.times); o._dates = parseDates(o.dates); o._kind = schedKind(o); return o; }
+
 /* ---------- distance ---------- */
 function miles(a, b) { const R = 3958.8, r = Math.PI / 180, dLa = (b.lat - a.lat) * r, dLo = (b.lon - a.lon) * r;
   const h = Math.sin(dLa / 2) ** 2 + Math.cos(a.lat * r) * Math.cos(b.lat * r) * Math.sin(dLo / 2) ** 2; return 2 * R * Math.asin(Math.sqrt(h)); }
@@ -1498,9 +1514,7 @@ function shapeRecords(rows) {
   return rows.map((s, id) => {
     let lat = parseFloat(s.lat), lon = parseFloat(s.lon), approx = false;
     if (isNaN(lat) && TOWNS[s.town]) { [lat, lon] = TOWNS[s.town]; approx = true; }
-    const o = { ...s, id, _days: parseDays(s.days), _times: parseTimes(s.times), _dates: parseDates(s.dates), lat, lon, approx, _sf: split(s.support_for) };
-    o._kind = schedKind(o);
-    return o;
+    return withSchedule({ ...s, id, lat, lon, approx, _sf: split(s.support_for) });
   }).filter(s => s._kind !== "ended");
 }
 // "Support for" choices, grouped, offering only the types that appear in the list given
@@ -1700,7 +1714,7 @@ function renderAbout() {
       <li><strong>Data:</strong> ONS boundaries, population (mid-2022) and urban/rural classification; MHCLG Indices of Deprivation 2025; Census 2021; open postcode data (2016). Open Government Licence.</li>
     </ul>
     </div></div>
-    <p class="small" id="site-version">Version: test 2026-11-16 10:59${typeof window.assistRelayVersion === "function" ? window.assistRelayVersion() : ""}</p>
+    <p class="small" id="site-version">Version: test 2026-11-16 11:09${typeof window.assistRelayVersion === "function" ? window.assistRelayVersion() : ""}</p>
   </article>`;
 }
 
@@ -2183,7 +2197,7 @@ async function initAnalytics() {
    this page only remembers it for the current browser session. */
 (() => {
 const WORKER_URL = "https://signposting-assist.c-r-williams0109.workers.dev";
-const PAGE_VERSION = "test 2026-11-16 10:59";
+const PAGE_VERSION = "test 2026-11-16 11:09";
 let relayVersion = "";
 // The version line is at the bottom of the About tab: "Version: test 2026-11-06 11:30 · Assist relay 2026-11-06 11:07"
 window.assistRelayVersion = () => relayVersion ? ` · Assist relay ${relayVersion}` : "";
@@ -2224,12 +2238,12 @@ setLocked(!code);
 // Called by the site when the tab is opened. The filter bar is always usable; the form needs the code.
 window.assistShow = () => {
   if (!connected) { $a("a-noworker").hidden = false; return; }
-  if (code) showApp(); else { pullFromMain(); showGate(); }
+  if (code) showApp(); else showGate();
 };
 const WIDE = window.matchMedia("(min-width: 1000px)");
 function mapIfWide() { if (WIDE.matches && !$a("a-app").hidden) { initAMap(); setTimeout(() => { if (amap) { amap.invalidateSize(); syncMap(); } }, 30); } }
 WIDE.addEventListener?.("change", mapIfWide);
-function showApp() { $a("a-gate").hidden = true; $a("a-app").hidden = false; setLocked(false); pullFromMain(); mapIfWide(); }
+function showApp() { $a("a-gate").hidden = true; $a("a-app").hidden = false; setLocked(false); mapIfWide(); }
 function showGate(msg) {
   $a("a-app").hidden = true; $a("a-gate").hidden = false; setLocked(true);
   $a("a-gateErr").hidden = !msg; $a("a-gateErr").textContent = msg || "";
@@ -2279,7 +2293,7 @@ function setPlace(p) {
   if (p.kind === "pt") { ptOpt.hidden = false; ptOpt.textContent = p.label; sel.value = "__pt"; }
   else { ptOpt.hidden = true; sel.value = p.kind === "place" ? p.name : ""; }
   $a("aq-where").classList.toggle("on", !!p.kind);
-  syncMap(); pushToMain();
+  syncMap();
 }
 const placeByName = n => PLACE[n] ? { kind: "place", name: n, lat: PLACE[n][0], lon: PLACE[n][1] } : null;
 $a("a-town").addEventListener("change", e => {
@@ -2287,8 +2301,8 @@ $a("a-town").addEventListener("change", e => {
   if (v === "__pt") return;                                   // already set by the map or location button
   setPlace(placeByName(v) || { kind: "" });
 });
-$a("a-rad").addEventListener("change", () => { syncMap(); pushToMain(); });
-$a("a-support").addEventListener("change", () => { $a("aq-support").classList.toggle("on", !!$a("a-support").value); pushToMain(); });
+$a("a-rad").addEventListener("change", syncMap);
+$a("a-support").addEventListener("change", () => $a("aq-support").classList.toggle("on", !!$a("a-support").value));
 // 3. How? All services (default), in person only, or phone/online only. Phone or online needs no place or distance.
 const mode = () => $a("a-mode").value;
 function syncMode() {
@@ -2300,9 +2314,6 @@ function syncMode() {
 $a("a-mode").addEventListener("change", syncMode);
 syncMode();
 
-// (In the directory, Assist shared its choices with the In person tab. On the tools page there's nothing to share.)
-function pushToMain() {}
-function pullFromMain() {}
 
 // ---- location button: rounded before use, like a map click ----
 (() => {

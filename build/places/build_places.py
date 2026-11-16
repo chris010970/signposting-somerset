@@ -1,12 +1,13 @@
 """Build the town pages (the directory's "Places" tab): a landing page and one page per town, as plain HTML that search engines can read.
 
-    python build_browse.py path/to/services.csv          # live (out/directory/places/) and test (out/test/directory/places/)
-    python build_browse.py path/to/services.csv test     # test only
-    python build_browse.py                               # reads the published sheet (directory/sheet_url.txt)
+    python build_places.py path/to/services.csv          # live (out/directory/places/) and test (out/test/directory/places/)
+    python build_places.py path/to/services.csv test     # test only
+    python build_places.py                               # reads the published sheet (directory/sheet_url.txt)
 
 Publish: copy out/directory/places/ -> docs/directory/places/, out/test/directory/places/ -> docs/test/directory/places/,
 and out/sitemap.xml -> docs/sitemap.xml. They are the directory's "Places" tab.
-Configuration (no code changes needed): towns.json (which towns, radius) and categories.json (sections and buttons).
+Configuration (no code changes needed): towns.json (which towns, radius) and categories.json (sections).
+The page styles and script are places.css and places.js; the rest of the look comes from build/core/ and the directory's template.
 The pages look and behave like one page: picking a town swaps the main area in place, but every town has its own address.
 Rules kept here: only in-person services (not courses) with a place; Crisis Safe Space addresses are never in the data, so
 none are shown; distances are straight lines; 'next session' is worked out in the visitor's browser, so pages never go stale
@@ -112,7 +113,7 @@ def row(d, r, town):
     acc = ACCESS.get(r.get("access", ""))
     who = r.get("who", "")
     bits = [f'<span class="bwhere">{e(r.get("town") or "")}</span>' if not local else "", f"<span>{e(dist)}</span>" if dist else "",
-            f'<span class="bwhen" data-days="{e(r.get("days",""))}" data-times="{e(r.get("times",""))}" data-freq="{e(r.get("frequency",""))}" data-mode="{e(r.get("mode",""))}">{e(pattern(r))}</span>']
+            f'<span class="bwhen" data-days="{e(r.get("days",""))}" data-times="{e(r.get("times",""))}" data-freq="{e(r.get("frequency",""))}" data-mode="{e(r.get("mode",""))}" data-dates="{e(r.get("dates",""))}" data-access="{e(r.get("access",""))}" data-type="{e(r.get("type",""))}">{e(pattern(r))}</span>']
     meta = " · ".join(b for b in bits if b)
     contact = []
     if r.get("url"): contact.append(f'<a href="{e(r["url"])}" target="_blank" rel="noopener">Website</a>')
@@ -226,162 +227,11 @@ def landing_main(base, dirbase, totals):
             f'<div class="bmapwrap">{area_map(base, totals)}</div></div>'
             f'<p class="otowns">Version: {{VERSION}}</p>')
 
-PAGE_CSS = """
-html, body { height: auto; } body { display: block; padding-bottom: calc(var(--footh, 56px) + 16px); }
-:root { --strip: url("/assets/banner.webp"); }
-/* The site name looks exactly like the directory's (there it is the page's h1; here the town heading is) */
-.hero .brand { font-family: var(--serif); color: var(--b900); font-size: 24px; font-weight: 700; line-height: 1.1; margin: 0; display: flex; align-items: center; gap: 9px; text-decoration: none; }
-.hero .brand .logo { height: 34px; width: auto; flex: none; margin: -2px 0 -1px; }
-.bw { max-width: 1400px; margin: 0 auto; padding-top: 14px; }
-/* Two cards: what to do (left), the map to choose from (right) */
-.bpick { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.3fr); gap: 12px; align-items: stretch; margin-top: 4px; }
-.bpick > div { background: var(--white); border: 1px solid var(--line); border-radius: 16px; padding: 24px 28px; }
-.bpicktxt { align-self: start; }
-.bpick .bt { margin-top: 0; } .bpick p { color: var(--muted); max-width: 52ch; } .bpick .otowns { margin-top: 14px; }
-.bpick .bmapwrap { display: flex; align-items: center; justify-content: center; } .bpick .bmapsvg { max-height: calc(100vh - 380px); }
-@media (max-width: 760px) { .bpick { grid-template-columns: 1fr; } .bpick > div { padding: 18px; } }
-@media (min-width: 900px) { #hdr-towns .qs { grid-template-columns: repeat(3, minmax(0, 1fr)); } }   /* three equal boxes, running to the right-hand edge like the directory's */
-#bq-when .btoday { float: right; text-transform: none; letter-spacing: 0; color: #78716C; font-weight: 500; }
-.bnone { background: var(--white); border: 1px solid var(--line); border-radius: 16px; padding: 18px 20px; color: var(--muted); margin-top: 12px; }
-.bsec h3.vh { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; margin: 0; }
-.bsec h3.vh + .blist { margin-top: 12px; }
-.otowns { font-size: 12.5px; color: var(--muted); margin-top: 10px; line-height: 1.7; } .otowns a { color: var(--b700); }
-.bmain { min-width: 0; } .bmain.loading { opacity: .5; transition: opacity .15s; }
-.bt { font-family: var(--serif); color: var(--b900); font-size: 22px; line-height: 1.25; margin: 4px 0 4px; }
-.blead { font-size: 14px; color: var(--ink); margin: 0 0 4px; line-height: 1.5; max-width: 75ch; } .bnote { font-size: 13px; color: var(--muted); margin: 0 0 12px; } .bnote a, .bfoot a { color: var(--b700); }
-.bsec { margin-top: 10px; }
-.bsh { display: flex; justify-content: flex-start; align-items: baseline; gap: 6px 18px; flex-wrap: wrap; margin: 20px 0 2px; padding-bottom: 6px; border-bottom: 1px solid var(--line); }
-.bhead { display: flex; align-items: baseline; gap: 6px 14px; flex-wrap: wrap; margin: 2px 0 6px; } .bhead .bt { margin: 0; font-size: 20px; } .bhead span { font-size: 13px; color: var(--muted); }
-.bsh h2 { font-family: var(--serif); color: var(--b900); font-size: 17px; margin: 0; } .bsh h2 span { font-family: var(--sans); font-size: 12px; font-weight: 600; color: var(--muted); margin-left: 4px; } .bmap { font-weight: 700; font-size: 14px; color: var(--b700); text-decoration: underline; text-underline-offset: 3px; white-space: nowrap; } .bmap:hover, .bmap:focus-visible { color: var(--b900); } @media (max-width: 420px) { .bmap { font-size: 13px; } }   /* the same as "Tools →" in the tab row */
-.bsec h3 { font-size: 11px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); margin: 10px 0 8px; font-family: var(--sans); }
-.blist { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(340px, 1fr)); gap: 12px; }
-.br { background: var(--white); border-radius: 16px; padding: 14px 16px; box-shadow: 0 1px 2px rgba(0,0,0,.05); border: 1px solid var(--line); display: flex; flex-direction: column; gap: 3px; }
-.brow { display: flex; justify-content: space-between; align-items: flex-start; gap: 10px; }
-.brow .badge { flex: none; }
-.chip { flex: none; font-size: 10px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; color: #57534E; background: #F5F5F4; border: 1px solid var(--line); padding: 3px 7px; border-radius: 6px; }
-.bn { margin: 0; font-family: var(--serif); font-size: 17px; line-height: 1.25; color: var(--b900); } .bn a { color: var(--b900); text-decoration: none; } .bn a:hover { text-decoration: underline; }
-.bmeta { font-size: 12px; color: var(--muted); font-weight: 500; } .bmeta .bnext { color: var(--b700); font-weight: 600; }
-.br p { margin: 4px 0 0; font-size: 13.5px; line-height: 1.45; color: var(--ink); } .br .bextra, .br .bplace { color: var(--muted); font-size: 12px; margin-top: 2px; }
-.br .bcontact { font-size: 12.5px; margin-top: auto; padding-top: 8px; border-top: 1px solid var(--line); } .br .bcontact a { color: var(--b700); }
-/* These pages scroll and the directory doesn't, so centring on the page width would sit everything half a scrollbar
-   to the left of the directory. Centre on the window width instead, as the directory effectively does. */
-.top .inner, footer .inner, .bw { margin-left: max(0px, calc((100vw - 32px - 1400px) / 2)); margin-right: auto; }
-/* ...and size the header on the window width too, so the filter boxes are exactly as wide as the directory's
-   (on a narrow window the header's right edge, the end of the illustration, goes under the scrollbar) */
-.top .inner { width: min(1400px, calc(100vw - 32px)); max-width: none; } header.top { overflow: hidden; }
-.bmapsvg { width: 100%; height: auto; display: block; } .bmapsvg .land { fill: #E1EBE5; stroke: #fff; stroke-width: 1.5; }
-.bmapsvg a circle { fill: #176B55; stroke: #fff; stroke-width: 2; } .bmapsvg a text { font-size: 13px; font-weight: 600; fill: var(--b900); paint-order: stroke; stroke: #F9F9F7; stroke-width: 3px; }
-.bmapsvg a:hover circle, .bmapsvg a:focus circle { fill: #14302A; r: 7; } .bmapsvg a:hover text { fill: #176B55; text-decoration: underline; }
-.bmain > h2 { font-family: var(--serif); color: var(--b900); font-size: 18px; margin: 18px 0 8px; }
-.bfoot { font-size: 12.5px; color: var(--muted); margin-top: 18px; }
-@media (max-width: 760px) {
-  .bt { font-size: 23px; } .bdir span { display: none; }
-}
-"""
+PAGE_CSS = (HERE / "places.css").read_text(encoding="utf-8")
 
-# Next session, worked out in the browser (the same rules as the directory: blank frequency = every week;
-# "1st Tue of month" style patterns; anything else stays as written). Town switching without a full reload.
-PAGE_JS = r"""
-(() => {
-  const DOW = ["Sun","Mon","Tue","Wed","Thu","Fri","Sat"], ORD = { "1st": 1, "2nd": 2, "3rd": 3, "4th": 4 };
-  const days = s => { const o = new Set(); for (const p of (s || "").split(";").map(x => x.trim()).filter(Boolean)) {
-    const m = p.match(/^(\w{3})-(\w{3})$/); if (m && DOW.includes(m[1]) && DOW.includes(m[2])) { let i = DOW.indexOf(m[1]); const j = DOW.indexOf(m[2]); for (;;) { o.add(i); if (i === j) break; i = (i + 1) % 7; } }
-    else if (DOW.includes(p)) o.add(DOW.indexOf(p)); } return o; };
-  const nth = (d, f) => { const m = f.match(/^((?:1st|2nd|3rd|4th|last)(?: and (?:1st|2nd|3rd|4th|last))?) (\w{3}) of month$/i); if (!m) return null;
-    const n = Math.ceil(d.getDate() / 7), last = new Date(d.getTime() + 7 * 864e5).getMonth() !== d.getMonth();
-    return m[1].split(" and ").some(w => w.toLowerCase() === "last" ? last : ORD[w.toLowerCase()] === n); };
-  const NO_SET = el => !days(el.dataset.days).size || ((el.dataset.freq || "").trim() && nth(new Date(), el.dataset.freq.trim()) === null);
-  function slots(el) {   // the session's start and end, in minutes after midnight
-    const t = (el.dataset.times || "").match(/^(\d\d):(\d\d)(?:-(\d\d):(\d\d))?$/);
-    const start = t ? +t[1] * 60 + +t[2] : null;
-    return [start, t ? (t[3] ? +t[3] * 60 + +t[4] : start + 90) : (/in-person/.test(el.dataset.mode) ? 1080 : 1439)];
-  }
-  function meets(el, w, now) {   // 3. When?: does it meet in the chosen time (same windows as the directory's In person tab)?
-    if (w === "any") return true;
-    if (el.dataset.days === "Mon-Sun" && el.dataset.times === "00:00-23:59") return true;
-    if (NO_SET(el)) return false;   // no set times ("contact for times", "check dates"): only under Any time
-    const ds = days(el.dataset.days), f = (el.dataset.freq || "").trim(), [start, end] = slots(el), dow = now.getDay(), mins = now.getHours() * 60 + now.getMinutes();
-    const win = { today: [0, 1], evening: [0, 1], tomorrow: [1, 2], week: [0, 7], month: [0, 28],
-                  weekend: dow === 6 ? [0, 2] : dow === 0 ? [0, 1] : [6 - dow, 8 - dow] }[w];
-    for (let i = win[0]; i < win[1]; i++) {
-      const d = new Date(now.getFullYear(), now.getMonth(), now.getDate() + i);
-      if (!ds.has(d.getDay()) || (f && !nth(d, f))) continue;
-      if (i === 0 && mins >= end) continue;   // already over today
-      if (w === "evening" && end <= 17 * 60) continue;
-      return true;
-    }
-    return false;
-  }
-  function next(el, now) {
-    const ds = days(el.dataset.days), f = (el.dataset.freq || "").trim(), t = (el.dataset.times || "").match(/^(\d\d):(\d\d)(?:-(\d\d):(\d\d))?$/);
-    if (!ds.size || (f && nth(now, f) === null) || (el.dataset.days === "Mon-Sun" && el.dataset.times === "00:00-23:59")) return "";
-    const endMin = t ? (t[3] ? +t[3] * 60 + +t[4] : +t[1] * 60 + +t[2] + 90) : (/in-person/.test(el.dataset.mode) ? 1080 : 1439);
-    for (let i = 0; i < 70; i++) {
-      const d = new Date(now.getFullYear(), now.getMonth(), now.getDate() + i);
-      if (!ds.has(d.getDay())) continue; if (f && !nth(d, f)) continue;
-      if (i === 0 && now.getHours() * 60 + now.getMinutes() >= endMin) continue;
-      return i === 0 ? "today" : i === 1 ? "tomorrow" : d.toLocaleDateString("en-GB", { weekday: "short", day: "numeric", month: "short" });
-    }
-    return "";
-  }
-  function dates(root) { const now = new Date(); root.querySelectorAll(".bwhen").forEach(el => { const n = next(el, now); if (n && !el.nextElementSibling?.classList.contains("bnext")) el.insertAdjacentHTML("afterend", ` · <span class="bnext">Next: ${n}</span>`); }); }
-  const $ = id => document.getElementById(id);
-  function pick(k) {   // 1. Support for: show that section, or all of them; 3. When?: only cards that meet then
-    const sel = $("b-support"); if (!sel) return;
-    if (![...sel.options].some(o => o.value === k)) k = "all";
-    sel.value = k; $("bq-support").classList.toggle("on", k !== "all");
-    const w = $("b-when").value, now = new Date(); $("bq-when").classList.toggle("on", w !== "any");
-    let shown = 0;
-    main.querySelectorAll(".bsec").forEach(s => {
-      let n = 0;
-      s.querySelectorAll("h3").forEach(h => {
-        const ul = h.nextElementSibling; let m = 0;
-        ul.querySelectorAll(".br").forEach(c => { const ok = meets(c.querySelector(".bwhen"), w, now); c.hidden = !ok; m += ok; });
-        h.hidden = ul.hidden = !m; h.textContent = h.dataset.l + " · " + m; n += m;
-      });
-      const c = s.querySelector(".bsh h2 span"); if (c) c.textContent = n;
-      s.hidden = !n || (k !== "all" && s.dataset.k !== k); if (!s.hidden) shown++;
-    });
-    const none = main.querySelector(".bnone"); if (none) none.hidden = !!shown || !main.querySelector(".bsec");
-  }
-  // This visit's place (town, Support for, When), kept in this browser tab only, so the directory's Places tab comes back to it
-  const PKEY = "ss-places:" + (document.querySelector('.sitetabs a[aria-current]')?.getAttribute("href") || "");   // live and test keep their own
-  const save = () => { try { sessionStorage.setItem(PKEY, JSON.stringify({ url: location.pathname + location.hash, when: $("b-when").value })); } catch (_) {} };
-  const kept = () => { try { return JSON.parse(sessionStorage.getItem(PKEY) || "null"); } catch (_) { return null; } };
-  function wire() {
-    dates(main);
-    const k0 = kept(); if (k0 && k0.when && [...$("b-when").options].some(o => o.value === k0.when)) $("b-when").value = k0.when;
-    pick(location.hash.slice(1) || "all"); save();
-    $("b-support").onchange = () => { const k = $("b-support").value; pick(k);
-      history.replaceState(history.state, "", location.pathname + (k === "all" ? "" : "#" + k)); save(); };
-    $("b-when").onchange = () => { pick($("b-support").value); save(); };
-    const tl = hdr.querySelector(".btoday"); if (tl) tl.textContent = new Date().toLocaleDateString("en-GB", { weekday: "short", day: "numeric", month: "short" });
-    $("b-town").onchange = () => { const v = $("b-town").value, k = $("b-support").value;   // 2. Where?: that town, keeping the support chosen
-      if (v) go(v + (k && k !== "all" ? "#" + k : ""), true); };
-  }
-  const main = document.querySelector(".bmain"), hdr = $("hdr-towns");
-  async function go(href, push) {   // swap in another town's page (filters and listings), keeping its own address
-    main.classList.add("loading");
-    try {
-      const r = await fetch(href.split("#")[0], { cache: "no-cache" }); if (!r.ok) throw 0;
-      const doc = new DOMParser().parseFromString(await r.text(), "text/html");
-      const when = $("b-when").value;   // keep 3. When? across towns
-      main.innerHTML = doc.querySelector(".bmain").innerHTML; hdr.innerHTML = doc.getElementById("hdr-towns").innerHTML; document.title = doc.title;
-      $("b-when").value = when;
-      const md = doc.querySelector('meta[name="description"]'); if (md) document.querySelector('meta[name="description"]')?.setAttribute("content", md.content);
-      if (push) history.pushState({ b: 1 }, "", href); wire(); window.scrollTo(0, 0);
-    } catch (_) { location.href = href; }
-    main.classList.remove("loading");
-  }
-  main.addEventListener("click", ev => {   // links to other towns (and to the town list) swap in place too
-    const a = ev.target.closest("a"); if (!a || ev.ctrlKey || ev.metaKey || ev.shiftKey || a.target) return;
-    const u = new URL(a.getAttribute("href") || "", location.href), base = document.querySelector('.sitetabs a[aria-current]')?.getAttribute("href");
-    if (u.origin === location.origin && base && u.pathname.startsWith(base) && !u.hash) { ev.preventDefault(); go(u.pathname, true); }
-  });
-  addEventListener("popstate", () => go(location.pathname + location.hash, false));
-  if (main && hdr) wire();
-})();
-"""
+# The page script: next session and 3. When? (worked out in the browser with the directory's schedule rules, from
+# build/core/js/text-time.js), the filter boxes, remembering the place for the visit, and swapping towns without a full reload.
+PAGE_JS = (BUILD / "core" / "js" / "text-time.js").read_text(encoding="utf-8") + (HERE / "places.js").read_text(encoding="utf-8")
 
 FONTS = "\n".join(l for l in tpl.splitlines() if "fonts.g" in l)   # the directory's font links, as they are
 

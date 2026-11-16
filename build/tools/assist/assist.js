@@ -44,12 +44,12 @@ setLocked(!code);
 // Called by the site when the tab is opened. The filter bar is always usable; the form needs the code.
 window.assistShow = () => {
   if (!connected) { $a("a-noworker").hidden = false; return; }
-  if (code) showApp(); else { pullFromMain(); showGate(); }
+  if (code) showApp(); else showGate();
 };
 const WIDE = window.matchMedia("(min-width: 1000px)");
 function mapIfWide() { if (WIDE.matches && !$a("a-app").hidden) { initAMap(); setTimeout(() => { if (amap) { amap.invalidateSize(); syncMap(); } }, 30); } }
 WIDE.addEventListener?.("change", mapIfWide);
-function showApp() { $a("a-gate").hidden = true; $a("a-app").hidden = false; setLocked(false); pullFromMain(); mapIfWide(); }
+function showApp() { $a("a-gate").hidden = true; $a("a-app").hidden = false; setLocked(false); mapIfWide(); }
 function showGate(msg) {
   $a("a-app").hidden = true; $a("a-gate").hidden = false; setLocked(true);
   $a("a-gateErr").hidden = !msg; $a("a-gateErr").textContent = msg || "";
@@ -99,7 +99,7 @@ function setPlace(p) {
   if (p.kind === "pt") { ptOpt.hidden = false; ptOpt.textContent = p.label; sel.value = "__pt"; }
   else { ptOpt.hidden = true; sel.value = p.kind === "place" ? p.name : ""; }
   $a("aq-where").classList.toggle("on", !!p.kind);
-  syncMap(); pushToMain();
+  syncMap();
 }
 const placeByName = n => PLACE[n] ? { kind: "place", name: n, lat: PLACE[n][0], lon: PLACE[n][1] } : null;
 $a("a-town").addEventListener("change", e => {
@@ -107,8 +107,8 @@ $a("a-town").addEventListener("change", e => {
   if (v === "__pt") return;                                   // already set by the map or location button
   setPlace(placeByName(v) || { kind: "" });
 });
-$a("a-rad").addEventListener("change", () => { syncMap(); pushToMain(); });
-$a("a-support").addEventListener("change", () => { $a("aq-support").classList.toggle("on", !!$a("a-support").value); pushToMain(); });
+$a("a-rad").addEventListener("change", syncMap);
+$a("a-support").addEventListener("change", () => $a("aq-support").classList.toggle("on", !!$a("a-support").value));
 // 3. How? All services (default), in person only, or phone/online only. Phone or online needs no place or distance.
 const mode = () => $a("a-mode").value;
 function syncMode() {
@@ -120,9 +120,6 @@ function syncMode() {
 $a("a-mode").addEventListener("change", syncMode);
 syncMode();
 
-// (In the directory, Assist shared its choices with the In person tab. On the tools page there's nothing to share.)
-function pushToMain() {}
-function pullFromMain() {}
 
 // ---- location button: rounded before use, like a map click ----
 (() => {

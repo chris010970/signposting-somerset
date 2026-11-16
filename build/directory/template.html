@@ -236,16 +236,6 @@ function initMap() {
 }
 
 /* ---------- render ---------- */
-function windowFor(v, now) {
-  const d0 = dayStart(now);
-  if (v === "today") return [now, addDays(d0, 1)];
-  if (v === "evening") return [new Date(Math.max(now, d0.getTime() + 17 * 3600e3)), addDays(d0, 1)];
-  if (v === "tomorrow") return [addDays(d0, 1), addDays(d0, 2)];
-  if (v === "weekend") { const dow = now.getDay(); const sat = dow === 0 ? addDays(d0, -1) : addDays(d0, 6 - dow); return [new Date(Math.max(now, sat)), addDays(sat, 2)]; }
-  if (v === "week") return [now, addDays(d0, 7)];
-  if (v === "month") return [now, addDays(d0, 28)];
-  return null;
-}
 function render() {
   setTimeout(syncLink, 0);   // keep the address bar in step with the filters
   if (LIVE_ONLY && !ALL.length) { panelMessage(liveMsg); return; }
@@ -267,7 +257,7 @@ function render() {
   if (when === "now") rows = rows.filter(r => r.s.access === "drop in" && occurrences(r.s, now, 1).some(o => o.timed && o.st <= now && o.en > now));
   else if (win) {
     checkRows = rows.filter(r => r.s._kind !== "dated");
-    rows = rows.filter(r => r.s._kind === "dated" && occurrences(r.s, win[0], Math.ceil((win[1] - dayStart(win[0])) / 864e5)).some(o => o.en > win[0] && o.st < win[1]));
+    rows = rows.filter(r => meetsIn(r.s, win));
   } else { checkRows = rows.filter(r => !r.nx.at); rows = rows.filter(r => r.nx.at); }
   // Counts for the map key follow every filter except the key itself
   kindCounts = KINDS.map((_, i) => rows.filter(r => kindOf(r.s) === i).length + checkRows.filter(r => kindOf(r.s) === i).length);

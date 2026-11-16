@@ -21,7 +21,7 @@ Last updated: 15 November 2026.
 | Live pages | repo `docs/directory/index.html` (live), `docs/test/directory/index.html` (test); `docs/directory/places/` and `docs/test/directory/places/` (town pages); `docs/tools/` and `docs/test/tools/` (tools page); `docs/index.html` and `docs/main/index.html` are forwarders to `/directory/` |
 | Site assets | `docs/assets/` (icons, `share.png` link-preview image), `docs/favicon.ico`, `docs/sitemap.xml` |
 | Build sources | repo `build/`, one folder per part of the site (see section 7) |
-| Worker | Cloudflare: Workers & Pages → `signposting-assist`. Copy of the code in `src/cloudflare-worker.js` and `build/directory/assist/` |
+| Worker | Cloudflare: Workers & Pages → `signposting-assist`. Copy of the code in `src/cloudflare-worker.js`; its source is `build/tools/assist/worker-template.js` |
 | Secrets | **Only in Cloudflare** (Settings → Variables and Secrets): `ANTHROPIC_API_KEY`, access code. Never in the repo, never in a chat |
 | Tools | `src/`: `run_scenarios.py` and the `scenarios-*.json` files, `check_sources.py`, `church_events.py`, `geocode.py`, `services-sheet-tools.gs` (not part of the site build) |
 | Search | Google Search Console (property for signpostingsomerset.org.uk; sitemap submitted) |
@@ -95,27 +95,28 @@ These are decisions, not accidents. Keep to them unless deliberately changed (an
 
 | Folder | What |
 |---|---|
-| `build/directory/` | The directory: `template.html` (site), `assist/worker-template.js` (Assist's worker and AI prompt), `towns.json`, build scripts |
+| `build/directory/` | The directory: `template.html`, `build.py`, `towns.json` (town centres), `sheet_url.txt`, the county outline |
 | `build/analytics/` | Analytics: `DESIGN.md` (decisions so far), the v24 code, `make_analytics_data.py` (rebuilds `docs/assets/analytics-lsoa.geojson`) |
-| `build/tools/` | The tools page (`/tools/`): Assist (`assist/`), Analytics (`analytics/`, desktop only), About. `build_tools.py`, `template.html`, `tools.js`. The directory links to it ("Tools →"); old `#assist` links forward there |
+| `build/tools/` | The tools page (`/tools/`): Assist (`assist/`, including the worker: `worker-template.js` with the AI prompt, `build_worker.py`), Analytics (`analytics/`, desktop only), About. `build_tools.py`, `template.html`, `tools.js`. The directory links to it ("Tools →"); old `#assist` links forward there |
 | `build/core/` | Code shared by the directory and the tools pages (styles, crisis and helpline bars, places, schedules, cards, sheet loading); see its README |
-| `build/browse/` | Town pages (the directory's Places tab, `/directory/places/`): `build_browse.py`, `towns.json`, `categories.json` |
+| `build/places/` | Places (the directory's Places tab, `/directory/places/`): `build_places.py`, `places.css`, `places.js`, `towns.json`, `categories.json` |
 | `build/shared/` | Build helpers: `site_config.py` (base path), `core.py` (stitches `build/core/` into pages) |
 
 ```
 cd build
-python build_all.py path/to/services.csv          # builds the live directory and test
-python build_all.py path/to/services.csv test     # test only
-python directory/build_assist.py                   # rebuilds the worker: directory/assist/cloudflare-worker.js
+python build_all.py path/to/services.csv          # the directory and the tools page, live and test
+python build_all.py path/to/services.csv test     # the directory's test copy only (and tools)
+python places/build_places.py path/to/services.csv  # the Places pages and the sitemap (no CSV: reads the published sheet)
+python tools/assist/build_worker.py               # rebuilds the worker: tools/assist/cloudflare-worker.js
 ```
 
 - Edit the sources above; never edit the generated files.
 - Each build stamps a version (`directory 2026-11-15 12:50`), visible on the site and in Assist, so you can tell which build is live.
-- **Deploy the site:** copy `build/directory/github/directory/index.html` → repo `docs/directory/index.html` and `build/directory/github/test/directory/index.html` → `docs/test/directory/index.html`, and `build/tools/out/tools/index.html` → `docs/tools/index.html`, `build/tools/out/test/tools/index.html` → `docs/test/tools/index.html`, commit, push. GitHub Pages updates in a few minutes.
-- **Deploy the worker:** Cloudflare → `signposting-assist` → Edit code → paste `build/directory/assist/cloudflare-worker.js` → Deploy. Also copy it to `src/`. Check the version shown on the Assist tab.
+- **Deploy the site:** copy `build/directory/github/directory/index.html` → repo `docs/directory/index.html` and `build/directory/github/test/directory/index.html` → `docs/test/directory/index.html`, and `build/tools/out/tools/index.html` → `docs/tools/index.html`, `build/tools/out/test/tools/index.html` → `docs/test/tools/index.html`; and `build/places/out/directory/places/` → `docs/directory/places/`, `build/places/out/test/directory/places/` → `docs/test/directory/places/`, `build/places/out/sitemap.xml` → `docs/sitemap.xml`. Commit, push. GitHub Pages updates in a few minutes.
+- **Deploy the worker:** Cloudflare → `signposting-assist` → Edit code → paste `build/tools/assist/cloudflare-worker.js` → Deploy. Also copy it to `src/`. Check the version shown on the Assist tab.
 - Test on `/test/directory/` first, then build the live directory.
 - **Where the site is served:** `build/site.json` → `base_path`. It is `"/signposting-somerset-v2"` while this repo is previewed on github.io, and must be `""` on signpostingsomerset.org.uk. Every build adds it to links and images that start with `/` (`build/shared/site_config.py`).
-- Setup from scratch: `build/directory/assist/ASSIST-SETUP.md`.
+- Setup from scratch: `build/tools/assist/ASSIST-SETUP.md`.
 - The domain's DNS is at 123-reg and points straight at GitHub Pages (no Cloudflare in front), so redirects are small forwarding pages, not server redirects.
 
 ## 8. Testing Assist
@@ -148,7 +149,7 @@ python run_scenarios.py --scenarios scenarios-helpline.json --all   # local 24/7
 
 - B&NES and North Somerset still thinner than Somerset; Bristol is out of scope.
 - Services needing times or checks: Talk Club Bath, EcoWild Lakeside/Woodland/Men's Woodland, Bath Organic Group, Share and Repair, the Bath Shed (Friday?), Genesis Lifeline (address/hours conflict), Quantock Foodbank (no times).
-- Gaps found by Analytics and the browse counts: no recorded bereavement support within 5 miles of Taunton, Yeovil, Bridgwater, Weston or Bath; Taunton, Yeovil and Bridgwater show no in-person "low mood" or "anxiety" tags within 5 miles (probably tagging, not absence).
-- Site structure, planned in this order: links that open the directory already filtered (e.g. `/directory/?town=Frome&support=bereavement#near`), `/analytics/`, then a `/browse/` pilot (towns listed on the left, each town's support grouped by type on the right, same header as the directory without the tabs).
+- Gaps found by Analytics and the Places counts: no recorded bereavement support within 5 miles of Taunton, Yeovil, Bridgwater, Weston or Bath; Taunton, Yeovil and Bridgwater show no in-person "low mood" or "anxiety" tags within 5 miles (probably tagging, not absence).
+- Site structure (v2): the directory (In person, Phone and online, Courses, Places, About) for everyone; Tools (Assist, Analytics) for professionals, linked as "Tools →". Places are plain pages per town for search engines and simple reading, built from the same sheet; filtered links open the directory already set up (e.g. `/directory/?town=Frome&support=bereavement#near`).
 - Possible: a check in `services-sheet-tools.gs` that flags `weekly` in frequency and values outside the dropdowns.
 - Ideas not yet done: more places in the location dropdown for North Somerset and B&NES; Cloudflare Web Analytics; an Open Referral UK export.

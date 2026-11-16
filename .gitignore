@@ -1,17 +1,10 @@
 # Signposting Somerset: files Git should ignore.
 
-# Build outputs (made by build/build_all.py and build/directory/build_assist.py).
-# Copy what you need into docs/ and src/ instead of committing these.
-build/github/
-build/index.html
-build/signposting-somerset.html
-build/signposting-somerset-trial.html
-build/assist/cloudflare-worker.js
+# Build outputs (made by the scripts in build/). Copy what you need into docs/ and src/ instead of committing these.
 build/directory/github/
-build/directory/index.html
-build/directory/signposting-somerset.html
-build/directory/signposting-somerset-trial.html
-build/directory/assist/cloudflare-worker.js
+build/tools/out/
+build/places/out/
+build/tools/assist/cloudflare-worker.js
 
 # Python
 __pycache__/
@@ -30,6 +23,3 @@ desktop.ini
 .vscode/
 .idea/
 
-# Browse and tools pages output (copied into docs/ to publish)
-build/browse/out/
-build/tools/out/
