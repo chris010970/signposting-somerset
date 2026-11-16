@@ -15,6 +15,19 @@ function copyWhen(s) {
   else if (s.dates) when = "Dates: " + split(s.dates).slice(0, 3).map(d => /^\d{4}-\d\d-\d\d$/.test(d) ? new Date(d + "T12:00").toLocaleDateString("en-GB", { day: "numeric", month: "short" }) : d).join(", ") + (split(s.dates).length > 3 ? "…" : "");
   return [when, tm].filter(Boolean).join(", ");
 }
+// When a service's details were last checked (the sheet's last_checked; wording in core/data/card-text.json):
+// Copy details says the date ("Details checked 7 Nov 2026"); a card shows a tick when it's within CARD_TEXT.checked.days days,
+// saying how long ago on hover and to screen readers ("Details checked 12 days ago")
+const TICK_ICON = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>';
+const checkedOn = s => /^\d{4}-\d\d-\d\d$/.test(s.last_checked || "") ? new Date(s.last_checked + "T12:00") : null;
+const checkedText = s => checkedOn(s) ? `${CARD_TEXT.checked.label} ${checkedOn(s).toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric" })}` : "";
+function checkedTick(s, now = new Date()) {
+  const d = checkedOn(s); if (!d) return "";
+  const C = CARD_TEXT.checked, n = Math.max(0, Math.round((new Date(now.getFullYear(), now.getMonth(), now.getDate(), 12) - d) / 864e5));
+  if (n > C.days) return "";
+  const t = `${C.label} ${n === 0 ? C.today : n === 1 ? C.yesterday : C.ago.replace("{n}", n)}`;
+  return `<span class="checked" title="${esc(t)}">${TICK_ICON}<span class="vh">${esc(t)}</span></span>`;
+}
 function copyText(s, when) {
   const ACC = s.access !== "call" && CARD_TEXT.access[s.access]?.label;   // how to get in (a phone number says it for "call")
   const modes = split(s.mode), inPerson = modes.includes("in-person");
@@ -24,6 +37,7 @@ function copyText(s, when) {
     [when || copyWhen(s), how, ACC, s.cost, s.eligibility].filter(Boolean).join(" · "),
     inPerson ? [s.address, [s.town, s.postcode].filter(Boolean).join(" ")].filter(Boolean).join(", ") : "",
     [s.phone, s.email, s.url].filter(Boolean).join(" · "),
+    checkedText(s),
   ].filter(Boolean).join("\n");
 }
 // Tap-to-call: the first number in the field ("01234 567890 or 0800..." -> 01234567890); texts and non-numbers stay plain

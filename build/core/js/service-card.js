@@ -21,7 +21,7 @@ function serviceCard(r, h = "h2", withId = true) {
   const types = s._sf.length ? " · " + s._sf.map(cap).map(esc).join(", ") : "";
   const place = esc([s.address, s.town, s.postcode].filter(Boolean).join(", ")) + (s.approx ? ` <span class="approx">(approx. location)</span>` : "");
   return `<article class="card"${withId ? ` id="c${s.id}"` : ""} data-id="${s.id}">
-      <div class="row1"><span class="badge ${badgeCls}">${badge}</span><span class="chipr">${dist}${cost}${directionsLink(s)}${copyBtn(s)}</span></div>
+      <div class="row1"><span class="badge ${badgeCls}">${badge}</span><span class="chipr">${checkedTick(s)}${dist}${cost}${directionsLink(s)}${copyBtn(s)}</span></div>
       <${h} class="cname"><button type="button" class="cbtn" aria-expanded="false">${esc(s.name)}</button></${h}>
       ${kindTag(s)}<div class="meta">${esc(s.provider)} · ${esc(s.type)}${types}</div>
       <div class="next"><div class="lab">Next</div><div class="val ${r.nx.cls}">${esc(r.nx.txt)}</div></div>

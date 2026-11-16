@@ -698,6 +698,7 @@ svg.leaflet-image-layer.leaflet-interactive path {
 }
 * { box-sizing: border-box; }
 [hidden] { display: none !important; }
+.vh { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; margin: 0; }   /* for screen readers only */
 html, body { height: 100%; }
 body { margin: 0; background: var(--cream); color: var(--ink); font-family: var(--sans); font-size: 14px; display: flex; flex-direction: column; }
 .gut { padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
@@ -837,6 +838,10 @@ h1 { font-family: var(--serif); color: var(--b900); font-size: 26px; margin: 0; 
 .b-book { background: #FEF3C7; color: #78350F; border-color: #FDE68A; }
 .b-ref { background: #F1F5F9; color: #1E293B; border-color: #CBD5E1; }
 .chipr { display: flex; gap: 6px; flex-wrap: wrap; }
+.checked { position: relative; display: inline-grid; place-items: center; width: 20px; height: 20px; border-radius: 50%; background: #D1FAE5; border: 1px solid #A7F3D0; color: #065F46; flex: none; vertical-align: middle; cursor: help; }   /* details checked recently (cards.js) */
+.checked svg { width: 12px; height: 12px; }
+.tname { display: flex; align-items: flex-start; gap: 6px; }   /* a name and its tick (Phone and online, Courses) */
+.tname .checked { margin-top: 2px; }
 .chip { font-size: 10px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; color: #57534E; background: #F5F5F4; border: 1px solid var(--line); padding: 3px 7px; border-radius: 6px; }
 .chip.dist { color: var(--b800); background: var(--b50); border-color: var(--b100); text-transform: none; letter-spacing: 0; font-size: 11px; }
 .card .cname { font-family: var(--serif); color: var(--b900); font-size: 17px; line-height: 1.25; margin: 0 0 4px; text-wrap: balance; }
@@ -926,7 +931,6 @@ footer.urgent p { color: #FEE2E2; }
    Shared by the directory's Places tab and the standalone Places pages (whose own page frame is build/places/places.css) */
 .bmain { min-width: 0; }
 .bmain.loading { opacity: .5; transition: opacity .15s; }
-.vh { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; margin: 0; }   /* for screen readers only */
 
 
 /* Filter boxes: three equal boxes, running to the right-hand edge like the directory's */
@@ -1167,7 +1171,7 @@ const GROUPS = SUPPORT_TYPES.groups.map(g => [g.group, g.types]);
 const LABEL = SUPPORT_TYPES.labels;
 // Card wording: the access badges (build/core/data/card-text.json)
 const CARD_TEXT = ({
- "_about": "Wording on the service cards (In person, Places) and in Copy details. access: the badge for each value of the sheet's access column (class sets its colour). A 'call' service reads 'Call first' for groups and activities, and 'Phone line' for anything else; any other value reads 'Contact provider'.",
+ "_about": "Wording on the service cards (In person, Places) and in Copy details. access: the badge for each value of the sheet's access column (class sets its colour). A 'call' service reads 'Call first' for groups and activities, and 'Phone line' for anything else; any other value reads 'Contact provider'. checked: a tick on a card when the sheet's last_checked is within 'days' days. Its hover text is 'label' and how long ago ('today', 'yesterday', 'ago'); Copy details gives 'label' and the date, since notes outlive 'days ago'.",
  "access": {
   "drop in": {"class": "b-drop", "label": "Just turn up"},
   "sign up": {"class": "b-sign", "label": "Contact to join"},
@@ -1176,7 +1180,8 @@ const CARD_TEXT = ({
   "call": {"class": "b-ref", "label": "Call first", "label_not_group": "Phone line"}
  },
  "access_other": {"class": "b-ref", "label": "Contact provider"},
- "group_types": ["group", "community", "course", "volunteering"]
+ "group_types": ["group", "community", "course", "volunteering"],
+ "checked": {"days": 90, "label": "Details checked", "today": "today", "yesterday": "yesterday", "ago": "{n} days ago"}
 });
 // Groups, activities, courses and volunteering (by type), as opposed to one-to-one services and phone lines
 const isGroupType = s => new RegExp(CARD_TEXT.group_types.join("|"), "i").test(s.type || "");
@@ -1427,6 +1432,19 @@ function copyWhen(s) {
   else if (s.dates) when = "Dates: " + split(s.dates).slice(0, 3).map(d => /^\d{4}-\d\d-\d\d$/.test(d) ? new Date(d + "T12:00").toLocaleDateString("en-GB", { day: "numeric", month: "short" }) : d).join(", ") + (split(s.dates).length > 3 ? "…" : "");
   return [when, tm].filter(Boolean).join(", ");
 }
+// When a service's details were last checked (the sheet's last_checked; wording in core/data/card-text.json):
+// Copy details says the date ("Details checked 7 Nov 2026"); a card shows a tick when it's within CARD_TEXT.checked.days days,
+// saying how long ago on hover and to screen readers ("Details checked 12 days ago")
+const TICK_ICON = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>';
+const checkedOn = s => /^\d{4}-\d\d-\d\d$/.test(s.last_checked || "") ? new Date(s.last_checked + "T12:00") : null;
+const checkedText = s => checkedOn(s) ? `${CARD_TEXT.checked.label} ${checkedOn(s).toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric" })}` : "";
+function checkedTick(s, now = new Date()) {
+  const d = checkedOn(s); if (!d) return "";
+  const C = CARD_TEXT.checked, n = Math.max(0, Math.round((new Date(now.getFullYear(), now.getMonth(), now.getDate(), 12) - d) / 864e5));
+  if (n > C.days) return "";
+  const t = `${C.label} ${n === 0 ? C.today : n === 1 ? C.yesterday : C.ago.replace("{n}", n)}`;
+  return `<span class="checked" title="${esc(t)}">${TICK_ICON}<span class="vh">${esc(t)}</span></span>`;
+}
 function copyText(s, when) {
   const ACC = s.access !== "call" && CARD_TEXT.access[s.access]?.label;   // how to get in (a phone number says it for "call")
   const modes = split(s.mode), inPerson = modes.includes("in-person");
@@ -1436,6 +1454,7 @@ function copyText(s, when) {
     [when || copyWhen(s), how, ACC, s.cost, s.eligibility].filter(Boolean).join(" · "),
     inPerson ? [s.address, [s.town, s.postcode].filter(Boolean).join(" ")].filter(Boolean).join(", ") : "",
     [s.phone, s.email, s.url].filter(Boolean).join(" · "),
+    checkedText(s),
   ].filter(Boolean).join("\n");
 }
 // Tap-to-call: the first number in the field ("01234 567890 or 0800..." -> 01234567890); texts and non-numbers stay plain
@@ -1505,7 +1524,7 @@ function serviceCard(r, h = "h2", withId = true) {
   const types = s._sf.length ? " · " + s._sf.map(cap).map(esc).join(", ") : "";
   const place = esc([s.address, s.town, s.postcode].filter(Boolean).join(", ")) + (s.approx ? ` <span class="approx">(approx. location)</span>` : "");
   return `<article class="card"${withId ? ` id="c${s.id}"` : ""} data-id="${s.id}">
-      <div class="row1"><span class="badge ${badgeCls}">${badge}</span><span class="chipr">${dist}${cost}${directionsLink(s)}${copyBtn(s)}</span></div>
+      <div class="row1"><span class="badge ${badgeCls}">${badge}</span><span class="chipr">${checkedTick(s)}${dist}${cost}${directionsLink(s)}${copyBtn(s)}</span></div>
       <${h} class="cname"><button type="button" class="cbtn" aria-expanded="false">${esc(s.name)}</button></${h}>
       ${kindTag(s)}<div class="meta">${esc(s.provider)} · ${esc(s.type)}${types}</div>
       <div class="next"><div class="lab">Next</div><div class="val ${r.nx.cls}">${esc(r.nx.txt)}</div></div>
@@ -2034,7 +2053,7 @@ function talkCard({ s, st }) {
   const url = webUrl(s.url);
   return `<article class="tcard">
       <div class="row1"><span class="mode">${modes} · ${s.area === "national" ? "UK-wide" : "Local"}</span><span class="chipr"><span class="openp ${st.open ? "yes" : st.when || "no"}">${esc(st.txt)}</span>${copyBtn(s)}</span></div>
-      <h3>${esc(s.name)}</h3>
+      <div class="tname"><h3>${esc(s.name)}</h3>${checkedTick(s)}</div>
       ${reach ? `<div class="reach${s.phone ? "" : " email"}">${reach}</div>` : ""}
       <p class="desc" style="-webkit-line-clamp:3">${esc(s.description)}</p>
       <div class="meta" style="margin:0">${esc(s.provider)} · ${esc(s.type)}${s.who && s.who !== "anyone" ? " · For " + esc(s.who) : ""}${s.eligibility ? " · " + esc(s.eligibility) : ""}</div>
@@ -2087,7 +2106,7 @@ function courseCard({ s, ci }) {
   const url = webUrl(s.url);
   return `<article class="tcard">
       <div class="row1"><span class="mode">${split(s.mode).includes("online") ? "Online" : esc(s.town || "In person")}</span><span class="chipr"><span class="openp ${ci.join ? "yes" : "no"}">${esc(ci.status)}</span>${copyBtn(s, ci.when)}</span></div>
-      <h3>${esc(s.name)}</h3>
+      <div class="tname"><h3>${esc(s.name)}</h3>${checkedTick(s)}</div>
       <div class="meta" style="margin:0;color:var(--ink);font-weight:600">${esc(ci.when)}</div>
       <p class="desc" style="-webkit-line-clamp:3">${esc(s.description)}</p>
       <div class="meta" style="margin:0">${esc(s.provider)}${s.cost ? " · " + esc(s.cost) : ""}${s.eligibility ? " · " + esc(s.eligibility) : ""}</div>
@@ -2148,7 +2167,8 @@ function renderAbout() {
     <section>
     <h3>How it's kept accurate</h3>
     <ul>
-      <li>Every service is checked against the provider's own website, timetable or leaflet, and dated.</li>
+      <li>Every service is checked against the provider's own website, timetable or leaflet, and dated.
+        A <span class="checked">${TICK_ICON}</span> on a card means its details were checked in the last ${CARD_TEXT.checked.days} days: point at it to see the date (Copy details includes it too).</li>
       <li>Nothing is guessed: if a provider doesn't say something, it's left blank.</li>
       <li>Some venues are only shared after registration, and Crisis Safe Space addresses are never published. These show at the town centre.</li>
       <li>The records are shared, so people with local knowledge can keep them up to date. Changes appear here within minutes.</li>
@@ -2160,7 +2180,7 @@ function renderAbout() {
     </section>
     </div></div>
     <p class="small">Service information belongs to the providers listed. Map data © <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap</a> contributors, © <a href="https://carto.com/attributions" target="_blank" rel="noopener">CARTO</a>.</p>
-    <p class="small" id="site-version">Version: directory 2026-11-16 18:17</p>
+    <p class="small" id="site-version">Version: directory 2026-11-16 19:13</p>
   </article>`;
 }
 /* ---------- Places: the town listings, as a tab of the directory ----------

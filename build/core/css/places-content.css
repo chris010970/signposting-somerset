@@ -2,7 +2,6 @@
    Shared by the directory's Places tab and the standalone Places pages (whose own page frame is build/places/places.css) */
 .bmain { min-width: 0; }
 .bmain.loading { opacity: .5; transition: opacity .15s; }
-.vh { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; margin: 0; }   /* for screen readers only */
 
 
 /* Filter boxes: three equal boxes, running to the right-hand edge like the directory's */

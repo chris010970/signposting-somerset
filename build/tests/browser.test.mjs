@@ -304,6 +304,28 @@ test("Narrow phones (320px): nothing runs off the side, on every tab and page", 
   }
 });
 
+test("Details checked: a tick when checked in the last 90 days, saying how long ago (hover, screen readers); Copy details gives the date", async () => {
+  const p = await open("/test/directory/#talk");
+  // one record checked long ago, one ten days ago (the test clock is Mon 16 Nov 2026)
+  const sheet = SHEET.replace(/^(Test Online Group,.*,)16\/11\/2026(,[^,]*,[^,]*)$/m, "$101/01/2026$2").replace(/^(Test 24\/7 Line,.*,)16\/11\/2026(,[^,]*,[^,]*)$/m, "$106/11/2026$2");
+  await p.route(/docs\.google|googleusercontent/, r => r.fulfill({ status: 200, contentType: "text/csv", body: sheet }));
+  await p.reload(); await p.waitForTimeout(1200);
+  const card = name => p.evaluate(n => [...document.querySelectorAll("#panel-talk .tcard")].find(c => c.querySelector("h3").textContent.includes(n))?.querySelector(".checked")
+    ?.getAttribute("title") ?? null, name);
+  assert.equal(await card("Test 24/7 Line"), "Details checked 10 days ago");
+  assert.equal(await card("Test Online Group"), null, "checked over 90 days ago: no tick");
+  assert.equal(await p.evaluate(() => [...document.querySelectorAll("#panel-talk .tcard")].find(c => c.textContent.includes("Test 24/7 Line")).querySelector(".checked .vh").textContent),
+    "Details checked 10 days ago", "screen readers hear it too");
+  assert.ok(await p.evaluate(() => [...document.querySelectorAll("#panel-talk .tcard h3")].every(h => !h.textContent.includes("checked"))), "beside the name, not in its heading");
+  await p.evaluate(() => [...document.querySelectorAll("#panel-talk .tcard")].find(c => c.textContent.includes("Test 24/7 Line")).querySelector(".copy").click());
+  await p.waitForTimeout(200);
+  assert.match(await p.evaluate(() => navigator.clipboard.readText()), /\nDetails checked 6 Nov 2026$/, "Copy details: the date, as notes outlive \"days ago\"");
+  await p.click("#tab-near"); await p.waitForTimeout(500);
+  assert.equal(await p.$eval("#list .card .row1 .checked", e => e.title), "Details checked today", "In person cards too");
+  assert.deepEqual(p.errors, []);
+  await p.done();
+});
+
 // The Places pages, as built from the real sheet
 const TOWN_PAGES = readdirSync(join(DOCS, "test", "directory", "places")).filter(t => existsSync(join(DOCS, "test", "directory", "places", t, "index.html")));
 

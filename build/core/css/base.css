@@ -8,6 +8,7 @@
 }
 * { box-sizing: border-box; }
 [hidden] { display: none !important; }
+.vh { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; margin: 0; }   /* for screen readers only */
 html, body { height: 100%; }
 body { margin: 0; background: var(--cream); color: var(--ink); font-family: var(--sans); font-size: 14px; display: flex; flex-direction: column; }
 .gut { padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }

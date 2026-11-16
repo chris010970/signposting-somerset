@@ -38,7 +38,8 @@ function renderAbout() {
     <section>
     <h3>How it's kept accurate</h3>
     <ul>
-      <li>Every service is checked against the provider's own website, timetable or leaflet, and dated.</li>
+      <li>Every service is checked against the provider's own website, timetable or leaflet, and dated.
+        A <span class="checked">${TICK_ICON}</span> on a card means its details were checked in the last ${CARD_TEXT.checked.days} days: point at it to see the date (Copy details includes it too).</li>
       <li>Nothing is guessed: if a provider doesn't say something, it's left blank.</li>
       <li>Some venues are only shared after registration, and Crisis Safe Space addresses are never published. These show at the town centre.</li>
       <li>The records are shared, so people with local knowledge can keep them up to date. Changes appear here within minutes.</li>

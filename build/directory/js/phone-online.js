@@ -31,7 +31,7 @@ function talkCard({ s, st }) {
   const url = webUrl(s.url);
   return `<article class="tcard">
       <div class="row1"><span class="mode">${modes} · ${s.area === "national" ? "UK-wide" : "Local"}</span><span class="chipr"><span class="openp ${st.open ? "yes" : st.when || "no"}">${esc(st.txt)}</span>${copyBtn(s)}</span></div>
-      <h3>${esc(s.name)}</h3>
+      <div class="tname"><h3>${esc(s.name)}</h3>${checkedTick(s)}</div>
       ${reach ? `<div class="reach${s.phone ? "" : " email"}">${reach}</div>` : ""}
       <p class="desc" style="-webkit-line-clamp:3">${esc(s.description)}</p>
       <div class="meta" style="margin:0">${esc(s.provider)} · ${esc(s.type)}${s.who && s.who !== "anyone" ? " · For " + esc(s.who) : ""}${s.eligibility ? " · " + esc(s.eligibility) : ""}</div>

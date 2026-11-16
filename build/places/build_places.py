@@ -15,7 +15,7 @@ Rules kept here: only in-person services (not courses) with a place; Crisis Safe
 none are shown; distances are straight lines; 'next session' is worked out in the visitor's browser, so pages never go stale
 on that. Everything else is as of the build date shown on each page.
 """
-import html, json, math, pathlib, re, sys, urllib.parse
+import datetime, html, json, math, pathlib, re, sys, urllib.parse
 sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent.parent / "shared"))
 from core import inline_core
 from page import LIVE as SITE, NOINDEX, NOW, STAMP
@@ -115,11 +115,20 @@ def pattern(r):
 # JavaScript, see); in the browser each is redrawn by the directory's own card code (build/core/js/service-card.js), which
 # adds the kind of service, the next session, Copy details and Directions, from the page's records (PAGE_FIELDS below).
 PAGE_FIELDS = ["name", "provider", "type", "access", "support_for", "mode", "url", "description", "who", "eligibility", "days", "times",
-               "frequency", "dates", "address", "town", "postcode", "phone", "email", "cost", "area", "lat", "lon"]
+               "frequency", "dates", "address", "town", "postcode", "phone", "email", "cost", "area", "lat", "lon", "last_checked"]
 
 KIND_LIST = json.loads((CORE_DATA / "kinds.json").read_text(encoding="utf-8"))["kinds"]
 CARD_TEXT = json.loads((CORE_DATA / "card-text.json").read_text(encoding="utf-8"))
 GROUP_TYPE = re.compile("|".join(CARD_TEXT["group_types"]), re.I)
+
+def checked_tick(r):
+    """The tick for details checked recently, as core/js/cards.js checkedTick (as of the build; the page redraws it in the browser)."""
+    try: d = datetime.date.fromisoformat(r.get("last_checked", ""))
+    except ValueError: return ""
+    if (NOW.date() - d).days > CARD_TEXT["checked"]["days"]: return ""
+    t = e(f'{CARD_TEXT["checked"]["label"]} {d.day} {d:%b %Y}')
+    return (f'<span class="checked" title="{t}"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" '
+            f'stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg><span class="vh">{t}</span></span>')
 
 def badge(r):
     """[class, wording] for the access badge, as core/js/service-card.js does."""
@@ -134,6 +143,7 @@ def card(d, r, i):
     d = round(d, 1)   # to a tenth of a mile, here and in the page's data, so the browser shows exactly the same
     dist = f'<span class="chip dist">{"&lt;0.1" if d < .1 else f"{d:.1f}"} mi{" approx." if r["_approx"] else ""}</span>'
     cost = f'<span class="chip">{e(r["cost"])}</span>' if r.get("cost") else ""
+    tick = checked_tick(r)
     kind = next((k for k in KIND_LIST if r.get("type") in k["types"]), None)
     kind_tag = f'<div class="kind"><i style="background:{kind["colour"]}"></i>{e(kind["kind"])}</div>' if kind else ""
     types = " · " + ", ".join(e(cap(t)) for t in split(r.get("support_for", ""))) if split(r.get("support_for", "")) else ""
@@ -149,7 +159,7 @@ def card(d, r, i):
     who = (f'<div class="who">For: {e(r.get("who", ""))}' + (f' · <em>{e(r["eligibility"])}</em>' if r.get("eligibility") else "") + "</div>"
            if r.get("who") or r.get("eligibility") else "")
     return (f'<li data-i="{i}" data-d="{d:.1f}"><article class="card" data-id="{i}">'
-            f'<div class="row1"><span class="badge {cls}">{label}</span><span class="chipr">{dist}{cost}</span></div>'
+            f'<div class="row1"><span class="badge {cls}">{label}</span><span class="chipr">{tick}{dist}{cost}</span></div>'
             f'<h4 class="cname">{e(r["name"])}</h4>{kind_tag}<div class="meta">{e(r.get("provider", ""))} · {e(r.get("type", ""))}{types}</div>'
             f'<div class="next"><div class="lab">When</div><div class="val">{e(pattern(r))}</div></div>'
             f'<p class="desc full">{e(r.get("description", ""))}</p>{who}'   # (in full: without JavaScript a card can't open)

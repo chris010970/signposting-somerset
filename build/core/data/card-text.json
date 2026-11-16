@@ -1,5 +1,5 @@
 {
- "_about": "Wording on the service cards (In person, Places) and in Copy details. access: the badge for each value of the sheet's access column (class sets its colour). A 'call' service reads 'Call first' for groups and activities, and 'Phone line' for anything else; any other value reads 'Contact provider'.",
+ "_about": "Wording on the service cards (In person, Places) and in Copy details. access: the badge for each value of the sheet's access column (class sets its colour). A 'call' service reads 'Call first' for groups and activities, and 'Phone line' for anything else; any other value reads 'Contact provider'. checked: a tick on a card when the sheet's last_checked is within 'days' days. Its hover text is 'label' and how long ago ('today', 'yesterday', 'ago'); Copy details gives 'label' and the date, since notes outlive 'days ago'.",
  "access": {
   "drop in": {"class": "b-drop", "label": "Just turn up"},
   "sign up": {"class": "b-sign", "label": "Contact to join"},
@@ -8,5 +8,6 @@
   "call": {"class": "b-ref", "label": "Call first", "label_not_group": "Phone line"}
  },
  "access_other": {"class": "b-ref", "label": "Contact provider"},
- "group_types": ["group", "community", "course", "volunteering"]
+ "group_types": ["group", "community", "course", "volunteering"],
+ "checked": {"days": 90, "label": "Details checked", "today": "today", "yesterday": "yesterday", "ago": "{n} days ago"}
 }

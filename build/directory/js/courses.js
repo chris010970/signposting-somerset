@@ -20,7 +20,7 @@ function courseCard({ s, ci }) {
   const url = webUrl(s.url);
   return `<article class="tcard">
       <div class="row1"><span class="mode">${split(s.mode).includes("online") ? "Online" : esc(s.town || "In person")}</span><span class="chipr"><span class="openp ${ci.join ? "yes" : "no"}">${esc(ci.status)}</span>${copyBtn(s, ci.when)}</span></div>
-      <h3>${esc(s.name)}</h3>
+      <div class="tname"><h3>${esc(s.name)}</h3>${checkedTick(s)}</div>
       <div class="meta" style="margin:0;color:var(--ink);font-weight:600">${esc(ci.when)}</div>
       <p class="desc" style="-webkit-line-clamp:3">${esc(s.description)}</p>
       <div class="meta" style="margin:0">${esc(s.provider)}${s.cost ? " · " + esc(s.cost) : ""}${s.eligibility ? " · " + esc(s.eligibility) : ""}</div>
