@@ -108,6 +108,7 @@ test("In person: a town, distances, the card's details and Copy details", async 
   assert.equal(await text(p, "#summary"), "Showing 3 services within 10 miles of Wells · 1 need times checking");
   assert.deepEqual(await cards(p), ["Test Weekly Drop-in", "Test Town Centre Group", "Test Counselling"]);
   const c = await p.$("#c0");
+  await p.click("#c0 .cbtn");   // open: its full details
   assert.match(await c.innerText(), /Just turn up[\s\S]*Test Weekly Drop-in[\s\S]*GROUPS AND COMMUNITY[\s\S]*Low mood, Anxiety[\s\S]*Wed, 18 Nov, 10:00–12:00[\s\S]*For: anyone · Free/);
   assert.ok(await p.$("#c0 a.dirs"), "directions for a service with a postcode");
   assert.ok(!(await p.$("#c9 a.dirs")), "no directions for a town-centre (approximate) place");
@@ -149,6 +150,7 @@ test("Scroll positions: each tab, and Places, are where they were left", async (
   const scroll = async (id, y) => { await p.evaluate(([i, v]) => { document.getElementById(i).scrollTop = v; }, [id, y]); await p.waitForTimeout(300); };
   await p.setViewportSize({ width: 1400, height: 560 });   // short, so the made-up sheet's lists scroll (not so short that the whole page scrolls)
   assert.equal(await p.evaluate(() => pageFlows()), false);
+  await p.$$eval("#panel-talk .tcard .cbtn", bs => bs.forEach(b => b.click()));   // opened, so the made-up sheet's few cards are long enough to scroll
   await scroll("panel-talk", 60);
   await p.click("#tab-near"); await p.waitForTimeout(300); await scroll("list", 300);
   await p.click("#tab-talk"); assert.equal(await top("panel-talk"), 60, "Phone and online, after In person");
@@ -412,7 +414,9 @@ test("Short screens and phones: the whole page scrolls, the results get the scre
   // person scrolls up to the tab row first, so a tab is kept where they left it: at the top)
   const p = await open("/test/directory/#near", { width: 390, height: 664 });
   await p.evaluate(() => scrollTo(0, 700)); await p.waitForTimeout(400);
-  await p.evaluate(() => document.getElementById("tab-talk").click()); await p.waitForTimeout(300); await p.evaluate(() => scrollTo(0, 250)); await p.waitForTimeout(400);
+  await p.evaluate(() => document.getElementById("tab-talk").click()); await p.waitForTimeout(300);
+  await p.$$eval("#panel-talk .tcard .cbtn", bs => bs.forEach(b => b.click()));   // opened, so the made-up sheet's few cards are long enough to scroll
+  await p.evaluate(() => scrollTo(0, 250)); await p.waitForTimeout(400);
   await p.evaluate(() => document.getElementById("tab-near").click()); await p.waitForTimeout(400);
   assert.equal(await p.evaluate(() => Math.round(scrollY)), 700, "In person: where it was");
   await p.evaluate(() => document.getElementById("tab-talk").click()); await p.waitForTimeout(400);
@@ -432,6 +436,7 @@ test("Keyboard and screen readers: Skip to results; the list isn't read out on e
   const id = await p.$eval("#list .card", c => c.dataset.id);
   await p.evaluate(id => showCard(id), id); await p.waitForTimeout(300);
   assert.equal(await p.evaluate(() => document.activeElement.closest(".card")?.dataset.id + " " + document.activeElement.className), id + " cbtn", "a map pin: focus on its card's name");
+  assert.ok(await p.$eval(`#c${id}`, c => c.classList.contains("open")), "and the card opens, so its details are there to read");
   const [name, label] = await p.$eval("#list .card", c => [c.querySelector(".cname").textContent, c.querySelector("button.copy").getAttribute("aria-label")]);
   assert.equal(label, "Copy details for " + name);
   const q = await open("/test/directory/places/wells/");
@@ -440,6 +445,48 @@ test("Keyboard and screen readers: Skip to results; the list isn't read out on e
   await q.done();
   assert.deepEqual(p.errors, []);
   await p.done();
+});
+
+test("Folding: a card shows what people choose on until it's opened; restrictions always show; an open card doesn't change the closed ones beside it", async () => {
+  // What shows, closed and open: every tab's cards
+  const shown = (page, c) => page.evaluate(c => Object.fromEntries([".cbtn .chev", ".desc", ".meta", ".who", ".foot", ".restrict"]
+    .map(s => [s, [...c.querySelectorAll(s)].some(e => e.offsetParent !== null)])), c);
+  for (const [path, sel] of [["/test/directory/?when=any#near", "#list .card"], ["/test/directory/#talk", "#panel-talk .tcard"], ["/test/directory/#course", "#panel-course .tcard"]]) {
+    const p = await open(path), c = await p.$(sel);
+    const closed = await shown(p, c);
+    assert.ok(closed[".cbtn .chev"] && closed[".desc"], `${path}: closed, the name (with its arrow) and the description show`);
+    assert.ok(!closed[".meta"] && !closed[".who"] && !closed[".foot"], `${path}: closed, the provider, For line and contact details are folded away`);
+    await p.click(`${sel} .cbtn`);
+    const opened = await shown(p, c);
+    assert.ok(opened[".foot"] || opened[".meta"], `${path}: opened, the rest shows`);
+    assert.equal(await c.evaluate(c => c.querySelector(".cbtn").getAttribute("aria-expanded")), "true", `${path}: and says so to screen readers`);
+    assert.deepEqual(p.errors, []);
+    await p.done();
+  }
+  // A restriction shows on a closed card (once open, the For line says it); the plain cards for search engines stay in full
+  const town = await open("/test/directory/places/wells/");
+  const r = await town.$("li[data-i]:not([hidden]) .card:has(.restrict)");
+  assert.ok(r, "Wells has a service with a restriction");
+  assert.deepEqual(Object.values(await town.evaluate(c => [c.querySelector(".restrict").offsetParent !== null, c.querySelector(".who").offsetParent === null], r)), [true, true]);
+  await r.evaluate(c => c.querySelector(".cbtn").click());
+  assert.deepEqual(await town.evaluate(c => [c.querySelector(".restrict").offsetParent === null, /\S/.test(c.querySelector(".who em")?.textContent)], r), [true, true]);
+  // Two or three to a row: opening one doesn't change the height of the closed cards beside it
+  const row = () => town.$$eval(".blist", ls => { const l = ls.find(l => l.offsetParent && l.querySelectorAll("li:not([hidden])").length >= 2);
+    return [...l.querySelectorAll("li:not([hidden]) .card")].slice(0, 2).map(c => Math.round(c.getBoundingClientRect().height)); });
+  const before = await row();
+  await town.$$eval(".blist", ls => ls.find(l => l.offsetParent && l.querySelectorAll("li:not([hidden])").length >= 2).querySelector(".cbtn").click());
+  const after = await row();
+  assert.ok(after[0] > before[0], "the open card grows"); assert.equal(after[1], before[1], "the one beside it keeps its size");
+  assert.deepEqual(town.errors, []); await town.done();
+  const plain = await open("/test/directory/places/wells/", { js: false });
+  assert.equal(await plain.$$eval(".card", cs => cs.filter(c => c.classList.contains("fold") || !c.querySelector(".foot")?.offsetParent).length), 0, "without JavaScript: full cards");
+  await plain.done();
+  // A phone: the arrow never wraps onto a line of its own, even on a long name
+  for (const [path, sel] of [["/test/directory/?when=any#near", "#list .card"], ["/test/directory/#talk", "#panel-talk .tcard"], ["/test/directory/places/wells/", "li[data-i]:not([hidden]) .card"]]) {
+    const p = await open(path, { width: 320 });
+    assert.equal(await p.$$eval(`${sel} .cbtn .nw`, ns => ns.filter(n => n.offsetParent && n.getClientRects().length !== 1).length), 0, `${path}: each arrow on its last word's line`);
+    await p.done();
+  }
 });
 
 // The Places pages, as built from the real sheet

@@ -56,7 +56,7 @@
   .card { padding-inline: 12px; } .row1 { gap: 6px; } .chipr { gap: 4px; } .badge { padding-inline: 7px; }
 }
 .card.open .desc, .desc.full { -webkit-line-clamp: unset; display: block; }
-.cname .cbtn { font: inherit; color: inherit; background: none; border: 0; padding: 0; margin: 0; text-align: left; cursor: pointer; }   /* the name: a button that opens the card */
+.cname .cbtn, .tname .cbtn { font: inherit; color: inherit; background: none; border: 0; padding: 0; margin: 0; text-align: left; cursor: pointer; }   /* the name: a button that opens the card */
 .who { font-size: 12px; color: var(--ink); margin-bottom: 8px; }
 .who em { font-style: normal; color: #92400E; }
 .who .cost { font-weight: 600; }
@@ -64,6 +64,19 @@
 .foot a { color: var(--b700); }
 a.copy.dirs { text-decoration: none; }
 .approx { color: #78716C; }
+/* Folding: a card made in the browser (class "fold") shows what people choose on until it's opened (its name button, toggleCard).
+   The plain cards on the Places pages (for search engines and browsers without JavaScript) have no "fold" and stay in full. */
+.cbtn .nw { white-space: nowrap; }   /* the arrow stays with the name's last word */
+.cbtn .chev { width: 14px; height: 14px; margin-left: 5px; vertical-align: -1px; color: var(--b600); transition: transform .15s; }
+.open .cbtn .chev { transform: rotate(180deg); }
+.fold:not(.open) :is(.meta, .who, .foot) { display: none; }
+.fold:not(.open) .desc { margin-bottom: 0; }
+@media (max-width: 899px) { .fold:not(.open) .desc { -webkit-line-clamp: 1; } }   /* phones and narrow windows: one line */
+.fold.open .desc { -webkit-line-clamp: unset; display: block; }
+.restrict { font-size: 12px; font-weight: 600; color: #92400E; }   /* a restriction, on a closed card (once open, the For line says it) */
+.card .restrict { margin-top: 6px; }
+.fold.open .restrict { display: none; }
+@media (prefers-reduced-motion: reduce) { .cbtn .chev { transition: none; } }
 .morehint { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 8px 12px; margin: 14px 0 6px; padding: 12px 14px; border: 1px dashed var(--line); border-radius: 12px; background: var(--white); font-size: 14px; color: var(--muted); }
 .morehint b { color: inherit; }
 .morehint button { font: inherit; font-size: 13px; font-weight: 600; padding: 6px 12px; border-radius: 999px; border: 1px solid var(--line); background: var(--white); cursor: pointer; }

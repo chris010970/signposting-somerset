@@ -3,7 +3,7 @@
 The clean-up is the same as the pages do when they read the sheet (build/core/js/sheet.js): spreadsheets turn
 2026-12-17 into 17/12/2026 and 10:00 into 10:00:00, so both are put back. build/tests/ checks the two agree.
 """
-import csv, io, re, urllib.request
+import csv, io, re, time, urllib.request
 from pathlib import Path
 
 SHEET_URL_FILE = Path(__file__).resolve().parent.parent / "directory" / "sheet_url.txt"
@@ -35,5 +35,10 @@ def read_records(csv_path=None):
         text = Path(csv_path).read_text(encoding="utf-8-sig")
     else:
         url = SHEET_URL_FILE.read_text().strip()
-        text = urllib.request.urlopen(url, timeout=60).read().decode("utf-8-sig")
+        for attempt in range(3):   # Google is sometimes slow to answer: try again before giving up
+            try:
+                text = urllib.request.urlopen(url, timeout=60).read().decode("utf-8-sig"); break
+            except OSError:   # (timeouts and connection errors)
+                if attempt == 2: raise
+                time.sleep(10)
     return [r for r in map(clean, csv.DictReader(io.StringIO(text))) if r.get("name")]

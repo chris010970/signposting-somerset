@@ -41,8 +41,8 @@
 .bsec h3 { font-size: 11px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); margin: 10px 0 8px; font-family: var(--sans); }
 .bsec h3.vh + .blist { margin-top: 12px; }
 /* The cards are the In person tab's (build/core/css/cards.css), three or so across */
-.blist { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 340px), 1fr)); gap: 12px; }
-.blist .card { margin: 0; height: 100%; box-sizing: border-box; }
+.blist { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 340px), 1fr)); gap: 12px; align-items: start; }   /* an open card grows; the closed ones beside it keep their size */
+.blist .card { margin: 0; box-sizing: border-box; }
 
 /* Foot of the page */
 .bfoot { font-size: 12.5px; color: var(--muted); margin-top: 18px; }

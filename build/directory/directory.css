@@ -21,11 +21,13 @@
 
 /* Phone and online, Courses, About: a scrolling page of cards */
 .talk { max-width: 1432px; margin: 0 auto 0 var(--page-left); padding-block: 14px 110px; }   /* lined up with the header (core/css/page.css) */
-.tgrid { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 320px), 1fr)); gap: 12px; }   /* one column on the narrowest phones */
+.tgrid { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 320px), 1fr)); gap: 12px; align-items: start; }   /* an open card grows; the closed ones beside it keep their size */   /* one column on the narrowest phones */
 .gh { font-family: var(--serif); color: var(--b900); font-size: 18px; margin: 20px 4px 10px; }
 .talk > .gh:first-child { margin-top: 0; }  /* first heading sits as close to the filters as the In person cards */
 .gh small { font-family: var(--sans); font-size: 12px; color: var(--muted); font-weight: 500; margin-left: 8px; }
 .tcard { background: var(--white); border-radius: 16px; padding: 14px 16px; box-shadow: 0 1px 2px rgba(0,0,0,.05); border: 1px solid var(--line); display: grid; grid-template-columns: minmax(0, 1fr); gap: 8px; align-content: start; min-width: 0; }
+.tcard { cursor: pointer; }
+.cwhen { font-size: 12px; font-weight: 600; color: var(--ink); }   /* a course's sessions */
 .tcard h3 { font-family: var(--serif); color: var(--b900); font-size: 17px; margin: 0; overflow-wrap: anywhere; }
 .reach { font-size: 18px; font-weight: 700; color: var(--b800); font-variant-numeric: tabular-nums; overflow-wrap: anywhere; }
 .reach.email { font-size: 15px; font-weight: 600; }

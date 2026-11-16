@@ -18,15 +18,17 @@ function courseInfo(s, now) {
 }
 function courseCard({ s, ci }) {
   const url = webUrl(s.url);
-  return `<article class="tcard">
+  return `<article class="tcard fold${foldAttrs(s)}">
       <div class="row1"><span class="mode">${split(s.mode).includes("online") ? "Online" : esc(s.town || "In person")}</span><span class="chipr"><span class="openp ${ci.join ? "yes" : "no"}">${esc(ci.status)}</span>${copyBtn(s, ci.when)}</span></div>
-      <div class="tname"><h3>${esc(s.name)}</h3>${checkedTick(s)}</div>
-      <div class="meta" style="margin:0;color:var(--ink);font-weight:600">${esc(ci.when)}</div>
-      <p class="desc" style="-webkit-line-clamp:3">${esc(s.description)}</p>
+      <div class="tname"><h3>${nameButton(s)}</h3>${checkedTick(s)}</div>
+      <div class="cwhen">${esc(ci.when)}</div>
+      <p class="desc">${esc(s.description)}</p>${restrictLine(s)}
       <div class="meta" style="margin:0">${esc(s.provider)}${s.cost ? " · " + esc(s.cost) : ""}${s.eligibility ? " · " + esc(s.eligibility) : ""}</div>
-      <div class="foot">${[url ? `<a href="${esc(url)}" target="_blank" rel="noopener">Website</a>` : "", esc(s.phone), esc(s.email)].filter(Boolean).join(" · ")}</div>
+      <div class="foot"><span>${[url ? `<a href="${esc(url)}" target="_blank" rel="noopener">Website</a>` : "", esc(s.phone), esc(s.email)].filter(Boolean).join(" · ")}</span></div>
     </article>`;
 }
+// Tap a card, or its name button, to open or close it
+$("courses").addEventListener("click", e => { const c = e.target.closest(".tcard"); if (c && !e.target.closest("a, button:not(.cbtn)")) toggleCard(c); });
 function renderCourses() {
   setTimeout(syncLink, 0);   // keep the address bar in step with the filters
   if (!ALL.length) { panelMessage(liveMsg); return; }

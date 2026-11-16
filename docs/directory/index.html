@@ -897,7 +897,7 @@ h1 { font-family: var(--serif); color: var(--b900); font-size: 26px; margin: 0; 
   .card { padding-inline: 12px; } .row1 { gap: 6px; } .chipr { gap: 4px; } .badge { padding-inline: 7px; }
 }
 .card.open .desc, .desc.full { -webkit-line-clamp: unset; display: block; }
-.cname .cbtn { font: inherit; color: inherit; background: none; border: 0; padding: 0; margin: 0; text-align: left; cursor: pointer; }   /* the name: a button that opens the card */
+.cname .cbtn, .tname .cbtn { font: inherit; color: inherit; background: none; border: 0; padding: 0; margin: 0; text-align: left; cursor: pointer; }   /* the name: a button that opens the card */
 .who { font-size: 12px; color: var(--ink); margin-bottom: 8px; }
 .who em { font-style: normal; color: #92400E; }
 .who .cost { font-weight: 600; }
@@ -905,6 +905,19 @@ h1 { font-family: var(--serif); color: var(--b900); font-size: 26px; margin: 0; 
 .foot a { color: var(--b700); }
 a.copy.dirs { text-decoration: none; }
 .approx { color: #78716C; }
+/* Folding: a card made in the browser (class "fold") shows what people choose on until it's opened (its name button, toggleCard).
+   The plain cards on the Places pages (for search engines and browsers without JavaScript) have no "fold" and stay in full. */
+.cbtn .nw { white-space: nowrap; }   /* the arrow stays with the name's last word */
+.cbtn .chev { width: 14px; height: 14px; margin-left: 5px; vertical-align: -1px; color: var(--b600); transition: transform .15s; }
+.open .cbtn .chev { transform: rotate(180deg); }
+.fold:not(.open) :is(.meta, .who, .foot) { display: none; }
+.fold:not(.open) .desc { margin-bottom: 0; }
+@media (max-width: 899px) { .fold:not(.open) .desc { -webkit-line-clamp: 1; } }   /* phones and narrow windows: one line */
+.fold.open .desc { -webkit-line-clamp: unset; display: block; }
+.restrict { font-size: 12px; font-weight: 600; color: #92400E; }   /* a restriction, on a closed card (once open, the For line says it) */
+.card .restrict { margin-top: 6px; }
+.fold.open .restrict { display: none; }
+@media (prefers-reduced-motion: reduce) { .cbtn .chev { transition: none; } }
 .morehint { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 8px 12px; margin: 14px 0 6px; padding: 12px 14px; border: 1px dashed var(--line); border-radius: 12px; background: var(--white); font-size: 14px; color: var(--muted); }
 .morehint b { color: inherit; }
 .morehint button { font: inherit; font-size: 13px; font-weight: 600; padding: 6px 12px; border-radius: 999px; border: 1px solid var(--line); background: var(--white); cursor: pointer; }
@@ -987,8 +1000,8 @@ footer.urgent p { color: #FEE2E2; }
 .bsec h3 { font-size: 11px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); margin: 10px 0 8px; font-family: var(--sans); }
 .bsec h3.vh + .blist { margin-top: 12px; }
 /* The cards are the In person tab's (build/core/css/cards.css), three or so across */
-.blist { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 340px), 1fr)); gap: 12px; }
-.blist .card { margin: 0; height: 100%; box-sizing: border-box; }
+.blist { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 340px), 1fr)); gap: 12px; align-items: start; }   /* an open card grows; the closed ones beside it keep their size */
+.blist .card { margin: 0; box-sizing: border-box; }
 
 /* Foot of the page */
 .bfoot { font-size: 12.5px; color: var(--muted); margin-top: 18px; }
@@ -1019,11 +1032,13 @@ footer.urgent p { color: #FEE2E2; }
 
 /* Phone and online, Courses, About: a scrolling page of cards */
 .talk { max-width: 1432px; margin: 0 auto 0 var(--page-left); padding-block: 14px 110px; }   /* lined up with the header (core/css/page.css) */
-.tgrid { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 320px), 1fr)); gap: 12px; }   /* one column on the narrowest phones */
+.tgrid { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 320px), 1fr)); gap: 12px; align-items: start; }   /* an open card grows; the closed ones beside it keep their size */   /* one column on the narrowest phones */
 .gh { font-family: var(--serif); color: var(--b900); font-size: 18px; margin: 20px 4px 10px; }
 .talk > .gh:first-child { margin-top: 0; }  /* first heading sits as close to the filters as the In person cards */
 .gh small { font-family: var(--sans); font-size: 12px; color: var(--muted); font-weight: 500; margin-left: 8px; }
 .tcard { background: var(--white); border-radius: 16px; padding: 14px 16px; box-shadow: 0 1px 2px rgba(0,0,0,.05); border: 1px solid var(--line); display: grid; grid-template-columns: minmax(0, 1fr); gap: 8px; align-content: start; min-width: 0; }
+.tcard { cursor: pointer; }
+.cwhen { font-size: 12px; font-weight: 600; color: var(--ink); }   /* a course's sessions */
 .tcard h3 { font-family: var(--serif); color: var(--b900); font-size: 17px; margin: 0; overflow-wrap: anywhere; }
 .reach { font-size: 18px; font-weight: 700; color: var(--b800); font-variant-numeric: tabular-nums; overflow-wrap: anywhere; }
 .reach.email { font-size: 15px; font-weight: 600; }
@@ -1514,9 +1529,27 @@ function copyFallback(txt) {
   document.body.appendChild(ta); ta.select(); try { document.execCommand("copy"); } catch (_) {} ta.remove();
 }
 // The record a Copy details button belongs to: a Places card's (places-view.js, ids "p0"...) or the page's own (ALL)
+// A card's name: a button that opens and closes it (toggleCard), with a small arrow joined to the last word, so the arrow
+// never wraps onto a line of its own
+const CHEV = '<svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg>';
+function nameButton(s) {
+  const name = s.name.trimEnd(), i = name.lastIndexOf(" ");
+  return `<button type="button" class="cbtn" aria-expanded="${isOpen(s)}">${esc(name.slice(0, i + 1))}<span class="nw">${esc(name.slice(i + 1))}${CHEV}</span></button>`;
+}
+// The cards someone has opened stay open when a list is drawn again (back from another tab or a Places page, a new filter), so
+// nothing they were reading closes, and each tab's scroll position still fits. Kept for this browser session, like the scroll
+// positions. A card: class "fold" + foldAttrs(s); toggleCard keeps the list.
+const OPENED_KEY = "ss-opened";
+const OPENED = new Set((() => { try { return JSON.parse(sessionStorage.getItem(OPENED_KEY)) || []; } catch (e) { return []; } })()), cardKey = s => `${s.name}|${s.postcode || s.town || ""}`;
+const isOpen = s => OPENED.has(cardKey(s));
+const foldAttrs = s => `${isOpen(s) ? " open" : ""}" data-key="${esc(cardKey(s))}`;   // (inside the class attribute: class="card fold${foldAttrs(s)}")
+// A restriction ("Over 18s only", "Currently full: referrals paused"): shown on a closed card too, so nobody misses it
+const restrictLine = s => s.eligibility ? `<div class="restrict">${esc(s.eligibility)}</div>` : "";
 // Open or close a service card's full details (a click anywhere on it, or its name button by keyboard), saying so to screen readers
 function toggleCard(card) {
   card.classList.toggle("open");
+  if (card.dataset.key) OPENED[card.classList.contains("open") ? "add" : "delete"](card.dataset.key);
+  try { sessionStorage.setItem(OPENED_KEY, JSON.stringify([...OPENED])); } catch (e) {}
   card.querySelector(".cbtn")?.setAttribute("aria-expanded", card.classList.contains("open"));
 }
 let PLACE_RECS = [];   // the Places listing's records, when one is showing (core/js/places-view.js); ids "p0", "p1"... never clash
@@ -1538,7 +1571,7 @@ function accessBadge(s) {
 }
 // The kind of service, in the same colour as its map pin
 const kindTag = s => { const k = KINDS[kindOf(s)]; return k ? `<div class="kind"><i style="background:${k[1]}"></i>${esc(k[0])}</div>` : ""; };
-// One card (its name is a button that opens the full details: toggleCard, for keyboards and screen readers too). r: { s: the record, d: miles from the search point (or null), nx: its "Next" line (nextText) }.
+// One card, folded until opened (class "fold": core/css/cards.css). Its name is a button that opens the full details (toggleCard, for keyboards and screen readers too). r: { s: the record, d: miles from the search point (or null), nx: its "Next" line (nextText) }.
 // h: the name's heading level (h2 on the directory; lower where the card sits under section headings).
 // withId: give the card an id (c + record id) for the map to find it; off where a service can appear more than once.
 function serviceCard(r, h = "h2", withId = true) {
@@ -1553,12 +1586,12 @@ function serviceCard(r, h = "h2", withId = true) {
     s.eligibility ? `<em>${esc(s.eligibility)}</em>` : ""].filter(Boolean).join(" · ");
   const types = s._sf.length ? " · " + s._sf.map(cap).map(esc).join(", ") : "";
   const place = esc([s.address, s.town, s.postcode].filter(Boolean).join(", ")) + (s.approx ? ` <span class="approx">(approx. location)</span>` : "");
-  return `<article class="card"${withId ? ` id="c${s.id}"` : ""} data-id="${s.id}">
+  return `<article class="card fold${foldAttrs(s)}"${withId ? ` id="c${s.id}"` : ""} data-id="${s.id}">
       <div class="row1"><span class="badge ${badgeCls}">${badge}</span><span class="chipr">${dist}${directionsLink(s)}${copyBtn(s)}</span></div>
-      <${h} class="cname"><button type="button" class="cbtn" aria-expanded="false">${esc(s.name)}</button></${h}>
+      <${h} class="cname">${nameButton(s)}</${h}>
       ${kindTag(s)}<div class="meta">${esc(s.provider)} · ${esc(s.type)}${types}</div>
       <div class="next">${checkedTick(s)}<div class="lab">Next</div><div class="val ${r.nx.cls}">${esc(r.nx.txt)}</div></div>
-      <p class="desc">${esc(s.description)}</p>
+      <p class="desc">${esc(s.description)}</p>${restrictLine(s)}
       ${forLine ? `<div class="who">${forLine}</div>` : ""}
       <div class="foot"><span>${place}</span>${contact ? `<span>${contact}</span>` : ""}</div>
     </article>`;
@@ -1946,6 +1979,7 @@ function showCard(id) {
   const c = $("c" + id); if (!c) return;
   if (innerWidth < 900) setView("list");
   c.scrollIntoView({ behavior: "smooth", block: "center" });
+  if (!c.classList.contains("open")) toggleCard(c);   // open, so its details are there to read
   c.querySelector(".cbtn")?.focus({ preventScroll: true });   // keyboard and screen readers carry on from the card
   c.classList.add("flash"); setTimeout(() => c.classList.remove("flash"), 1200);
 }
@@ -2100,15 +2134,17 @@ function talkCard({ s, st }) {
   const reach = s.phone ? (/^text/i.test(s.phone) ? esc(s.phone) : `<a href="tel:${esc(tel)}">${esc(s.phone)}</a>`)
     : s.email ? `<a href="mailto:${esc(s.email)}">${esc(s.email)}</a>` : "";
   const url = webUrl(s.url);
-  return `<article class="tcard">
+  return `<article class="tcard fold${foldAttrs(s)}">
       <div class="row1"><span class="mode" title="${modes} · ${s.area === "national" ? "UK-wide" : "Local"}">${modes} · ${s.area === "national" ? "UK-wide" : "Local"}</span><span class="chipr"><span class="openp ${st.open ? "yes" : st.when || "no"}">${esc(st.txt)}</span>${copyBtn(s)}</span></div>
-      <div class="tname"><h3>${esc(s.name)}</h3>${checkedTick(s)}</div>
+      <div class="tname"><h3>${nameButton(s)}</h3>${checkedTick(s)}</div>
       ${reach ? `<div class="reach${s.phone ? "" : " email"}">${reach}</div>` : ""}
-      <p class="desc" style="-webkit-line-clamp:3">${esc(s.description)}</p>
+      <p class="desc">${esc(s.description)}</p>${restrictLine(s)}
       <div class="meta" style="margin:0">${esc(s.provider)} · ${esc(s.type)}${s.who && s.who !== "anyone" ? " · For " + esc(s.who) : ""}${s.eligibility ? " · " + esc(s.eligibility) : ""}</div>
-      ${url ? `<div class="foot"><a href="${esc(url)}" target="_blank" rel="noopener">Website</a>${s.email && s.phone ? " · " + esc(s.email) : ""}</div>` : ""}
+      ${url ? `<div class="foot"><span><a href="${esc(url)}" target="_blank" rel="noopener">Website</a>${s.email && s.phone ? " · " + esc(s.email) : ""}</span></div>` : ""}
     </article>`;
 }
+// Tap a card, or its name button, to open or close it
+$("talk-list").addEventListener("click", e => { const c = e.target.closest(".tcard"); if (c && !e.target.closest("a, button:not(.cbtn)")) toggleCard(c); });
 function renderTalk() {
   setTimeout(syncLink, 0);   // keep the address bar in step with the filters
   if (!ALL.length) { panelMessage(liveMsg); return; }
@@ -2153,15 +2189,17 @@ function courseInfo(s, now) {
 }
 function courseCard({ s, ci }) {
   const url = webUrl(s.url);
-  return `<article class="tcard">
+  return `<article class="tcard fold${foldAttrs(s)}">
       <div class="row1"><span class="mode">${split(s.mode).includes("online") ? "Online" : esc(s.town || "In person")}</span><span class="chipr"><span class="openp ${ci.join ? "yes" : "no"}">${esc(ci.status)}</span>${copyBtn(s, ci.when)}</span></div>
-      <div class="tname"><h3>${esc(s.name)}</h3>${checkedTick(s)}</div>
-      <div class="meta" style="margin:0;color:var(--ink);font-weight:600">${esc(ci.when)}</div>
-      <p class="desc" style="-webkit-line-clamp:3">${esc(s.description)}</p>
+      <div class="tname"><h3>${nameButton(s)}</h3>${checkedTick(s)}</div>
+      <div class="cwhen">${esc(ci.when)}</div>
+      <p class="desc">${esc(s.description)}</p>${restrictLine(s)}
       <div class="meta" style="margin:0">${esc(s.provider)}${s.cost ? " · " + esc(s.cost) : ""}${s.eligibility ? " · " + esc(s.eligibility) : ""}</div>
-      <div class="foot">${[url ? `<a href="${esc(url)}" target="_blank" rel="noopener">Website</a>` : "", esc(s.phone), esc(s.email)].filter(Boolean).join(" · ")}</div>
+      <div class="foot"><span>${[url ? `<a href="${esc(url)}" target="_blank" rel="noopener">Website</a>` : "", esc(s.phone), esc(s.email)].filter(Boolean).join(" · ")}</span></div>
     </article>`;
 }
+// Tap a card, or its name button, to open or close it
+$("courses").addEventListener("click", e => { const c = e.target.closest(".tcard"); if (c && !e.target.closest("a, button:not(.cbtn)")) toggleCard(c); });
 function renderCourses() {
   setTimeout(syncLink, 0);   // keep the address bar in step with the filters
   if (!ALL.length) { panelMessage(liveMsg); return; }
@@ -2229,7 +2267,7 @@ function renderAbout() {
     </section>
     </div></div>
     <p class="small">Service information belongs to the providers listed. Map data © <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap</a> contributors, © <a href="https://carto.com/attributions" target="_blank" rel="noopener">CARTO</a>.</p>
-    <p class="small" id="site-version">Version: directory 2026-11-16 21:44</p>
+    <p class="small" id="site-version">Version: directory 2026-11-16 22:32</p>
   </article>`;
 }
 /* ---------- Places: the town listings, as a tab of the directory ----------

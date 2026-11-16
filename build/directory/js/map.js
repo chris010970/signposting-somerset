@@ -159,6 +159,7 @@ function showCard(id) {
   const c = $("c" + id); if (!c) return;
   if (innerWidth < 900) setView("list");
   c.scrollIntoView({ behavior: "smooth", block: "center" });
+  if (!c.classList.contains("open")) toggleCard(c);   // open, so its details are there to read
   c.querySelector(".cbtn")?.focus({ preventScroll: true });   // keyboard and screen readers carry on from the card
   c.classList.add("flash"); setTimeout(() => c.classList.remove("flash"), 1200);
 }

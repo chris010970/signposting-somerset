@@ -73,9 +73,27 @@ function copyFallback(txt) {
   document.body.appendChild(ta); ta.select(); try { document.execCommand("copy"); } catch (_) {} ta.remove();
 }
 // The record a Copy details button belongs to: a Places card's (places-view.js, ids "p0"...) or the page's own (ALL)
+// A card's name: a button that opens and closes it (toggleCard), with a small arrow joined to the last word, so the arrow
+// never wraps onto a line of its own
+const CHEV = '<svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg>';
+function nameButton(s) {
+  const name = s.name.trimEnd(), i = name.lastIndexOf(" ");
+  return `<button type="button" class="cbtn" aria-expanded="${isOpen(s)}">${esc(name.slice(0, i + 1))}<span class="nw">${esc(name.slice(i + 1))}${CHEV}</span></button>`;
+}
+// The cards someone has opened stay open when a list is drawn again (back from another tab or a Places page, a new filter), so
+// nothing they were reading closes, and each tab's scroll position still fits. Kept for this browser session, like the scroll
+// positions. A card: class "fold" + foldAttrs(s); toggleCard keeps the list.
+const OPENED_KEY = "ss-opened";
+const OPENED = new Set((() => { try { return JSON.parse(sessionStorage.getItem(OPENED_KEY)) || []; } catch (e) { return []; } })()), cardKey = s => `${s.name}|${s.postcode || s.town || ""}`;
+const isOpen = s => OPENED.has(cardKey(s));
+const foldAttrs = s => `${isOpen(s) ? " open" : ""}" data-key="${esc(cardKey(s))}`;   // (inside the class attribute: class="card fold${foldAttrs(s)}")
+// A restriction ("Over 18s only", "Currently full: referrals paused"): shown on a closed card too, so nobody misses it
+const restrictLine = s => s.eligibility ? `<div class="restrict">${esc(s.eligibility)}</div>` : "";
 // Open or close a service card's full details (a click anywhere on it, or its name button by keyboard), saying so to screen readers
 function toggleCard(card) {
   card.classList.toggle("open");
+  if (card.dataset.key) OPENED[card.classList.contains("open") ? "add" : "delete"](card.dataset.key);
+  try { sessionStorage.setItem(OPENED_KEY, JSON.stringify([...OPENED])); } catch (e) {}
   card.querySelector(".cbtn")?.setAttribute("aria-expanded", card.classList.contains("open"));
 }
 let PLACE_RECS = [];   // the Places listing's records, when one is showing (core/js/places-view.js); ids "p0", "p1"... never clash

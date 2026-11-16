@@ -29,15 +29,17 @@ function talkCard({ s, st }) {
   const reach = s.phone ? (/^text/i.test(s.phone) ? esc(s.phone) : `<a href="tel:${esc(tel)}">${esc(s.phone)}</a>`)
     : s.email ? `<a href="mailto:${esc(s.email)}">${esc(s.email)}</a>` : "";
   const url = webUrl(s.url);
-  return `<article class="tcard">
+  return `<article class="tcard fold${foldAttrs(s)}">
       <div class="row1"><span class="mode" title="${modes} · ${s.area === "national" ? "UK-wide" : "Local"}">${modes} · ${s.area === "national" ? "UK-wide" : "Local"}</span><span class="chipr"><span class="openp ${st.open ? "yes" : st.when || "no"}">${esc(st.txt)}</span>${copyBtn(s)}</span></div>
-      <div class="tname"><h3>${esc(s.name)}</h3>${checkedTick(s)}</div>
+      <div class="tname"><h3>${nameButton(s)}</h3>${checkedTick(s)}</div>
       ${reach ? `<div class="reach${s.phone ? "" : " email"}">${reach}</div>` : ""}
-      <p class="desc" style="-webkit-line-clamp:3">${esc(s.description)}</p>
+      <p class="desc">${esc(s.description)}</p>${restrictLine(s)}
       <div class="meta" style="margin:0">${esc(s.provider)} · ${esc(s.type)}${s.who && s.who !== "anyone" ? " · For " + esc(s.who) : ""}${s.eligibility ? " · " + esc(s.eligibility) : ""}</div>
-      ${url ? `<div class="foot"><a href="${esc(url)}" target="_blank" rel="noopener">Website</a>${s.email && s.phone ? " · " + esc(s.email) : ""}</div>` : ""}
+      ${url ? `<div class="foot"><span><a href="${esc(url)}" target="_blank" rel="noopener">Website</a>${s.email && s.phone ? " · " + esc(s.email) : ""}</span></div>` : ""}
     </article>`;
 }
+// Tap a card, or its name button, to open or close it
+$("talk-list").addEventListener("click", e => { const c = e.target.closest(".tcard"); if (c && !e.target.closest("a, button:not(.cbtn)")) toggleCard(c); });
 function renderTalk() {
   setTimeout(syncLink, 0);   // keep the address bar in step with the filters
   if (!ALL.length) { panelMessage(liveMsg); return; }
