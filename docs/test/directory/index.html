@@ -990,7 +990,7 @@ footer.urgent p { color: #FEE2E2; }
     <nav class="sitetabs" role="tablist" aria-label="Kind of support">
       <span class="tgrp" role="presentation"><button type="button" role="tab" id="tab-near" aria-selected="false" aria-controls="panel-near">In person</button>
       <button type="button" role="tab" id="tab-talk" aria-selected="false" aria-controls="panel-talk"><span class="lg">Phone and online</span><span class="sh">Phone &amp; online</span></button>
-      <button type="button" role="tab" id="tab-course" aria-selected="false" aria-controls="panel-course">Courses</button><a class="tab" href="places/">Places</a></span>
+      <button type="button" role="tab" id="tab-course" aria-selected="false" aria-controls="panel-course">Courses</button><a class="tab" id="tab-places" href="places/">Places</a></span>
       <button type="button" role="tab" id="tab-about" aria-selected="false" aria-controls="panel-about">About</button>
       <a class="tolink" href="/signposting-somerset-v2/test/tools/">Tools →</a>    </nav>
     </div>
@@ -1640,7 +1640,7 @@ function renderAbout() {
     </section>
     </div></div>
     <p class="small">Service information belongs to the providers listed. Map data © <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap</a> contributors, © <a href="https://carto.com/attributions" target="_blank" rel="noopener">CARTO</a>.</p>
-    <p class="small" id="site-version">Version: test 2026-11-15 22:51</p>
+    <p class="small" id="site-version">Version: test 2026-11-16 10:43</p>
   </article>`;
 }
 let tab = "talk";
@@ -1704,7 +1704,12 @@ addEventListener("resize", () => map && map.invalidateSize());
    e.g. /directory/?support=bereavement&town=Frome#near · ?lat=51.21&lon=-3.6&label=near%20Porlock#near · ?support=anxiety#talk
    support (any tab), town or lat + lon (+ label), within and when (In person). Unknown values are ignored, so a bad link still
    opens the normal page. The address bar follows the filters, so any view can be copied as a link (never "Use my location"). */
-const LINK = (() => { try { return new URLSearchParams(location.search); } catch (e) { return new URLSearchParams(); } })();
+// Without a link, the choices made earlier in this visit come back (kept in this browser tab only, never "Use my location"),
+// so going to Places and back, or reloading, doesn't reset them.
+const STATE_KEY = "ss-directory:" + location.pathname;   // the live and test copies keep their own
+const SAVED = (() => { try { return location.search ? {} : JSON.parse(sessionStorage.getItem(STATE_KEY) || "null") || {}; } catch (e) { return {}; } })();
+const LINK = (() => { try { return new URLSearchParams(location.search || SAVED.near || ""); } catch (e) { return new URLSearchParams(); } })();
+let recordsIn = false;   // nothing is remembered until the records (and so every choice) are in place
 let userChanged = false;
 document.addEventListener("change", e => { if (e.isTrusted) userChanged = true; }, true);
 function pickOpt(sel, v) {
@@ -1714,7 +1719,12 @@ function pickOpt(sel, v) {
   return !!o;
 }
 function applyLink() {   // after the records are ready, and again when the live sheet arrives, until the person changes something
-  if (userChanged || ![...LINK.keys()].length) return;
+  if (userChanged) return;
+  applyLinkNear();
+  if (SAVED.near !== undefined) restoreOthers();   // after: In person's choices also set the other tabs' Support for
+}
+function applyLinkNear() {
+  if (![...LINK.keys()].length) return;
   const sup = LINK.get("support");
   pickOpt(fs, sup); pickOpt($("t-support"), sup); pickOpt($("c-support"), sup);
   const lat = parseFloat(LINK.get("lat")), lon = parseFloat(LINK.get("lon"));
@@ -1726,6 +1736,18 @@ function applyLink() {   // after the records are ready, and again when the live
   }
   pickOpt($("within"), LINK.get("within")); pickOpt($("f-when"), LINK.get("when"));
   fitPending = true;
+}
+function restoreOthers() {   // the other tabs' choices from earlier in this visit (In person's come back through LINK)
+  const sup = (sel, q) => { const v = new URLSearchParams(q || "").get("support"); if (!pickOpt(sel, v)) sel.value = ""; };
+  sup($("t-support"), SAVED.talk); sup($("c-support"), SAVED.course);
+  if (SAVED.area !== undefined) pickOpt($("t-area"), SAVED.area) || ($("t-area").value = "");
+  if (SAVED.fmt !== undefined) pickOpt($("c-fmt"), SAVED.fmt) || ($("c-fmt").value = "");
+  $("t-open").checked = !!SAVED.open; $("c-book").checked = !!SAVED.book;
+}
+function saveState() {
+  if (!recordsIn) return;
+  try { sessionStorage.setItem(STATE_KEY, JSON.stringify({ near: linkFor("near"), talk: linkFor("talk"), course: linkFor("course"), sort: sortBy,
+    area: $("t-area").value, open: $("t-open").checked, fmt: $("c-fmt").value, book: $("c-book").checked })); } catch (e) {}
 }
 function linkFor(t) {   // the current filters, as the part of the address after "?"
   const q = new URLSearchParams();
@@ -1740,8 +1762,12 @@ function linkFor(t) {   // the current filters, as the part of the address after
   else if (t === "course" && $("c-support").value) q.set("support", $("c-support").value);
   return q.toString();
 }
-function syncLink() { try { const q = linkFor(tab); history.replaceState(null, "", location.pathname + (q ? "?" + q : "") + "#" + tab); } catch (e) {} }
+function syncLink() { try { const q = linkFor(tab); history.replaceState(null, "", location.pathname + (q ? "?" + q : "") + "#" + tab); } catch (e) {} saveState(); }
 
+// Places: back to the page last looked at there in this visit (a town, with its choices), if any
+$("tab-places").onclick = e => { try {
+  const home = new URL("places/", location.href).pathname, p = JSON.parse(sessionStorage.getItem("ss-places:" + home) || "null");
+  if (p && p.url && p.url.startsWith(home)) { e.preventDefault(); location.href = p.url; } } catch (_) {} };
 // Opens on In person; a link with #near, #talk, #course or #about opens that tab. Old links to #assist go to the tools page.
 (function () {
   if (location.hash === "#assist") { location.replace(TOOLS_URL + "#assist"); return; }
@@ -1813,6 +1839,8 @@ function applyRecords(recs) {  // (also refreshes the About counts)
     $("f-town").value = keepTown; origin = keepOrigin;
   } else { $("f-town").value = ""; origin = null; sortBy = "soon"; }
   applyLink();
+  if (!userChanged && SAVED.sort && origin) sortBy = SAVED.sort;   // Soonest or Nearest, as it was
+  recordsIn = true;
   setSiteTab(tab);
 }
 function showSource(txt) { const el = $("datasrc"); el.textContent = txt; el.hidden = !txt; }

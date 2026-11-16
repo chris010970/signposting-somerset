@@ -344,12 +344,17 @@ PAGE_JS = r"""
     });
     const none = main.querySelector(".bnone"); if (none) none.hidden = !!shown || !main.querySelector(".bsec");
   }
+  // This visit's place (town, Support for, When), kept in this browser tab only, so the directory's Places tab comes back to it
+  const PKEY = "ss-places:" + (document.querySelector('.sitetabs a[aria-current]')?.getAttribute("href") || "");   // live and test keep their own
+  const save = () => { try { sessionStorage.setItem(PKEY, JSON.stringify({ url: location.pathname + location.hash, when: $("b-when").value })); } catch (_) {} };
+  const kept = () => { try { return JSON.parse(sessionStorage.getItem(PKEY) || "null"); } catch (_) { return null; } };
   function wire() {
     dates(main);
-    pick(location.hash.slice(1) || "all");
+    const k0 = kept(); if (k0 && k0.when && [...$("b-when").options].some(o => o.value === k0.when)) $("b-when").value = k0.when;
+    pick(location.hash.slice(1) || "all"); save();
     $("b-support").onchange = () => { const k = $("b-support").value; pick(k);
-      history.replaceState(history.state, "", location.pathname + (k === "all" ? "" : "#" + k)); };
-    $("b-when").onchange = () => pick($("b-support").value);
+      history.replaceState(history.state, "", location.pathname + (k === "all" ? "" : "#" + k)); save(); };
+    $("b-when").onchange = () => { pick($("b-support").value); save(); };
     const tl = hdr.querySelector(".btoday"); if (tl) tl.textContent = new Date().toLocaleDateString("en-GB", { weekday: "short", day: "numeric", month: "short" });
     $("b-town").onchange = () => { const v = $("b-town").value, k = $("b-support").value;   // 2. Where?: that town, keeping the support chosen
       if (v) go(v + (k && k !== "all" ? "#" + k : ""), true); };
