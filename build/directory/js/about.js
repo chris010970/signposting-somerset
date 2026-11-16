@@ -10,7 +10,7 @@ function renderAbout() {
        <a class="btn" href="${esc(FEEDBACK_FORM_URL)}" target="_blank" rel="noopener">Suggest a change</a>
        <p class="small">Please don't include personal details about anyone you support.</p>`
     : `<p>Spotted something out of date, or know a service that should be here? Please tell the person who shared this site with you. A suggestion form is coming soon.</p>`;
-  $("about").innerHTML = `<article class="aboutpage">
+  $("about-page").innerHTML = `<article class="aboutpage">
     <h2>About Signposting Somerset</h2>
     <div class="note"><strong>Demo version.</strong> Details are checked against each provider's own information, but services change. Please confirm with the service before attending.
       In an emergency call <a href="tel:999">999</a>. For urgent mental health help call NHS <a href="tel:111">111</a> and choose option 2.</div>

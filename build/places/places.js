@@ -43,14 +43,20 @@ let ALL = [];   // this page's records (copy details finds them here)
     });
     const none = main.querySelector(".bnone"); if (none) none.hidden = !!shown || !main.querySelector(".bsec");
   }
-  // This visit's place (town, Support for, When), kept in this browser tab only, so the directory's Places tab comes back to it
+  // This visit's place (town, Support for, When, and how far down the list), kept in this browser tab only, so the
+  // directory's Places tab comes back to it
   const PKEY = "ss-places:" + (document.querySelector('.sitetabs a[aria-current]')?.getAttribute("href") || "");   // live and test keep their own
-  const save = () => { try { sessionStorage.setItem(PKEY, JSON.stringify({ url: location.pathname + location.hash, when: $("b-when").value })); } catch (_) {} };
+  const save = () => {
+    const state = { url: location.pathname + location.hash, when: $("b-when").value, scroll: scroller.scrollTop };
+    try { sessionStorage.setItem(PKEY, JSON.stringify(state)); } catch (_) {}
+  };
   const kept = () => { try { return JSON.parse(sessionStorage.getItem(PKEY) || "null"); } catch (_) { return null; } };
   function wire() {
     load();
     const k0 = kept(); if (k0 && k0.when && [...$("b-when").options].some(o => o.value === k0.when)) $("b-when").value = k0.when;
-    pick(location.hash.slice(1) || "all"); save();
+    pick(location.hash.slice(1) || "all");
+    if (k0 && k0.scroll && k0.url === location.pathname + location.hash) scroller.scrollTop = k0.scroll;   // back to the same page: where it was
+    save();
     $("b-support").onchange = () => {
       const k = $("b-support").value; pick(k);
       history.replaceState(history.state, "", location.pathname + (k === "all" ? "" : "#" + k)); save();
@@ -73,11 +79,14 @@ let ALL = [];   // this page's records (copy details finds them here)
       $("b-when").value = when;
       const md = doc.querySelector('meta[name="description"]'); if (md) document.querySelector('meta[name="description"]')?.setAttribute("content", md.content);
       if (push) history.pushState({ b: 1 }, "", href);
-      wire(); scroller.scrollTo(0, 0);
+      scroller.scrollTo(0, 0); wire();   // another town: start at the top
     } catch (_) { location.href = href; }
     main.classList.remove("loading");
   }
   const scroller = document.querySelector(".bw");   // the listings scroll here, under the header (as on the directory)
+  let saving = 0;
+  scroller.addEventListener("scroll", () => { clearTimeout(saving); saving = setTimeout(save, 250); }, { passive: true });
+  addEventListener("pagehide", save);
   main.addEventListener("click", ev => {
     // A card: tap to show its full description, as on the In person tab (links and buttons in it work as usual)
     const card = ev.target.closest(".card");

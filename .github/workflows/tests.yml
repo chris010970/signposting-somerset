@@ -9,16 +9,19 @@ on:
   workflow_dispatch:
 jobs:
   test:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v6
         with:
           python-version: "3.12"
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@v5
         with:
           node-version: "22"
-      - name: Set up the browser tests
+      - name: Install the browser test tools
         working-directory: build/tests
-        run: npm install && npx playwright install --with-deps chromium
+        run: npm ci
+      - name: Install the browser (Chromium)
+        working-directory: build/tests
+        run: npx playwright install --with-deps chromium
       - run: python build/tests/run_tests.py

@@ -46,11 +46,17 @@ function render() {
     (sup ? ` for <strong>${esc(cap(sup))}</strong>` : "") +
     (searchPoint ? (rad ? ` within ${rad} miles of ${esc(searchPoint.label)}` : ` by distance from ${esc(searchPoint.label)}`) : "") +
     (checkRows.length ? ` · ${checkRows.length} need times checking` : "");
+  // The same list as last time (back from another tab, the five-minute refresh, the sheet arriving): stay where you were.
+  // Different filters: start at the top.
+  const listKey = JSON.stringify([linkFor("near"), sortBy, searchPoint && [searchPoint.lat, searchPoint.lon], [...kindsOff]]);
+  const top = lastListKey === null || listKey === lastListKey ? scrollPos.near || 0 : 0;
+  lastListKey = listKey;
   if (!total) $("list").innerHTML = moreLine
     ? `<div class="empty"><strong>Nothing in the next 7 days</strong><br>But there are groups later this month.</div>` + moreLine
     : `<div class="empty"><strong>No matches</strong><br>Try a wider distance or a different time, or use the 24/7 helplines below.</div>`;
   else $("list").innerHTML = rows.map(r => serviceCard(r)).join("") + moreLine +
     (checkRows.length ? `<div class="groupline">Times to check${win ? " (may also run then)" : ""}</div>` + checkRows.map(r => serviceCard(r)).join("") : "");
+  $("list").scrollTop = top;
   $("help").classList.toggle("urgent", total <= 2);
   $("help-title").textContent = total <= 2 ? "Nothing suitable right now? Talk to someone straight away" : "Always available: 24/7 helplines";
   drawMap([...rows, ...checkRows], rad);

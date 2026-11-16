@@ -113,10 +113,10 @@ test("In person: a town, distances, the card's details and Copy details", async 
 
 test("Phone and online, and Courses", async () => {
   const p = await open("/test/directory/#talk");
-  assert.match(await text(p, "#talk"), /Open 24\/7 Test 24\/7 Line/);
-  assert.match(await text(p, "#talk"), /Next tomorrow 19:00.*Test Online Group/);
+  assert.match(await text(p, "#talk-list"), /Open 24\/7 Test 24\/7 Line/);
+  assert.match(await text(p, "#talk-list"), /Next tomorrow 19:00.*Test Online Group/);
   await p.check("#t-open");
-  assert.deepEqual(await p.$$eval("#talk .tcard h3", hs => hs.map(h => h.textContent)), ["Test 24/7 Line"]);
+  assert.deepEqual(await p.$$eval("#talk-list .tcard h3", hs => hs.map(h => h.textContent)), ["Test 24/7 Line"]);
   await p.click("#tab-course");
   assert.match(await text(p, "#courses"), /Starts 23 Nov.*Test Course.*4 sessions · 23 Nov to 14 Dec/);
   assert.match(await text(p, "#courses"), /Rolling.*Test Rolling Course/);
@@ -134,11 +134,35 @@ test("Links and remembered choices", async () => {
   await p.done();
 });
 
+test("Scroll positions: each tab, and Places, are where they were left", async () => {
+  const p = await open("/test/directory/#talk");
+  const top = id => p.evaluate(i => document.getElementById(i).scrollTop, id);
+  const scroll = async (id, y) => { await p.evaluate(([i, v]) => { document.getElementById(i).scrollTop = v; }, [id, y]); await p.waitForTimeout(300); };
+  await p.setViewportSize({ width: 1400, height: 400 });   // short, so the made-up sheet's lists scroll
+  await scroll("panel-talk", 120);
+  await p.click("#tab-near"); await p.waitForTimeout(300); await scroll("list", 300);
+  await p.click("#tab-talk"); assert.equal(await top("panel-talk"), 120, "Phone and online, after In person");
+  await p.click("#tab-near"); await p.waitForTimeout(300); assert.equal(await top("list"), 300, "In person, after Phone and online");
+  await p.selectOption("#f-when", "month"); assert.equal(await top("list"), 0, "In person: new filters start at the top");
+  await scroll("list", 250);
+  await p.goto(H + "/test/directory/places/wells/"); await p.waitForTimeout(600);
+  await p.evaluate(() => { document.querySelector(".bw").scrollTop = 900; }); await p.waitForTimeout(300);
+  await p.click('.sitetabs a[href$="#talk"]'); await p.waitForTimeout(800);
+  assert.equal(await top("panel-talk"), 120, "Phone and online, coming back from Places");
+  await p.click("#tab-near"); await p.waitForTimeout(300); assert.equal(await top("list"), 250, "In person, coming back from Places");
+  await p.click("#tab-places"); await p.waitForTimeout(800);
+  assert.equal(await p.evaluate(() => document.querySelector(".bw").scrollTop), 900, "Places, coming back to it");
+  await p.click(".bsec a.bmap"); await p.waitForTimeout(800);   // "On the map →": In person, filtered, from the top
+  assert.equal(await top("list"), 0, "In person, opened by On the map");
+  await p.click("#tab-talk"); assert.equal(await top("panel-talk"), 120, "Phone and online still where it was");
+  await p.done();
+});
+
 test("Tools page: Assist asks for the access code; Analytics opens", async () => {
   const p = await open("/test/tools/#assist");
   assert.ok(await p.isVisible("#a-gate"), "the access code form");
   await p.click("#tab-about");
-  assert.match(await text(p, "#about"), /About Assist/);
+  assert.match(await text(p, "#about-page"), /About Assist/);
   await p.click("#tab-analytics"); await p.waitForTimeout(1500);
   assert.match(await text(p, "#panel-analytics"), /Most deprived half/);
   assert.deepEqual(p.errors, []);

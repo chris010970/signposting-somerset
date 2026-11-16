@@ -775,7 +775,7 @@ h1 { font-family: var(--serif); color: var(--b900); font-size: 26px; margin: 0; 
 .sitetabs { display: flex; gap: 4px; margin: 4px 0 14px; border-bottom: 1px solid var(--line); overflow-x: auto; scrollbar-width: none; }
 .sitetabs button { white-space: nowrap; }
 .sitetabs .sh { display: none; }
-#about.talk { max-width: 1432px; }  /* 1400 + gutters, so the card lines up with the title and tabs */
+#about-page.talk { max-width: 1432px; }  /* 1400 + gutters, so the card lines up with the title and tabs */
 .aboutpage { max-width: none; margin: 0; background: var(--white); border: 1px solid var(--line); border-radius: 16px; padding: 22px 24px; line-height: 1.55; }
 .aboutpage h2 { font-family: var(--serif); color: var(--b900); font-size: 22px; margin: 0 0 6px; }
 .aboutpage h3 { font-family: var(--serif); color: var(--b900); font-size: 17px; margin: 22px 0 6px; }
@@ -1056,8 +1056,8 @@ footer.urgent p { color: #FEE2E2; }
   </div>
 </header>
 
-<main id="panel-talk" aria-labelledby="tab-talk"><div class="talk gut" id="talk"></div></main>
-<main id="panel-about" aria-labelledby="tab-about" hidden style="flex:1;min-height:0;overflow-y:auto"><div class="talk gut" id="about"></div></main>
+<main id="panel-talk" aria-labelledby="tab-talk"><div class="talk gut" id="talk-list"></div></main>
+<main id="panel-about" aria-labelledby="tab-about" hidden style="flex:1;min-height:0;overflow-y:auto"><div class="talk gut" id="about-page"></div></main>
 <main id="panel-course" aria-labelledby="tab-course" hidden style="flex:1;min-height:0;overflow-y:auto"><div class="talk gut" id="courses"></div></main>
 <main id="panel-near" aria-labelledby="tab-near" hidden style="flex:1;min-height:0;display:flex;flex-direction:column">
 
@@ -1530,7 +1530,7 @@ let tab = "talk";
 let searchPoint = null, sortBy = "soon", fitPending = true, locMsg = "";
 // In the lists while the records load, or if they can't be loaded
 function panelMessage(html) {
-  for (const id of ["talk", "courses", "list"]) $(id).innerHTML = `<div class="empty">${html}</div>`;
+  for (const id of ["talk-list", "courses", "list"]) $(id).innerHTML = `<div class="empty">${html}</div>`;
   $("summary").textContent = "";
 }
 /* ---------- In person: the map, its pins, and the key (which doubles as a filter) ----------
@@ -1745,11 +1745,17 @@ function render() {
     (sup ? ` for <strong>${esc(cap(sup))}</strong>` : "") +
     (searchPoint ? (rad ? ` within ${rad} miles of ${esc(searchPoint.label)}` : ` by distance from ${esc(searchPoint.label)}`) : "") +
     (checkRows.length ? ` · ${checkRows.length} need times checking` : "");
+  // The same list as last time (back from another tab, the five-minute refresh, the sheet arriving): stay where you were.
+  // Different filters: start at the top.
+  const listKey = JSON.stringify([linkFor("near"), sortBy, searchPoint && [searchPoint.lat, searchPoint.lon], [...kindsOff]]);
+  const top = lastListKey === null || listKey === lastListKey ? scrollPos.near || 0 : 0;
+  lastListKey = listKey;
   if (!total) $("list").innerHTML = moreLine
     ? `<div class="empty"><strong>Nothing in the next 7 days</strong><br>But there are groups later this month.</div>` + moreLine
     : `<div class="empty"><strong>No matches</strong><br>Try a wider distance or a different time, or use the 24/7 helplines below.</div>`;
   else $("list").innerHTML = rows.map(r => serviceCard(r)).join("") + moreLine +
     (checkRows.length ? `<div class="groupline">Times to check${win ? " (may also run then)" : ""}</div>` + checkRows.map(r => serviceCard(r)).join("") : "");
+  $("list").scrollTop = top;
   $("help").classList.toggle("urgent", total <= 2);
   $("help-title").textContent = total <= 2 ? "Nothing suitable right now? Talk to someone straight away" : "Always available: 24/7 helplines";
   drawMap([...rows, ...checkRows], rad);
@@ -1868,7 +1874,7 @@ function renderTalk() {
   }
   const tips = [onlyOpen ? 'untick "Open now only"' : "", area ? 'choose "Local and UK-wide"' : "", sup ? 'choose "Anything" under Support for' : ""]
     .filter(Boolean).join(", or ").replace(/^./, c => c.toUpperCase());
-  $("talk").innerHTML = html || `<div class="empty"><strong>${onlyOpen ? "Nothing open right now for this" : "Nothing listed for this"}</strong><br>` +
+  $("talk-list").innerHTML = html || `<div class="empty"><strong>${onlyOpen ? "Nothing open right now for this" : "Nothing listed for this"}</strong><br>` +
     `${tips || "Try again later"}, or call Samaritans on 116 123 at any time.</div>`;
 }
 $("t-support").onchange = renderTalk;
@@ -1929,7 +1935,7 @@ function renderAbout() {
        <a class="btn" href="${esc(FEEDBACK_FORM_URL)}" target="_blank" rel="noopener">Suggest a change</a>
        <p class="small">Please don't include personal details about anyone you support.</p>`
     : `<p>Spotted something out of date, or know a service that should be here? Please tell the person who shared this site with you. A suggestion form is coming soon.</p>`;
-  $("about").innerHTML = `<article class="aboutpage">
+  $("about-page").innerHTML = `<article class="aboutpage">
     <h2>About Signposting Somerset</h2>
     <div class="note"><strong>Demo version.</strong> Details are checked against each provider's own information, but services change. Please confirm with the service before attending.
       In an emergency call <a href="tel:999">999</a>. For urgent mental health help call NHS <a href="tel:111">111</a> and choose option 2.</div>
@@ -1969,12 +1975,13 @@ function renderAbout() {
     </section>
     </div></div>
     <p class="small">Service information belongs to the providers listed. Map data © <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap</a> contributors, © <a href="https://carto.com/attributions" target="_blank" rel="noopener">CARTO</a>.</p>
-    <p class="small" id="site-version">Version: directory 2026-11-16 12:54</p>
+    <p class="small" id="site-version">Version: directory 2026-11-16 13:35</p>
   </article>`;
 }
 /* ---------- tabs: In person, Phone and online, Courses, About (Places and Tools → are links to other pages) ---------- */
 const SITE_TABS = ["talk", "near", "course", "about"];
 function setSiteTab(t) {
+  if (t !== tab && recordsIn && $(SCROLLERS[tab]).offsetParent) scrollPos[tab] = $(SCROLLERS[tab]).scrollTop;   // where the tab being left was
   tab = t;
   try { $("tab-" + t).scrollIntoView({ block: "nearest", inline: "nearest" }); } catch (e) {}
   for (const k of SITE_TABS) { currentTab($("tab-" + k), k === t); $("panel-" + k).hidden = k !== t; $("hdr-" + k).hidden = k !== t; }
@@ -1982,6 +1989,7 @@ function setSiteTab(t) {
   else if (t === "course") renderCourses();
   else if (t === "about") renderAbout();
   else { initMap(); setTimeout(() => { map && map.invalidateSize(); fitPending = true; render(); }, 30); }
+  restoreScroll(t);
   syncLink();
   try { localStorage.setItem("ss-tab", t); } catch (e) {}
 }
@@ -2007,7 +2015,7 @@ $("tab-places").onclick = e => {
 // Without a link, the choices made earlier in this visit come back (kept in this browser tab only, never "Use my location"),
 // so going to Places and back, or reloading, doesn't reset them.
 const STATE_KEY = "ss-directory:" + location.pathname;   // the live and test copies keep their own
-const SAVED = (() => {   // { near, talk, course: each tab's filters as a link; sort, area, open, fmt, book } (saveState)
+const SAVED = (() => {   // { near, talk, course: each tab's filters as a link; sort, area, open, fmt, book; scroll } (saveState)
   try { return location.search ? {} : JSON.parse(sessionStorage.getItem(STATE_KEY) || "null") || {}; } catch (e) { return {}; }
 })();
 const LINK = (() => {   // In person's filters to open with: the address's, or this visit's
@@ -2051,7 +2059,7 @@ function restoreOthers() {   // the other tabs' choices from earlier in this vis
 function saveState() {
   if (!recordsIn) return;
   const state = { near: linkFor("near"), talk: linkFor("talk"), course: linkFor("course"), sort: sortBy,
-    area: $("t-area").value, open: $("t-open").checked, fmt: $("c-fmt").value, book: $("c-book").checked };
+    area: $("t-area").value, open: $("t-open").checked, fmt: $("c-fmt").value, book: $("c-book").checked, scroll: scrollPos };
   try { sessionStorage.setItem(STATE_KEY, JSON.stringify(state)); } catch (e) {}
 }
 function linkFor(t) {   // the current filters, as the part of the address after "?"
@@ -2073,6 +2081,34 @@ function syncLink() {
   saveState();
 }
 
+
+/* ---------- scroll positions: each tab stays where it was, for the visit ---------- */
+// Switching tabs, going to Places and back, or reloading: each tab's list is where it was left (In person's list starts at
+// the top again when its filters change). Kept with the other choices; a link that opens the directory filtered starts at the top.
+const SCROLLERS = { near: "list", talk: "panel-talk", course: "panel-course", about: "panel-about" };
+const scrollPos = (() => {   // this visit's positions; a link (e.g. "On the map" from Places) opens In person at the top
+  try {
+    const all = { ...(JSON.parse(sessionStorage.getItem(STATE_KEY) || "null") || {}).scroll };
+    if (location.search) delete all.near;
+    return all;
+  } catch (e) { return {}; }
+})();
+let lastListKey = null;          // In person's filters at its last draw (in-person.js)
+const scrollRestored = new Set();   // tabs whose remembered position has been put back since the page opened
+let scrollSaving = 0;
+for (const [t, id] of Object.entries(SCROLLERS)) $(id).addEventListener("scroll", () => {
+  if (!$(id).offsetParent) return;   // being hidden (a hidden list reads as scrolled to the top)
+  if (t === "near" ? lastListKey === null : !scrollRestored.has(t)) return;   // still loading: keep the remembered position
+  scrollPos[t] = $(id).scrollTop;
+  clearTimeout(scrollSaving); scrollSaving = setTimeout(saveState, 250);
+}, { passive: true });
+addEventListener("pagehide", saveState);
+// After a tab's content is drawn (setSiteTab): put back where it was, once (In person does this as it draws its list)
+function restoreScroll(t) {
+  if (t === "near" || !recordsIn || scrollRestored.has(t)) return;
+  scrollRestored.add(t);
+  if (scrollPos[t]) $(SCROLLERS[t]).scrollTop = scrollPos[t];
+}
 
 /* ---------- opening the page ---------- */
 // Opens on In person; a link with #near, #talk, #course or #about opens that tab. Old links to #assist go to the tools page.

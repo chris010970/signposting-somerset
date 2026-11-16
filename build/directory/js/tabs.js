@@ -1,6 +1,7 @@
 /* ---------- tabs: In person, Phone and online, Courses, About (Places and Tools → are links to other pages) ---------- */
 const SITE_TABS = ["talk", "near", "course", "about"];
 function setSiteTab(t) {
+  if (t !== tab && recordsIn && $(SCROLLERS[tab]).offsetParent) scrollPos[tab] = $(SCROLLERS[tab]).scrollTop;   // where the tab being left was
   tab = t;
   try { $("tab-" + t).scrollIntoView({ block: "nearest", inline: "nearest" }); } catch (e) {}
   for (const k of SITE_TABS) { currentTab($("tab-" + k), k === t); $("panel-" + k).hidden = k !== t; $("hdr-" + k).hidden = k !== t; }
@@ -8,6 +9,7 @@ function setSiteTab(t) {
   else if (t === "course") renderCourses();
   else if (t === "about") renderAbout();
   else { initMap(); setTimeout(() => { map && map.invalidateSize(); fitPending = true; render(); }, 30); }
+  restoreScroll(t);
   syncLink();
   try { localStorage.setItem("ss-tab", t); } catch (e) {}
 }

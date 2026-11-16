@@ -20,7 +20,7 @@ if (tab === "analytics") setTimeout(initAnalytics, 0);
 addEventListener("resize", () => { if (tab === "analytics" && !wideEnough()) setTab("assist"); });
 
 function renderAbout() {
-  $("about").innerHTML = `<article class="aboutpage">
+  $("about-page").innerHTML = `<article class="aboutpage">
     <h2>Tools</h2>
     <div class="acols"><div class="acol">
     <section>

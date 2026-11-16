@@ -56,7 +56,7 @@ function renderTalk() {
   }
   const tips = [onlyOpen ? 'untick "Open now only"' : "", area ? 'choose "Local and UK-wide"' : "", sup ? 'choose "Anything" under Support for' : ""]
     .filter(Boolean).join(", or ").replace(/^./, c => c.toUpperCase());
-  $("talk").innerHTML = html || `<div class="empty"><strong>${onlyOpen ? "Nothing open right now for this" : "Nothing listed for this"}</strong><br>` +
+  $("talk-list").innerHTML = html || `<div class="empty"><strong>${onlyOpen ? "Nothing open right now for this" : "Nothing listed for this"}</strong><br>` +
     `${tips || "Try again later"}, or call Samaritans on 116 123 at any time.</div>`;
 }
 $("t-support").onchange = renderTalk;

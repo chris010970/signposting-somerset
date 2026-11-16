@@ -764,7 +764,7 @@ h1 { font-family: var(--serif); color: var(--b900); font-size: 26px; margin: 0; 
 .sitetabs { display: flex; gap: 4px; margin: 4px 0 14px; border-bottom: 1px solid var(--line); overflow-x: auto; scrollbar-width: none; }
 .sitetabs button { white-space: nowrap; }
 .sitetabs .sh { display: none; }
-#about.talk { max-width: 1432px; }  /* 1400 + gutters, so the card lines up with the title and tabs */
+#about-page.talk { max-width: 1432px; }  /* 1400 + gutters, so the card lines up with the title and tabs */
 .aboutpage { max-width: none; margin: 0; background: var(--white); border: 1px solid var(--line); border-radius: 16px; padding: 22px 24px; line-height: 1.55; }
 .aboutpage h2 { font-family: var(--serif); color: var(--b900); font-size: 22px; margin: 0 0 6px; }
 .aboutpage h3 { font-family: var(--serif); color: var(--b900); font-size: 17px; margin: 22px 0 6px; }
@@ -901,7 +901,7 @@ footer.urgent p { color: #FEE2E2; }
 /* The way back to the directory, in the tab row: a link, styled like the tabs */
 .sitetabs a.back { white-space: nowrap; padding: 9px 14px 10px; font-weight: 700; font-size: 14px; color: #6B645F; text-decoration: none; border-bottom: 3px solid transparent; margin-bottom: -1px; margin-right: 6px; }
 .sitetabs a.back:hover, .sitetabs a.back:focus-visible { color: var(--b900); }
-#about.talk { max-width: 1432px; margin: 0 auto; padding-block: 14px 110px; }
+#about-page.talk { max-width: 1432px; margin: 0 auto; padding-block: 14px 110px; }
 @media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
 /* ---------- Assist tab (v2 only). Everything is scoped to #panel-assist or prefixed a- so it can't affect the rest of the site. ---------- */
 .sitetabs #tab-assist { display: inline-flex; align-items: center; gap: 6px; }
@@ -1377,7 +1377,7 @@ footer.urgent p { color: #FEE2E2; }
   <div class="an-mapwrap"><section id="amap" aria-label="Map of LSOAs and services"></section><div class="an-loading" id="an-loading">Loading LSOAs…</div></div>
   <div class="an-col"><div class="an-box an-prof" id="an-prof"></div></div>
 </main>
-<main id="panel-about" aria-labelledby="tab-about" hidden style="flex:1;min-height:0;overflow-y:auto"><div class="talk gut" id="about"></div></main>
+<main id="panel-about" aria-labelledby="tab-about" hidden style="flex:1;min-height:0;overflow-y:auto"><div class="talk gut" id="about-page"></div></main>
 
 <footer class="help gut" id="help">
   <div class="inner">
@@ -1801,7 +1801,7 @@ if (tab === "analytics") setTimeout(initAnalytics, 0);
 addEventListener("resize", () => { if (tab === "analytics" && !wideEnough()) setTab("assist"); });
 
 function renderAbout() {
-  $("about").innerHTML = `<article class="aboutpage">
+  $("about-page").innerHTML = `<article class="aboutpage">
     <h2>Tools</h2>
     <div class="acols"><div class="acol">
     <section>
@@ -1821,7 +1821,7 @@ function renderAbout() {
       <li><strong>Data:</strong> ONS boundaries, population (mid-2022) and urban/rural classification; MHCLG Indices of Deprivation 2025; Census 2021; open postcode data (2016). Open Government Licence.</li>
     </ul>
     </div></div>
-    <p class="small" id="site-version">Version: tools 2026-11-16 12:54${typeof window.assistRelayVersion === "function" ? window.assistRelayVersion() : ""}</p>
+    <p class="small" id="site-version">Version: tools 2026-11-16 13:35${typeof window.assistRelayVersion === "function" ? window.assistRelayVersion() : ""}</p>
   </article>`;
 }
 
@@ -2303,7 +2303,7 @@ async function initAnalytics() {
    this page only remembers it for the current browser session. */
 (() => {
 const WORKER_URL = "https://signposting-assist.c-r-williams0109.workers.dev";
-const PAGE_VERSION = "tools 2026-11-16 12:54";
+const PAGE_VERSION = "tools 2026-11-16 13:35";
 let relayVersion = "";
 // The version line is at the bottom of the About tab: "Version: test 2026-11-06 11:30 · Assist relay 2026-11-06 11:07"
 window.assistRelayVersion = () => relayVersion ? ` · Assist relay ${relayVersion}` : "";

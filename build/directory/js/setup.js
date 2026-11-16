@@ -32,6 +32,6 @@ let tab = "talk";
 let searchPoint = null, sortBy = "soon", fitPending = true, locMsg = "";
 // In the lists while the records load, or if they can't be loaded
 function panelMessage(html) {
-  for (const id of ["talk", "courses", "list"]) $(id).innerHTML = `<div class="empty">${html}</div>`;
+  for (const id of ["talk-list", "courses", "list"]) $(id).innerHTML = `<div class="empty">${html}</div>`;
   $("summary").textContent = "";
 }

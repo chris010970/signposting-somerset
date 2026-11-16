@@ -5,7 +5,7 @@
 // Without a link, the choices made earlier in this visit come back (kept in this browser tab only, never "Use my location"),
 // so going to Places and back, or reloading, doesn't reset them.
 const STATE_KEY = "ss-directory:" + location.pathname;   // the live and test copies keep their own
-const SAVED = (() => {   // { near, talk, course: each tab's filters as a link; sort, area, open, fmt, book } (saveState)
+const SAVED = (() => {   // { near, talk, course: each tab's filters as a link; sort, area, open, fmt, book; scroll } (saveState)
   try { return location.search ? {} : JSON.parse(sessionStorage.getItem(STATE_KEY) || "null") || {}; } catch (e) { return {}; }
 })();
 const LINK = (() => {   // In person's filters to open with: the address's, or this visit's
@@ -49,7 +49,7 @@ function restoreOthers() {   // the other tabs' choices from earlier in this vis
 function saveState() {
   if (!recordsIn) return;
   const state = { near: linkFor("near"), talk: linkFor("talk"), course: linkFor("course"), sort: sortBy,
-    area: $("t-area").value, open: $("t-open").checked, fmt: $("c-fmt").value, book: $("c-book").checked };
+    area: $("t-area").value, open: $("t-open").checked, fmt: $("c-fmt").value, book: $("c-book").checked, scroll: scrollPos };
   try { sessionStorage.setItem(STATE_KEY, JSON.stringify(state)); } catch (e) {}
 }
 function linkFor(t) {   // the current filters, as the part of the address after "?"
@@ -71,6 +71,34 @@ function syncLink() {
   saveState();
 }
 
+
+/* ---------- scroll positions: each tab stays where it was, for the visit ---------- */
+// Switching tabs, going to Places and back, or reloading: each tab's list is where it was left (In person's list starts at
+// the top again when its filters change). Kept with the other choices; a link that opens the directory filtered starts at the top.
+const SCROLLERS = { near: "list", talk: "panel-talk", course: "panel-course", about: "panel-about" };
+const scrollPos = (() => {   // this visit's positions; a link (e.g. "On the map" from Places) opens In person at the top
+  try {
+    const all = { ...(JSON.parse(sessionStorage.getItem(STATE_KEY) || "null") || {}).scroll };
+    if (location.search) delete all.near;
+    return all;
+  } catch (e) { return {}; }
+})();
+let lastListKey = null;          // In person's filters at its last draw (in-person.js)
+const scrollRestored = new Set();   // tabs whose remembered position has been put back since the page opened
+let scrollSaving = 0;
+for (const [t, id] of Object.entries(SCROLLERS)) $(id).addEventListener("scroll", () => {
+  if (!$(id).offsetParent) return;   // being hidden (a hidden list reads as scrolled to the top)
+  if (t === "near" ? lastListKey === null : !scrollRestored.has(t)) return;   // still loading: keep the remembered position
+  scrollPos[t] = $(id).scrollTop;
+  clearTimeout(scrollSaving); scrollSaving = setTimeout(saveState, 250);
+}, { passive: true });
+addEventListener("pagehide", saveState);
+// After a tab's content is drawn (setSiteTab): put back where it was, once (In person does this as it draws its list)
+function restoreScroll(t) {
+  if (t === "near" || !recordsIn || scrollRestored.has(t)) return;
+  scrollRestored.add(t);
+  if (scrollPos[t]) $(SCROLLERS[t]).scrollTop = scrollPos[t];
+}
 
 /* ---------- opening the page ---------- */
 // Opens on In person; a link with #near, #talk, #course or #about opens that tab. Old links to #assist go to the tools page.
