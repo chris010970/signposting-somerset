@@ -4,6 +4,8 @@
   "description": "Browser tests for the published pages (browser.test.mjs). Setup: npm install && npx playwright install chromium",
   "type": "module",
   "devDependencies": {
+    "@fontsource/inter": "5.3.0",
+    "@fontsource/literata": "5.3.0",
     "axe-core": "4.10.2",
     "html-validate": "8.24.1",
     "playwright": "1.56.0"

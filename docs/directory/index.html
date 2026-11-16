@@ -893,7 +893,9 @@ h1 { font-family: var(--serif); color: var(--b900); font-size: 26px; margin: 0; 
 .next .val.today { color: #047857; }
 .next .val.chk { color: #92400E; }
 .desc { font-size: 13px; color: #57534E; line-height: 1.5; margin: 0 0 8px; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
-@media (max-width: 360px) { .card { padding-inline: 12px; } }   /* very narrow screens (phones, or a laptop zoomed in): the top row still fits on one line */
+@media (max-width: 360px) {   /* very narrow screens (phones, or a laptop zoomed in): the top row still fits on one line, with room to spare */
+  .card { padding-inline: 12px; } .row1 { gap: 6px; } .chipr { gap: 4px; } .badge { padding-inline: 7px; }
+}
 .card.open .desc, .desc.full { -webkit-line-clamp: unset; display: block; }
 .cname .cbtn { font: inherit; color: inherit; background: none; border: 0; padding: 0; margin: 0; text-align: left; cursor: pointer; }   /* the name: a button that opens the card */
 .who { font-size: 12px; color: var(--ink); margin-bottom: 8px; }
@@ -2223,7 +2225,7 @@ function renderAbout() {
     </section>
     </div></div>
     <p class="small">Service information belongs to the providers listed. Map data © <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap</a> contributors, © <a href="https://carto.com/attributions" target="_blank" rel="noopener">CARTO</a>.</p>
-    <p class="small" id="site-version">Version: directory 2026-11-16 20:38</p>
+    <p class="small" id="site-version">Version: directory 2026-11-16 21:23</p>
   </article>`;
 }
 /* ---------- Places: the town listings, as a tab of the directory ----------
@@ -2420,7 +2422,10 @@ function restoreScroll(t) {   // (In person and Places do this as their lists ar
   if (t === "near" || t === "places" || !recordsIn) return;
   if (scrollRestored.has(t) && !pageFlows()) return;   // its own panel kept its place; when the page scrolls as one, every time
   scrollRestored.add(t);
-  scroller(t).scrollTop = scrollPos[t] || 0;
+  const y = scrollPos[t] || 0;
+  scroller(t).scrollTop = y;
+  // and again once the web fonts are in: text first laid out in a stand-in font can shift the place by a few pixels
+  document.fonts?.ready.then(() => { if (tab === t) scroller(t).scrollTop = y; });
 }
 
 /* ---------- opening the page ---------- */

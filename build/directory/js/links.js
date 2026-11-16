@@ -110,7 +110,10 @@ function restoreScroll(t) {   // (In person and Places do this as their lists ar
   if (t === "near" || t === "places" || !recordsIn) return;
   if (scrollRestored.has(t) && !pageFlows()) return;   // its own panel kept its place; when the page scrolls as one, every time
   scrollRestored.add(t);
-  scroller(t).scrollTop = scrollPos[t] || 0;
+  const y = scrollPos[t] || 0;
+  scroller(t).scrollTop = y;
+  // and again once the web fonts are in: text first laid out in a stand-in font can shift the place by a few pixels
+  document.fonts?.ready.then(() => { if (tab === t) scroller(t).scrollTop = y; });
 }
 
 /* ---------- opening the page ---------- */

@@ -25,6 +25,12 @@ const LEAFLET = process.env.TEST_LEAFLET ? readFileSync(process.env.TEST_LEAFLET
 const TYPES = { ".html": "text/html", ".js": "text/javascript", ".css": "text/css", ".json": "application/json", ".geojson": "application/json",
   ".png": "image/png", ".webp": "image/webp", ".svg": "image/svg+xml", ".ico": "image/x-icon", ".xml": "application/xml" };
 const MON = "2026-11-16T10:30:00";   // Monday 16 November 2026, mid-morning
+// The site's web fonts (Inter, Literata), from pinned copies here instead of Google Fonts, so every computer running the tests
+// (this one, GitHub's) lays the pages out exactly as visitors see them, not in whatever fonts it happens to have installed
+const FONT_FILES = { Inter: [400, 500, 600, 700], Literata: [600, 700] };
+const FONT_CSS = Object.entries(FONT_FILES).flatMap(([family, weights]) => weights.map(w =>
+  `@font-face{font-family:'${family}';font-style:normal;font-weight:${w};font-display:block;src:url(https://fonts.test/${family.toLowerCase()}/${w}.woff2) format('woff2')}`)).join("\n");
+const fontFile = u => { const [, family, w] = new URL(u).pathname.split(/[/.]/); return join(HERE, "node_modules", "@fontsource", family, "files", `${family}-latin-${w}-normal.woff2`); };
 
 let server, browser, H;
 before(async () => {
@@ -41,7 +47,7 @@ before(async () => {
 });
 after(async () => { await browser?.close(); server?.close(); });
 
-// A page with the clock fixed and the made-up sheet; fonts and map tiles are left out (not needed, and slow)
+// A page with the clock fixed, the made-up sheet and the site's fonts; map tiles are left out (not needed, and slow)
 async function open(path, { when = MON, width = 1400, height = 900, js = true } = {}) {
   const ctx = await browser.newContext({ viewport: { width, height }, javaScriptEnabled: js, permissions: ["clipboard-read", "clipboard-write"] });
   const page = await ctx.newPage();
@@ -51,10 +57,13 @@ async function open(path, { when = MON, width = 1400, height = 900, js = true } 
     const u = r.request().url();
     if (/docs\.google|googleusercontent/.test(u)) return r.fulfill({ status: 200, contentType: "text/csv", body: SHEET });
     if (LEAFLET && /leaflet\.js$/.test(u)) return r.fulfill({ status: 200, contentType: "text/javascript", body: LEAFLET });
+    if (/fonts\.googleapis\.com\/css2/.test(u)) return r.fulfill({ status: 200, contentType: "text/css", body: FONT_CSS });
+    if (u.startsWith("https://fonts.test/")) return r.fulfill({ status: 200, contentType: "font/woff2", body: readFileSync(fontFile(u)) });
     if (u.startsWith("http://localhost") || /cdnjs\.cloudflare\.com/.test(u)) return r.continue();
     return r.abort();
   });
   await page.goto(H + path); await page.waitForTimeout(js ? 800 : 100);
+  await page.evaluate(() => document.fonts.ready);
   page.done = () => ctx.close();
   return page;
 }
@@ -366,6 +375,8 @@ test("Every card's top row is one line (the cost sits on the For line), wide scr
   for (const width of [1400, 320]) for (const [path, sel] of [["/test/directory/?when=any#near", "#list .card"], ["/test/directory/#talk", "#panel-talk .tcard"],
       ["/test/directory/#course", "#panel-course .tcard"], ["/test/directory/places/wells/", "li[data-i]:not([hidden]) .card"]]) {
     const p = await open(path, { width });
+    assert.deepEqual(await p.evaluate(() => [...document.fonts].filter(f => f.status === "loaded" && f.family.replace(/['"]/g, "") === "Inter").map(f => f.weight).sort()),
+      ["400", "500", "600", "700"], "laid out in the site's own font (Inter), not this computer's");
     const bad = await p.$$eval(sel, cs => cs.filter(c => {
       const row = c.querySelector(".row1"), items = [...row.querySelectorAll(":scope > *, .chipr > *")];
       return row.getBoundingClientRect().height > Math.max(...items.map(i => i.getBoundingClientRect().height)) + 4;
