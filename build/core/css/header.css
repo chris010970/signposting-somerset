@@ -3,8 +3,10 @@
 .hero { position: relative; display: flex; flex-direction: column; justify-content: center; margin-bottom: 2px; }
 @media (min-width: 761px) { .hero { padding-block: 8px 6px; } }
 .hero > :not(.illus) { position: relative; z-index: 1; max-width: min(48%, 680px); }
-.hero h1 { font-size: 24px; line-height: 1.1; display: flex; align-items: center; gap: 9px; }
-.hero h1 .logo { height: 34px; width: auto; flex: none; margin: -2px 0 -1px; }
+/* The site name: the page's h1 on the directory and tools page, a link back to the directory on the Places pages (whose h1 is the town) */
+.hero .brand { font-family: var(--serif); color: var(--b900); font-size: 24px; font-weight: 700; line-height: 1.1; margin: 0;
+  display: flex; align-items: center; gap: 9px; text-decoration: none; }
+.hero .brand .logo { height: 34px; width: auto; flex: none; margin: -2px 0 -1px; }
 .hero .lede { font-size: 13.5px; color: #6B645F; margin: 3px 0 2px; max-width: 60ch; }
 /* The tagline stays on one line: a shorter version on narrow screens */
 .hero .lede { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: none; }

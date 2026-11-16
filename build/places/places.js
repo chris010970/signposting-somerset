@@ -1,101 +1,33 @@
-/* ---------- the Places pages: cards, the filter boxes, remembering the place, swapping towns in place ----------
-   Shared code before this: schedules (core/js/schedule.js), the card (core/js/service-card.js), copy details and
-   directions (core/js/cards.js), so the cards look and behave exactly as on the directory's In person tab. */
+/* ---------- the standalone Places pages (for search engines, and anyone arriving from one) ----------
+   The listings run on the shared Places code (build/core/js/places-view.js), the same as the directory's Places tab.
+   Here each town has its own address: switching town updates it, Back and Forward work, and the place, choices and
+   scroll position are kept for the visit. */
 const $ = id => document.getElementById(id);
-let ALL = [];   // this page's records (copy details finds them here)
+let ALL = [];   // (the directory's records; none on these pages; Places cards' records are PLACE_RECS)
 (() => {
-  const main = document.querySelector(".bmain"), hdr = $("hdr-towns");
-  // The page's records, from the JSON the build put in it; a card's data-i is its place in that list
-  function load() {
-    const el = main.querySelector("#places-data");
-    try { ALL = el ? shapeRecords(JSON.parse(el.textContent)) : []; } catch (_) { ALL = []; }
-  }
-  const byId = i => ALL.find(s => s.id === +i);
-  const always = s => s.days === "Mon-Sun" && s.times === "00:00-23:59";   // 24/7: in every window
-  // 3. When?: does it meet in the chosen time? (the same windows as the In person tab; no set times: only under Any time)
-  function meets(s, w, now) {
-    if (w === "any" || always(s)) return true;
-    const win = windowFor(w, now);
-    return !!win && meetsIn(s, win);
-  }
-  // 1. Support for: show that section, or all of them; 3. When?: only cards that meet then, each showing its session then
-  function pick(k) {
-    const sel = $("b-support"); if (!sel) return;
-    if (![...sel.options].some(o => o.value === k)) k = "all";
-    sel.value = k; $("bq-support").classList.toggle("on", k !== "all");
-    const w = $("b-when").value, now = new Date(), win = windowFor(w, now);
-    const from = win ? new Date(Math.max(win[0], now)) : now;
-    $("bq-when").classList.toggle("on", w !== "any");
-    let shown = 0;
-    main.querySelectorAll(".bsec").forEach(sec => {
-      let n = 0;
-      sec.querySelectorAll("h3").forEach(h => {
-        const ul = h.nextElementSibling; let m = 0;
-        ul.querySelectorAll("li[data-i]").forEach(li => {
-          const s = byId(li.dataset.i), ok = !!s && meets(s, w, now);   // no record: its dates have all passed since the build
-          li.hidden = !ok; m += ok;
-          if (ok && s) li.innerHTML = serviceCard({ s, d: +li.dataset.d, nx: nextText(s, now, from) }, "h4", false);
-        });
-        h.hidden = ul.hidden = !m; h.textContent = h.dataset.l + " · " + m; n += m;
-      });
-      const c = sec.querySelector(".bsh h2 span"); if (c) c.textContent = n;
-      sec.hidden = !n || (k !== "all" && sec.dataset.k !== k); if (!sec.hidden) shown++;
-    });
-    const none = main.querySelector(".bnone"); if (none) none.hidden = !!shown || !main.querySelector(".bsec");
-  }
-  // This visit's place (town, Support for, When, and how far down the list), kept in this browser tab only, so the
-  // directory's Places tab comes back to it
-  const PKEY = "ss-places:" + (document.querySelector('.sitetabs a[aria-current]')?.getAttribute("href") || "");   // live and test keep their own
-  const save = () => {
-    const state = { url: location.pathname + location.hash, when: $("b-when").value, scroll: scroller.scrollTop };
-    try { sessionStorage.setItem(PKEY, JSON.stringify(state)); } catch (_) {}
-  };
-  const kept = () => { try { return JSON.parse(sessionStorage.getItem(PKEY) || "null"); } catch (_) { return null; } };
-  function wire() {
-    load();
-    const k0 = kept(); if (k0 && k0.when && [...$("b-when").options].some(o => o.value === k0.when)) $("b-when").value = k0.when;
-    pick(location.hash.slice(1) || "all");
-    if (k0 && k0.scroll && k0.url === location.pathname + location.hash) scroller.scrollTop = k0.scroll;   // back to the same page: where it was
-    save();
-    $("b-support").onchange = () => {
-      const k = $("b-support").value; pick(k);
-      history.replaceState(history.state, "", location.pathname + (k === "all" ? "" : "#" + k)); save();
-    };
-    $("b-when").onchange = () => { pick($("b-support").value); save(); };
-    const tl = hdr.querySelector(".btoday"); if (tl) tl.textContent = new Date().toLocaleDateString("en-GB", { weekday: "short", day: "numeric", month: "short" });
-    $("b-town").onchange = () => {   // 2. Where?: that town, keeping the support chosen
-      const v = $("b-town").value, k = $("b-support").value;
-      if (v) go(v + (k && k !== "all" ? "#" + k : ""), true);
-    };
-  }
-  // Swap in another town's page (filters and listings), keeping its own address
-  async function go(href, push) {
-    main.classList.add("loading");
-    try {
-      const r = await fetch(href.split("#")[0], { cache: "no-cache" }); if (!r.ok) throw 0;
-      const doc = new DOMParser().parseFromString(await r.text(), "text/html");
-      const when = $("b-when").value;   // keep 3. When? across towns
-      main.innerHTML = doc.querySelector(".bmain").innerHTML; hdr.innerHTML = doc.getElementById("hdr-towns").innerHTML; document.title = doc.title;
-      $("b-when").value = when;
-      const md = doc.querySelector('meta[name="description"]'); if (md) document.querySelector('meta[name="description"]')?.setAttribute("content", md.content);
-      if (push) history.pushState({ b: 1 }, "", href);
-      scroller.scrollTo(0, 0); wire();   // another town: start at the top
-    } catch (_) { location.href = href; }
-    main.classList.remove("loading");
-  }
-  const scroller = document.querySelector(".bw");   // the listings scroll here, under the header (as on the directory)
-  let saving = 0;
-  scroller.addEventListener("scroll", () => { clearTimeout(saving); saving = setTimeout(save, 250); }, { passive: true });
-  addEventListener("pagehide", save);
-  main.addEventListener("click", ev => {
-    // A card: tap to show its full description, as on the In person tab (links and buttons in it work as usual)
-    const card = ev.target.closest(".card");
-    if (card && !ev.target.closest("a, button")) { card.classList.toggle("open"); return; }
-    // Links to other towns (and to the town list) swap in place too
-    const a = ev.target.closest("a"); if (!a || ev.ctrlKey || ev.metaKey || ev.shiftKey || a.target) return;
-    const u = new URL(a.getAttribute("href") || "", location.href), base = document.querySelector('.sitetabs a[aria-current]')?.getAttribute("href");
-    if (u.origin === location.origin && base && u.pathname.startsWith(base) && !u.hash) { ev.preventDefault(); go(u.pathname, true); }
+  const scroller = document.querySelector(".bw");
+  const KEY = "ss-places:" + (document.querySelector('.sitetabs a[aria-current]')?.getAttribute("href") || "");   // live and test keep their own
+  const kept = (() => { try { return JSON.parse(sessionStorage.getItem(KEY) || "null") || {}; } catch (_) { return {}; } })();
+  const save = s => { try { sessionStorage.setItem(KEY, JSON.stringify({ href: s.href, support: s.support, when: s.when, scroll: scroller.scrollTop })); } catch (_) {} };
+  let pushing = false;
+  const view = placesView({
+    main: document.querySelector(".bmain"), hdr: $("hdr-towns"), scroller,
+    onChange: s => {
+      const url = s.href + (s.support && s.support !== "all" ? "#" + s.support : "");
+      if (pushing) { history.pushState({ b: 1 }, "", url); pushing = false; } else history.replaceState(history.state, "", url);
+      if (s.title) { document.title = s.title; document.querySelector('meta[name="description"]')?.setAttribute("content", s.description || ""); }
+      save(s);
+    },
   });
-  addEventListener("popstate", () => go(location.pathname + location.hash, false));
-  if (main && hdr) wire();
+  // A town chosen here gets its own address in the history (so Back returns to the previous town)
+  document.addEventListener("change", e => { if (e.target.id === "b-town") pushing = true; }, true);
+  document.querySelector(".bmain").addEventListener("click", e => { if (e.target.closest("a:not([target])")) pushing = true; }, true);
+  addEventListener("popstate", () => view.show(location.pathname, { support: location.hash.slice(1) || "all" }));
+  let saving = 0;
+  scroller.addEventListener("scroll", () => { clearTimeout(saving); saving = setTimeout(() => save(view.state()), 250); }, { passive: true });
+  addEventListener("pagehide", () => save(view.state()));
+  // This page as built: the support from the address (#bereavement), When? and the scroll position as they were this visit
+  view.start({ support: location.hash.slice(1) || "all", when: kept.when });
+  if (kept.href === location.pathname && kept.scroll) scroller.scrollTop = kept.scroll;
+  save(view.state());
 })();

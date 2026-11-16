@@ -7,7 +7,8 @@
 Publish: copy out/directory/places/ -> docs/directory/places/, out/test/directory/places/ -> docs/test/directory/places/,
 and out/sitemap.xml -> docs/sitemap.xml. They are the directory's "Places" tab.
 Configuration (no code changes needed): towns.json (which towns, radius) and categories.json (sections).
-The page styles and script are places.css and places.js; the rest of the look comes from build/core/ and the directory's template.
+The page frame and script are places.css and places.js; the listings' styles and code are shared with the directory's Places tab
+(build/core/css/places-content.css, build/core/js/places-view.js); the rest of the look comes from build/core/ and the directory's template.
 The pages look and behave like one page: picking a town swaps the main area in place, but every town has its own address.
 Rules kept here: only in-person services (not courses) with a place; Crisis Safe Space addresses are never in the data, so
 none are shown; distances are straight lines; 'next session' is worked out in the visitor's browser, so pages never go stale
@@ -248,7 +249,7 @@ PAGE_CSS = (HERE / "places.css").read_text(encoding="utf-8")
 # build/core/js/schedule.js), the filter boxes, remembering the place for the visit, and swapping towns without a full reload.
 # The crisis bar and the helpline bar are the directory's (build/core/html/).
 PAGE_JS = inline_core("\n".join(["/*@core:js/helpline-height.js*/", "/*@core:js/text.js*/", "/*@core:js/schedule.js*/",
-    "/*@core:js/records.js*/", "/*@core:js/kinds.js*/", "/*@core:js/cards.js*/", "/*@core:js/service-card.js*/",
+    "/*@core:js/records.js*/", "/*@core:js/kinds.js*/", "/*@core:js/cards.js*/", "/*@core:js/service-card.js*/", "/*@core:js/places-view.js*/",
     "const TOWNS = " + json.dumps(TOWNS, ensure_ascii=False) + ";   // town centres, for records with no postcode",
     "/*@page:places.js*/", ""]), HERE)
 CRISIS, HELPLINE = (inline_core(f"<!--@core:html/{n}.html-->\n") for n in ("crisis", "helpline"))
@@ -283,10 +284,10 @@ def page(title, desc, canonical, robots, main_html, filters_html, dirbase, crumb
         <a class="brand" href="{dirbase}"><img class="logo" src="/assets/logo-signpost.webp" alt="" width="31" height="34">Signposting Somerset</a>
         <p class="lede"><span class="lg">Connecting people with local mental health and wellbeing support.</span><span class="sh">Local mental health and wellbeing support.</span></p>
       </div>
-      <nav class="sitetabs" aria-label="Site"><span class="tgrp"><a class="tab" href="{dirbase}#near">In person</a><a class="tab" href="{dirbase}#talk"><span class="lg">Phone and online</span><span class="sh">Phone &amp; online</span></a><a class="tab" href="{dirbase}#course">Courses</a><a class="tab" href="{base}" aria-current="page">Places</a></span><a class="tab sep" href="{dirbase}#about">About</a><a class="tolink" href="{dirbase.replace("directory/", "tools/")}">Tools →</a></nav>
     </div>
-{filters_html}
+    <nav class="sitetabs" aria-label="Site"><span class="tgrp"><a class="tab" href="{dirbase}#near">In person</a><a class="tab" href="{dirbase}#talk"><span class="lg">Phone and online</span><span class="sh">Phone &amp; online</span></a><a class="tab" href="{dirbase}#course">Courses</a><a class="tab" href="{base}" aria-current="page">Places</a></span><a class="tab sep" href="{dirbase}#about">About</a><a class="tolink" href="{dirbase.replace("directory/", "tools/")}">Tools →</a></nav>
   </div>
+{filters_html}
 </header>
 <span id="copy-live" role="status" aria-live="polite" class="vh"></span>
 <div class="bw gut">

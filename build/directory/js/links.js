@@ -2,11 +2,11 @@
    e.g. /directory/?support=bereavement&town=Frome#near · ?lat=51.21&lon=-3.6&label=near%20Porlock#near · ?support=anxiety#talk
    support (any tab), town or lat + lon (+ label), within and when (In person). Unknown values are ignored, so a bad link still
    opens the normal page. The address bar follows the filters, so any view can be copied as a link (never "Use my location"). */
-// Without a link, the choices made earlier in this visit come back (kept in this browser tab only, never "Use my location"),
-// so going to Places and back, or reloading, doesn't reset them.
+// The choices made earlier in this visit come back (kept in this browser tab only, never "Use my location"), so reloading
+// doesn't reset them. A link's own choices win for the tab it opens.
 const STATE_KEY = "ss-directory:" + location.pathname;   // the live and test copies keep their own
-const SAVED = (() => {   // { near, talk, course: each tab's filters as a link; sort, area, open, fmt, book; scroll } (saveState)
-  try { return location.search ? {} : JSON.parse(sessionStorage.getItem(STATE_KEY) || "null") || {}; } catch (e) { return {}; }
+const SAVED = (() => {   // { near, talk, course: each tab's filters as a link; sort, area, open, fmt, book; scroll; places } (saveState)
+  try { return JSON.parse(sessionStorage.getItem(STATE_KEY) || "null") || {}; } catch (e) { return {}; }
 })();
 const LINK = (() => {   // In person's filters to open with: the address's, or this visit's
   try { return new URLSearchParams(location.search || SAVED.near || ""); } catch (e) { return new URLSearchParams(); }
@@ -22,26 +22,28 @@ function pickOpt(sel, v) {
 }
 function applyLink() {   // after the records are ready, and again when the live sheet arrives, until the person changes something
   if (userChanged) return;
-  applyLinkNear();
+  applyLinkNear(LINK);
   if (SAVED.near !== undefined) restoreOthers();   // after: In person's choices also set the other tabs' Support for
 }
-function applyLinkNear() {
-  if (![...LINK.keys()].length) return;
-  const sup = LINK.get("support");
+function applyLinkNear(link) {   // In person's filters from a link's settings (URLSearchParams)
+  if (![...link.keys()].length) return;
+  const sup = link.get("support");
   pickOpt(fs, sup); pickOpt($("t-support"), sup); pickOpt($("c-support"), sup);
-  const lat = parseFloat(LINK.get("lat")), lon = parseFloat(LINK.get("lon"));
-  if (pickOpt($("f-town"), LINK.get("town")) && PLACE[$("f-town").value]) {
+  const lat = parseFloat(link.get("lat")), lon = parseFloat(link.get("lon"));
+  if (pickOpt($("f-town"), link.get("town")) && PLACE[$("f-town").value]) {
     const n = $("f-town").value; searchPoint = { lat: PLACE[n][0], lon: PLACE[n][1], label: n }; sortBy = "near";
   } else if (lat > 50.5 && lat < 51.7 && lon > -4.2 && lon < -1.9) {   // a point in or near the area
-    const label = (LINK.get("label") || "").replace(/[<>"]/g, "").trim().slice(0, 60) || "the point on the map";
+    const label = (link.get("label") || "").replace(/[<>"]/g, "").trim().slice(0, 60) || "the point on the map";
     searchPoint = { lat, lon, label, link: true }; setPtLabel(cap(label)); $("f-town").value = "__pt"; sortBy = "near";
   }
-  pickOpt($("within"), LINK.get("within")); pickOpt($("f-when"), LINK.get("when"));
+  pickOpt($("within"), link.get("within")); pickOpt($("f-when"), link.get("when"));
   fitPending = true;
 }
 function restoreOthers() {   // the other tabs' choices from earlier in this visit (In person's come back through LINK)
   const sup = (sel, q) => { const v = new URLSearchParams(q || "").get("support"); if (!pickOpt(sel, v)) sel.value = ""; };
-  sup($("t-support"), SAVED.talk); sup($("c-support"), SAVED.course);
+  const linkTab = location.search ? location.hash.slice(1) : "";   // the tab a link opened: its support stays the link's
+  if (linkTab !== "talk") sup($("t-support"), SAVED.talk);
+  if (linkTab !== "course") sup($("c-support"), SAVED.course);
   if (SAVED.area !== undefined) pickOpt($("t-area"), SAVED.area) || ($("t-area").value = "");
   if (SAVED.fmt !== undefined) pickOpt($("c-fmt"), SAVED.fmt) || ($("c-fmt").value = "");
   $("t-open").checked = !!SAVED.open; $("c-book").checked = !!SAVED.book;
@@ -49,7 +51,8 @@ function restoreOthers() {   // the other tabs' choices from earlier in this vis
 function saveState() {
   if (!recordsIn) return;
   const state = { near: linkFor("near"), talk: linkFor("talk"), course: linkFor("course"), sort: sortBy,
-    area: $("t-area").value, open: $("t-open").checked, fmt: $("c-fmt").value, book: $("c-book").checked, scroll: scrollPos };
+    area: $("t-area").value, open: $("t-open").checked, fmt: $("c-fmt").value, book: $("c-book").checked, scroll: scrollPos,
+    places: placesState() };
   try { sessionStorage.setItem(STATE_KEY, JSON.stringify(state)); } catch (e) {}
 }
 function linkFor(t) {   // the current filters, as the part of the address after "?"
@@ -75,7 +78,7 @@ function syncLink() {
 /* ---------- scroll positions: each tab stays where it was, for the visit ---------- */
 // Switching tabs, going to Places and back, or reloading: each tab's list is where it was left (In person's list starts at
 // the top again when its filters change). Kept with the other choices; a link that opens the directory filtered starts at the top.
-const SCROLLERS = { near: "list", talk: "panel-talk", course: "panel-course", about: "panel-about" };
+const SCROLLERS = { near: "list", talk: "panel-talk", course: "panel-course", places: "panel-places", about: "panel-about" };
 const scrollPos = (() => {   // this visit's positions; a link (e.g. "On the map" from Places) opens In person at the top
   try {
     const all = { ...(JSON.parse(sessionStorage.getItem(STATE_KEY) || "null") || {}).scroll };
@@ -94,8 +97,8 @@ for (const [t, id] of Object.entries(SCROLLERS)) $(id).addEventListener("scroll"
 }, { passive: true });
 addEventListener("pagehide", saveState);
 // After a tab's content is drawn (setSiteTab): put back where it was, once (In person does this as it draws its list)
-function restoreScroll(t) {
-  if (t === "near" || !recordsIn || scrollRestored.has(t)) return;
+function restoreScroll(t) {   // (In person and Places do this as their lists arrive)
+  if (t === "near" || t === "places" || !recordsIn || scrollRestored.has(t)) return;
   scrollRestored.add(t);
   if (scrollPos[t]) $(SCROLLERS[t]).scrollTop = scrollPos[t];
 }

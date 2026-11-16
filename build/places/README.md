@@ -1,4 +1,9 @@
-# Places (the directory's Places tab)
+# Places
+
+Each town's listing is built here as a plain page (`/directory/places/<town>/`), for search engines and anyone arriving from one.
+The directory's **Places tab** shows the same pages inside the directory: it fetches a town's page and puts its filter boxes and
+listings under the directory's own header (`build/directory/js/places-tab.js`), so switching to Places doesn't reload anything.
+Both run the same code (`build/core/js/places-view.js`) and styles (`build/core/css/places-content.css`).
 
 Plain pages by town, for people who prefer a simple list and for search engines: `/directory/places/` (choose a town) and `/directory/places/<town>/`.
 Their tab row is the directory's: In person, Phone and online and Courses link back to the directory; Places is selected.

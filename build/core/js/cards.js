@@ -54,10 +54,13 @@ function copyFallback(txt) {
   const ta = document.createElement("textarea"); ta.value = txt; ta.setAttribute("readonly", ""); ta.style.cssText = "position:fixed;top:-1000px;opacity:0";
   document.body.appendChild(ta); ta.select(); try { document.execCommand("copy"); } catch (_) {} ta.remove();
 }
+// The record a Copy details button belongs to: a Places card's (places-view.js, ids "p0"...) or the page's own (ALL)
+let PLACE_RECS = [];   // the Places listing's records, when one is showing (core/js/places-view.js); ids "p0", "p1"... never clash
+const recordById = id => PLACE_RECS.find(x => x.id === id) || ALL.find(x => String(x.id) === id);
 document.addEventListener("click", e => {
   const b = e.target.closest && e.target.closest("button.copy"); if (!b) return;
   e.preventDefault(); e.stopPropagation();
-  const s = ALL.find(x => String(x.id) === b.dataset.copy); if (!s) return;
+  const s = recordById(b.dataset.copy); if (!s) return;
   copyToClipboard(copyText(s, b.dataset.when));
   b.classList.add("copied"); clearTimeout(b._t); b._t = setTimeout(() => b.classList.remove("copied"), 1600);
   const live = $("copy-live"); if (live) { live.textContent = ""; setTimeout(() => { live.textContent = `Copied details for ${s.name}`; }, 30); }

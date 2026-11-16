@@ -23,6 +23,7 @@
 /*@core:css/cards.css*/
 /*@core:css/pins.css*/
 /*@core:css/helpline.css*/
+/*@core:css/places-content.css*/
 /*@page:directory.css*/
 </style>
 
@@ -38,7 +39,7 @@
     <nav class="sitetabs" aria-label="Site">
       <span class="tgrp"><button type="button" id="tab-near" aria-controls="panel-near">In person</button>
       <button type="button" id="tab-talk" aria-controls="panel-talk"><span class="lg">Phone and online</span><span class="sh">Phone &amp; online</span></button>
-      <button type="button" id="tab-course" aria-controls="panel-course">Courses</button><a class="tab" id="tab-places" href="places/">Places</a></span>
+      <button type="button" id="tab-course" aria-controls="panel-course">Courses</button><button type="button" id="tab-places" aria-controls="panel-places">Places</button></span>
       <button type="button" id="tab-about" aria-controls="panel-about">About</button>
       <a class="tolink" href="/tools/">Tools →</a>    </nav>
     </div>
@@ -53,6 +54,7 @@
       <label class="toggle" id="q-cbook"><input type="checkbox" id="c-book"> Can still join</label>
     </div>
     <div id="hdr-about" hidden></div>
+    <div id="hdr-places" hidden><div id="hdr-towns"></div></div>
     <div id="hdr-near" hidden>
     <div class="qs">
       <div class="q" id="q-support"><label for="f-support">1. Support for</label>
@@ -88,6 +90,7 @@
 
 <main id="panel-talk" aria-labelledby="tab-talk"><div class="talk gut" id="talk-list"></div></main>
 <main id="panel-about" aria-labelledby="tab-about" hidden style="flex:1;min-height:0;overflow-y:auto"><div class="talk gut" id="about-page"></div></main>
+<main id="panel-places" aria-labelledby="tab-places" hidden style="flex:1;min-height:0;overflow-y:auto"><div class="talk gut"><div class="bmain" id="places-main"></div></div></main>
 <main id="panel-course" aria-labelledby="tab-course" hidden style="flex:1;min-height:0;overflow-y:auto"><div class="talk gut" id="courses"></div></main>
 <main id="panel-near" aria-labelledby="tab-near" hidden style="flex:1;min-height:0;display:flex;flex-direction:column">
 
@@ -111,6 +114,7 @@
 /*@core:js/map-pins.js*/
 /*@core:js/cards.js*/
 /*@core:js/service-card.js*/
+/*@core:js/places-view.js*/
 /*@core:js/helpline-height.js*/
 /*@core:js/sheet.js*/
 /*@page:js/setup.js*/
@@ -119,6 +123,7 @@
 /*@page:js/phone-online.js*/
 /*@page:js/courses.js*/
 /*@page:js/about.js*/
+/*@page:js/places-tab.js*/
 /*@page:js/tabs.js*/
 /*@page:js/links.js*/
 /*@page:js/live.js*/

@@ -25,6 +25,7 @@ in `build/directory/template.html` is `build/directory/js/map.js`).
 | `css/pins.css`, `js/map-pins.js` | map pins, numbered spots and area circles (directory map and Analytics map) |
 | `js/cards.js` | copy details, tap-to-call, directions |
 | `js/service-card.js` | the card for a service with a place: the In person tab and the Places pages |
+| `js/places-view.js`, `css/places-content.css` | the Places listings (filter boxes, sections, cards, switching town): the directory's Places tab and the standalone Places pages |
 | `data/where.json` | the 2. Where? places and their centre points |
 | `data/support-types.json` | the support types, their three groups and their labels (pages, Places build, tests) |
 | `data/kinds.json` | kinds of service and their colours (map pins, map key, cards) |

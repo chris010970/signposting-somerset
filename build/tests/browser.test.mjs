@@ -150,29 +150,39 @@ test("Scroll positions: each tab, and Places, are where they were left", async (
   await p.click('.sitetabs a[href$="#talk"]'); await p.waitForTimeout(800);
   assert.equal(await top("panel-talk"), 120, "Phone and online, coming back from Places");
   await p.click("#tab-near"); await p.waitForTimeout(300); assert.equal(await top("list"), 250, "In person, coming back from Places");
-  await p.click("#tab-places"); await p.waitForTimeout(800);
-  assert.equal(await p.evaluate(() => document.querySelector(".bw").scrollTop), 900, "Places, coming back to it");
-  await p.click(".bsec a.bmap"); await p.waitForTimeout(800);   // "On the map →": In person, filtered, from the top
+  await p.click("#tab-places"); await p.waitForTimeout(800);   // the directory's Places tab: the town and place left on the Places page
+  assert.match(await text(p, "#places-main .bt"), /Wells/, "Places tab opens on the town from the Places page");
+  assert.equal(await top("panel-places"), 900, "Places tab, where the Places page was left");
+  await scroll("panel-places", 600);
+  await p.click("#tab-talk"); await p.click("#tab-places"); assert.equal(await top("panel-places"), 600, "Places tab, after Phone and online");
+  // "On the map →": In person, filtered, from the top (clicked as it is, without scrolling it into view first)
+  await p.evaluate(() => document.querySelector("#places-main .bsec a.bmap").click()); await p.waitForTimeout(800);
   assert.equal(await top("list"), 0, "In person, opened by On the map");
   await p.click("#tab-talk"); assert.equal(await top("panel-talk"), 120, "Phone and online still where it was");
+  await p.click("#tab-places"); assert.equal(await top("panel-places"), 600, "Places tab still where it was");
   await p.done();
 });
 
-test("Alignment: on every tab and Places, nothing moves sideways or up and down (with real scrollbars, as on Windows)", async () => {
+test("Alignment: on every tab and Places, nothing moves sideways or up and down (with real scrollbars, as on Windows; narrow windows too)", async () => {
   const tops = {};
-  for (const width of [1000, 1400, 1464, 1920]) for (const path of ["/test/directory/#near", "/test/directory/#talk", "/test/directory/#course",
-      "/test/directory/#about", "/test/directory/places/", "/test/directory/places/wells/", "/test/tools/#about"]) {
+  for (const width of [837, 1000, 1400, 1464, 1920]) for (const path of ["/test/directory/#near", "/test/directory/#talk", "/test/directory/#course",
+      "/test/directory/#places", "/test/directory/#about", "/test/directory/places/", "/test/directory/places/wells/", "/test/tools/#about"]) {
     const p = await open(path, { width });
     const off = await p.evaluate(() => {
-      const el = document.querySelector("#list .card, main:not([hidden]) .tcard, main:not([hidden]) .aboutpage, .bmain > :first-child");
+      const el = document.querySelector("#panel-near:not([hidden]) #list .card, main:not([hidden]) .tcard, main:not([hidden]) .aboutpage, .bmain > :first-child");
       return Math.round(el.getBoundingClientRect().left - document.querySelector("header .inner").getBoundingClientRect().left);
     });
     assert.equal(off, 0, `${width}px ${path}`);
-    if (!path.endsWith("#about")) {   // About has no filter boxes, so its header is shorter by design
-      const [below, first] = await p.evaluate(() => [document.querySelector("header.top").getBoundingClientRect().bottom,
-        document.querySelector("#list .card, main:not([hidden]) .talk > :first-child, .bmain > :first-child").getBoundingClientRect().top].map(Math.round));
-      tops[width] ??= [below, first];
-      assert.deepEqual([below, first], tops[width], `${width}px ${path}: the header, and the content under it, start at the same height as on the other tabs`);
+    // Up and down: About has no filter boxes, so its header is shorter by design; under 900px the filter boxes stack
+    // (In person has four, the others three), so there only the sideways position is the same
+    if (!path.endsWith("#about") && width >= 900) {
+      const at = await p.evaluate(() => {
+        const text = e => { const r = document.createRange(); r.selectNodeContents(e); return r.getBoundingClientRect().top; };
+        return [text(document.querySelector(".sitetabs button, .sitetabs a.tab")), document.querySelector("header.top").getBoundingClientRect().bottom,
+          document.querySelector("#panel-near:not([hidden]) #list .card, main:not([hidden]) .talk > :first-child, .bmain > :first-child").getBoundingClientRect().top].map(v => Math.round(v * 10) / 10);
+      });
+      tops[width] ??= at;
+      assert.deepEqual(at, tops[width], `${width}px ${path}: the tab titles, the header's foot and the content start at the same height as on the other tabs`);
     }
     assert.ok(await p.evaluate(() => document.documentElement.scrollHeight <= innerHeight), `${width}px ${path}: the page itself has nothing to scroll`);
     await p.done();
@@ -186,6 +196,29 @@ test("Tools page: Assist asks for the access code; Analytics opens", async () =>
   assert.match(await text(p, "#about-page"), /About Assist/);
   await p.click("#tab-analytics"); await p.waitForTimeout(1500);
   assert.match(await text(p, "#panel-analytics"), /Most deprived half/);
+  assert.deepEqual(p.errors, []);
+  await p.done();
+});
+
+test("Places tab: the town listings inside the directory, with no page reload", async () => {
+  const p = await open("/test/directory/#near");
+  let loads = 0; p.on("load", () => loads++);
+  const tabText = () => p.evaluate(() => [...document.querySelectorAll(".sitetabs button")].map(b => { const r = document.createRange(); r.selectNodeContents(b); return Math.round(r.getBoundingClientRect().top * 10) / 10; }));
+  const before = await tabText();
+  await p.click("#tab-places"); await p.waitForTimeout(600);
+  assert.deepEqual(await tabText(), before, "the tab titles don't move");
+  assert.equal(await text(p, "#places-main .bt"), "Places", "opens on the choose-a-town page");
+  await p.selectOption("#b-town", { label: "Wells" }); await p.waitForTimeout(600);
+  assert.match(await text(p, "#places-main .bhead .bt"), /Support in and around Wells/);
+  assert.ok(await p.$$eval("#places-main li[data-i]:not([hidden]) .card button.copy", bs => bs.length) > 10, "cards with Copy details");
+  await p.click("#places-main li[data-i]:not([hidden]) .card button.copy");
+  assert.ok((await p.evaluate(() => navigator.clipboard.readText())).length > 20, "Copy details copies the service");
+  await p.selectOption("#b-support", "bereavement"); await p.selectOption("#b-when", "week");
+  await p.click("#tab-talk"); await p.click("#tab-places");
+  assert.deepEqual(await p.evaluate(() => ["b-town", "b-support", "b-when"].map(i => document.getElementById(i).selectedOptions[0].textContent)),
+    ["Wells", await p.$eval("#b-support", s => s.selectedOptions[0].textContent), "Next 7 days"]);
+  await p.click('#places-main a[href$="#talk"]'); assert.equal(await p.evaluate(() => tab), "talk", "phone and online link opens that tab");
+  assert.equal(loads, 0, "no page loads");
   assert.deepEqual(p.errors, []);
   await p.done();
 });
@@ -228,7 +261,7 @@ test("Places: the counts match the cards shown, for every When? choice; switchin
 });
 
 // Every kind of page: valid HTML (as built), and no serious accessibility problems (as shown, after the script has run)
-const PAGES = ["/", "/directory/", "/test/directory/#near", "/test/directory/#talk", "/test/directory/#course", "/test/directory/#about",
+const PAGES = ["/", "/directory/", "/test/directory/#near", "/test/directory/#talk", "/test/directory/#course", "/test/directory/#places", "/test/directory/#about",
   "/test/directory/places/", "/test/directory/places/wells/", "/test/tools/#assist", "/test/tools/#about", "/test/tools/#analytics"];
 
 test("HTML: every published page is valid", async () => {

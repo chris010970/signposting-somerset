@@ -9,7 +9,7 @@ function applyRecords(recs) {
     $("f-town").value = keepTown; searchPoint = keepPoint;
   } else { $("f-town").value = ""; searchPoint = null; sortBy = "soon"; }
   applyLink();
-  if (!userChanged && SAVED.sort && searchPoint) sortBy = SAVED.sort;   // Soonest or Nearest, as it was
+  if (!userChanged && !location.search && SAVED.sort && searchPoint) sortBy = SAVED.sort;   // Soonest or Nearest, as it was
   recordsIn = true;
   setSiteTab(tab);   // redraw the tab showing (and the About counts)
 }
@@ -39,5 +39,5 @@ fetchRecords()
 // Every five minutes, redraw: "open now", "today" and the next sessions move on with the clock
 setInterval(() => {
   if (!ALL.length) return;
-  tab === "talk" ? renderTalk() : tab === "course" ? renderCourses() : render();
+  tab === "talk" ? renderTalk() : tab === "course" ? renderCourses() : tab === "places" ? places.pick() : render();
 }, 5 * 60 * 1000);

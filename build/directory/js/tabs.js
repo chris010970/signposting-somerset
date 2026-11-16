@@ -1,5 +1,5 @@
-/* ---------- tabs: In person, Phone and online, Courses, About (Places and Tools → are links to other pages) ---------- */
-const SITE_TABS = ["talk", "near", "course", "about"];
+/* ---------- tabs: In person, Phone and online, Courses, Places, About (Tools → is a link to the tools page) ---------- */
+const SITE_TABS = ["talk", "near", "course", "places", "about"];
 function setSiteTab(t) {
   if (t !== tab && recordsIn && $(SCROLLERS[tab]).offsetParent) scrollPos[tab] = $(SCROLLERS[tab]).scrollTop;   // where the tab being left was
   tab = t;
@@ -8,6 +8,7 @@ function setSiteTab(t) {
   if (t === "talk") renderTalk();
   else if (t === "course") renderCourses();
   else if (t === "about") renderAbout();
+  else if (t === "places") showPlaces();
   else { initMap(); setTimeout(() => { map && map.invalidateSize(); fitPending = true; render(); }, 30); }
   restoreScroll(t);
   syncLink();
@@ -21,10 +22,3 @@ for (const k of SITE_TABS) $("tab-" + k).onclick = () => setSiteTab(k);
   nav.addEventListener("scroll", edge, { passive: true }); addEventListener("resize", edge); setTimeout(edge, 0);
 }
 addEventListener("resize", () => map && map.invalidateSize());
-// Places: back to the page last looked at there in this visit (a town, with its choices), if any (saved by build/places/places.js)
-$("tab-places").onclick = e => {
-  try {
-    const home = new URL("places/", location.href).pathname, p = JSON.parse(sessionStorage.getItem("ss-places:" + home) || "null");
-    if (p && p.url && p.url.startsWith(home)) { e.preventDefault(); location.href = p.url; }
-  } catch (_) {}
-};

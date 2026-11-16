@@ -712,8 +712,10 @@ button, select { font: inherit; }
 .hero { position: relative; display: flex; flex-direction: column; justify-content: center; margin-bottom: 2px; }
 @media (min-width: 761px) { .hero { padding-block: 8px 6px; } }
 .hero > :not(.illus) { position: relative; z-index: 1; max-width: min(48%, 680px); }
-.hero h1 { font-size: 24px; line-height: 1.1; display: flex; align-items: center; gap: 9px; }
-.hero h1 .logo { height: 34px; width: auto; flex: none; margin: -2px 0 -1px; }
+/* The site name: the page's h1 on the directory and tools page, a link back to the directory on the Places pages (whose h1 is the town) */
+.hero .brand { font-family: var(--serif); color: var(--b900); font-size: 24px; font-weight: 700; line-height: 1.1; margin: 0;
+  display: flex; align-items: center; gap: 9px; text-decoration: none; }
+.hero .brand .logo { height: 34px; width: auto; flex: none; margin: -2px 0 -1px; }
 .hero .lede { font-size: 13.5px; color: #6B645F; margin: 3px 0 2px; max-width: 60ch; }
 /* The tagline stays on one line: a shorter version on narrow screens */
 .hero .lede { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: none; }
@@ -780,7 +782,6 @@ h1 { font-family: var(--serif); color: var(--b900); font-size: 26px; margin: 0; 
 .seg button:disabled { opacity: .4; cursor: default; }
 .tabs { display: none; }
 .sitetabs { display: flex; gap: 4px; margin: 4px 0 14px; border-bottom: 1px solid var(--line); overflow-x: auto; scrollbar-width: none; }
-.sitetabs button { white-space: nowrap; }
 .sitetabs .sh { display: none; }
 #about-page.talk { max-width: 1432px; }  /* 1400 + gutters, so the card lines up with the title and tabs */
 .aboutpage { max-width: none; margin: 0; background: var(--white); border: 1px solid var(--line); border-radius: 16px; padding: 22px 24px; line-height: 1.55; }
@@ -800,7 +801,10 @@ h1 { font-family: var(--serif); color: var(--b900); font-size: 26px; margin: 0; 
 .aboutpage .small { font-size: 13px; color: #6B645F; }
 .aboutpage a:not(.btn) { color: var(--b700); text-decoration-color: var(--b200); text-underline-offset: 2px; }   /* same as Assist */
 .aboutpage a:not(.btn):hover { color: var(--b900); text-decoration-color: currentColor; }
-.sitetabs button { border: 0; background: none; padding: 9px 14px 10px; font-weight: 700; font-size: 14px; color: #6B645F; cursor: pointer; border-bottom: 3px solid transparent; margin-bottom: -1px; }
+/* Every item in the tab row (tab buttons, links to other pages, "Tools →") is the same size, font and line height,
+   whatever its element, so the row sits identically on every page */
+.sitetabs button, .sitetabs a.tab, .sitetabs a.tolink, .sitetabs a.back { display: block; white-space: nowrap; padding: 9px 14px 10px; font: 700 14px/20px var(--sans);
+  color: #6B645F; text-decoration: none; background: none; border: 0; border-bottom: 3px solid transparent; margin-bottom: -1px; cursor: pointer; }
 .sitetabs button[aria-current="page"] { color: var(--b900); border-bottom-color: var(--b600); }
 /* Tabs in groups: Browse (In person, Phone and online, Courses) | Assist | About */
 .sitetabs { align-items: flex-end; }
@@ -811,14 +815,13 @@ h1 { font-family: var(--serif); color: var(--b900); font-size: 26px; margin: 0; 
 .sitetabs.more { -webkit-mask-image: linear-gradient(to right, #000 calc(100% - 36px), transparent); mask-image: linear-gradient(to right, #000 calc(100% - 36px), transparent); }
 @media (max-width: 420px) { .sitetabs { gap: 0; } .sitetabs .tgrp { gap: 0; } .sitetabs button { padding-inline: 5px; font-size: 13px; } .sitetabs #tab-assist, .sitetabs #tab-about { margin-left: 1px; padding-left: 7px; } .sitetabs #tab-assist { gap: 4px; } .sitetabs .lg { display: none; } .sitetabs .sh { display: inline; } }
 /* Tabs that are links to other pages (Places in the directory; every tab on the town pages), looking like the tab buttons */
-.sitetabs a.tab { white-space: nowrap; padding: 9px 14px 10px; font-weight: 700; font-size: 14px; color: #6B645F; text-decoration: none; border-bottom: 3px solid transparent; margin-bottom: -1px; }
 .sitetabs a.tab:hover, .sitetabs a.tab:focus-visible { color: var(--b900); }
 .sitetabs a.tab[aria-current] { color: var(--b900); border-bottom-color: var(--b600); }
 .sitetabs a.tab.sep { margin-left: 6px; padding-left: 14px; position: relative; }
 .sitetabs a.tab.sep::before { content: ""; position: absolute; left: 0; top: 10px; bottom: 12px; border-left: 1px solid var(--line); }
 @media (max-width: 420px) { .sitetabs a.tab { padding-inline: 5px; font-size: 13px; } .sitetabs a.tab.sep { margin-left: 1px; padding-left: 7px; } }
 /* "Tools →": a link after the tabs (green and underlined, like "On the map →" on the Places pages) (not at the far right, where it would sit on the illustration), to the tools page */
-.sitetabs a.tolink { margin-left: 6px; white-space: nowrap; padding: 9px 14px 10px; font-weight: 700; font-size: 14px; color: var(--b700); text-decoration: underline; text-underline-offset: 3px; border-bottom: 3px solid transparent; margin-bottom: -1px; }
+.sitetabs a.tolink { margin-left: 6px; color: var(--b700); text-decoration: underline; text-underline-offset: 3px; }
 .sitetabs a.tolink:hover, .sitetabs a.tolink:focus-visible { color: var(--b900); }
 .sitetabs a.tolink { position: relative; } .sitetabs a.tolink::before { content: ""; position: absolute; left: 0; top: 10px; bottom: 12px; border-left: 1px solid var(--line); }   /* a divider, as before About */
 @media (max-width: 420px) { .sitetabs a.tolink { padding-inline: 7px 5px; font-size: 13px; margin-left: 1px; } }
@@ -916,6 +919,60 @@ footer.urgent p { color: #FEE2E2; }
 .lines { display: flex; gap: 8px; flex-wrap: wrap; }
 .line { font-size: 12px; font-weight: 700; padding: 6px 12px; border-radius: 8px; background: #fff; color: var(--b900); text-decoration: none; white-space: nowrap; }
 .line.ghost { background: transparent; color: #fff; border: 1px solid rgba(255,255,255,.45); }
+/* ---------- Places listings: the "choose a town" page and a town's sections and cards ----------
+   Shared by the directory's Places tab and the standalone Places pages (whose own page frame is build/places/places.css) */
+.bmain { min-width: 0; }
+.bmain.loading { opacity: .5; transition: opacity .15s; }
+.vh { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; margin: 0; }   /* for screen readers only */
+
+
+/* Filter boxes: three equal boxes, running to the right-hand edge like the directory's */
+@media (min-width: 900px) { #hdr-towns .qs { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+#bq-when .btoday { float: right; text-transform: none; letter-spacing: 0; color: #6B645F; font-weight: 500; }
+
+/* The Places page (no town chosen): two cards, what to do (left) and the map to choose from (right) */
+.bpick { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.3fr); gap: 12px; align-items: stretch; margin-top: 0;   /* starts where the directory's first card does */ }
+.bpick > div { background: var(--white); border: 1px solid var(--line); border-radius: 16px; padding: 24px 28px; }
+.bpicktxt { align-self: start; }
+.bpick .bt { margin-top: 0; }
+.bpick p { color: var(--muted); max-width: 52ch; }
+.bpick .otowns { margin-top: 14px; }
+.bpick .bmapwrap { display: flex; align-items: center; justify-content: center; }
+.bpick .bmapsvg { max-height: calc(100vh - 420px); }
+@media (max-width: 760px) { .bpick { grid-template-columns: 1fr; } .bpick > div { padding: 18px; } }
+.bmapsvg { width: 100%; height: auto; display: block; }
+.bmapsvg .land { fill: #E1EBE5; stroke: #fff; stroke-width: 1.5; }
+.bmapsvg a circle { fill: #176B55; stroke: #fff; stroke-width: 2; }
+.bmapsvg a text { font-size: 13px; font-weight: 600; fill: var(--b900); paint-order: stroke; stroke: #F9F9F7; stroke-width: 3px; }
+.bmapsvg a:hover circle, .bmapsvg a:focus circle { fill: #14302A; r: 7; }
+.bmapsvg a:hover text { fill: #176B55; text-decoration: underline; }
+
+/* A town's page: heading, then a section per kind of support, each with "On the map →" */
+.bt { font-family: var(--serif); color: var(--b900); font-size: 22px; line-height: 1.25; margin: 4px 0 4px; }
+.bhead { display: flex; align-items: baseline; gap: 6px 14px; flex-wrap: wrap; margin: 0 0 6px; }
+.bhead .bt { margin: 0; font-size: 20px; }
+.bhead span { font-size: 13px; color: var(--muted); }
+.bnone { background: var(--white); border: 1px solid var(--line); border-radius: 16px; padding: 18px 20px; color: var(--muted); margin-top: 12px; }
+.bsec { margin-top: 10px; }
+.bsh { display: flex; justify-content: flex-start; align-items: baseline; gap: 6px 18px; flex-wrap: wrap; margin: 20px 0 2px; padding-bottom: 6px; border-bottom: 1px solid var(--line); }
+.bsh h2 { font-family: var(--serif); color: var(--b900); font-size: 17px; margin: 0; }
+.bsh h2 span { font-family: var(--sans); font-size: 12px; font-weight: 600; color: var(--muted); margin-left: 4px; }
+.bmap { font-weight: 700; font-size: 14px; color: var(--b700); text-decoration: underline; text-underline-offset: 3px; white-space: nowrap; }   /* the same as "Tools →" in the tab row */
+.bmap:hover, .bmap:focus-visible { color: var(--b900); }
+@media (max-width: 420px) { .bmap { font-size: 13px; } }
+.bsec h3 { font-size: 11px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); margin: 10px 0 8px; font-family: var(--sans); }
+.bsec h3.vh + .blist { margin-top: 12px; }
+/* The cards are the In person tab's (build/core/css/cards.css), three or so across */
+.blist { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(340px, 1fr)); gap: 12px; }
+@media (max-width: 400px) { .blist { grid-template-columns: minmax(0, 1fr); } }
+.blist .card { margin: 0; height: 100%; box-sizing: border-box; }
+
+/* Foot of the page */
+.bfoot { font-size: 12.5px; color: var(--muted); margin-top: 18px; }
+.bfoot a { color: var(--b700); }
+.otowns { font-size: 12.5px; color: var(--muted); margin-top: 10px; line-height: 1.7; }
+.otowns a { color: var(--b700); }
+@media (max-width: 760px) { .bt { font-size: 23px; } }
 /* ---------- the directory's own styles (shared ones are in build/core/css/) ---------- */
 :root {
   --endcol: 168px;   /* width of Sort on In person, and of the checkbox on the other tabs */
@@ -984,9 +1041,10 @@ footer.urgent p { color: #FEE2E2; }
   #main.show-map #list { display: none; }
   #main:not(.show-map) #mapwrap { display: none; }
 }
-#list { overflow-y: auto; padding: 14px 14px 90px; border-right: 1px solid var(--line); min-height: 0; }
+#list { overflow-y: auto; padding: 14px max(16px, env(safe-area-inset-right, 0px)) 90px max(16px, env(safe-area-inset-left, 0px));   /* phones: the page gutter (.gut), like the other tabs */
+  border-right: 1px solid var(--line); min-height: 0; }
 /* Line the list and map up with the header's edges (same 16px gutter and width) */
-@media (min-width: 900px) { #main { max-width: 1432px; padding-inline: max(16px, env(safe-area-inset-left, 0px)); } #list { padding-left: 0; } }
+@media (min-width: 900px) { #main { max-width: 1432px; padding-inline: max(16px, env(safe-area-inset-left, 0px)); } #list { padding-left: 0; padding-right: 14px; } }
 #mapwrap { position: relative; min-height: 360px; }
 #map { position: absolute; inset: 0; background: #EEF0EC; }
 .tilenote { position: absolute; left: 12px; bottom: 12px; z-index: 500; pointer-events: none; background: rgba(255,255,255,.95); border: 1px solid var(--line); border-radius: 8px; padding: 6px 10px; font-size: 12px; color: var(--muted); max-width: 70%; }
@@ -1008,7 +1066,7 @@ footer.urgent p { color: #FEE2E2; }
     <div class="masthead">
       <div class="illus" role="img" aria-label="Watercolour illustration: a path with map pins winding through Somerset fields towards Glastonbury Tor, people meeting and walking together, and a signpost to drop-ins, peer support, advice and community"></div>
     <div class="hero">
-      <h1><img class="logo" src="/signposting-somerset-v2/assets/logo-signpost.webp" alt="" width="31" height="34">Signposting Somerset</h1>
+      <h1 class="brand"><img class="logo" src="/signposting-somerset-v2/assets/logo-signpost.webp" alt="" width="31" height="34">Signposting Somerset</h1>
       <p class="lede" id="lede"><span class="lg">Connecting people with local mental health and wellbeing support.</span><span class="sh">Local mental health and wellbeing support.</span></p>
       <p class="datasrc" id="datasrc" hidden></p>
       <span id="copy-live" role="status" aria-live="polite" style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)"></span>
@@ -1016,7 +1074,7 @@ footer.urgent p { color: #FEE2E2; }
     <nav class="sitetabs" aria-label="Site">
       <span class="tgrp"><button type="button" id="tab-near" aria-controls="panel-near">In person</button>
       <button type="button" id="tab-talk" aria-controls="panel-talk"><span class="lg">Phone and online</span><span class="sh">Phone &amp; online</span></button>
-      <button type="button" id="tab-course" aria-controls="panel-course">Courses</button><a class="tab" id="tab-places" href="places/">Places</a></span>
+      <button type="button" id="tab-course" aria-controls="panel-course">Courses</button><button type="button" id="tab-places" aria-controls="panel-places">Places</button></span>
       <button type="button" id="tab-about" aria-controls="panel-about">About</button>
       <a class="tolink" href="/signposting-somerset-v2/test/tools/">Tools →</a>    </nav>
     </div>
@@ -1031,6 +1089,7 @@ footer.urgent p { color: #FEE2E2; }
       <label class="toggle" id="q-cbook"><input type="checkbox" id="c-book"> Can still join</label>
     </div>
     <div id="hdr-about" hidden></div>
+    <div id="hdr-places" hidden><div id="hdr-towns"></div></div>
     <div id="hdr-near" hidden>
     <div class="qs">
       <div class="q" id="q-support"><label for="f-support">1. Support for</label>
@@ -1066,6 +1125,7 @@ footer.urgent p { color: #FEE2E2; }
 
 <main id="panel-talk" aria-labelledby="tab-talk"><div class="talk gut" id="talk-list"></div></main>
 <main id="panel-about" aria-labelledby="tab-about" hidden style="flex:1;min-height:0;overflow-y:auto"><div class="talk gut" id="about-page"></div></main>
+<main id="panel-places" aria-labelledby="tab-places" hidden style="flex:1;min-height:0;overflow-y:auto"><div class="talk gut"><div class="bmain" id="places-main"></div></div></main>
 <main id="panel-course" aria-labelledby="tab-course" hidden style="flex:1;min-height:0;overflow-y:auto"><div class="talk gut" id="courses"></div></main>
 <main id="panel-near" aria-labelledby="tab-near" hidden style="flex:1;min-height:0;display:flex;flex-direction:column">
 
@@ -1400,10 +1460,13 @@ function copyFallback(txt) {
   const ta = document.createElement("textarea"); ta.value = txt; ta.setAttribute("readonly", ""); ta.style.cssText = "position:fixed;top:-1000px;opacity:0";
   document.body.appendChild(ta); ta.select(); try { document.execCommand("copy"); } catch (_) {} ta.remove();
 }
+// The record a Copy details button belongs to: a Places card's (places-view.js, ids "p0"...) or the page's own (ALL)
+let PLACE_RECS = [];   // the Places listing's records, when one is showing (core/js/places-view.js); ids "p0", "p1"... never clash
+const recordById = id => PLACE_RECS.find(x => x.id === id) || ALL.find(x => String(x.id) === id);
 document.addEventListener("click", e => {
   const b = e.target.closest && e.target.closest("button.copy"); if (!b) return;
   e.preventDefault(); e.stopPropagation();
-  const s = ALL.find(x => String(x.id) === b.dataset.copy); if (!s) return;
+  const s = recordById(b.dataset.copy); if (!s) return;
   copyToClipboard(copyText(s, b.dataset.when));
   b.classList.add("copied"); clearTimeout(b._t); b._t = setTimeout(() => b.classList.remove("copied"), 1600);
   const live = $("copy-live"); if (live) { live.textContent = ""; setTimeout(() => { live.textContent = `Copied details for ${s.name}`; }, 30); }
@@ -1439,6 +1502,106 @@ function serviceCard(r, h = "h2", withId = true) {
       ${s.who || s.eligibility ? `<div class="who">For: ${esc(s.who)}${s.eligibility ? ` · <em>${esc(s.eligibility)}</em>` : ""}</div>` : ""}
       <div class="foot"><span>${place}</span>${contact ? `<span>${contact}</span>` : ""}</div>
     </article>`;
+}
+/* ---------- Places listings: shared by the directory's Places tab and the standalone Places pages ----------
+   A Places page (built by build/places/build_places.py) holds two pieces: the filter boxes (#hdr-towns) and the listings
+   (.bmain, with the page's records as JSON). This shows them, runs 1. Support for, 3. When? and the cards, and swaps in
+   another town's page in place. Needs schedule.js, records.js, cards.js (PLACE_RECS: the records shown) and service-card.js (the In person tab's card). */
+function placesView({ main, hdr, scroller, onChange = () => {}, onLink = () => false }) {
+  // main: where the listings go; hdr: where the filter boxes go (the #hdr-towns element); scroller: what scrolls the listings
+  // onChange(state): after any change (town, Support for, When?); onLink(url): a link out of Places, return true if handled
+  const $ = id => document.getElementById(id);
+  let href = "";   // the Places page showing
+
+  function load() {   // the page's records; a card's data-i is its place in that list
+    const el = main.querySelector("#places-data");
+    try { PLACE_RECS = el ? shapeRecords(JSON.parse(el.textContent)).map(s => ({ ...s, id: "p" + s.id })) : []; }
+    catch (_) { PLACE_RECS = []; }
+  }
+  const byIndex = i => PLACE_RECS.find(s => s.id === "p" + i);
+  const always = s => s.days === "Mon-Sun" && s.times === "00:00-23:59";   // 24/7: in every window
+  // 3. When?: does it meet in the chosen time? (the In person tab's windows; no set times: only under Any time)
+  function meets(s, w, now) {
+    if (w === "any" || always(s)) return true;
+    const win = windowFor(w, now);
+    return !!win && meetsIn(s, win);
+  }
+  // 1. Support for: that section, or all of them; 3. When?: only cards that meet then, each showing its session then
+  function pick(k) {
+    const sel = $("b-support"); if (!sel) return;
+    if (![...sel.options].some(o => o.value === k)) k = "all";
+    sel.value = k; $("bq-support").classList.toggle("on", k !== "all");
+    const w = $("b-when").value, now = new Date(), win = windowFor(w, now);
+    const from = win ? new Date(Math.max(win[0], now)) : now;
+    $("bq-when").classList.toggle("on", w !== "any");
+    let shown = 0;
+    main.querySelectorAll(".bsec").forEach(sec => {
+      let n = 0;
+      sec.querySelectorAll("h3").forEach(h => {
+        const ul = h.nextElementSibling; let m = 0;
+        ul.querySelectorAll("li[data-i]").forEach(li => {
+          const s = byIndex(li.dataset.i), ok = !!s && meets(s, w, now);   // no record: its dates have all passed since the build
+          li.hidden = !ok; m += ok;
+          if (ok) li.innerHTML = serviceCard({ s, d: +li.dataset.d, nx: nextText(s, now, from) }, "h4", false);
+        });
+        h.hidden = ul.hidden = !m; h.textContent = h.dataset.l + " · " + m; n += m;
+      });
+      const c = sec.querySelector(".bsh h2 span"); if (c) c.textContent = n;
+      sec.hidden = !n || (k !== "all" && sec.dataset.k !== k); if (!sec.hidden) shown++;
+    });
+    const none = main.querySelector(".bnone"); if (none) none.hidden = !!shown || !main.querySelector(".bsec");
+  }
+  const state = () => ({ href, support: $("b-support")?.value || "all", when: $("b-when")?.value || "any",
+    town: $("b-town")?.selectedOptions[0]?.textContent || "" });
+  // The filter boxes' controls, after each page is put in place
+  function wire({ support = "all", when } = {}) {
+    load();
+    if (when && [...$("b-when").options].some(o => o.value === when)) $("b-when").value = when;
+    pick(support);
+    $("b-support").onchange = () => { pick($("b-support").value); onChange(state()); };
+    $("b-when").onchange = () => { pick($("b-support").value); onChange(state()); };
+    $("b-town").onchange = () => { if ($("b-town").value) show($("b-town").value, { support: $("b-support").value }); };   // keeps Support for
+    const today = hdr.querySelector(".btoday");
+    if (today) today.textContent = new Date().toLocaleDateString("en-GB", { weekday: "short", day: "numeric", month: "short" });
+  }
+  // Fetch a Places page and show its filter boxes and listings here. Keeps 3. When?; starts at the top unless told the scroll.
+  async function show(url, { support = "all", when = $("b-when")?.value, scroll = 0 } = {}) {
+    main.classList.add("loading");
+    try {
+      const r = await fetch(url, { cache: "no-cache" }); if (!r.ok) throw new Error("HTTP " + r.status);
+      const doc = new DOMParser().parseFromString(await r.text(), "text/html");
+      main.innerHTML = doc.querySelector(".bmain").innerHTML;
+      hdr.innerHTML = doc.getElementById("hdr-towns").innerHTML;
+      href = new URL(url, location.href).pathname;
+      wire({ support, when });
+      scroller.scrollTop = scroll;
+      onChange({ ...state(), title: doc.title, description: doc.querySelector('meta[name="description"]')?.content });
+      return true;
+    } catch (e) {
+      console.error("Couldn't load", url, e);
+      main.innerHTML = `<p class="bnone">Couldn't load this page just now. <a href="${esc(url)}">Open it on its own</a>, or try again in a moment.</p>`;
+      return false;
+    } finally { main.classList.remove("loading"); }
+  }
+  // Inside the listings: tap a card for its full description; Places links swap in place; other links: onLink
+  main.addEventListener("click", ev => {
+    const card = ev.target.closest(".card");
+    if (card && !ev.target.closest("a, button")) { card.classList.toggle("open"); return; }
+    const a = ev.target.closest("a"); if (!a || ev.ctrlKey || ev.metaKey || ev.shiftKey || a.target) return;
+    const u = new URL(a.getAttribute("href") || "", location.href);
+    if (u.origin !== location.origin) return;
+    const home = PLACES_HOME();
+    if (u.pathname.startsWith(home) && !u.hash) { ev.preventDefault(); show(u.pathname, { support: $("b-support")?.value }); }
+    else if (onLink(u)) ev.preventDefault();
+  });
+  // The Places pages' folder: from the Places page's own town box (its values are the town pages' addresses)
+  const PLACES_HOME = () => {
+    const v = [...($("b-town")?.options || [])].map(o => o.value).find(Boolean);
+    return v ? v.replace(/[^/]+\/$/, "") : href;
+  };
+  // A page already in place (the standalone pages): just run it
+  function start(opts) { href = location.pathname; wire(opts); }
+  return { show, start, pick: () => pick($("b-support").value), state };
 }
 // Keep the map and list clear of the fixed helpline bar, whatever its height
 (() => { const f = document.getElementById("help"); const set = () => document.documentElement.style.setProperty("--footh", f.offsetHeight + "px");
@@ -1983,11 +2146,45 @@ function renderAbout() {
     </section>
     </div></div>
     <p class="small">Service information belongs to the providers listed. Map data © <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap</a> contributors, © <a href="https://carto.com/attributions" target="_blank" rel="noopener">CARTO</a>.</p>
-    <p class="small" id="site-version">Version: test 2026-11-16 15:21</p>
+    <p class="small" id="site-version">Version: test 2026-11-16 16:18</p>
   </article>`;
 }
-/* ---------- tabs: In person, Phone and online, Courses, About (Places and Tools → are links to other pages) ---------- */
-const SITE_TABS = ["talk", "near", "course", "about"];
+/* ---------- Places: the town listings, as a tab of the directory ----------
+   Each town's listing is its standalone Places page (built from the sheet by build/places/build_places.py, for search
+   engines); this tab shows that page's filter boxes and listings inside the directory, with the shared Places code
+   (core/js/places-view.js). Opens on the town last looked at this visit, here or on a standalone Places page. */
+const PLACES_URL = new URL("places/", location.href).pathname;   // the Places pages beside this copy of the directory
+let placesOpened = false;
+const places = placesView({
+  main: $("places-main"), hdr: $("hdr-towns"), scroller: $("panel-places"),
+  onChange: () => setTimeout(syncLink, 0),   // remembered with the other tabs' choices
+  onLink: u => {   // links from Places to the directory's other tabs open them here
+    if (u.pathname !== location.pathname) return false;
+    const t = u.hash.slice(1);
+    if (t === "near" && u.search) {   // "On the map →": In person, with that town and support, from the top
+      applyLinkNear(new URLSearchParams(u.search)); userChanged = true; setSiteTab("near"); return true;
+    }
+    if (SITE_TABS.includes(t)) { setSiteTab(t); return true; }
+    return false;
+  },
+});
+// This visit's place: the directory's own, else the standalone Places pages' (build/places/places.js)
+function placesSaved() {
+  if (SAVED.places && SAVED.places.href) return SAVED.places;
+  try { return JSON.parse(sessionStorage.getItem("ss-places:" + PLACES_URL) || "null") || {}; } catch (_) { return {}; }
+}
+const placesState = () => placesOpened ? places.state() : SAVED.places;
+// The first time the tab opens: the remembered town (or the choose-a-town page), where it was left
+async function showPlaces() {
+  if (placesOpened) { $("panel-places").scrollTop = scrollPos.places || 0; return; }   // back to it: where it was
+  placesOpened = true;
+  const p = placesSaved();
+  const href = p.href && p.href.startsWith(PLACES_URL) ? p.href : PLACES_URL;
+  await places.show(href, { support: p.support, when: p.when, scroll: scrollPos.places || p.scroll || 0 });
+  scrollRestored.add("places");
+}
+/* ---------- tabs: In person, Phone and online, Courses, Places, About (Tools → is a link to the tools page) ---------- */
+const SITE_TABS = ["talk", "near", "course", "places", "about"];
 function setSiteTab(t) {
   if (t !== tab && recordsIn && $(SCROLLERS[tab]).offsetParent) scrollPos[tab] = $(SCROLLERS[tab]).scrollTop;   // where the tab being left was
   tab = t;
@@ -1996,6 +2193,7 @@ function setSiteTab(t) {
   if (t === "talk") renderTalk();
   else if (t === "course") renderCourses();
   else if (t === "about") renderAbout();
+  else if (t === "places") showPlaces();
   else { initMap(); setTimeout(() => { map && map.invalidateSize(); fitPending = true; render(); }, 30); }
   restoreScroll(t);
   syncLink();
@@ -2009,22 +2207,15 @@ for (const k of SITE_TABS) $("tab-" + k).onclick = () => setSiteTab(k);
   nav.addEventListener("scroll", edge, { passive: true }); addEventListener("resize", edge); setTimeout(edge, 0);
 }
 addEventListener("resize", () => map && map.invalidateSize());
-// Places: back to the page last looked at there in this visit (a town, with its choices), if any (saved by build/places/places.js)
-$("tab-places").onclick = e => {
-  try {
-    const home = new URL("places/", location.href).pathname, p = JSON.parse(sessionStorage.getItem("ss-places:" + home) || "null");
-    if (p && p.url && p.url.startsWith(home)) { e.preventDefault(); location.href = p.url; }
-  } catch (_) {}
-};
 /* ---------- links that open the directory already filtered ----------
    e.g. /directory/?support=bereavement&town=Frome#near · ?lat=51.21&lon=-3.6&label=near%20Porlock#near · ?support=anxiety#talk
    support (any tab), town or lat + lon (+ label), within and when (In person). Unknown values are ignored, so a bad link still
    opens the normal page. The address bar follows the filters, so any view can be copied as a link (never "Use my location"). */
-// Without a link, the choices made earlier in this visit come back (kept in this browser tab only, never "Use my location"),
-// so going to Places and back, or reloading, doesn't reset them.
+// The choices made earlier in this visit come back (kept in this browser tab only, never "Use my location"), so reloading
+// doesn't reset them. A link's own choices win for the tab it opens.
 const STATE_KEY = "ss-directory:" + location.pathname;   // the live and test copies keep their own
-const SAVED = (() => {   // { near, talk, course: each tab's filters as a link; sort, area, open, fmt, book; scroll } (saveState)
-  try { return location.search ? {} : JSON.parse(sessionStorage.getItem(STATE_KEY) || "null") || {}; } catch (e) { return {}; }
+const SAVED = (() => {   // { near, talk, course: each tab's filters as a link; sort, area, open, fmt, book; scroll; places } (saveState)
+  try { return JSON.parse(sessionStorage.getItem(STATE_KEY) || "null") || {}; } catch (e) { return {}; }
 })();
 const LINK = (() => {   // In person's filters to open with: the address's, or this visit's
   try { return new URLSearchParams(location.search || SAVED.near || ""); } catch (e) { return new URLSearchParams(); }
@@ -2040,26 +2231,28 @@ function pickOpt(sel, v) {
 }
 function applyLink() {   // after the records are ready, and again when the live sheet arrives, until the person changes something
   if (userChanged) return;
-  applyLinkNear();
+  applyLinkNear(LINK);
   if (SAVED.near !== undefined) restoreOthers();   // after: In person's choices also set the other tabs' Support for
 }
-function applyLinkNear() {
-  if (![...LINK.keys()].length) return;
-  const sup = LINK.get("support");
+function applyLinkNear(link) {   // In person's filters from a link's settings (URLSearchParams)
+  if (![...link.keys()].length) return;
+  const sup = link.get("support");
   pickOpt(fs, sup); pickOpt($("t-support"), sup); pickOpt($("c-support"), sup);
-  const lat = parseFloat(LINK.get("lat")), lon = parseFloat(LINK.get("lon"));
-  if (pickOpt($("f-town"), LINK.get("town")) && PLACE[$("f-town").value]) {
+  const lat = parseFloat(link.get("lat")), lon = parseFloat(link.get("lon"));
+  if (pickOpt($("f-town"), link.get("town")) && PLACE[$("f-town").value]) {
     const n = $("f-town").value; searchPoint = { lat: PLACE[n][0], lon: PLACE[n][1], label: n }; sortBy = "near";
   } else if (lat > 50.5 && lat < 51.7 && lon > -4.2 && lon < -1.9) {   // a point in or near the area
-    const label = (LINK.get("label") || "").replace(/[<>"]/g, "").trim().slice(0, 60) || "the point on the map";
+    const label = (link.get("label") || "").replace(/[<>"]/g, "").trim().slice(0, 60) || "the point on the map";
     searchPoint = { lat, lon, label, link: true }; setPtLabel(cap(label)); $("f-town").value = "__pt"; sortBy = "near";
   }
-  pickOpt($("within"), LINK.get("within")); pickOpt($("f-when"), LINK.get("when"));
+  pickOpt($("within"), link.get("within")); pickOpt($("f-when"), link.get("when"));
   fitPending = true;
 }
 function restoreOthers() {   // the other tabs' choices from earlier in this visit (In person's come back through LINK)
   const sup = (sel, q) => { const v = new URLSearchParams(q || "").get("support"); if (!pickOpt(sel, v)) sel.value = ""; };
-  sup($("t-support"), SAVED.talk); sup($("c-support"), SAVED.course);
+  const linkTab = location.search ? location.hash.slice(1) : "";   // the tab a link opened: its support stays the link's
+  if (linkTab !== "talk") sup($("t-support"), SAVED.talk);
+  if (linkTab !== "course") sup($("c-support"), SAVED.course);
   if (SAVED.area !== undefined) pickOpt($("t-area"), SAVED.area) || ($("t-area").value = "");
   if (SAVED.fmt !== undefined) pickOpt($("c-fmt"), SAVED.fmt) || ($("c-fmt").value = "");
   $("t-open").checked = !!SAVED.open; $("c-book").checked = !!SAVED.book;
@@ -2067,7 +2260,8 @@ function restoreOthers() {   // the other tabs' choices from earlier in this vis
 function saveState() {
   if (!recordsIn) return;
   const state = { near: linkFor("near"), talk: linkFor("talk"), course: linkFor("course"), sort: sortBy,
-    area: $("t-area").value, open: $("t-open").checked, fmt: $("c-fmt").value, book: $("c-book").checked, scroll: scrollPos };
+    area: $("t-area").value, open: $("t-open").checked, fmt: $("c-fmt").value, book: $("c-book").checked, scroll: scrollPos,
+    places: placesState() };
   try { sessionStorage.setItem(STATE_KEY, JSON.stringify(state)); } catch (e) {}
 }
 function linkFor(t) {   // the current filters, as the part of the address after "?"
@@ -2093,7 +2287,7 @@ function syncLink() {
 /* ---------- scroll positions: each tab stays where it was, for the visit ---------- */
 // Switching tabs, going to Places and back, or reloading: each tab's list is where it was left (In person's list starts at
 // the top again when its filters change). Kept with the other choices; a link that opens the directory filtered starts at the top.
-const SCROLLERS = { near: "list", talk: "panel-talk", course: "panel-course", about: "panel-about" };
+const SCROLLERS = { near: "list", talk: "panel-talk", course: "panel-course", places: "panel-places", about: "panel-about" };
 const scrollPos = (() => {   // this visit's positions; a link (e.g. "On the map" from Places) opens In person at the top
   try {
     const all = { ...(JSON.parse(sessionStorage.getItem(STATE_KEY) || "null") || {}).scroll };
@@ -2112,8 +2306,8 @@ for (const [t, id] of Object.entries(SCROLLERS)) $(id).addEventListener("scroll"
 }, { passive: true });
 addEventListener("pagehide", saveState);
 // After a tab's content is drawn (setSiteTab): put back where it was, once (In person does this as it draws its list)
-function restoreScroll(t) {
-  if (t === "near" || !recordsIn || scrollRestored.has(t)) return;
+function restoreScroll(t) {   // (In person and Places do this as their lists arrive)
+  if (t === "near" || t === "places" || !recordsIn || scrollRestored.has(t)) return;
   scrollRestored.add(t);
   if (scrollPos[t]) $(SCROLLERS[t]).scrollTop = scrollPos[t];
 }
@@ -2138,7 +2332,7 @@ function applyRecords(recs) {
     $("f-town").value = keepTown; searchPoint = keepPoint;
   } else { $("f-town").value = ""; searchPoint = null; sortBy = "soon"; }
   applyLink();
-  if (!userChanged && SAVED.sort && searchPoint) sortBy = SAVED.sort;   // Soonest or Nearest, as it was
+  if (!userChanged && !location.search && SAVED.sort && searchPoint) sortBy = SAVED.sort;   // Soonest or Nearest, as it was
   recordsIn = true;
   setSiteTab(tab);   // redraw the tab showing (and the About counts)
 }
@@ -2168,7 +2362,7 @@ fetchRecords()
 // Every five minutes, redraw: "open now", "today" and the next sessions move on with the clock
 setInterval(() => {
   if (!ALL.length) return;
-  tab === "talk" ? renderTalk() : tab === "course" ? renderCourses() : render();
+  tab === "talk" ? renderTalk() : tab === "course" ? renderCourses() : tab === "places" ? places.pick() : render();
 }, 5 * 60 * 1000);
 </script>
 

@@ -702,8 +702,10 @@ button, select { font: inherit; }
 .hero { position: relative; display: flex; flex-direction: column; justify-content: center; margin-bottom: 2px; }
 @media (min-width: 761px) { .hero { padding-block: 8px 6px; } }
 .hero > :not(.illus) { position: relative; z-index: 1; max-width: min(48%, 680px); }
-.hero h1 { font-size: 24px; line-height: 1.1; display: flex; align-items: center; gap: 9px; }
-.hero h1 .logo { height: 34px; width: auto; flex: none; margin: -2px 0 -1px; }
+/* The site name: the page's h1 on the directory and tools page, a link back to the directory on the Places pages (whose h1 is the town) */
+.hero .brand { font-family: var(--serif); color: var(--b900); font-size: 24px; font-weight: 700; line-height: 1.1; margin: 0;
+  display: flex; align-items: center; gap: 9px; text-decoration: none; }
+.hero .brand .logo { height: 34px; width: auto; flex: none; margin: -2px 0 -1px; }
 .hero .lede { font-size: 13.5px; color: #6B645F; margin: 3px 0 2px; max-width: 60ch; }
 /* The tagline stays on one line: a shorter version on narrow screens */
 .hero .lede { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: none; }
@@ -770,7 +772,6 @@ h1 { font-family: var(--serif); color: var(--b900); font-size: 26px; margin: 0; 
 .seg button:disabled { opacity: .4; cursor: default; }
 .tabs { display: none; }
 .sitetabs { display: flex; gap: 4px; margin: 4px 0 14px; border-bottom: 1px solid var(--line); overflow-x: auto; scrollbar-width: none; }
-.sitetabs button { white-space: nowrap; }
 .sitetabs .sh { display: none; }
 #about-page.talk { max-width: 1432px; }  /* 1400 + gutters, so the card lines up with the title and tabs */
 .aboutpage { max-width: none; margin: 0; background: var(--white); border: 1px solid var(--line); border-radius: 16px; padding: 22px 24px; line-height: 1.55; }
@@ -790,7 +791,10 @@ h1 { font-family: var(--serif); color: var(--b900); font-size: 26px; margin: 0; 
 .aboutpage .small { font-size: 13px; color: #6B645F; }
 .aboutpage a:not(.btn) { color: var(--b700); text-decoration-color: var(--b200); text-underline-offset: 2px; }   /* same as Assist */
 .aboutpage a:not(.btn):hover { color: var(--b900); text-decoration-color: currentColor; }
-.sitetabs button { border: 0; background: none; padding: 9px 14px 10px; font-weight: 700; font-size: 14px; color: #6B645F; cursor: pointer; border-bottom: 3px solid transparent; margin-bottom: -1px; }
+/* Every item in the tab row (tab buttons, links to other pages, "Tools →") is the same size, font and line height,
+   whatever its element, so the row sits identically on every page */
+.sitetabs button, .sitetabs a.tab, .sitetabs a.tolink, .sitetabs a.back { display: block; white-space: nowrap; padding: 9px 14px 10px; font: 700 14px/20px var(--sans);
+  color: #6B645F; text-decoration: none; background: none; border: 0; border-bottom: 3px solid transparent; margin-bottom: -1px; cursor: pointer; }
 .sitetabs button[aria-current="page"] { color: var(--b900); border-bottom-color: var(--b600); }
 /* Tabs in groups: Browse (In person, Phone and online, Courses) | Assist | About */
 .sitetabs { align-items: flex-end; }
@@ -801,14 +805,13 @@ h1 { font-family: var(--serif); color: var(--b900); font-size: 26px; margin: 0; 
 .sitetabs.more { -webkit-mask-image: linear-gradient(to right, #000 calc(100% - 36px), transparent); mask-image: linear-gradient(to right, #000 calc(100% - 36px), transparent); }
 @media (max-width: 420px) { .sitetabs { gap: 0; } .sitetabs .tgrp { gap: 0; } .sitetabs button { padding-inline: 5px; font-size: 13px; } .sitetabs #tab-assist, .sitetabs #tab-about { margin-left: 1px; padding-left: 7px; } .sitetabs #tab-assist { gap: 4px; } .sitetabs .lg { display: none; } .sitetabs .sh { display: inline; } }
 /* Tabs that are links to other pages (Places in the directory; every tab on the town pages), looking like the tab buttons */
-.sitetabs a.tab { white-space: nowrap; padding: 9px 14px 10px; font-weight: 700; font-size: 14px; color: #6B645F; text-decoration: none; border-bottom: 3px solid transparent; margin-bottom: -1px; }
 .sitetabs a.tab:hover, .sitetabs a.tab:focus-visible { color: var(--b900); }
 .sitetabs a.tab[aria-current] { color: var(--b900); border-bottom-color: var(--b600); }
 .sitetabs a.tab.sep { margin-left: 6px; padding-left: 14px; position: relative; }
 .sitetabs a.tab.sep::before { content: ""; position: absolute; left: 0; top: 10px; bottom: 12px; border-left: 1px solid var(--line); }
 @media (max-width: 420px) { .sitetabs a.tab { padding-inline: 5px; font-size: 13px; } .sitetabs a.tab.sep { margin-left: 1px; padding-left: 7px; } }
 /* "Tools →": a link after the tabs (green and underlined, like "On the map →" on the Places pages) (not at the far right, where it would sit on the illustration), to the tools page */
-.sitetabs a.tolink { margin-left: 6px; white-space: nowrap; padding: 9px 14px 10px; font-weight: 700; font-size: 14px; color: var(--b700); text-decoration: underline; text-underline-offset: 3px; border-bottom: 3px solid transparent; margin-bottom: -1px; }
+.sitetabs a.tolink { margin-left: 6px; color: var(--b700); text-decoration: underline; text-underline-offset: 3px; }
 .sitetabs a.tolink:hover, .sitetabs a.tolink:focus-visible { color: var(--b900); }
 .sitetabs a.tolink { position: relative; } .sitetabs a.tolink::before { content: ""; position: absolute; left: 0; top: 10px; bottom: 12px; border-left: 1px solid var(--line); }   /* a divider, as before About */
 @media (max-width: 420px) { .sitetabs a.tolink { padding-inline: 7px 5px; font-size: 13px; margin-left: 1px; } }
@@ -907,7 +910,7 @@ footer.urgent p { color: #FEE2E2; }
 .line { font-size: 12px; font-weight: 700; padding: 6px 12px; border-radius: 8px; background: #fff; color: var(--b900); text-decoration: none; white-space: nowrap; }
 .line.ghost { background: transparent; color: #fff; border: 1px solid rgba(255,255,255,.45); }
 /* The way back to the directory, in the tab row: a link, styled like the tabs */
-.sitetabs a.back { white-space: nowrap; padding: 9px 14px 10px; font-weight: 700; font-size: 14px; color: #6B645F; text-decoration: none; border-bottom: 3px solid transparent; margin-bottom: -1px; margin-right: 6px; }
+.sitetabs a.back { margin-right: 6px; }   /* sized like the tabs (core/css/page.css) */
 .sitetabs a.back:hover, .sitetabs a.back:focus-visible { color: var(--b900); }
 #about-page.talk { max-width: 1432px; margin: 0 auto 0 var(--page-left); padding-block: 14px 110px; }
 @media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
@@ -1292,7 +1295,7 @@ footer.urgent p { color: #FEE2E2; }
     <div class="masthead">
       <div class="illus" role="img" aria-label="Watercolour illustration: a path with map pins winding through Somerset fields towards Glastonbury Tor, people meeting and walking together, and a signpost to drop-ins, peer support, advice and community"></div>
     <div class="hero">
-      <h1><img class="logo" src="/signposting-somerset-v2/assets/logo-signpost.webp" alt="" width="31" height="34">Signposting Somerset</h1>
+      <h1 class="brand"><img class="logo" src="/signposting-somerset-v2/assets/logo-signpost.webp" alt="" width="31" height="34">Signposting Somerset</h1>
       <p class="lede" id="lede"><span class="lg">Connecting people with local mental health and wellbeing support.</span><span class="sh">Local mental health and wellbeing support.</span></p>
     </div>
     <nav class="sitetabs" aria-label="Tools">
@@ -1713,10 +1716,13 @@ function copyFallback(txt) {
   const ta = document.createElement("textarea"); ta.value = txt; ta.setAttribute("readonly", ""); ta.style.cssText = "position:fixed;top:-1000px;opacity:0";
   document.body.appendChild(ta); ta.select(); try { document.execCommand("copy"); } catch (_) {} ta.remove();
 }
+// The record a Copy details button belongs to: a Places card's (places-view.js, ids "p0"...) or the page's own (ALL)
+let PLACE_RECS = [];   // the Places listing's records, when one is showing (core/js/places-view.js); ids "p0", "p1"... never clash
+const recordById = id => PLACE_RECS.find(x => x.id === id) || ALL.find(x => String(x.id) === id);
 document.addEventListener("click", e => {
   const b = e.target.closest && e.target.closest("button.copy"); if (!b) return;
   e.preventDefault(); e.stopPropagation();
-  const s = ALL.find(x => String(x.id) === b.dataset.copy); if (!s) return;
+  const s = recordById(b.dataset.copy); if (!s) return;
   copyToClipboard(copyText(s, b.dataset.when));
   b.classList.add("copied"); clearTimeout(b._t); b._t = setTimeout(() => b.classList.remove("copied"), 1600);
   const live = $("copy-live"); if (live) { live.textContent = ""; setTimeout(() => { live.textContent = `Copied details for ${s.name}`; }, 30); }
@@ -1829,7 +1835,7 @@ function renderAbout() {
       <li><strong>Data:</strong> ONS boundaries, population (mid-2022) and urban/rural classification; MHCLG Indices of Deprivation 2025; Census 2021; open postcode data (2016). Open Government Licence.</li>
     </ul>
     </div></div>
-    <p class="small" id="site-version">Version: test 2026-11-16 15:21${typeof window.assistRelayVersion === "function" ? window.assistRelayVersion() : ""}</p>
+    <p class="small" id="site-version">Version: test 2026-11-16 16:18${typeof window.assistRelayVersion === "function" ? window.assistRelayVersion() : ""}</p>
   </article>`;
 }
 
@@ -2311,7 +2317,7 @@ async function initAnalytics() {
    this page only remembers it for the current browser session. */
 (() => {
 const WORKER_URL = "https://signposting-assist.c-r-williams0109.workers.dev";
-const PAGE_VERSION = "test 2026-11-16 15:21";
+const PAGE_VERSION = "test 2026-11-16 16:18";
 let relayVersion = "";
 // The version line is at the bottom of the About tab: "Version: test 2026-11-06 11:30 · Assist relay 2026-11-06 11:07"
 window.assistRelayVersion = () => relayVersion ? ` · Assist relay ${relayVersion}` : "";
