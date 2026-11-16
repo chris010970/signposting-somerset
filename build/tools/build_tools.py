@@ -26,7 +26,6 @@ page = put(page, "/*TOWNS*/{}", json.dumps(towns["TOWNS"], ensure_ascii=False))
 page = put(page, "/*OUTLINE*/null", (DIR / "somerset-outline.json").read_text())
 page = put(page, "/*SHEET_CSV_URL*/", sheet)
 page = put(page, "/*ANALYTICS_ABOUT*/", section(analytics_html, "ABOUT"))
-page = put(page, "/*SCRUB*/\n", (HERE / "assist" / "scrub.js").read_text(encoding="utf-8"))
 page = put(page, "/*WORKER_URL*/", worker_url)
 for name in ("TAB", "HDR", "PANEL"):
     page = put(page, f"<!--ASSIST_{name}-->\n", section(assist_html, name))

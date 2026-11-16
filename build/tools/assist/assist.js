@@ -164,7 +164,7 @@ $a("a-mapbtn").onclick = () => {
 };
 
 // ---- remove identifying details before anything is sent ----
-/*SCRUB*/
+/*@page:assist/scrub.js*/
 function scrubAll(st) {
   const tally = {}, add = r => Object.entries(r).forEach(([k, v]) => tally[k] = (tally[k] || 0) + v);
   const a = scrub(st.need); add(a.removed);

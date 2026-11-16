@@ -4,7 +4,6 @@
 build/directory/github/
 build/tools/out/
 build/places/out/
-build/tools/assist/cloudflare-worker.js
 
 # Python
 __pycache__/

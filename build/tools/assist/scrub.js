@@ -1,5 +1,5 @@
 // Removes personal details from free text before it leaves the page (and again in the Worker before an online search).
-// Shared by assist-tab.js and the Worker: the build scripts paste this file into both, so there is one copy to maintain.
+// Shared by the Assist page (assist.js) and the Worker: the builds put this file into both, so there is one copy to maintain.
 // It can't catch every name: a lone first name ("Sarah has…") looks like any other word, so the prompt box asks for none.
 const NAME_STOP = new Set(("She He They It This That There Then When What Where Why How Client Clients Man Woman Mum Dad Mother Father Son Daughter Husband Wife " +
   "Partner Person People Someone Nobody Everyone Recently Since After Before Lives Has Had Is Was Feels Wants Needs Likes Can Could Would Should Will " +

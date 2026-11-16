@@ -201,6 +201,41 @@ test("Tools page: Assist asks for the access code; Analytics opens", async () =>
   await p.done();
 });
 
+test("Assist, with a stand-in relay: unlock, a plan from the records, Copy plan, and online finds marked as not checked", async () => {
+  const WORKER = readFileSync(join(HERE, "..", "tools", "assist", "worker_url.txt"), "utf8").trim().replace(/\/$/, "");
+  const record = { name: "Test Weekly Drop-in", provider: "Test Provider", type: "Peer group", access: "drop in", support_for: "low mood;anxiety", mode: "in-person",
+    url: "https://example.org/", description: "A made-up service for the tests.", who: "anyone", days: "Wed", times: "10:00-12:00", town: "Wells", postcode: "BA5 1AA", cost: "Free", last_checked: "2026-11-16" };
+  const plan = { reading: "Low mood and isolation: a gentle group first.", safety: "", core_needs: ["isolation"], core_covered: "partly", search_for: "befriending Wells", place: "Wells",
+    risk: false, gaps: "", questions: ["Would they like someone to go with them?"], picks: [{ step: "First step", why: "A small, friendly group nearby.", distance: 0.2, record }],
+    scope: { place: "within 5 miles of Wells", total: 6, near: 3, remote: 3, records: 14 } };
+  const sent = [];
+  const p = await open("/test/tools/#assist");
+  await p.route(WORKER + "/**", r => {
+    const path = new URL(r.request().url()).pathname; sent.push([path, r.request().postDataJSON()]);
+    if (path.endsWith("/verify")) return r.fulfill({ status: 200, contentType: "application/json", body: JSON.stringify({ ok: true, version: "test" }) });
+    if (path.endsWith("/web")) return r.fulfill({ status: 200, contentType: "application/json", body: JSON.stringify({ query: "befriending Wells", keep: [{ n: 1, step: "First step" }],
+      items: [{ name: "Example Befriending", provider: "Example", what: "Weekly phone befriending", access: "call", mode: "phone", days: "Mon-Fri", times: "", frequency: "", address: "", town: "",
+        phone: "01234 567890", email: "", cost: "Free", eligibility: "", note: "", url: "https://example.org/b", source: "example.org", step: "Next step", why: "Company between groups." }] }) });
+    return r.fulfill({ status: 200, contentType: "application/x-ndjson", body: [{ stage: "reading" }, { stage: "writing", picks: 1 }, { done: true, result: plan }].map(o => JSON.stringify({ ...o, version: "test" })).join("\n") + "\n" });
+  });
+  await p.fill("#a-code", "test-code"); await p.click("#a-codeBtn"); await p.waitForTimeout(300);
+  assert.ok(await p.isVisible("#a-app"), "unlocked");
+  await p.selectOption("#a-town", "Wells");
+  await p.click("#a-online");
+  await p.fill("#a-need", "Feeling low since losing his job, call 07700 900123, hardly goes out");
+  await p.click("#a-ask"); await p.waitForTimeout(800);
+  const asked = sent.find(([path]) => !/verify|web/.test(path))[1];
+  assert.ok(!asked.need.includes("07700"), "the phone number was removed before sending");
+  assert.match(await text(p, "#a-scrubnote"), /Removed before sending: 1 phone number/);
+  assert.match(await text(p, "#a-out"), /Test Weekly Drop-in[\s\S]*A small, friendly group nearby/);
+  assert.match(await text(p, "#a-out"), /Example Befriending[\s\S]*Found online, not checked/, "the online find, marked");
+  await p.click("#a-copyPlan"); await p.waitForTimeout(200);
+  const copied = await p.evaluate(() => navigator.clipboard.readText());
+  assert.match(copied, /^Things that might help\n[\s\S]*Test Weekly Drop-in[\s\S]*Example Befriending \(found online, not checked\)[\s\S]*Samaritans/);
+  assert.deepEqual(p.errors, []);
+  await p.done();
+});
+
 test("Places tab: the town listings inside the directory, with no page reload", async () => {
   const p = await open("/test/directory/#near");
   let loads = 0; p.on("load", () => loads++);

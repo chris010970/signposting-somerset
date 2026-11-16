@@ -1,66 +1,88 @@
-# Signposting Somerset Assist: setup
+# Assist: setup and updates
 
-Three parts:
+Assist is the **Assist** tab on the tools page (`/tools/`). It has three parts:
 
-- **The page**, `assist/index.html` in your GitHub repo. It will live at `https://chris010970.github.io/signposting-somerset/assist/`.
-- **The relay**, a Cloudflare Worker. It holds your API key and access code, reads the live sheet and asks Claude.
+- **The page**, built with the rest of the site (`build/tools/`). It knows the relay's address from `worker_url.txt` in this folder.
+- **The relay**, a Cloudflare Worker named `signposting-assist`. It holds the API key and the access code, reads the live sheet and asks Claude.
+  It's one standalone file, `src/cloudflare-worker.js` in the repo, built from `worker-template.js` (here) with the site's shared code (`build/core/`) and
+  `scrub.js` put in. Nothing is loaded from the site while it runs.
 - **An Anthropic API account**, which pays for the AI part.
 
-Setup takes about 20 minutes.
+## Updating the relay (the usual job)
+
+After any change to `worker-template.js`, `scrub.js` or `build/core/` (the schedule rules, the sheet reading, the support types...):
+
+1. Rebuild it: `python build/tools/assist/build_worker.py` (the tests fail until you do, so a stale relay can't slip through).
+2. Commit it with the change. In Cloudflare, open **Workers & Pages → signposting-assist**, choose **Edit code**, replace
+   everything with the new `src/cloudflare-worker.js`, and choose **Deploy**.
+3. Open the tools page's **About** tab: the version line ends with the relay's build time (`Assist relay 2026-11-16 20:34`).
+
+To go back, paste the previous `src/cloudflare-worker.js` (from the repo's history) and deploy. Nothing else in Cloudflare changes.
 
 ---
 
-## 1. Anthropic API key (console.anthropic.com)
+## Setting it up from scratch (about 20 minutes)
 
-1. Sign up or sign in at **console.anthropic.com**. This account is separate from your Claude subscription.
-2. In **Billing**, add some prepaid credit. £10 is plenty for a demo.
-3. **Set a monthly spend limit** in the console's limits settings, for example £10. It's the real safety net: if the code leaks, the worst case is that the demo stops for the month.
-4. In **API keys**, choose **Create key** and name it `signposting-assist`. Copy the key now, because it's shown only once.
+### 1. Anthropic API key (console.anthropic.com)
 
-## 2. Cloudflare Worker (dash.cloudflare.com)
+1. Sign up or sign in at **console.anthropic.com**. This account is separate from a Claude subscription.
+2. In **Billing**, add some prepaid credit.
+3. **Set a monthly spend limit** in the console's limits settings. It's the real safety net: if the code leaks, the worst case is
+   that Assist stops for the rest of the month.
+4. In **API keys**, choose **Create key**, name it `signposting-assist` and copy it (it's shown only once).
+
+### 2. The Cloudflare Worker (dash.cloudflare.com)
 
 1. Sign up for free at **dash.cloudflare.com**.
-2. Go to **Workers & Pages**, then **Create**, then **Create Worker** (start from "Hello World").
-3. Name it `signposting-assist` and click **Deploy**.
-4. Click **Edit code**. Delete everything in the editor, paste the whole of **cloudflare-worker.js**, then click **Deploy**.
-5. Go back to the Worker and open **Settings**, then **Variables and Secrets**. Add these, then deploy or save:
+2. Go to **Workers & Pages → Create → Create Worker**, name it `signposting-assist` and **Deploy**.
+3. Choose **Edit code**, replace everything with `src/cloudflare-worker.js` (build it first, as above), and **Deploy**.
+4. In the Worker's **Settings → Variables and Secrets**, add:
 
 | Name | Type | Value |
 |---|---|---|
 | `ANTHROPIC_API_KEY` | **Secret** | the key from step 1 |
-| `ACCESS_CODE` | **Secret** | a code you choose for testers, e.g. three random words |
-| `SHEET_CSV_URL` | Text | your sheet's published CSV link (the one the main site uses) |
-| `ALLOWED_ORIGIN` | Text | `https://chris010970.github.io` (exactly this, no slash at the end) |
-| `MODEL` | Text (optional) | leave out to use `claude-sonnet-5-5`; use `claude-haiku-5-5` for cheaper and faster |
+| `ACCESS_CODE` | **Secret** | a code you choose for invited workers, e.g. three random words |
+| `SHEET_CSV_URL` | Text | the sheet's published CSV link (the same as `build/directory/sheet_url.txt`) |
+| `ALLOWED_ORIGIN` | Text | the site's address, without a slash at the end; several separated by commas, e.g. `https://signpostingsomerset.org.uk,https://chris010970.github.io` |
+| `MODEL` | Text (optional) | leave out to use `claude-sonnet-5-5`; `claude-haiku-5-5` is cheaper and faster |
+| `EFFORT` | Text (optional) | `low`, `medium` or `high`: trades thinking time for speed. Leave out for the model's default |
 
-6. Copy the Worker's address from its overview page. It looks like `https://signposting-assist.<your-name>.workers.dev`.
+5. Copy the Worker's address from its overview page (`https://signposting-assist.<your-name>.workers.dev`).
 
-## 3. The page (GitHub)
+### 3. Connect the page
 
-1. Send me the Worker address and I'll build `assist/index.html` with it filled in.
-   Or do it yourself: open `assist/index.html`, find `const WORKER_URL = "";` and put the address between the quotes.
-2. In your repo, choose **Add file**, then **Upload files**. Upload it so that it sits at `assist/index.html`. You can type `assist/` into the file name box to create the folder.
-3. After a minute or so, open `https://chris010970.github.io/signposting-somerset/assist/`, enter your access code and try a scenario.
+1. Put the Worker's address in `build/tools/assist/worker_url.txt`.
+2. Rebuild the site (`python build/build_all.py`) and publish as usual.
+3. Open the tools page, choose **Assist**, enter the access code and try a scenario.
 
-The main site doesn't link to this page, and it asks search engines not to list it.
+When the site moves to its own domain, make sure `ALLOWED_ORIGIN` includes `https://signpostingsomerset.org.uk`.
 
 ---
 
 ## How it stays safe
 
 - **The API key never reaches the browser.** It stays in Cloudflare.
-- **Only your page can use the relay**, and only with the access code. Each visitor gets 30 requests an hour. That limit is best effort, so the spend limit is the real backstop.
-- **The relay won't run arbitrary questions.** It builds the prompt itself from the sheet, so it can't be used as a free general chatbot.
-- **Nothing that's typed is stored or logged by the relay.** Text goes to Anthropic to produce the answer, and the page tells users not to include identifying details.
-- **Every fact on a card comes from the sheet.** The AI only chooses records and explains why, and any ID it returns that isn't on the list is thrown away.
+- **Only the site can use the relay**, and only with the access code. Wrong codes and requests are limited per visitor
+  (best effort: the counts reset when Cloudflare restarts the Worker), so the spend limit is the real backstop.
+- **It isn't a general chatbot.** The relay builds the prompt itself from the sheet, and anything that isn't a description of
+  someone's situation is turned away.
+- **Personal details are removed before anything is sent** (`scrub.js`, on the page and again in the relay before an online search).
+  Nothing typed is stored or logged by the relay; text goes to Anthropic only to produce the answer.
+- **Every fact on a card comes from the sheet.** The AI only chooses records and says why; an ID that wasn't offered is dropped.
+- **Online finds are checked in code**: each must come from a page the search returned, mobiles and personal email addresses are
+  removed, safe-space addresses are never shown, and they are marked *Found online, not checked*.
 
-**To change the access code**, edit `ACCESS_CODE` in Cloudflare. Anyone using the old code will be asked for the new one.
-**To switch it off**, delete the Worker, or disable the API key in the Anthropic console.
+The tests (`build/tests/worker.test.mjs`) run the built relay as Cloudflare would, with stand-ins for the sheet and the AI service.
+
+**To change the access code**, edit `ACCESS_CODE` in Cloudflare; anyone using the old one is asked for the new one.
+**To switch Assist off**, delete the Worker, or disable the API key in the Anthropic console.
 
 ## If something goes wrong
 
-- **"That access code wasn't accepted"**: check `ACCESS_CODE` in Cloudflare. Codes are case-sensitive.
-- **"This page isn't allowed to use the relay"**: check `ALLOWED_ORIGIN`. It must exactly match `https://chris010970.github.io`.
-- **"The records couldn't be loaded"**: check `SHEET_CSV_URL`. It's the same link as `sheet_url.txt`.
-- **"Something went wrong"** every time: in Cloudflare, open the Worker and look at **Logs**. An `ai_error` usually means the API key or `MODEL` is wrong, or there's no credit left.
-- **An occasional "exceeded CPU" error**: the free plan allows about 10 ms of processing per request. Normal requests take 2–3 ms, but the first request after a quiet spell reads the whole sheet and takes longer. Trying again works. If it becomes a nuisance, Cloudflare's $5/month plan removes the limit.
+- **"That access code wasn't accepted"**: check `ACCESS_CODE` in Cloudflare (codes are case-sensitive).
+- **"This page isn't allowed to use the relay"**: check `ALLOWED_ORIGIN` exactly matches the site's address.
+- **"The records couldn't be loaded"**: check `SHEET_CSV_URL`.
+- **"The AI service returned an error"** every time: in Cloudflare, open the Worker's **Logs**. Usually the API key or `MODEL`
+  is wrong, or there's no credit left.
+- **An occasional "exceeded CPU" error**: the free plan allows about 10 ms of processing per request; the first request after a
+  quiet spell reads the whole sheet and takes longer. Trying again works; Cloudflare's paid plan removes the limit.

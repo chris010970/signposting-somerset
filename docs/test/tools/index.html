@@ -1494,6 +1494,7 @@ const iso = d => `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")
 const dayStart = d => new Date(d.getFullYear(), d.getMonth(), d.getDate());
 const addDays = (d, n) => new Date(d.getFullYear(), d.getMonth(), d.getDate() + n);
 const fmtT = m => `${String(Math.floor(m / 60)).padStart(2, "0")}:${String(m % 60).padStart(2, "0")}`;
+const DAY_DATE = new Intl.DateTimeFormat("en-GB", { weekday: "short", day: "numeric", month: "short" });   // "Wed, 18 Nov" (one formatter: making one per date is slow)
 
 // "Mon-Fri;Sun" -> the set of day numbers {1, 2, 3, 4, 5, 0} (ranges can wrap round the week: "Sat-Mon")
 function parseDays(str) {
@@ -1550,20 +1551,20 @@ function runsOn(s, d) {
   if (s.dates) { const k = iso(d); return s._dates.list.has(k) || s._dates.ranges.some(([a, b]) => k >= a && k <= b); }
   return s.frequency ? nthOk(d, s.frequency) === true : true;
 }
-// Its sessions over `days` days from the start of `from`'s day: { st, en, bank, timed }
-function occurrences(s, from, days) {
-  if (s._kind !== "dated") return [];
-  const out = [], t = s._times;
+// Its sessions over `days` days from the start of `from`'s day, in order: { st, en, bank, timed }
+function* sessions(s, from, days) {
+  if (s._kind !== "dated") return;
+  const t = s._times, start = dayStart(from);
   const noTimeEnd = split(s.mode).includes("in-person") ? 1080 : 1439;   // in person with no time: assume it's over by 6pm
   for (let i = 0; i < days; i++) {
-    const d = addDays(dayStart(from), i);
+    const d = addDays(start, i);
     if (!runsOn(s, d)) continue;
     const st = new Date(d.getTime() + (t ? t.s : 0) * 60000);
     const en = new Date(d.getTime() + (t ? (t.e ?? t.s + 90) : noTimeEnd) * 60000);   // a start time alone: allow 1½ hours
-    out.push({ st, en, bank: BANK.has(iso(d)), timed: !!t });
+    yield { st, en, bank: BANK.has(iso(d)), timed: !!t };
   }
-  return out;
 }
+const occurrences = (s, from, days) => [...sessions(s, from, days)];
 // The "Next" line on a card. from: the start of the chosen time window (e.g. tomorrow), so the card shows that session.
 // Returns { cls, txt, at } (at: when the next session starts, for sorting; missing when there's no date to give)
 function nextText(s, now, from = now) {
@@ -1573,10 +1574,10 @@ function nextText(s, now, from = now) {
   if (!s._times && s.days && ["book", "call", "referral"].includes(s.access) && !isGroupType(s))
     return { cls: "chk", txt: `By appointment · ${s.days.replace(/;/g, ", ").replace(/-/g, "–")}` };
   if (s._kind === "check") return { cls: "chk", txt: `Check dates${s.frequency ? ` (${s.frequency})` : ""}${s.days ? ` · ${s.days} ${s.times}` : ""}` };
-  const o = occurrences(s, from, 70).find(x => x.en > from);
+  let o = null; for (const x of sessions(s, from, 70)) if (x.en > from) { o = x; break; }   // the first one not over yet
   if (!o) return { cls: "chk", txt: "No upcoming dates" };
   const dd = Math.round((dayStart(o.st) - dayStart(now)) / 864e5);
-  const day = dd === 0 ? "Today" : dd === 1 ? "Tomorrow" : o.st.toLocaleDateString("en-GB", { weekday: "short", day: "numeric", month: "short" });
+  const day = dd === 0 ? "Today" : dd === 1 ? "Tomorrow" : DAY_DATE.format(o.st);
   const t = s._times ? `, ${fmtT(s._times.s)}${s._times.e != null ? "–" + fmtT(s._times.e) : ""}`
     : split(s.mode).includes("in-person") ? " (time not given: check)" : " (no set time)";
   return { cls: dd === 0 ? "today" : "", txt: `${day}${t}${o.bank ? " (bank holiday: check it's running)" : ""}`, at: o.st };
@@ -1878,7 +1879,7 @@ function renderAbout() {
       <li><strong>Data:</strong> ONS boundaries, population (mid-2022) and urban/rural classification; MHCLG Indices of Deprivation 2025; Census 2021; open postcode data (2016). Open Government Licence.</li>
     </ul>
     </div></div>
-    <p class="small" id="site-version">Version: test 2026-11-16 20:01${typeof window.assistRelayVersion === "function" ? window.assistRelayVersion() : ""}</p>
+    <p class="small" id="site-version">Version: test 2026-11-16 20:38${typeof window.assistRelayVersion === "function" ? window.assistRelayVersion() : ""}</p>
   </article>`;
 }
 
@@ -2360,7 +2361,7 @@ async function initAnalytics() {
    this page only remembers it for the current browser session. */
 (() => {
 const WORKER_URL = "https://signposting-assist.c-r-williams0109.workers.dev";
-const PAGE_VERSION = "test 2026-11-16 20:01";
+const PAGE_VERSION = "test 2026-11-16 20:38";
 let relayVersion = "";
 // The version line is at the bottom of the About tab: "Version: test 2026-11-06 11:30 · Assist relay 2026-11-06 11:07"
 window.assistRelayVersion = () => relayVersion ? ` · Assist relay ${relayVersion}` : "";
@@ -2522,7 +2523,7 @@ $a("a-mapbtn").onclick = () => {
 
 // ---- remove identifying details before anything is sent ----
 // Removes personal details from free text before it leaves the page (and again in the Worker before an online search).
-// Shared by assist-tab.js and the Worker: the build scripts paste this file into both, so there is one copy to maintain.
+// Shared by the Assist page (assist.js) and the Worker: the builds put this file into both, so there is one copy to maintain.
 // It can't catch every name: a lone first name ("Sarah has…") looks like any other word, so the prompt box asks for none.
 const NAME_STOP = new Set(("She He They It This That There Then When What Where Why How Client Clients Man Woman Mum Dad Mother Father Son Daughter Husband Wife " +
   "Partner Person People Someone Nobody Everyone Recently Since After Before Lives Has Had Is Was Feels Wants Needs Likes Can Could Would Should Will " +

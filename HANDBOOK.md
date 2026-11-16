@@ -21,7 +21,7 @@ Last updated: 15 November 2026.
 | Live pages | repo `docs/directory/index.html` (live), `docs/test/directory/index.html` (test); `docs/directory/places/` and `docs/test/directory/places/` (town pages); `docs/tools/` and `docs/test/tools/` (tools page); `docs/index.html` and `docs/main/index.html` are forwarders to `/directory/` |
 | Site assets | `docs/assets/` (icons, `share.png` link-preview image), `docs/favicon.ico`, `docs/sitemap.xml` |
 | Build sources | repo `build/`, one folder per part of the site (see section 7) |
-| Worker | Cloudflare: Workers & Pages → `signposting-assist`. Copy of the code in `src/cloudflare-worker.js`; its source is `build/tools/assist/worker-template.js` |
+| Worker | Cloudflare: Workers & Pages → `signposting-assist`. The file pasted there is `src/cloudflare-worker.js`, built by `build/tools/assist/build_worker.py` from `worker-template.js` with the site's shared code from `build/core/` put in (one standalone file) |
 | Secrets | **Only in Cloudflare** (Settings → Variables and Secrets): `ANTHROPIC_API_KEY`, access code. Never in the repo, never in a chat |
 | Tools | `src/`: `run_scenarios.py` and the `scenarios-*.json` files, `check_sources.py`, `church_events.py`, `geocode.py`, `services-sheet-tools.gs` (not part of the site build) |
 | Search | Google Search Console (property for signpostingsomerset.org.uk; sitemap submitted) |
@@ -108,7 +108,7 @@ cd build
 python build_all.py path/to/services.csv          # the directory and the tools page, live and test
 python build_all.py path/to/services.csv test     # the directory's test copy only (and tools)
 python places/publish_places.py                    # the Places pages and the sitemap, from the sheet, copied into docs/ (also done nightly by GitHub)
-python tools/assist/build_worker.py               # rebuilds the worker: tools/assist/cloudflare-worker.js
+python tools/assist/build_worker.py               # rebuilds the worker: src/cloudflare-worker.js (commit it, then paste it into Cloudflare)
 ```
 
 - Edit the sources above; never edit the generated files.
@@ -118,7 +118,7 @@ python tools/assist/build_worker.py               # rebuilds the worker: tools/a
 - Site settings are in `build/site.json`: `base_path` (below) and `feedback_form_url` (the About tab's Suggest a change form).
 - Each build stamps a version (`directory 2026-11-15 12:50`), visible on the site and in Assist, so you can tell which build is live.
 - **Deploy the site:** copy `build/directory/github/directory/index.html` → repo `docs/directory/index.html` and `build/directory/github/test/directory/index.html` → `docs/test/directory/index.html`, and `build/tools/out/tools/index.html` → `docs/tools/index.html`, `build/tools/out/test/tools/index.html` → `docs/test/tools/index.html`. The Places pages copy themselves (`publish_places.py`, above). Commit, push. GitHub Pages updates in a few minutes.
-- **Deploy the worker:** Cloudflare → `signposting-assist` → Edit code → paste `build/tools/assist/cloudflare-worker.js` → Deploy. Also copy it to `src/`. Check the version shown on the Assist tab.
+- **Deploy the worker:** rebuild it (`python tools/assist/build_worker.py`) after any change to it or to `build/core/`, then Cloudflare → `signposting-assist` → Edit code → replace everything with `src/cloudflare-worker.js` → Deploy. Check the relay version shown on the tools page's About tab. (The tests fail if the built file is out of date with its sources.)
 - Test on `/test/directory/` first, then build the live directory.
 - **Where the site is served:** `build/site.json` → `base_path`. It is `"/signposting-somerset-v2"` while this repo is previewed on github.io, and must be `""` on signpostingsomerset.org.uk. Every build adds it to links and images that start with `/` (`build/shared/site_config.py`).
 - Setup from scratch: `build/tools/assist/ASSIST-SETUP.md`.
