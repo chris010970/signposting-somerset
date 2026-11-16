@@ -6,7 +6,8 @@
 
 Publish: copy out/directory/places/ -> docs/directory/places/, out/test/directory/places/ -> docs/test/directory/places/,
 and out/sitemap.xml -> docs/sitemap.xml. They are the directory's "Places" tab.
-Configuration (no code changes needed): towns.json (which towns, radius) and categories.json (sections).
+Configuration (no code changes needed): towns.json (which towns, radius). The sections are the support types, in the groups
+the directory's Support for box uses (build/core/data/support-types.json), so every tab offers the same choices.
 The page frame and script are places.css and places.js; the listings' styles and code are shared with the directory's Places tab
 (build/core/css/places-content.css, build/core/js/places-view.js); the rest of the look comes from build/core/ and the directory's template.
 The pages look and behave like one page: picking a town swaps the main area in place, but every town has its own address.
@@ -33,7 +34,6 @@ missing = [c for c in ("name", "type", "mode", "town", "support_for") if not any
 assert not missing and len(recs) >= 10, f"the records look wrong ({len(recs)} rows; missing columns: {', '.join(missing) or 'none'}): nothing built"
 TOWNS = json.loads((BUILD / "directory" / "towns.json").read_text(encoding="utf-8"))["TOWNS"]
 CONF = json.loads((HERE / "towns.json").read_text(encoding="utf-8"))
-CATS = json.loads((HERE / "categories.json").read_text(encoding="utf-8"))["categories"]
 RADIUS = CONF["radius_miles"]
 AREAS = [(a["area"], a["towns"]) for a in CONF["areas"]]
 for _, ts in AREAS:
@@ -45,13 +45,19 @@ UPDATED = f"{NOW.day} {NOW:%B %Y}"
 
 # Shared look: the directory's own stylesheet, taken from its template at build time, so the two never drift apart.
 tpl = inline_core((BUILD / "directory" / "template.html").read_text(encoding="utf-8"), BUILD / "directory")   # with its shared and own code
-# "On the map →" opens In person at this page's range: its smallest distance that covers RADIUS (the directory's own choices)
-_within = sorted(int(v) for v in re.findall(r'value="(\d+)"', re.search(r'<select[^>]*id="within".*?</select>', tpl, re.S).group(0)) if int(v))
-MAP_WITHIN = next((w for w in _within if w >= RADIUS), 0)   # 0: any distance
+# The radius is one of In person's distances, so "In person view →" opens In person showing the same area
+_within = [int(v) for v in re.findall(r'value="(\d+)"', re.search(r'<select[^>]*id="within".*?</select>', tpl, re.S).group(0)) if int(v)]
+assert RADIUS in _within, f"radius_miles ({RADIUS}, places/towns.json) must be one of the In person tab's distances: {_within}"
 SITE_CSS = re.search(r"<style>\n(.*?)</style>", tpl, re.S).group(1)
 
 e = lambda s: html.escape(str(s), quote=True)
 slug = lambda t: re.sub(r"[^a-z0-9]+", "-", t.lower()).strip("-")
+
+CORE_DATA = BUILD / "core" / "data"
+SUPPORT = json.loads((CORE_DATA / "support-types.json").read_text(encoding="utf-8"))
+cap = lambda t: SUPPORT["labels"].get(t) or t[:1].upper() + t[1:]   # as core/js/text.js
+# The sections: one per support type, in the Support for box's groups and order (as core/js/records.js supportOptions)
+CATS = [{"id": slug(t), "value": t, "label": cap(t), "group": g["group"]} for g in SUPPORT["groups"] for t in g["types"]]
 split = lambda s: [x.strip() for x in s.split(";") if x.strip()]
 
 def miles(a, b):
@@ -76,12 +82,17 @@ for r in recs:
         else:
             continue
     r["_pos"], r["_approx"], r["_sf"] = pos, approx, set(split(r.get("support_for", "")))
-    r["_cats"] = [c["id"] for c in CATS if r["_sf"] & set(c["tags"])]
+    r["_cats"] = [c["id"] for c in CATS if c["value"] in r["_sf"]]
     if r["_cats"]:
         SERVICES.append(r)
 
+# A town page's centre: where In person centres it, so "In person view →" shows the same services. That's the 2. Where?
+# box's point when the town is one of its places (core/data/where.json), otherwise the town centre the link passes.
+WHERE = {n: (la, lo) for a in json.loads((CORE_DATA / "where.json").read_text(encoding="utf-8"))["areas"] for n, la, lo in a["places"]}
+centre = lambda town: WHERE.get(town) or tuple(TOWNS[town])
+
 def services_for(town):
-    c = TOWNS[town]; out = []
+    c = centre(town); out = []
     for r in SERVICES:
         d = miles(c, r["_pos"])
         if d <= RADIUS or r.get("town") == town:
@@ -106,12 +117,9 @@ def pattern(r):
 PAGE_FIELDS = ["name", "provider", "type", "access", "support_for", "mode", "url", "description", "who", "eligibility", "days", "times",
                "frequency", "dates", "address", "town", "postcode", "phone", "email", "cost", "area", "lat", "lon"]
 
-CORE_DATA = BUILD / "core" / "data"
-SUPPORT_LABELS = json.loads((CORE_DATA / "support-types.json").read_text(encoding="utf-8"))["labels"]
 KIND_LIST = json.loads((CORE_DATA / "kinds.json").read_text(encoding="utf-8"))["kinds"]
 CARD_TEXT = json.loads((CORE_DATA / "card-text.json").read_text(encoding="utf-8"))
 GROUP_TYPE = re.compile("|".join(CARD_TEXT["group_types"]), re.I)
-cap = lambda t: SUPPORT_LABELS.get(t) or t[:1].upper() + t[1:]
 
 def badge(r):
     """[class, wording] for the access badge, as core/js/service-card.js does."""
@@ -164,8 +172,12 @@ WHEN_OPTIONS = ('<option value="any" selected>Any time</option><option value="to
 
 def filters(base, current=None, counts=None, total=0):
     """The filter boxes, as on the directory's In person tab: 1. Support for (with counts on a town page), 2. Where? (the town), 3. When?"""
-    if counts is None: sup = ['<option value="all">All support</option>'] + [f'<option value="{c["id"]}">{e(c["label"])}</option>' for c in CATS]
-    else: sup = [f'<option value="all">All support ({total})</option>'] + [f'<option value="{c["id"]}">{e(c["label"])} ({counts[c["id"]]})</option>' for c in CATS if counts[c["id"]]]
+    n = lambda k: f" ({k})" if counts is not None else ""   # a town page shows how many
+    shown = [c for c in CATS if counts is None or counts[c["id"]]]
+    sup = [f'<option value="all">All support{n(total)}</option>']
+    for g in dict.fromkeys(c["group"] for c in shown):   # grouped, as on the directory's tabs
+        opts = "".join(f'<option value="{e(c["value"])}">{e(c["label"])}{n(counts and counts[c["id"]])}</option>' for c in shown if c["group"] == g)
+        sup.append(f'<optgroup label="{e(g)}">{opts}</optgroup>')
     return (f'<div id="hdr-towns"><div class="qs">'
             # autocomplete="off": on Back, the browser mustn't put old values in the boxes (the pages keep their own choices)
             f'<div class="q" id="bq-support"><label for="b-support">1. Support for</label><select autocomplete="off" id="b-support">{"".join(sup)}</select></div>'
@@ -177,12 +189,13 @@ def other_towns(base, current):
     """Plain links to the other towns (for search engines, and for anyone without JavaScript)."""
     return '<p class="otowns">Other towns: ' + " · ".join(f'<a href="{base}{slug(t)}/">{e(t)}</a>' for _, ts in AREAS for t in sorted(ts) if t != current) + "</p>"
 
-def summary(town, counts):
-    parts = [f'{n} for {c["label"].lower()}' for c in CATS if (n := counts[c["id"]])]
-    if not parts: return f"No in-person support is recorded within {RADIUS} miles of {town} yet."
-    first = parts[0].split(" for ")
-    lead = f'{first[0]} {"group or service" if first[0] == "1" else "groups and services"} for {first[1]}'
-    return f"In and around {town}: {', '.join([lead] + parts[1:])}."
+def summary(town, counts, total):
+    """The page's description (what search engines show): how many, by group and support type, in the Support for box's order."""
+    groups = {}
+    for c in CATS:
+        if counts[c["id"]]: groups.setdefault(c["group"], []).append(f'{c["value"]} ({counts[c["id"]]})')   # the sheet's words: short
+    if not groups: return f"No in-person support is recorded within {RADIUS} miles of {town} yet."
+    return f"In and around {town}: {total} free and low-cost groups and services. " + "; ".join(f"{g}: {', '.join(v)}" for g, v in groups.items()) + "."
 
 def town_main(town, items, dirbase, base):
     counts = {c["id"]: len({id(r) for _, r in items if c["id"] in r["_cats"]}) for c in CATS}
@@ -193,9 +206,9 @@ def town_main(town, items, dirbase, base):
         if not n: continue
         inn = [card(d, r, i) for i, (d, r) in enumerate(items) if c["id"] in r["_cats"] and r.get("town") == town]
         near = [card(d, r, i) for i, (d, r) in enumerate(items) if c["id"] in r["_cats"] and r.get("town") != town]
-        maplink = f'{dirbase}?' + (f'support={urllib.parse.quote(c["map"])}&' if c["map"] else "") + f'town={urllib.parse.quote(town)}&lat={TOWNS[town][0]}&lon={TOWNS[town][1]}&label={urllib.parse.quote(town)}&within={MAP_WITHIN}#near'   # town if the directory lists it, otherwise its centre; when: places-view.js
-        secs.append(f'<section class="bsec" id="{c["id"]}" data-k="{c["id"]}"><div class="bsh"><h2>{e(c["label"])} <span>{n}</span></h2>'
-                    f'<a class="bmap" href="{maplink}">On the map →</a></div>'
+        maplink = f'{dirbase}?support={urllib.parse.quote(c["value"])}&town={urllib.parse.quote(town)}&lat={centre(town)[0]}&lon={centre(town)[1]}&label={urllib.parse.quote(town)}&within={RADIUS}#near'   # town if the directory lists it, otherwise its centre; when: places-view.js
+        secs.append(f'<section class="bsec" id="{c["id"]}" data-k="{e(c["value"])}"><div class="bsh"><h2>{e(c["label"])} <span>{n}</span></h2>'
+                    f'<a class="bmap" href="{maplink}">In person view →</a></div>'
                     + (f'<h3 class="vh" data-l="In {e(town)}">In {e(town)} · {len(inn)}</h3><ul class="blist">{"".join(inn)}</ul>' if inn else "")   # (the page heading already names the town: label for screen readers only)
                     + (f'<h3 data-l="Nearby">Nearby · {len(near)}</h3><ul class="blist">{"".join(near)}</ul>' if near else "") + "</section>")
     return (f'<div class="bhead"><h1 class="bt">Support in and around {e(town)}</h1>'
@@ -328,7 +341,7 @@ for name, base, dirbase, site, robots in TARGETS:
     for t, items in data.items():
         counts = {c["id"]: len({id(r) for _, r in items if c["id"] in r["_cats"]}) for c in CATS}
         d = root / slug(t); d.mkdir(exist_ok=True)
-        (d / "index.html").write_text(page(f"Signposting Somerset: mental health and wellbeing support in {t}{test}", summary(t, counts), canon(base + slug(t) + "/"), robots,
+        (d / "index.html").write_text(page(f"Signposting Somerset: mental health and wellbeing support in {t}{test}", summary(t, counts, len(items)), canon(base + slug(t) + "/"), robots,
             town_main(t, items, dirbase, base), filters(base, t, counts, len(items)), dirbase,
             [("Signposting Somerset", SITE + "/directory/"), ("Places", SITE + "/directory/places/"), (t, SITE + "/directory/places/" + slug(t) + "/")], base).replace("{VERSION}", ver), encoding="utf-8")
     print(f"out/{base.strip('/')}/: landing + {len(data)} towns")

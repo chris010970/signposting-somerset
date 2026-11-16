@@ -11,7 +11,7 @@ const places = placesView({
   onLink: u => {   // links from Places to the directory's other tabs open them here
     if (u.pathname !== location.pathname) return false;
     const t = u.hash.slice(1);
-    if (t === "near" && u.search) {   // "On the map →": In person, with that town and support, from the top
+    if (t === "near" && u.search) {   // "In person view →": In person, with that town and support, from the top
       applyLinkNear(new URLSearchParams(u.search)); userChanged = true; setSiteTab("near"); return true;
     }
     if (SITE_TABS.includes(t)) { setSiteTab(t); return true; }

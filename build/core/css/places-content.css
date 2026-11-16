@@ -26,7 +26,7 @@
 .bmapsvg a:hover circle, .bmapsvg a:focus circle { fill: #14302A; r: 7; }
 .bmapsvg a:hover text { fill: #176B55; text-decoration: underline; }
 
-/* A town's page: heading, then a section per kind of support, each with "On the map →" */
+/* A town's page: heading, then a section per kind of support, each with "In person view →" */
 .bt { font-family: var(--serif); color: var(--b900); font-size: 22px; line-height: 1.25; margin: 4px 0 4px; }
 .bhead { display: flex; align-items: baseline; gap: 6px 14px; flex-wrap: wrap; margin: 0 0 6px; }
 .bhead .bt { margin: 0; font-size: 20px; }

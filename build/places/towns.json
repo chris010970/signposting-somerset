@@ -1,6 +1,6 @@
 {
-  "_about": "Towns that get a Places page, by area. Coordinates come from build/directory/towns.json, so every name here must be in that file. Services within 'radius_miles' of the town are listed. 'label_left': towns whose name goes to the left of their pin on the Places map, so names don't run off the edge or overlap.",
-  "radius_miles": 8,
+  "_about": "Towns that get a Places page, by area. Coordinates come from build/directory/towns.json, so every name here must be in that file. Services within 'radius_miles' of the town are listed: one of the In person tab's distances (2, 5, 10 or 20), so 'In person view' shows the same area. 'label_left': towns whose name goes to the left of their pin on the Places map, so names don't run off the edge or overlap.",
+  "radius_miles": 10,
   "areas": [
     {"area": "Somerset", "towns": ["Bridgwater", "Burnham-on-Sea", "Chard", "Crewkerne", "Frome", "Glastonbury", "Minehead", "Shepton Mallet", "Street", "Taunton", "Wellington", "Wells", "Yeovil"]},
     {"area": "North Somerset", "towns": ["Clevedon", "Nailsea", "Portishead", "Weston-super-Mare"]},

@@ -820,7 +820,7 @@ h1 { font-family: var(--serif); color: var(--b900); font-size: 26px; margin: 0; 
 .sitetabs a.tab.sep { margin-left: 6px; padding-left: 14px; position: relative; }
 .sitetabs a.tab.sep::before { content: ""; position: absolute; left: 0; top: 10px; bottom: 12px; border-left: 1px solid var(--line); }
 @media (max-width: 420px) { .sitetabs a.tab { padding-inline: 5px; font-size: 13px; } .sitetabs a.tab.sep { margin-left: 1px; padding-left: 7px; } }
-/* "Tools →": a link after the tabs (green and underlined, like "On the map →" on the Places pages) (not at the far right, where it would sit on the illustration), to the tools page */
+/* "Tools →": a link after the tabs (green and underlined, like "In person view →" on the Places pages) (not at the far right, where it would sit on the illustration), to the tools page */
 .sitetabs a.tolink { margin-left: 6px; color: var(--b700); text-decoration: underline; text-underline-offset: 3px; }
 .sitetabs a.tolink:hover, .sitetabs a.tolink:focus-visible { color: var(--b900); }
 .sitetabs a.tolink { position: relative; } .sitetabs a.tolink::before { content: ""; position: absolute; left: 0; top: 10px; bottom: 12px; border-left: 1px solid var(--line); }   /* a divider, as before About */
@@ -947,7 +947,7 @@ footer.urgent p { color: #FEE2E2; }
 .bmapsvg a:hover circle, .bmapsvg a:focus circle { fill: #14302A; r: 7; }
 .bmapsvg a:hover text { fill: #176B55; text-decoration: underline; }
 
-/* A town's page: heading, then a section per kind of support, each with "On the map →" */
+/* A town's page: heading, then a section per kind of support, each with "In person view →" */
 .bt { font-family: var(--serif); color: var(--b900); font-size: 22px; line-height: 1.25; margin: 4px 0 4px; }
 .bhead { display: flex; align-items: baseline; gap: 6px 14px; flex-wrap: wrap; margin: 0 0 6px; }
 .bhead .bt { margin: 0; font-size: 20px; }
@@ -1553,7 +1553,7 @@ function placesView({ main, hdr, scroller, onChange = () => {}, onLink = () => f
       sec.hidden = !n || (k !== "all" && sec.dataset.k !== k); if (!sec.hidden) shown++;
     });
     const none = main.querySelector(".bnone"); if (none) none.hidden = !!shown || !main.querySelector(".bsec");
-    main.querySelectorAll("a.bmap").forEach(a => {   // "On the map →": In person at the same 3. When? (its distance is set by the build)
+    main.querySelectorAll("a.bmap").forEach(a => {   // "In person view →": In person at the same 3. When? (its distance is set by the build)
       const u = new URL(a.href); u.searchParams.set("when", w); a.href = u.pathname + u.search + u.hash;
     });
   }
@@ -2152,7 +2152,7 @@ function renderAbout() {
     </section>
     </div></div>
     <p class="small">Service information belongs to the providers listed. Map data © <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap</a> contributors, © <a href="https://carto.com/attributions" target="_blank" rel="noopener">CARTO</a>.</p>
-    <p class="small" id="site-version">Version: test 2026-11-16 17:09</p>
+    <p class="small" id="site-version">Version: test 2026-11-16 17:48</p>
   </article>`;
 }
 /* ---------- Places: the town listings, as a tab of the directory ----------
@@ -2168,7 +2168,7 @@ const places = placesView({
   onLink: u => {   // links from Places to the directory's other tabs open them here
     if (u.pathname !== location.pathname) return false;
     const t = u.hash.slice(1);
-    if (t === "near" && u.search) {   // "On the map →": In person, with that town and support, from the top
+    if (t === "near" && u.search) {   // "In person view →": In person, with that town and support, from the top
       applyLinkNear(new URLSearchParams(u.search)); userChanged = true; setSiteTab("near"); return true;
     }
     if (SITE_TABS.includes(t)) { setSiteTab(t); return true; }
@@ -2312,7 +2312,7 @@ function syncLink() {
 // Switching tabs, going to Places and back, or reloading: each tab's list is where it was left (In person's list starts at
 // the top again when its filters change). Kept with the other choices; a link that opens the directory filtered starts at the top.
 const SCROLLERS = { near: "list", talk: "panel-talk", course: "panel-course", places: "panel-places", about: "panel-about" };
-const scrollPos = (() => {   // this visit's positions; a link opens its list at the top (e.g. "On the map" from Places: In person)
+const scrollPos = (() => {   // this visit's positions; a link opens its list at the top (e.g. "In person view" from Places: In person)
   try {
     const all = { ...(JSON.parse(sessionStorage.getItem(STATE_KEY) || "null") || {}).scroll };
     if (LINK_TAB) delete all[LINK_TAB === "places" ? "places" : "near"];

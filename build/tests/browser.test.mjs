@@ -155,9 +155,9 @@ test("Scroll positions: each tab, and Places, are where they were left", async (
   assert.equal(await top("panel-places"), 900, "Places tab, where the Places page was left");
   await scroll("panel-places", 600);
   await p.click("#tab-talk"); await p.click("#tab-places"); assert.equal(await top("panel-places"), 600, "Places tab, after Phone and online");
-  // "On the map →": In person, filtered, from the top (clicked as it is, without scrolling it into view first)
+  // "In person view →": In person, filtered, from the top (clicked as it is, without scrolling it into view first)
   await p.evaluate(() => document.querySelector("#places-main .bsec a.bmap").click()); await p.waitForTimeout(800);
-  assert.equal(await top("list"), 0, "In person, opened by On the map");
+  assert.equal(await top("list"), 0, "In person, opened by In person view");
   await p.click("#tab-talk"); assert.equal(await top("panel-talk"), 120, "Phone and online still where it was");
   await p.click("#tab-places"); assert.equal(await top("panel-places"), 600, "Places tab still where it was");
   await p.done();
@@ -252,15 +252,19 @@ test("Back to the directory: every tab's filters are as they were (the browser d
   await p.done();
 });
 
-test("On the map → from Places: In person at the same town, support, distance and 3. When?", async () => {
+test("In person view → from Places: In person at the same town, support, distance and 3. When?", async () => {
   const p = await open("/test/directory/#places"); await p.waitForTimeout(400);
   await p.selectOption("#b-town", { label: "Taunton" }); await p.waitForTimeout(600);
   await p.selectOption("#b-when", "week");
-  await p.evaluate(() => document.querySelector("#places-main .bsec:not([hidden]) a.bmap").click()); await p.waitForTimeout(800);
+  // (a section whose support type the test sheet has, so In person offers it)
+  const section = await p.evaluate(() => [...document.querySelectorAll("#places-main .bsec:not([hidden])")].map(s => s.dataset.k)
+    .find(k => [...document.getElementById("f-support").options].some(o => o.value === k)));
+  await p.evaluate(k => [...document.querySelectorAll("#places-main .bsec")].find(s => s.dataset.k === k).querySelector("a.bmap").click(), section);
+  await p.waitForTimeout(800);
   assert.equal(await p.evaluate(() => tab), "near");
-  const within = await p.$eval("#within", s => s.value);
-  assert.ok(+within >= 8, `a distance covering the Places page's 8 miles (${within})`);
-  assert.deepEqual(await p.evaluate(() => [document.getElementById("f-town").value, document.getElementById("f-when").value]), ["Taunton", "week"]);
+  const radius = JSON.parse(readFileSync(join(HERE, "..", "places", "towns.json"), "utf8")).radius_miles;
+  assert.deepEqual(await p.evaluate(() => ["f-town", "f-support", "within", "f-when"].map(i => document.getElementById(i).value)),
+    ["Taunton", section, String(radius), "week"], "the section's own support type, and the Places radius");
   await p.done();
 });
 

@@ -81,7 +81,7 @@ function syncLink() {
 // Switching tabs, going to Places and back, or reloading: each tab's list is where it was left (In person's list starts at
 // the top again when its filters change). Kept with the other choices; a link that opens the directory filtered starts at the top.
 const SCROLLERS = { near: "list", talk: "panel-talk", course: "panel-course", places: "panel-places", about: "panel-about" };
-const scrollPos = (() => {   // this visit's positions; a link opens its list at the top (e.g. "On the map" from Places: In person)
+const scrollPos = (() => {   // this visit's positions; a link opens its list at the top (e.g. "In person view" from Places: In person)
   try {
     const all = { ...(JSON.parse(sessionStorage.getItem(STATE_KEY) || "null") || {}).scroll };
     if (LINK_TAB) delete all[LINK_TAB === "places" ? "places" : "near"];

@@ -42,12 +42,11 @@ class Settings(unittest.TestCase):
         for t in places.get("label_left", []):
             self.assertIn(t, names, f"label_left: {t} has no Places page")
 
-    def test_places_sections_use_known_support_types(self):
-        cats = load("places/categories.json")["categories"]
-        self.assertEqual(len({c["id"] for c in cats}), len(cats), "two sections share an id")
-        for c in cats:
-            for t in c["tags"]: self.assertIn(t, VOCAB, f"section {c['id']}: unknown support type {t!r}")
-            if c["map"]: self.assertIn(c["map"], c["tags"], f"section {c['id']}: 'map' should be one of its tags")
+    def test_support_types_unique(self):   # also the Places sections (each its own page anchor)
+        types = [t for g in load("core/data/support-types.json")["groups"] for t in g["types"]]
+        self.assertEqual(len(types), len(set(types)), "a support type is in two groups")
+        slugs = {re.sub(r"[^a-z0-9]+", "-", t.lower()).strip("-") for t in types}
+        self.assertEqual(len(slugs), len(types), "two support types make the same Places section id")
 
     def test_where_places(self):
         for a in load("core/data/where.json")["areas"]:
