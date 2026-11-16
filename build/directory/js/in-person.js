@@ -1,33 +1,4 @@
-/* ---------- In person: the list of cards (the map is in map.js) ---------- */
-// Badge wording by how people get in
-const ACCESS_BADGE = { "drop in": ["b-drop", "Just turn up"], "sign up": ["b-sign", "Contact to join"], "book": ["b-book", "Book first"],
-  "referral": ["b-ref", "Needs a referral"] };
-function accessBadge(s) {
-  if (s.access === "call") return ["b-ref", /group|community|course|volunteering/i.test(s.type || "") ? "Call first" : "Phone line"];
-  return ACCESS_BADGE[s.access] || ["b-ref", "Contact provider"];
-}
-// One card. r: { s: the record, d: miles from the search point (or null), nx: its "Next" line (nextText) }
-function nearCard(r) {
-  const s = r.s, [badgeCls, badge] = accessBadge(s), url = webUrl(s.url);
-  const contact = [
-    url ? `<a href="${esc(url)}" target="_blank" rel="noopener">Website</a>` : "",
-    telLink(s.phone),
-    s.email ? `<a href="mailto:${esc(s.email.split(";")[0].trim())}">${esc(s.email)}</a>` : ""].filter(Boolean).join(" · ");
-  const dist = r.d != null ? `<span class="chip dist">${r.d < .1 ? "<0.1" : r.d.toFixed(1)} mi${s.approx ? " approx." : ""}</span>` : "";
-  const cost = s.cost ? `<span class="chip">${esc(s.cost)}</span>` : "";
-  const types = s._sf.length ? " · " + s._sf.map(cap).map(esc).join(", ") : "";
-  const place = esc([s.address, s.town, s.postcode].filter(Boolean).join(", ")) + (s.approx ? ` <span class="approx">(approx. location)</span>` : "");
-  return `<article class="card" id="c${s.id}" data-id="${s.id}">
-      <div class="row1"><span class="badge ${badgeCls}">${badge}</span><span class="chipr">${dist}${cost}${directionsLink(s)}${copyBtn(s)}</span></div>
-      <h2>${esc(s.name)}</h2>
-      ${kindTag(s)}<div class="meta">${esc(s.provider)} · ${esc(s.type)}${types}</div>
-      <div class="next"><div class="lab">Next</div><div class="val ${r.nx.cls}">${esc(r.nx.txt)}</div></div>
-      <p class="desc">${esc(s.description)}</p>
-      ${s.who || s.eligibility ? `<div class="who">For: ${esc(s.who)}${s.eligibility ? ` · <em>${esc(s.eligibility)}</em>` : ""}</div>` : ""}
-      <div class="foot"><span>${place}</span>${contact ? `<span>${contact}</span>` : ""}</div>
-    </article>`;
-}
-
+/* ---------- In person: the list of cards (the card itself: core/js/service-card.js; the map: map.js) ---------- */
 function render() {
   setTimeout(syncLink, 0);   // keep the address bar in step with the filters
   if (!ALL.length) { panelMessage(liveMsg); return; }
@@ -78,8 +49,8 @@ function render() {
   if (!total) $("list").innerHTML = moreLine
     ? `<div class="empty"><strong>Nothing in the next 7 days</strong><br>But there are groups later this month.</div>` + moreLine
     : `<div class="empty"><strong>No matches</strong><br>Try a wider distance or a different time, or use the 24/7 helplines below.</div>`;
-  else $("list").innerHTML = rows.map(nearCard).join("") + moreLine +
-    (checkRows.length ? `<div class="groupline">Times to check${win ? " (may also run then)" : ""}</div>` + checkRows.map(nearCard).join("") : "");
+  else $("list").innerHTML = rows.map(r => serviceCard(r)).join("") + moreLine +
+    (checkRows.length ? `<div class="groupline">Times to check${win ? " (may also run then)" : ""}</div>` + checkRows.map(r => serviceCard(r)).join("") : "");
   $("help").classList.toggle("urgent", total <= 2);
   $("help-title").textContent = total <= 2 ? "Nothing suitable right now? Talk to someone straight away" : "Always available: 24/7 helplines";
   drawMap([...rows, ...checkRows], rad);

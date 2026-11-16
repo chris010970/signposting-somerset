@@ -14,5 +14,6 @@ The Places page itself (no town chosen yet) is two cards: what to do, with plain
 - Styles, header and colours come from the directory's template and `build/core/` at build time, so they always match.
 - Publish: `out/directory/places/` -> `docs/directory/places/`, `out/test/directory/places/` -> `docs/test/directory/places/`, `out/sitemap.xml` -> `docs/sitemap.xml`.
 
-- `places.css`, `places.js`: the pages' own styles and script. Next sessions and 3. When? use the directory's schedule rules (`build/core/js/schedule.js`, included in each page), so the two always agree.
+- `places.css`, `places.js`: the pages' own styles and script. As on the directory, the header (tabs and filter boxes) stays put and only the listings scroll.
+- The cards are the In person tab's (`build/core/js/service-card.js`), with Copy details and Directions: the build writes a plain version of each card (what search engines, and anyone without JavaScript, see) and the page's records as JSON, and in the browser each card is redrawn from its record by the directory's own code. Next sessions and 3. When? use the directory's schedule rules (`build/core/js/schedule.js`), so the two always agree; a group whose dates have all passed since the build is hidden.
 - Records are read and cleaned up as the directory does (`build/shared/records.py`: dates like 17/12/2026 become 2026-12-17).

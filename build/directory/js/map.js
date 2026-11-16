@@ -78,8 +78,6 @@ function drawLegend(d) {
   d.innerHTML = head + KINDS.map((k, i) => has[i] ? row(k, i) : "").join("") +
     (kindsOff.size ? `<button type="button" class="all" data-k="all">Show all</button>` : "");
 }
-// The same colour on the card as on its map pin
-const kindTag = s => { const k = KINDS[kindOf(s)]; return k ? `<div class="kind"><i style="background:${k[1]}"></i>${esc(k[0])}</div>` : ""; };
 
 /* Pins */
 const divIcon = (html, size) => L.divIcon({ className: "", html, iconSize: [size, size], iconAnchor: [size / 2, size / 2] });

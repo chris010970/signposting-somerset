@@ -3,7 +3,8 @@
 Run: python build/tests/check_site.py      (also run by run_tests.py)
 It starts from the site's main pages and follows every link to another page of the site, as a visitor could, reading the
 files in docs/ directly (no server needed). Links are expected to start with the site's folder (base_path in build/site.json).
-Also checked on every page: a title; no markers left unfilled by the build; dates on the Places pages in 2026-12-17 form.
+Also checked on every page: a title; no markers left unfilled by the build; on the Places pages, dates in 2026-12-17 form
+and the page's records (which the cards are drawn from) readable.
 """
 import json, re, sys, urllib.parse
 from collections import deque
@@ -40,6 +41,12 @@ def check():
         if not re.search(r"<title>[^<]+</title>", text): problems.append(f"no title: {path}")
         left = set(re.findall(r"/\*[A-Z_]{3,}\*/|<!--[A-Z_]{3,}-->|/\*@(?:core|page):[^*]+\*/", text))
         if left: problems.append(f"unfilled markers on {path}: {', '.join(sorted(left))}")
+        data = re.search(r'<script type="application/json" id="places-data">(.*?)</script>', text, re.S)
+        if data:   # a Places page: its records must read back, one for every card
+            try:
+                n = len(json.loads(data.group(1)))
+                if max(map(int, re.findall(r'data-i="(\d+)"', text)), default=-1) >= n: problems.append(f"a card has no record on {path}")
+            except ValueError as ex: problems.append(f"records unreadable on {path}: {ex}")
         bad_dates = set(re.findall(r'data-dates="([^"]*\d+/\d+/\d{4}[^"]*)"', text))
         if bad_dates: problems.append(f"dates not cleaned up on {path}: {', '.join(sorted(bad_dates))}")
         for m in LINK.finditer(text):

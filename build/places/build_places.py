@@ -95,33 +95,39 @@ def pattern(r):
     if f and when: return f"{f} · {when}"
     return f or when or "Contact for times"
 
-def row(d, r, town):
-    local = r.get("town") == town
-    # In-town cards sit under "In <town>", so they don't repeat it (a distance still shows if it's well out of the centre)
-    dist = ("" if local and d < 1.5 else f"{d:.1f} mi" if d < 10 else f"{d:.0f} mi") + (" (approx.)" if r["_approx"] and not local else "")
-    acc = ACCESS.get(r.get("access", ""))
-    who = r.get("who", "")
-    bits = [f'<span class="bwhere">{e(r.get("town") or "")}</span>' if not local else "", f"<span>{e(dist)}</span>" if dist else "",
-            f'<span class="bwhen" data-days="{e(r.get("days",""))}" data-times="{e(r.get("times",""))}" data-freq="{e(r.get("frequency",""))}" data-mode="{e(r.get("mode",""))}" data-dates="{e(r.get("dates",""))}" data-access="{e(r.get("access",""))}" data-type="{e(r.get("type",""))}">{e(pattern(r))}</span>']
-    meta = " · ".join(b for b in bits if b)
+# Cards: the build writes a plain version of the directory's In person card (what search engines, and anyone without
+# JavaScript, see); in the browser each is redrawn by the directory's own card code (build/core/js/service-card.js), which
+# adds the kind of service, the next session, Copy details and Directions, from the page's records (PAGE_FIELDS below).
+PAGE_FIELDS = ["name", "provider", "type", "access", "support_for", "mode", "url", "description", "who", "eligibility", "days", "times",
+               "frequency", "dates", "address", "town", "postcode", "phone", "email", "cost", "area", "lat", "lon"]
+
+def card(d, r, i):
+    """The plain card for record number i on the page, d miles from the town centre."""
+    acc = ACCESS.get(r.get("access", ""), ("b-ref", "Contact provider"))
+    chips = f'<span class="chip dist">{"<0.1" if d < .1 else f"{d:.1f}"} mi{" approx." if r["_approx"] else ""}</span>'
+    if r.get("cost"): chips += f'<span class="chip">{e(r["cost"])}</span>'
     contact = []
     url = web_url(r.get("url"))
     if url: contact.append(f'<a href="{e(url)}" target="_blank" rel="noopener">Website</a>')
     if r.get("phone"):
-        tel = re.sub(r"[^\d+]", "", r["phone"].split(" or ")[0].split("(")[0])
-        contact.append(f'<a href="tel:{e(tel)}">{e(r["phone"])}</a>' if len(tel) >= 10 else e(r["phone"]))
-    if r.get("email") and ";" not in r["email"]: contact.append(f'<a href="mailto:{e(r["email"])}">{e(r["email"])}</a>')
-    place = ", ".join(x for x in (r.get("address", ""), r.get("postcode", "")) if x)
-    extra = []
-    if who and who != "anyone": extra.append("For " + who.replace(";", ", "))
-    if r.get("eligibility"): extra.append(r["eligibility"])
-    if r.get("cost"): extra.append(r["cost"])
-    name = f'<a href="{e(url)}" target="_blank" rel="noopener">{e(r["name"])}</a>' if url else e(r["name"])
-    chip = f'<span class="badge {acc[0]}">{e(acc[1])}</span>' if acc else ""
-    return (f'<li class="br"><div class="brow"><h4 class="bn">{name}</h4>{chip}</div><div class="bmeta">{meta}</div><p>{e(r.get("description",""))}</p>'
-            + (f'<p class="bextra">{e(" · ".join(extra))}</p>' if extra else "")
-            + (f'<p class="bplace">{e(place)}</p>' if place else "")
-            + (f'<p class="bcontact">{" · ".join(contact)}</p>' if contact else "") + "</li>")
+        tel = re.sub(r"[^\d+]", "", r["phone"].split(" (")[0].split(" or ")[0].split(";")[0])
+        contact.append(f'<a href="tel:{e(tel)}">{e(r["phone"])}</a>' if len(tel) >= 5 and not r["phone"].lower().startswith("text") else e(r["phone"]))
+    if r.get("email"): contact.append(f'<a href="mailto:{e(r["email"].split(";")[0].strip())}">{e(r["email"])}</a>')
+    place = e(", ".join(x for x in (r.get("address", ""), r.get("town", ""), r.get("postcode", "")) if x))
+    who = (f'<div class="who">For: {e(r.get("who", ""))}' + (f' · <em>{e(r["eligibility"])}</em>' if r.get("eligibility") else "") + "</div>"
+           if r.get("who") or r.get("eligibility") else "")
+    return (f'<li data-i="{i}" data-d="{d:.3f}"><article class="card" data-id="{i}">'
+            f'<div class="row1"><span class="badge {acc[0]}">{e(acc[1])}</span><span class="chipr">{chips}</span></div>'
+            f'<h4 class="cname">{e(r["name"])}</h4><div class="meta">{e(r.get("provider", ""))} · {e(r.get("type", ""))}</div>'
+            f'<div class="next"><div class="lab">When</div><div class="val">{e(pattern(r))}</div></div>'
+            f'<p class="desc">{e(r.get("description", ""))}</p>{who}'
+            f'<div class="foot"><span>{place}</span>' + (f'<span>{" · ".join(contact)}</span>' if contact else "") + '</div></article></li>')
+
+def page_data(items):
+    """The page's records, for the browser (as <script type="application/json">: never run, and safe from </script> in a value)."""
+    data = json.dumps([{k: r.get(k, "") for k in PAGE_FIELDS} for _, r in items], ensure_ascii=False, separators=(",", ":"))
+    data = data.replace("</", "<\\/")
+    return f'<script type="application/json" id="places-data">{data}</script>'
 
 def town_options(base, current=None):
     first = "" if current else '<option value="" selected disabled>Choose a town</option>'
@@ -160,8 +166,8 @@ def town_main(town, items, dirbase, base):
     for c in CATS:
         n = counts[c["id"]]
         if not n: continue
-        inn = [row(d, r, town) for d, r in items if c["id"] in r["_cats"] and r.get("town") == town]
-        near = [row(d, r, town) for d, r in items if c["id"] in r["_cats"] and r.get("town") != town]
+        inn = [card(d, r, i) for i, (d, r) in enumerate(items) if c["id"] in r["_cats"] and r.get("town") == town]
+        near = [card(d, r, i) for i, (d, r) in enumerate(items) if c["id"] in r["_cats"] and r.get("town") != town]
         maplink = f'{dirbase}?' + (f'support={urllib.parse.quote(c["map"])}&' if c["map"] else "") + f'town={urllib.parse.quote(town)}&lat={TOWNS[town][0]}&lon={TOWNS[town][1]}&label={urllib.parse.quote(town)}#near'   # town if the directory lists it, otherwise its centre
         secs.append(f'<section class="bsec" id="{c["id"]}" data-k="{c["id"]}"><div class="bsh"><h2>{e(c["label"])} <span>{n}</span></h2>'
                     f'<a class="bmap" href="{maplink}">On the map →</a></div>'
@@ -173,7 +179,7 @@ def town_main(town, items, dirbase, base):
             + "".join(secs) +
             f'<p class="bfoot">Also: <a href="{dirbase}#talk">phone and online support</a> you can use from anywhere. '
             f'Distances are straight lines. Please check with the service before going, as details can change. Updated {UPDATED}.</p>' + other_towns(base, town)
-            + '<p class="otowns">Version: {VERSION}</p>')
+            + '<p class="otowns">Version: {VERSION}</p>' + page_data(items))
 
 def load_outline():
     """All three council areas, merged from the LSOA boundaries (docs/assets/analytics-lsoa.geojson) and simplified."""
@@ -221,7 +227,10 @@ PAGE_CSS = (HERE / "places.css").read_text(encoding="utf-8")
 # The page script: next session and 3. When? (worked out in the browser with the directory's schedule rules, from
 # build/core/js/schedule.js), the filter boxes, remembering the place for the visit, and swapping towns without a full reload.
 # The crisis bar and the helpline bar are the directory's (build/core/html/).
-PAGE_JS = inline_core("/*@core:js/helpline-height.js*/\n/*@core:js/text.js*/\n/*@core:js/schedule.js*/\n/*@page:places.js*/\n", HERE)
+PAGE_JS = inline_core("\n".join(["/*@core:js/helpline-height.js*/", "/*@core:js/text.js*/", "/*@core:js/schedule.js*/",
+    "/*@core:js/records.js*/", "/*@core:js/kinds.js*/", "/*@core:js/cards.js*/", "/*@core:js/service-card.js*/",
+    "const TOWNS = " + json.dumps(TOWNS, ensure_ascii=False) + ";   // town centres, for records with no postcode",
+    "/*@page:places.js*/", ""]), HERE)
 CRISIS, HELPLINE = (inline_core(f"<!--@core:html/{n}.html-->\n") for n in ("crisis", "helpline"))
 
 FONTS = "\n".join(l for l in tpl.splitlines() if "fonts.g" in l)   # the directory's font links, as they are
@@ -259,6 +268,7 @@ def page(title, desc, canonical, robots, main_html, filters_html, dirbase, crumb
 {filters_html}
   </div>
 </header>
+<span id="copy-live" role="status" aria-live="polite" class="vh"></span>
 <div class="bw gut">
 <div class="bmain" role="main">
 {main_html}

@@ -10,7 +10,7 @@
 .chipr { display: flex; gap: 6px; flex-wrap: wrap; }
 .chip { font-size: 10px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; color: #57534E; background: #F5F5F4; border: 1px solid var(--line); padding: 3px 7px; border-radius: 6px; }
 .chip.dist { color: var(--b800); background: var(--b50); border-color: var(--b100); text-transform: none; letter-spacing: 0; font-size: 11px; }
-.card h2 { font-family: var(--serif); color: var(--b900); font-size: 17px; line-height: 1.25; margin: 0 0 4px; text-wrap: balance; }
+.card .cname { font-family: var(--serif); color: var(--b900); font-size: 17px; line-height: 1.25; margin: 0 0 4px; text-wrap: balance; }
 .maplegend { padding: 8px 10px 6px !important; min-width: 230px; font-family: var(--sans); }
 .maplegend button { font-family: inherit; }
 .leaflet-container .leaflet-tooltip, .leaflet-container .leaflet-popup-content { font-family: var(--sans); }
