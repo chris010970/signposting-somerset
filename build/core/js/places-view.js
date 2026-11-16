@@ -45,6 +45,9 @@ function placesView({ main, hdr, scroller, onChange = () => {}, onLink = () => f
       sec.hidden = !n || (k !== "all" && sec.dataset.k !== k); if (!sec.hidden) shown++;
     });
     const none = main.querySelector(".bnone"); if (none) none.hidden = !!shown || !main.querySelector(".bsec");
+    main.querySelectorAll("a.bmap").forEach(a => {   // "On the map →": In person at the same 3. When? (its distance is set by the build)
+      const u = new URL(a.href); u.searchParams.set("when", w); a.href = u.pathname + u.search + u.hash;
+    });
   }
   const state = () => ({ href, support: $("b-support")?.value || "all", when: $("b-when")?.value || "any",
     town: $("b-town")?.selectedOptions[0]?.textContent || "" });

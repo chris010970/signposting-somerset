@@ -1,6 +1,7 @@
 /* ---------- links that open the directory already filtered ----------
    e.g. /directory/?support=bereavement&town=Frome#near · ?lat=51.21&lon=-3.6&label=near%20Porlock#near · ?support=anxiety#talk
-   support (any tab), town or lat + lon (+ label), within and when (In person). Unknown values are ignored, so a bad link still
+   · ?place=wells&support=low-mood#places
+   support (any tab), town or lat + lon (+ label), within and when (In person); place, support and when (Places: places-tab.js). Unknown values are ignored, so a bad link still
    opens the normal page. The address bar follows the filters, so any view can be copied as a link (never "Use my location"). */
 // The choices made earlier in this visit come back (kept in this browser tab only, never "Use my location"), so reloading
 // doesn't reset them. A link's own choices win for the tab it opens.
@@ -8,8 +9,9 @@ const STATE_KEY = "ss-directory:" + location.pathname;   // the live and test co
 const SAVED = (() => {   // { near, talk, course: each tab's filters as a link; sort, area, open, fmt, book; scroll; places } (saveState)
   try { return JSON.parse(sessionStorage.getItem(STATE_KEY) || "null") || {}; } catch (e) { return {}; }
 })();
-const LINK = (() => {   // In person's filters to open with: the address's, or this visit's
-  try { return new URLSearchParams(location.search || SAVED.near || ""); } catch (e) { return new URLSearchParams(); }
+const LINK_TAB = location.search ? location.hash.slice(1) || "near" : "";   // the tab a link opened, with its filters in the address
+const LINK = (() => {   // In person's filters to open with: the address's (a link to In person, Phone and online or Courses), or this visit's
+  try { return new URLSearchParams(LINK_TAB && LINK_TAB !== "places" ? location.search : SAVED.near || ""); } catch (e) { return new URLSearchParams(); }
 })();
 let recordsIn = false;   // nothing is remembered until the records (and so every choice) are in place
 let userChanged = false;   // once the person changes a filter, a late-arriving sheet doesn't put the link's choices back
@@ -41,9 +43,8 @@ function applyLinkNear(link) {   // In person's filters from a link's settings (
 }
 function restoreOthers() {   // the other tabs' choices from earlier in this visit (In person's come back through LINK)
   const sup = (sel, q) => { const v = new URLSearchParams(q || "").get("support"); if (!pickOpt(sel, v)) sel.value = ""; };
-  const linkTab = location.search ? location.hash.slice(1) : "";   // the tab a link opened: its support stays the link's
-  if (linkTab !== "talk") sup($("t-support"), SAVED.talk);
-  if (linkTab !== "course") sup($("c-support"), SAVED.course);
+  if (LINK_TAB !== "talk") sup($("t-support"), SAVED.talk);   // the tab a link opened: its support stays the link's
+  if (LINK_TAB !== "course") sup($("c-support"), SAVED.course);
   if (SAVED.area !== undefined) pickOpt($("t-area"), SAVED.area) || ($("t-area").value = "");
   if (SAVED.fmt !== undefined) pickOpt($("c-fmt"), SAVED.fmt) || ($("c-fmt").value = "");
   $("t-open").checked = !!SAVED.open; $("c-book").checked = !!SAVED.book;
@@ -64,7 +65,8 @@ function linkFor(t) {   // the current filters, as the part of the address after
     else if (n === "__pt" && searchPoint && searchPoint.link) { q.set("lat", searchPoint.lat.toFixed(4)); q.set("lon", searchPoint.lon.toFixed(4)); q.set("label", searchPoint.label); }
     if (searchPoint && $("within").value !== "10") q.set("within", $("within").value);
     if ($("f-when").value !== "week") q.set("when", $("f-when").value);
-  } else if (t === "talk" && $("t-support").value) q.set("support", $("t-support").value);
+  } else if (t === "places") placesQuery(q);
+  else if (t === "talk" && $("t-support").value) q.set("support", $("t-support").value);
   else if (t === "course" && $("c-support").value) q.set("support", $("c-support").value);
   return q.toString();
 }
@@ -79,10 +81,10 @@ function syncLink() {
 // Switching tabs, going to Places and back, or reloading: each tab's list is where it was left (In person's list starts at
 // the top again when its filters change). Kept with the other choices; a link that opens the directory filtered starts at the top.
 const SCROLLERS = { near: "list", talk: "panel-talk", course: "panel-course", places: "panel-places", about: "panel-about" };
-const scrollPos = (() => {   // this visit's positions; a link (e.g. "On the map" from Places) opens In person at the top
+const scrollPos = (() => {   // this visit's positions; a link opens its list at the top (e.g. "On the map" from Places: In person)
   try {
     const all = { ...(JSON.parse(sessionStorage.getItem(STATE_KEY) || "null") || {}).scroll };
-    if (location.search) delete all.near;
+    if (LINK_TAB) delete all[LINK_TAB === "places" ? "places" : "near"];
     return all;
   } catch (e) { return {}; }
 })();

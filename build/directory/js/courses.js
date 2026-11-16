@@ -34,9 +34,9 @@ function renderCourses() {
   $("q-csupport").classList.toggle("on", !!sup); $("q-cfmt").classList.toggle("on", !!fmt); $("q-cbook").classList.toggle("on", canJoin);
   let rows = C.filter(s => (!sup || s._sf.includes(sup)) && (!fmt || split(s.mode).includes(fmt))).map(s => ({ s, ci: courseInfo(s, now) }));
   if (canJoin) rows = rows.filter(r => r.ci.join);
-  rows.sort((a, b) => (b.ci.join - a.ci.join) || (a.ci.order - b.ci.order));   // can still join first, then by start date
+  rows.sort((a, b) => (b.ci.join - a.ci.join) || (a.ci.order - b.ci.order));   // upcoming or rolling first, then by start date
   $("courses").innerHTML = rows.length ? `<h2 class="gh">Courses<small>${rows.length}</small></h2><div class="tgrid">${rows.map(courseCard).join("")}</div>`
-    : `<div class="empty"><strong>No courses match</strong><br>Try "Anything", or untick "Can still join".</div>`;
+    : `<div class="empty"><strong>No courses match</strong><br>Try "Anything", or untick "Upcoming or rolling".</div>`;
 }
 $("c-support").onchange = renderCourses;
 $("c-fmt").onchange = renderCourses;

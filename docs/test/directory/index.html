@@ -1058,7 +1058,8 @@ footer.urgent p { color: #FEE2E2; }
 
 <aside class="crisis gut" aria-label="Crisis help">
   <div><b>Crisis</b>Immediate danger or medical emergency: call <a href="tel:999">999</a> or NHS <a href="tel:111">111 (option 2)</a></div>
-  <a class="exit" href="https://www.bbc.co.uk/weather" rel="noopener">Quick exit</a>
+  <!-- Quick exit replaces this page, so Back doesn't return to the site (it can't clear the browser's history) -->
+  <a class="exit" href="https://www.bbc.co.uk/weather" rel="noopener" onclick="location.replace(this.href);return false">Quick exit</a>
 </aside>
 
 <header class="top gut">
@@ -1078,27 +1079,29 @@ footer.urgent p { color: #FEE2E2; }
       <button type="button" id="tab-about" aria-controls="panel-about">About</button>
       <a class="tolink" href="/signposting-somerset-v2/test/tools/">Tools →</a>    </nav>
     </div>
+    <!-- The filter boxes (selects) have autocomplete="off": on Back, the browser mustn't put old values back in them (the page keeps
+         its own choices: js/links.js) -->
     <div id="hdr-talk" class="tq">
-      <div class="q" id="q-tsupport"><label for="t-support">1. Support for</label><select id="t-support"></select></div>
-      <div class="q" id="q-tarea"><label for="t-area">2. Coverage</label><select id="t-area"><option value="">Local and UK-wide</option><option value="local">Local only</option><option value="national">UK-wide only</option></select></div>
+      <div class="q" id="q-tsupport"><label for="t-support">1. Support for</label><select autocomplete="off" id="t-support"></select></div>
+      <div class="q" id="q-tarea"><label for="t-area">2. Coverage</label><select autocomplete="off" id="t-area"><option value="">Local and UK-wide</option><option value="local">Local only</option><option value="national">UK-wide only</option></select></div>
       <label class="toggle" id="q-open"><input type="checkbox" id="t-open"> Open now only</label>
     </div>
     <div id="hdr-course" class="tq" hidden>
-      <div class="q" id="q-csupport"><label for="c-support">1. Support for</label><select id="c-support"></select></div>
-      <div class="q" id="q-cfmt"><label for="c-fmt">2. Format</label><select id="c-fmt"><option value="">In person or online</option><option value="in-person">In person</option><option value="online">Online</option></select></div>
-      <label class="toggle" id="q-cbook"><input type="checkbox" id="c-book"> Can still join</label>
+      <div class="q" id="q-csupport"><label for="c-support">1. Support for</label><select autocomplete="off" id="c-support"></select></div>
+      <div class="q" id="q-cfmt"><label for="c-fmt">2. Format</label><select autocomplete="off" id="c-fmt"><option value="">In person or online</option><option value="in-person">In person</option><option value="online">Online</option></select></div>
+      <label class="toggle" id="q-cbook"><input type="checkbox" id="c-book"> Upcoming or rolling</label>
     </div>
     <div id="hdr-about" hidden></div>
     <div id="hdr-places" hidden><div id="hdr-towns"></div></div>
     <div id="hdr-near" hidden>
     <div class="qs">
       <div class="q" id="q-support"><label for="f-support">1. Support for</label>
-        <select id="f-support"></select></div>
+        <select autocomplete="off" id="f-support"></select></div>
       <div class="q" id="q-where"><span class="lab">2. Where?</span>
         <div class="where">
-          <select id="f-town" aria-label="Town"></select>
+          <select autocomplete="off" id="f-town" aria-label="Town"></select>
           <button type="button" class="locbtn" id="uselocation" hidden aria-label="Use my location" title="Use my location (stays on your device: not stored or sent anywhere)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="7"/><circle cx="12" cy="12" r="2.5" fill="currentColor"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3"/></svg></button>
-          <select id="within" aria-label="Distance">
+          <select autocomplete="off" id="within" aria-label="Distance">
             <option value="2">within 2 miles</option><option value="5">within 5 miles</option>
             <option value="10" selected>within 10 miles</option><option value="20">within 20 miles</option><option value="0">any distance</option>
           </select>
@@ -1106,7 +1109,7 @@ footer.urgent p { color: #FEE2E2; }
         <div class="pointnote" id="pointnote"></div>
       </div>
       <div class="q" id="q-when"><label for="f-when">3. When? <span id="today" style="float:right;text-transform:none;letter-spacing:0;color:#6B645F;font-weight:500"></span></label>
-        <select id="f-when">
+        <select autocomplete="off" id="f-when">
           <option value="any">Any time</option><option value="now">Open now (drop-ins)</option><option value="today">Today</option>
           <option value="evening">This evening (after 5pm)</option><option value="tomorrow">Tomorrow</option>
           <option value="weekend">This weekend</option><option value="week" selected>Next 7 days</option><option value="month">Next 4 weeks</option>
@@ -1550,6 +1553,9 @@ function placesView({ main, hdr, scroller, onChange = () => {}, onLink = () => f
       sec.hidden = !n || (k !== "all" && sec.dataset.k !== k); if (!sec.hidden) shown++;
     });
     const none = main.querySelector(".bnone"); if (none) none.hidden = !!shown || !main.querySelector(".bsec");
+    main.querySelectorAll("a.bmap").forEach(a => {   // "On the map →": In person at the same 3. When? (its distance is set by the build)
+      const u = new URL(a.href); u.searchParams.set("when", w); a.href = u.pathname + u.search + u.hash;
+    });
   }
   const state = () => ({ href, support: $("b-support")?.value || "all", when: $("b-when")?.value || "any",
     town: $("b-town")?.selectedOptions[0]?.textContent || "" });
@@ -2087,9 +2093,9 @@ function renderCourses() {
   $("q-csupport").classList.toggle("on", !!sup); $("q-cfmt").classList.toggle("on", !!fmt); $("q-cbook").classList.toggle("on", canJoin);
   let rows = C.filter(s => (!sup || s._sf.includes(sup)) && (!fmt || split(s.mode).includes(fmt))).map(s => ({ s, ci: courseInfo(s, now) }));
   if (canJoin) rows = rows.filter(r => r.ci.join);
-  rows.sort((a, b) => (b.ci.join - a.ci.join) || (a.ci.order - b.ci.order));   // can still join first, then by start date
+  rows.sort((a, b) => (b.ci.join - a.ci.join) || (a.ci.order - b.ci.order));   // upcoming or rolling first, then by start date
   $("courses").innerHTML = rows.length ? `<h2 class="gh">Courses<small>${rows.length}</small></h2><div class="tgrid">${rows.map(courseCard).join("")}</div>`
-    : `<div class="empty"><strong>No courses match</strong><br>Try "Anything", or untick "Can still join".</div>`;
+    : `<div class="empty"><strong>No courses match</strong><br>Try "Anything", or untick "Upcoming or rolling".</div>`;
 }
 $("c-support").onchange = renderCourses;
 $("c-fmt").onchange = renderCourses;
@@ -2146,13 +2152,14 @@ function renderAbout() {
     </section>
     </div></div>
     <p class="small">Service information belongs to the providers listed. Map data © <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap</a> contributors, © <a href="https://carto.com/attributions" target="_blank" rel="noopener">CARTO</a>.</p>
-    <p class="small" id="site-version">Version: test 2026-11-16 16:18</p>
+    <p class="small" id="site-version">Version: test 2026-11-16 17:09</p>
   </article>`;
 }
 /* ---------- Places: the town listings, as a tab of the directory ----------
    Each town's listing is its standalone Places page (built from the sheet by build/places/build_places.py, for search
    engines); this tab shows that page's filter boxes and listings inside the directory, with the shared Places code
-   (core/js/places-view.js). Opens on the town last looked at this visit, here or on a standalone Places page. */
+   (core/js/places-view.js). Opens on the link's town (?place=wells#places), else the town last looked at this visit, here
+   or on a standalone Places page. The address bar follows the town and filters, so the view can be copied as a link. */
 const PLACES_URL = new URL("places/", location.href).pathname;   // the Places pages beside this copy of the directory
 let placesOpened = false;
 const places = placesView({
@@ -2174,13 +2181,28 @@ function placesSaved() {
   try { return JSON.parse(sessionStorage.getItem("ss-places:" + PLACES_URL) || "null") || {}; } catch (_) { return {}; }
 }
 const placesState = () => placesOpened ? places.state() : SAVED.places;
+// A town's page address and its name in links ("wells"): the town pages are /places/<name>/
+const placeName = href => href && href.startsWith(PLACES_URL) ? href.slice(PLACES_URL.length).replace(/\/$/, "") : "";
+const placeHref = name => /^[a-z0-9-]+$/.test(name || "") ? PLACES_URL + name + "/" : PLACES_URL;
+function placesQuery(q) {   // the tab's town and filters, for the address (links.js); the defaults are left out
+  const s = placesState() || {};
+  if (placeName(s.href)) q.set("place", placeName(s.href));
+  if (s.support && s.support !== "all") q.set("support", s.support);
+  if (s.when && s.when !== "any") q.set("when", s.when);
+}
+// Opening from a link: its town and filters; a town that isn't there opens the choose-a-town page
+function placesFromLink() {
+  const q = new URLSearchParams(location.search);
+  return { href: placeHref(q.get("place")), support: q.get("support") || "all", when: q.get("when") || undefined };
+}
 // The first time the tab opens: the remembered town (or the choose-a-town page), where it was left
 async function showPlaces() {
   if (placesOpened) { $("panel-places").scrollTop = scrollPos.places || 0; return; }   // back to it: where it was
   placesOpened = true;
-  const p = placesSaved();
+  const p = LINK_TAB === "places" ? placesFromLink() : placesSaved();
   const href = p.href && p.href.startsWith(PLACES_URL) ? p.href : PLACES_URL;
-  await places.show(href, { support: p.support, when: p.when, scroll: scrollPos.places || p.scroll || 0 });
+  const opts = { support: p.support, when: p.when, scroll: LINK_TAB === "places" ? 0 : scrollPos.places || p.scroll || 0 };
+  if (!await places.show(href, opts) && href !== PLACES_URL) await places.show(PLACES_URL, opts);
   scrollRestored.add("places");
 }
 /* ---------- tabs: In person, Phone and online, Courses, Places, About (Tools → is a link to the tools page) ---------- */
@@ -2209,7 +2231,8 @@ for (const k of SITE_TABS) $("tab-" + k).onclick = () => setSiteTab(k);
 addEventListener("resize", () => map && map.invalidateSize());
 /* ---------- links that open the directory already filtered ----------
    e.g. /directory/?support=bereavement&town=Frome#near · ?lat=51.21&lon=-3.6&label=near%20Porlock#near · ?support=anxiety#talk
-   support (any tab), town or lat + lon (+ label), within and when (In person). Unknown values are ignored, so a bad link still
+   · ?place=wells&support=low-mood#places
+   support (any tab), town or lat + lon (+ label), within and when (In person); place, support and when (Places: places-tab.js). Unknown values are ignored, so a bad link still
    opens the normal page. The address bar follows the filters, so any view can be copied as a link (never "Use my location"). */
 // The choices made earlier in this visit come back (kept in this browser tab only, never "Use my location"), so reloading
 // doesn't reset them. A link's own choices win for the tab it opens.
@@ -2217,8 +2240,9 @@ const STATE_KEY = "ss-directory:" + location.pathname;   // the live and test co
 const SAVED = (() => {   // { near, talk, course: each tab's filters as a link; sort, area, open, fmt, book; scroll; places } (saveState)
   try { return JSON.parse(sessionStorage.getItem(STATE_KEY) || "null") || {}; } catch (e) { return {}; }
 })();
-const LINK = (() => {   // In person's filters to open with: the address's, or this visit's
-  try { return new URLSearchParams(location.search || SAVED.near || ""); } catch (e) { return new URLSearchParams(); }
+const LINK_TAB = location.search ? location.hash.slice(1) || "near" : "";   // the tab a link opened, with its filters in the address
+const LINK = (() => {   // In person's filters to open with: the address's (a link to In person, Phone and online or Courses), or this visit's
+  try { return new URLSearchParams(LINK_TAB && LINK_TAB !== "places" ? location.search : SAVED.near || ""); } catch (e) { return new URLSearchParams(); }
 })();
 let recordsIn = false;   // nothing is remembered until the records (and so every choice) are in place
 let userChanged = false;   // once the person changes a filter, a late-arriving sheet doesn't put the link's choices back
@@ -2250,9 +2274,8 @@ function applyLinkNear(link) {   // In person's filters from a link's settings (
 }
 function restoreOthers() {   // the other tabs' choices from earlier in this visit (In person's come back through LINK)
   const sup = (sel, q) => { const v = new URLSearchParams(q || "").get("support"); if (!pickOpt(sel, v)) sel.value = ""; };
-  const linkTab = location.search ? location.hash.slice(1) : "";   // the tab a link opened: its support stays the link's
-  if (linkTab !== "talk") sup($("t-support"), SAVED.talk);
-  if (linkTab !== "course") sup($("c-support"), SAVED.course);
+  if (LINK_TAB !== "talk") sup($("t-support"), SAVED.talk);   // the tab a link opened: its support stays the link's
+  if (LINK_TAB !== "course") sup($("c-support"), SAVED.course);
   if (SAVED.area !== undefined) pickOpt($("t-area"), SAVED.area) || ($("t-area").value = "");
   if (SAVED.fmt !== undefined) pickOpt($("c-fmt"), SAVED.fmt) || ($("c-fmt").value = "");
   $("t-open").checked = !!SAVED.open; $("c-book").checked = !!SAVED.book;
@@ -2273,7 +2296,8 @@ function linkFor(t) {   // the current filters, as the part of the address after
     else if (n === "__pt" && searchPoint && searchPoint.link) { q.set("lat", searchPoint.lat.toFixed(4)); q.set("lon", searchPoint.lon.toFixed(4)); q.set("label", searchPoint.label); }
     if (searchPoint && $("within").value !== "10") q.set("within", $("within").value);
     if ($("f-when").value !== "week") q.set("when", $("f-when").value);
-  } else if (t === "talk" && $("t-support").value) q.set("support", $("t-support").value);
+  } else if (t === "places") placesQuery(q);
+  else if (t === "talk" && $("t-support").value) q.set("support", $("t-support").value);
   else if (t === "course" && $("c-support").value) q.set("support", $("c-support").value);
   return q.toString();
 }
@@ -2288,10 +2312,10 @@ function syncLink() {
 // Switching tabs, going to Places and back, or reloading: each tab's list is where it was left (In person's list starts at
 // the top again when its filters change). Kept with the other choices; a link that opens the directory filtered starts at the top.
 const SCROLLERS = { near: "list", talk: "panel-talk", course: "panel-course", places: "panel-places", about: "panel-about" };
-const scrollPos = (() => {   // this visit's positions; a link (e.g. "On the map" from Places) opens In person at the top
+const scrollPos = (() => {   // this visit's positions; a link opens its list at the top (e.g. "On the map" from Places: In person)
   try {
     const all = { ...(JSON.parse(sessionStorage.getItem(STATE_KEY) || "null") || {}).scroll };
-    if (location.search) delete all.near;
+    if (LINK_TAB) delete all[LINK_TAB === "places" ? "places" : "near"];
     return all;
   } catch (e) { return {}; }
 })();

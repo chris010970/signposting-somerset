@@ -1287,7 +1287,8 @@ footer.urgent p { color: #FEE2E2; }
 
 <aside class="crisis gut" aria-label="Crisis help">
   <div><b>Crisis</b>Immediate danger or medical emergency: call <a href="tel:999">999</a> or NHS <a href="tel:111">111 (option 2)</a></div>
-  <a class="exit" href="https://www.bbc.co.uk/weather" rel="noopener">Quick exit</a>
+  <!-- Quick exit replaces this page, so Back doesn't return to the site (it can't clear the browser's history) -->
+  <a class="exit" href="https://www.bbc.co.uk/weather" rel="noopener" onclick="location.replace(this.href);return false">Quick exit</a>
 </aside>
 
 <header class="top gut">
@@ -1835,7 +1836,7 @@ function renderAbout() {
       <li><strong>Data:</strong> ONS boundaries, population (mid-2022) and urban/rural classification; MHCLG Indices of Deprivation 2025; Census 2021; open postcode data (2016). Open Government Licence.</li>
     </ul>
     </div></div>
-    <p class="small" id="site-version">Version: tools 2026-11-16 16:18${typeof window.assistRelayVersion === "function" ? window.assistRelayVersion() : ""}</p>
+    <p class="small" id="site-version">Version: tools 2026-11-16 17:06${typeof window.assistRelayVersion === "function" ? window.assistRelayVersion() : ""}</p>
   </article>`;
 }
 
@@ -2317,7 +2318,7 @@ async function initAnalytics() {
    this page only remembers it for the current browser session. */
 (() => {
 const WORKER_URL = "https://signposting-assist.c-r-williams0109.workers.dev";
-const PAGE_VERSION = "tools 2026-11-16 16:18";
+const PAGE_VERSION = "tools 2026-11-16 17:06";
 let relayVersion = "";
 // The version line is at the bottom of the About tab: "Version: test 2026-11-06 11:30 · Assist relay 2026-11-06 11:07"
 window.assistRelayVersion = () => relayVersion ? ` · Assist relay ${relayVersion}` : "";

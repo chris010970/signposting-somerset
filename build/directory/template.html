@@ -43,27 +43,29 @@
       <button type="button" id="tab-about" aria-controls="panel-about">About</button>
       <a class="tolink" href="/tools/">Tools →</a>    </nav>
     </div>
+    <!-- The filter boxes (selects) have autocomplete="off": on Back, the browser mustn't put old values back in them (the page keeps
+         its own choices: js/links.js) -->
     <div id="hdr-talk" class="tq">
-      <div class="q" id="q-tsupport"><label for="t-support">1. Support for</label><select id="t-support"></select></div>
-      <div class="q" id="q-tarea"><label for="t-area">2. Coverage</label><select id="t-area"><option value="">Local and UK-wide</option><option value="local">Local only</option><option value="national">UK-wide only</option></select></div>
+      <div class="q" id="q-tsupport"><label for="t-support">1. Support for</label><select autocomplete="off" id="t-support"></select></div>
+      <div class="q" id="q-tarea"><label for="t-area">2. Coverage</label><select autocomplete="off" id="t-area"><option value="">Local and UK-wide</option><option value="local">Local only</option><option value="national">UK-wide only</option></select></div>
       <label class="toggle" id="q-open"><input type="checkbox" id="t-open"> Open now only</label>
     </div>
     <div id="hdr-course" class="tq" hidden>
-      <div class="q" id="q-csupport"><label for="c-support">1. Support for</label><select id="c-support"></select></div>
-      <div class="q" id="q-cfmt"><label for="c-fmt">2. Format</label><select id="c-fmt"><option value="">In person or online</option><option value="in-person">In person</option><option value="online">Online</option></select></div>
-      <label class="toggle" id="q-cbook"><input type="checkbox" id="c-book"> Can still join</label>
+      <div class="q" id="q-csupport"><label for="c-support">1. Support for</label><select autocomplete="off" id="c-support"></select></div>
+      <div class="q" id="q-cfmt"><label for="c-fmt">2. Format</label><select autocomplete="off" id="c-fmt"><option value="">In person or online</option><option value="in-person">In person</option><option value="online">Online</option></select></div>
+      <label class="toggle" id="q-cbook"><input type="checkbox" id="c-book"> Upcoming or rolling</label>
     </div>
     <div id="hdr-about" hidden></div>
     <div id="hdr-places" hidden><div id="hdr-towns"></div></div>
     <div id="hdr-near" hidden>
     <div class="qs">
       <div class="q" id="q-support"><label for="f-support">1. Support for</label>
-        <select id="f-support"></select></div>
+        <select autocomplete="off" id="f-support"></select></div>
       <div class="q" id="q-where"><span class="lab">2. Where?</span>
         <div class="where">
-          <select id="f-town" aria-label="Town"></select>
+          <select autocomplete="off" id="f-town" aria-label="Town"></select>
           <button type="button" class="locbtn" id="uselocation" hidden aria-label="Use my location" title="Use my location (stays on your device: not stored or sent anywhere)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="7"/><circle cx="12" cy="12" r="2.5" fill="currentColor"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3"/></svg></button>
-          <select id="within" aria-label="Distance">
+          <select autocomplete="off" id="within" aria-label="Distance">
             <option value="2">within 2 miles</option><option value="5">within 5 miles</option>
             <option value="10" selected>within 10 miles</option><option value="20">within 20 miles</option><option value="0">any distance</option>
           </select>
@@ -71,7 +73,7 @@
         <div class="pointnote" id="pointnote"></div>
       </div>
       <div class="q" id="q-when"><label for="f-when">3. When? <span id="today" style="float:right;text-transform:none;letter-spacing:0;color:#6B645F;font-weight:500"></span></label>
-        <select id="f-when">
+        <select autocomplete="off" id="f-when">
           <option value="any">Any time</option><option value="now">Open now (drop-ins)</option><option value="today">Today</option>
           <option value="evening">This evening (after 5pm)</option><option value="tomorrow">Tomorrow</option>
           <option value="weekend">This weekend</option><option value="week" selected>Next 7 days</option><option value="month">Next 4 weeks</option>

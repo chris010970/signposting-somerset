@@ -45,6 +45,9 @@ UPDATED = f"{NOW.day} {NOW:%B %Y}"
 
 # Shared look: the directory's own stylesheet, taken from its template at build time, so the two never drift apart.
 tpl = inline_core((BUILD / "directory" / "template.html").read_text(encoding="utf-8"), BUILD / "directory")   # with its shared and own code
+# "On the map →" opens In person at this page's range: its smallest distance that covers RADIUS (the directory's own choices)
+_within = sorted(int(v) for v in re.findall(r'value="(\d+)"', re.search(r'<select[^>]*id="within".*?</select>', tpl, re.S).group(0)) if int(v))
+MAP_WITHIN = next((w for w in _within if w >= RADIUS), 0)   # 0: any distance
 SITE_CSS = re.search(r"<style>\n(.*?)</style>", tpl, re.S).group(1)
 
 e = lambda s: html.escape(str(s), quote=True)
@@ -164,9 +167,10 @@ def filters(base, current=None, counts=None, total=0):
     if counts is None: sup = ['<option value="all">All support</option>'] + [f'<option value="{c["id"]}">{e(c["label"])}</option>' for c in CATS]
     else: sup = [f'<option value="all">All support ({total})</option>'] + [f'<option value="{c["id"]}">{e(c["label"])} ({counts[c["id"]]})</option>' for c in CATS if counts[c["id"]]]
     return (f'<div id="hdr-towns"><div class="qs">'
-            f'<div class="q" id="bq-support"><label for="b-support">1. Support for</label><select id="b-support">{"".join(sup)}</select></div>'
-            f'<div class="q{" on" if current else ""}" id="bq-town"><label for="b-town">2. Where?</label><select id="b-town">{town_options(base, current)}</select></div>'
-            f'<div class="q" id="bq-when"><label for="b-when">3. When? <span class="btoday"></span></label><select id="b-when">{WHEN_OPTIONS}</select></div>'
+            # autocomplete="off": on Back, the browser mustn't put old values in the boxes (the pages keep their own choices)
+            f'<div class="q" id="bq-support"><label for="b-support">1. Support for</label><select autocomplete="off" id="b-support">{"".join(sup)}</select></div>'
+            f'<div class="q{" on" if current else ""}" id="bq-town"><label for="b-town">2. Where?</label><select autocomplete="off" id="b-town">{town_options(base, current)}</select></div>'
+            f'<div class="q" id="bq-when"><label for="b-when">3. When? <span class="btoday"></span></label><select autocomplete="off" id="b-when">{WHEN_OPTIONS}</select></div>'
             f'</div></div>')
 
 def other_towns(base, current):
@@ -189,7 +193,7 @@ def town_main(town, items, dirbase, base):
         if not n: continue
         inn = [card(d, r, i) for i, (d, r) in enumerate(items) if c["id"] in r["_cats"] and r.get("town") == town]
         near = [card(d, r, i) for i, (d, r) in enumerate(items) if c["id"] in r["_cats"] and r.get("town") != town]
-        maplink = f'{dirbase}?' + (f'support={urllib.parse.quote(c["map"])}&' if c["map"] else "") + f'town={urllib.parse.quote(town)}&lat={TOWNS[town][0]}&lon={TOWNS[town][1]}&label={urllib.parse.quote(town)}#near'   # town if the directory lists it, otherwise its centre
+        maplink = f'{dirbase}?' + (f'support={urllib.parse.quote(c["map"])}&' if c["map"] else "") + f'town={urllib.parse.quote(town)}&lat={TOWNS[town][0]}&lon={TOWNS[town][1]}&label={urllib.parse.quote(town)}&within={MAP_WITHIN}#near'   # town if the directory lists it, otherwise its centre; when: places-view.js
         secs.append(f'<section class="bsec" id="{c["id"]}" data-k="{c["id"]}"><div class="bsh"><h2>{e(c["label"])} <span>{n}</span></h2>'
                     f'<a class="bmap" href="{maplink}">On the map →</a></div>'
                     + (f'<h3 class="vh" data-l="In {e(town)}">In {e(town)} · {len(inn)}</h3><ul class="blist">{"".join(inn)}</ul>' if inn else "")   # (the page heading already names the town: label for screen readers only)

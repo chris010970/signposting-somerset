@@ -217,9 +217,59 @@ test("Places tab: the town listings inside the directory, with no page reload", 
   await p.click("#tab-talk"); await p.click("#tab-places");
   assert.deepEqual(await p.evaluate(() => ["b-town", "b-support", "b-when"].map(i => document.getElementById(i).selectedOptions[0].textContent)),
     ["Wells", await p.$eval("#b-support", s => s.selectedOptions[0].textContent), "Next 7 days"]);
+  const link = await p.evaluate(() => location.search + location.hash);
+  assert.match(link, /^\?place=wells&support=bereavement&when=week#places$/, "the address names the town and its filters");
   await p.click('#places-main a[href$="#talk"]'); assert.equal(await p.evaluate(() => tab), "talk", "phone and online link opens that tab");
   assert.equal(loads, 0, "no page loads");
   assert.deepEqual(p.errors, []);
+  await p.done();
+  // That address, opened afresh (a shared link): the same town and filters
+  const q = await open("/test/directory/" + link);
+  assert.match(await text(q, "#places-main .bhead .bt"), /Support in and around Wells/, "a shared link opens its town");
+  assert.deepEqual(await q.evaluate(() => [document.getElementById("b-support").value, document.getElementById("b-when").value]), ["bereavement", "week"]);
+  assert.equal(await q.evaluate(() => location.search + location.hash), link, "and keeps its address");
+  assert.deepEqual(q.errors, []);
+  await q.done();
+  const bad = await open("/test/directory/?place=nowhere#places");
+  assert.equal(await text(bad, "#places-main .bt"), "Places", "an unknown town opens the choose-a-town page");
+  await bad.done();
+});
+
+test("Back to the directory: every tab's filters are as they were (the browser doesn't put back old values)", async () => {
+  const p = await open("/test/directory/#near");
+  await p.selectOption("#f-town", "Taunton"); await p.selectOption("#f-support", "low mood"); await p.selectOption("#within", "5"); await p.selectOption("#f-when", "month");
+  await p.click("#tab-talk"); await p.selectOption("#t-area", "local"); await p.check("#t-open");
+  await p.click("#tab-places"); await p.waitForTimeout(600); await p.selectOption("#b-town", { label: "Frome" }); await p.waitForTimeout(600);
+  await p.click(".sitetabs a.tolink"); await p.waitForTimeout(600);
+  await p.goBack(); await p.waitForTimeout(1200);
+  assert.equal(await p.evaluate(() => document.getElementById("b-town").selectedOptions[0].textContent), "Frome", "Places");
+  await p.click("#tab-near"); await p.waitForTimeout(300);
+  assert.deepEqual(await p.evaluate(() => ["f-town", "f-support", "within", "f-when"].map(i => document.getElementById(i).value)), ["Taunton", "low mood", "5", "month"], "In person");
+  assert.match(await text(p, "#summary"), /Low mood within 5 miles of Taunton/, "and its list matches its filters");
+  await p.click("#tab-talk");
+  assert.deepEqual(await p.evaluate(() => [document.getElementById("t-area").value, document.getElementById("t-open").checked]), ["local", true], "Phone and online");
+  assert.deepEqual(p.errors, []);
+  await p.done();
+});
+
+test("On the map → from Places: In person at the same town, support, distance and 3. When?", async () => {
+  const p = await open("/test/directory/#places"); await p.waitForTimeout(400);
+  await p.selectOption("#b-town", { label: "Taunton" }); await p.waitForTimeout(600);
+  await p.selectOption("#b-when", "week");
+  await p.evaluate(() => document.querySelector("#places-main .bsec:not([hidden]) a.bmap").click()); await p.waitForTimeout(800);
+  assert.equal(await p.evaluate(() => tab), "near");
+  const within = await p.$eval("#within", s => s.value);
+  assert.ok(+within >= 8, `a distance covering the Places page's 8 miles (${within})`);
+  assert.deepEqual(await p.evaluate(() => [document.getElementById("f-town").value, document.getElementById("f-when").value]), ["Taunton", "week"]);
+  await p.done();
+});
+
+test("Quick exit: leaves the site, and Back doesn't return to it", async () => {
+  const p = await open("/test/directory/#near");
+  await p.route("https://www.bbc.co.uk/**", r => r.fulfill({ status: 200, contentType: "text/html", body: "<title>Weather</title>" }));
+  await p.click(".crisis a.exit"); await p.waitForURL(/bbc\.co\.uk/);
+  await p.goBack().catch(() => {}); await p.waitForTimeout(300);
+  assert.ok(!/signposting|localhost/.test(p.url()), `Back goes to before the site, not to it (${p.url()})`);
   await p.done();
 });
 
