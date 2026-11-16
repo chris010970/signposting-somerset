@@ -1,7 +1,7 @@
 /* ---------- Copy details ---------- */
 // Plain text for a text message, email or case notes: the regular pattern rather than the next date, so it stays right
 const COPY_ICON = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>';
-const copyBtn = (s, when) => `<button type="button" class="copy" data-copy="${s.id}"${when ? ` data-when="${esc(when)}"` : ""} aria-label="Copy details" data-tip="Copy details">${COPY_ICON}</button>`;
+const copyBtn = (s, when) => `<button type="button" class="copy" data-copy="${s.id}"${when ? ` data-when="${esc(when)}"` : ""} aria-label="Copy details for ${esc(s.name)}" data-tip="Copy details">${COPY_ICON}</button>`;
 const ampm = t => { const [h, m] = t.split(":").map(Number); return `${h % 12 || 12}${m ? ":" + String(m).padStart(2, "0") : ""}${h < 12 ? "am" : "pm"}`; };
 function copyWhen(s) {
   const allDay = /^00:00-23:5\d$/.test(s.times || "");

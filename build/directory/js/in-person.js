@@ -56,7 +56,7 @@ function render() {
     : `<div class="empty"><strong>No matches</strong><br>Try a wider distance or a different time, or use the 24/7 helplines below.</div>`;
   else $("list").innerHTML = rows.map(r => serviceCard(r)).join("") + moreLine +
     (checkRows.length ? `<div class="groupline">Times to check${win ? " (may also run then)" : ""}</div>` + checkRows.map(r => serviceCard(r)).join("") : "");
-  $("list").scrollTop = top;
+  scroller("near").scrollTop = top;
   $("help").classList.toggle("urgent", total <= 2);
   $("help-title").textContent = total <= 2 ? "Nothing suitable right now? Talk to someone straight away" : "Always available: 24/7 helplines";
   drawMap([...rows, ...checkRows], rad);

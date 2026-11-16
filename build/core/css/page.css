@@ -4,6 +4,17 @@ header.top { position: relative; overflow: hidden; background: var(--white); bor
 /* Where the header's content starts, measured on the window: content below the header that scrolls in its own panel
    uses it, so a panel's scrollbar (Windows) can't move it out of line with the header. 1432px = 1400 + the 16px gutters. */
 :root { --page-left: max(0px, calc((100vw - 1432px) / 2)); }
+/* A panel that scrolls under the fixed header; or, when the whole page scrolls (phones, short screens such as a laptop
+   zoomed in: core/js/page-flow.js), part of the page, with the helpline bar at the end on very short screens */
+.pane { flex: 1; min-height: 0; overflow-y: auto; }
+html.flow, html.flow body { height: auto; }
+html.flow body { display: block; }
+html.flow .pane { overflow: visible; }
+html.short footer.help { position: static; }
+/* "Skip to results": the first thing a keyboard reaches, shown only when it has focus */
+.skip { position: absolute; left: 8px; top: -60px; z-index: 2000; background: var(--white); color: var(--b900); padding: 8px 12px;
+  border-radius: 8px; font-weight: 700; box-shadow: 0 2px 8px rgba(0,0,0,.2); }
+.skip:focus { top: 8px; }
 h1 { font-family: var(--serif); color: var(--b900); font-size: 26px; margin: 0; }
 .lede { color: #6B645F; margin: 2px 0 14px; }
 .datasrc { color: #6B645F; font-size: 12px; margin: -10px 0 12px; }

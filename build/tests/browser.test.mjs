@@ -42,8 +42,8 @@ before(async () => {
 after(async () => { await browser?.close(); server?.close(); });
 
 // A page with the clock fixed and the made-up sheet; fonts and map tiles are left out (not needed, and slow)
-async function open(path, { when = MON, width = 1400, js = true } = {}) {
-  const ctx = await browser.newContext({ viewport: { width, height: 900 }, javaScriptEnabled: js, permissions: ["clipboard-read", "clipboard-write"] });
+async function open(path, { when = MON, width = 1400, height = 900, js = true } = {}) {
+  const ctx = await browser.newContext({ viewport: { width, height }, javaScriptEnabled: js, permissions: ["clipboard-read", "clipboard-write"] });
   const page = await ctx.newPage();
   page.errors = []; page.on("pageerror", e => page.errors.push(String(e)));
   if (js) await page.clock.setFixedTime(new Date(when));
@@ -138,17 +138,18 @@ test("Scroll positions: each tab, and Places, are where they were left", async (
   const p = await open("/test/directory/#talk");
   const top = id => p.evaluate(i => document.getElementById(i).scrollTop, id);
   const scroll = async (id, y) => { await p.evaluate(([i, v]) => { document.getElementById(i).scrollTop = v; }, [id, y]); await p.waitForTimeout(300); };
-  await p.setViewportSize({ width: 1400, height: 400 });   // short, so the made-up sheet's lists scroll
-  await scroll("panel-talk", 120);
+  await p.setViewportSize({ width: 1400, height: 560 });   // short, so the made-up sheet's lists scroll (not so short that the whole page scrolls)
+  assert.equal(await p.evaluate(() => pageFlows()), false);
+  await scroll("panel-talk", 60);
   await p.click("#tab-near"); await p.waitForTimeout(300); await scroll("list", 300);
-  await p.click("#tab-talk"); assert.equal(await top("panel-talk"), 120, "Phone and online, after In person");
+  await p.click("#tab-talk"); assert.equal(await top("panel-talk"), 60, "Phone and online, after In person");
   await p.click("#tab-near"); await p.waitForTimeout(300); assert.equal(await top("list"), 300, "In person, after Phone and online");
   await p.selectOption("#f-when", "month"); assert.equal(await top("list"), 0, "In person: new filters start at the top");
   await scroll("list", 250);
   await p.goto(H + "/test/directory/places/wells/"); await p.waitForTimeout(600);
   await p.evaluate(() => { document.querySelector(".bw").scrollTop = 900; }); await p.waitForTimeout(300);
   await p.click('.sitetabs a[href$="#talk"]'); await p.waitForTimeout(800);
-  assert.equal(await top("panel-talk"), 120, "Phone and online, coming back from Places");
+  assert.equal(await top("panel-talk"), 60, "Phone and online, coming back from Places");
   await p.click("#tab-near"); await p.waitForTimeout(300); assert.equal(await top("list"), 250, "In person, coming back from Places");
   await p.click("#tab-places"); await p.waitForTimeout(800);   // the directory's Places tab: the town and place left on the Places page
   assert.match(await text(p, "#places-main .bt"), /Wells/, "Places tab opens on the town from the Places page");
@@ -158,7 +159,7 @@ test("Scroll positions: each tab, and Places, are where they were left", async (
   // "In person view →": In person, filtered, from the top (clicked as it is, without scrolling it into view first)
   await p.evaluate(() => document.querySelector("#places-main .bsec a.bmap").click()); await p.waitForTimeout(800);
   assert.equal(await top("list"), 0, "In person, opened by In person view");
-  await p.click("#tab-talk"); assert.equal(await top("panel-talk"), 120, "Phone and online still where it was");
+  await p.click("#tab-talk"); assert.equal(await top("panel-talk"), 60, "Phone and online still where it was");
   await p.click("#tab-places"); assert.equal(await top("panel-places"), 600, "Places tab still where it was");
   await p.done();
 });
@@ -184,7 +185,7 @@ test("Alignment: on every tab and Places, nothing moves sideways or up and down 
       tops[width] ??= at;
       assert.deepEqual(at, tops[width], `${width}px ${path}: the tab titles, the header's foot and the content start at the same height as on the other tabs`);
     }
-    assert.ok(await p.evaluate(() => document.documentElement.scrollHeight <= innerHeight), `${width}px ${path}: the page itself has nothing to scroll`);
+    if (width >= 900) assert.ok(await p.evaluate(() => document.documentElement.scrollHeight <= innerHeight), `${width}px ${path}: the page itself has nothing to scroll`);
     await p.done();
   }
 });
@@ -338,6 +339,56 @@ test("Every card's top row is one line (the cost sits on the For line), wide scr
     assert.deepEqual(bad, [], `${width}px ${path}`);
     await p.done();
   }
+});
+
+test("Short screens and phones: the whole page scrolls, the results get the screen, every tab alike, each keeping its place", async () => {
+  for (const [width, height, flows, short] of [[1400, 900, false, false], [1280, 600, false, false], [1024, 480, true, true], [853, 400, true, true], [390, 664, true, false], [320, 460, true, true]]) {
+    for (const t of ["near", "talk", "places"]) {
+      const p = await open(`/test/directory/${t === "places" ? "?place=wells" : ""}#${t}`, { width, height });
+      const r = await p.evaluate(t => {
+        const c = document.documentElement.classList, el = document.getElementById(t === "near" ? "list" : "panel-" + t);
+        if (c.contains("flow")) el.scrollIntoView();
+        const b = el.getBoundingClientRect(), f = document.getElementById("help"), fixed = getComputedStyle(f).position === "fixed";
+        const shown = Math.min(b.bottom, fixed ? f.getBoundingClientRect().top : innerHeight, innerHeight) - Math.max(b.top, 0);
+        return [c.contains("flow"), c.contains("short"), shown / Math.min(innerHeight, b.height)];   // of the screen, or of the results if they're shorter
+      }, t);
+      assert.deepEqual(r.slice(0, 2), [flows, short], `${width}x${height} ${t}: the whole page scrolls / the helpline bar sits at the end`);
+      assert.ok(r[2] > (flows ? 0.85 : 0.4), `${width}x${height} ${t}: the results get ${Math.round(r[2] * 100)}% of the room they could have`);
+      await p.done();
+    }
+  }
+  // each tab keeps its place, on a phone: switching tab doesn't lose it (the tabs are tapped where they are; in practice the
+  // person scrolls up to the tab row first, so a tab is kept where they left it: at the top)
+  const p = await open("/test/directory/#near", { width: 390, height: 664 });
+  await p.evaluate(() => scrollTo(0, 700)); await p.waitForTimeout(400);
+  await p.evaluate(() => document.getElementById("tab-talk").click()); await p.waitForTimeout(300); await p.evaluate(() => scrollTo(0, 250)); await p.waitForTimeout(400);
+  await p.evaluate(() => document.getElementById("tab-near").click()); await p.waitForTimeout(400);
+  assert.equal(await p.evaluate(() => Math.round(scrollY)), 700, "In person: where it was");
+  await p.evaluate(() => document.getElementById("tab-talk").click()); await p.waitForTimeout(400);
+  assert.equal(await p.evaluate(() => Math.round(scrollY)), 250, "Phone and online: where it was");
+  assert.deepEqual(p.errors, []);
+  await p.done();
+});
+
+test("Keyboard and screen readers: Skip to results; the list isn't read out on every change; a map pin moves focus to its card; copy buttons name their service", async () => {
+  const p = await open("/test/directory/?town=Wells#near");
+  await p.keyboard.press("Tab");
+  assert.deepEqual(await p.evaluate(() => [document.activeElement.textContent, document.activeElement.getBoundingClientRect().top >= 0]), ["Skip to results", true],
+    "the first Tab: Skip to results, shown (opening on a tab mustn't move the keyboard's starting point)");
+  await p.keyboard.press("Enter");
+  assert.equal(await p.evaluate(() => document.activeElement.id), "panel-near", "into the results");
+  assert.equal(await p.$eval("#list", e => e.getAttribute("aria-live")), null, "the list itself isn't a live region (the summary line announces changes)");
+  const id = await p.$eval("#list .card", c => c.dataset.id);
+  await p.evaluate(id => showCard(id), id); await p.waitForTimeout(300);
+  assert.equal(await p.evaluate(() => document.activeElement.closest(".card")?.dataset.id + " " + document.activeElement.className), id + " cbtn", "a map pin: focus on its card's name");
+  const [name, label] = await p.$eval("#list .card", c => [c.querySelector(".cname").textContent, c.querySelector("button.copy").getAttribute("aria-label")]);
+  assert.equal(label, "Copy details for " + name);
+  const q = await open("/test/directory/places/wells/");
+  await q.keyboard.press("Tab"); await q.keyboard.press("Enter");
+  assert.equal(await q.evaluate(() => document.activeElement.id), "listings", "the town pages too");
+  await q.done();
+  assert.deepEqual(p.errors, []);
+  await p.done();
 });
 
 // The Places pages, as built from the real sheet

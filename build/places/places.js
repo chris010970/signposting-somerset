@@ -5,10 +5,10 @@
 const $ = id => document.getElementById(id);
 let ALL = [];   // (the directory's records; none on these pages; Places cards' records are PLACE_RECS)
 (() => {
-  const scroller = document.querySelector(".bw");
+  const scroller = () => scrollerFor(document.querySelector(".bw"));   // the listings, or the page when it scrolls as one (core/js/page-flow.js)
   const KEY = "ss-places:" + (document.querySelector('.sitetabs a[aria-current]')?.getAttribute("href") || "");   // live and test keep their own
   const kept = (() => { try { return JSON.parse(sessionStorage.getItem(KEY) || "null") || {}; } catch (_) { return {}; } })();
-  const save = s => { try { sessionStorage.setItem(KEY, JSON.stringify({ href: s.href, support: s.support, when: s.when, scroll: scroller.scrollTop })); } catch (_) {} };
+  const save = s => { try { sessionStorage.setItem(KEY, JSON.stringify({ href: s.href, support: s.support, when: s.when, scroll: scroller().scrollTop })); } catch (_) {} };
   let pushing = false;
   const view = placesView({
     main: document.querySelector(".bmain"), hdr: $("hdr-towns"), scroller,
@@ -24,10 +24,12 @@ let ALL = [];   // (the directory's records; none on these pages; Places cards' 
   document.querySelector(".bmain").addEventListener("click", e => { if (e.target.closest("a:not([target])")) pushing = true; }, true);
   addEventListener("popstate", () => view.show(location.pathname, { support: location.hash.slice(1) || "all" }));
   let saving = 0;
-  scroller.addEventListener("scroll", () => { clearTimeout(saving); saving = setTimeout(() => save(view.state()), 250); }, { passive: true });
+  const noteScroll = () => { clearTimeout(saving); saving = setTimeout(() => save(view.state()), 250); };
+  document.querySelector(".bw").addEventListener("scroll", noteScroll, { passive: true });
+  addEventListener("scroll", noteScroll, { passive: true });
   addEventListener("pagehide", () => save(view.state()));
   // This page as built: the support from the address (#bereavement), When? and the scroll position as they were this visit
   view.start({ support: location.hash.slice(1) || "all", when: kept.when });
-  if (kept.href === location.pathname && kept.scroll) scroller.scrollTop = kept.scroll;
+  if (kept.href === location.pathname && kept.scroll) scroller().scrollTop = kept.scroll;
   save(view.state());
 })();

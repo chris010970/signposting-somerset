@@ -733,6 +733,17 @@ header.top { position: relative; overflow: hidden; background: var(--white); bor
 /* Where the header's content starts, measured on the window: content below the header that scrolls in its own panel
    uses it, so a panel's scrollbar (Windows) can't move it out of line with the header. 1432px = 1400 + the 16px gutters. */
 :root { --page-left: max(0px, calc((100vw - 1432px) / 2)); }
+/* A panel that scrolls under the fixed header; or, when the whole page scrolls (phones, short screens such as a laptop
+   zoomed in: core/js/page-flow.js), part of the page, with the helpline bar at the end on very short screens */
+.pane { flex: 1; min-height: 0; overflow-y: auto; }
+html.flow, html.flow body { height: auto; }
+html.flow body { display: block; }
+html.flow .pane { overflow: visible; }
+html.short footer.help { position: static; }
+/* "Skip to results": the first thing a keyboard reaches, shown only when it has focus */
+.skip { position: absolute; left: 8px; top: -60px; z-index: 2000; background: var(--white); color: var(--b900); padding: 8px 12px;
+  border-radius: 8px; font-weight: 700; box-shadow: 0 2px 8px rgba(0,0,0,.2); }
+.skip:focus { top: 8px; }
 h1 { font-family: var(--serif); color: var(--b900); font-size: 26px; margin: 0; }
 .lede { color: #6B645F; margin: 2px 0 14px; }
 .datasrc { color: #6B645F; font-size: 12px; margin: -10px 0 12px; }
@@ -1676,7 +1687,7 @@ function areaClusters(groups, m) {   // m: the Leaflet map the pins are on
 /* ---------- Copy details ---------- */
 // Plain text for a text message, email or case notes: the regular pattern rather than the next date, so it stays right
 const COPY_ICON = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>';
-const copyBtn = (s, when) => `<button type="button" class="copy" data-copy="${s.id}"${when ? ` data-when="${esc(when)}"` : ""} aria-label="Copy details" data-tip="Copy details">${COPY_ICON}</button>`;
+const copyBtn = (s, when) => `<button type="button" class="copy" data-copy="${s.id}"${when ? ` data-when="${esc(when)}"` : ""} aria-label="Copy details for ${esc(s.name)}" data-tip="Copy details">${COPY_ICON}</button>`;
 const ampm = t => { const [h, m] = t.split(":").map(Number); return `${h % 12 || 12}${m ? ":" + String(m).padStart(2, "0") : ""}${h < 12 ? "am" : "pm"}`; };
 function copyWhen(s) {
   const allDay = /^00:00-23:5\d$/.test(s.times || "");
@@ -1867,7 +1878,7 @@ function renderAbout() {
       <li><strong>Data:</strong> ONS boundaries, population (mid-2022) and urban/rural classification; MHCLG Indices of Deprivation 2025; Census 2021; open postcode data (2016). Open Government Licence.</li>
     </ul>
     </div></div>
-    <p class="small" id="site-version">Version: tools 2026-11-16 19:46${typeof window.assistRelayVersion === "function" ? window.assistRelayVersion() : ""}</p>
+    <p class="small" id="site-version">Version: tools 2026-11-16 20:01${typeof window.assistRelayVersion === "function" ? window.assistRelayVersion() : ""}</p>
   </article>`;
 }
 
@@ -2349,7 +2360,7 @@ async function initAnalytics() {
    this page only remembers it for the current browser session. */
 (() => {
 const WORKER_URL = "https://signposting-assist.c-r-williams0109.workers.dev";
-const PAGE_VERSION = "tools 2026-11-16 19:46";
+const PAGE_VERSION = "tools 2026-11-16 20:01";
 let relayVersion = "";
 // The version line is at the bottom of the About tab: "Version: test 2026-11-06 11:30 · Assist relay 2026-11-06 11:07"
 window.assistRelayVersion = () => relayVersion ? ` · Assist relay ${relayVersion}` : "";

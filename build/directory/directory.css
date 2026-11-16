@@ -20,7 +20,6 @@
 .toggle.on { background: var(--white); border-color: var(--b500); }
 
 /* Phone and online, Courses, About: a scrolling page of cards */
-#panel-talk { flex: 1; min-height: 0; overflow-y: auto; }
 .talk { max-width: 1432px; margin: 0 auto 0 var(--page-left); padding-block: 14px 110px; }   /* lined up with the header (core/css/page.css) */
 .tgrid { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 320px), 1fr)); gap: 12px; }   /* one column on the narrowest phones */
 .gh { font-family: var(--serif); color: var(--b900); font-size: 18px; margin: 20px 4px 10px; }
@@ -71,6 +70,13 @@
 /* Line the list and map up with the header's edges (same 16px gutter and width) */
 @media (min-width: 900px) { #main { max-width: 1432px; padding-inline: max(16px, env(safe-area-inset-left, 0px)); } #list { padding-left: 0; padding-right: 14px; } }
 #mapwrap { position: relative; min-height: 360px; }
+#panel-near { flex: 1; min-height: 0; display: flex; flex-direction: column; }
+/* When the whole page scrolls (core/js/page-flow.js): the list is part of the page, and the map stays in view beside it */
+html.flow #panel-near { display: block; }
+html.flow #main { margin-bottom: 0; }
+html.flow #list { overflow: visible; }
+html.flow #mapwrap { position: sticky; top: 0; align-self: start; height: calc(100vh - var(--footh, 0px)); min-height: 0; }
+html.short #mapwrap { height: 100vh; }
 #map { position: absolute; inset: 0; background: #EEF0EC; }
 .tilenote { position: absolute; left: 12px; bottom: 12px; z-index: 500; pointer-events: none; background: rgba(255,255,255,.95); border: 1px solid var(--line); border-radius: 8px; padding: 6px 10px; font-size: 12px; color: var(--muted); max-width: 70%; }
 .empty { background: var(--white); border: 1px solid var(--line); border-radius: 16px; padding: 28px; text-align: center; color: var(--muted); }

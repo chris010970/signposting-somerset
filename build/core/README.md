@@ -15,6 +15,7 @@ in `build/directory/template.html` is `build/directory/js/map.js`).
 | `css/page.css` | page frame, the filter boxes (1. Support for, 2. Where?), the tab row, the About page |
 | `css/cards.css` | service cards: badges, chips, kind tag, details, footer line |
 | `css/helpline.css`, `html/helpline.html`, `js/helpline-height.js` | the 24/7 helpline bar at the bottom (and keeping content clear of it) |
+| `js/page-flow.js` | phones and short screens (a laptop zoomed in): the whole page scrolls instead of only the results (directory, Places pages) |
 | `js/text.js` | the support types and their labels, card wording, and text helpers (`esc`, `split`, `webUrl`) |
 | `js/schedule.js` | schedule rules: next session, "1st Tue of month", the 3. When? windows, bank holidays |
 | `js/places.js` | town centres (records without a postcode), county outline, the 2. Where? places, distances |

@@ -159,6 +159,7 @@ function showCard(id) {
   const c = $("c" + id); if (!c) return;
   if (innerWidth < 900) setView("list");
   c.scrollIntoView({ behavior: "smooth", block: "center" });
+  c.querySelector(".cbtn")?.focus({ preventScroll: true });   // keyboard and screen readers carry on from the card
   c.classList.add("flash"); setTimeout(() => c.classList.remove("flash"), 1200);
 }
 $("map").addEventListener("click", e => { const b = e.target.closest(".plink"); if (b) { map && map.closePopup(); showCard(b.dataset.id); } });

@@ -6,7 +6,7 @@
 const PLACES_URL = new URL("places/", location.href).pathname;   // the Places pages beside this copy of the directory
 let placesOpened = false;
 const places = placesView({
-  main: $("places-main"), hdr: $("hdr-towns"), scroller: $("panel-places"),
+  main: $("places-main"), hdr: $("hdr-towns"), scroller: () => scroller("places"),
   onChange: () => setTimeout(syncLink, 0),   // remembered with the other tabs' choices
   onLink: u => {   // links from Places to the directory's other tabs open them here
     if (u.pathname !== location.pathname) return false;
@@ -40,7 +40,7 @@ function placesFromLink() {
 }
 // The first time the tab opens: the remembered town (or the choose-a-town page), where it was left
 async function showPlaces() {
-  if (placesOpened) { $("panel-places").scrollTop = scrollPos.places || 0; return; }   // back to it: where it was
+  if (placesOpened) { scroller("places").scrollTop = scrollPos.places || 0; return; }   // back to it: where it was
   placesOpened = true;
   const p = LINK_TAB === "places" ? placesFromLink() : placesSaved();
   const href = p.href && p.href.startsWith(PLACES_URL) ? p.href : PLACES_URL;

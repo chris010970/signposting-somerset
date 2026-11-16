@@ -27,6 +27,7 @@
 /*@page:directory.css*/
 </style>
 
+<a class="skip" id="skip" href="#">Skip to results</a>
 <!--@core:html/crisis.html-->
 
 <header class="top gut">
@@ -90,14 +91,14 @@
   </div>
 </header>
 
-<main id="panel-talk" aria-labelledby="tab-talk"><div class="talk gut" id="talk-list"></div></main>
-<main id="panel-about" aria-labelledby="tab-about" hidden style="flex:1;min-height:0;overflow-y:auto"><div class="talk gut" id="about-page"></div></main>
-<main id="panel-places" aria-labelledby="tab-places" hidden style="flex:1;min-height:0;overflow-y:auto"><div class="talk gut"><div class="bmain" id="places-main"></div></div></main>
-<main id="panel-course" aria-labelledby="tab-course" hidden style="flex:1;min-height:0;overflow-y:auto"><div class="talk gut" id="courses"></div></main>
-<main id="panel-near" aria-labelledby="tab-near" hidden style="flex:1;min-height:0;display:flex;flex-direction:column">
+<main id="panel-talk" class="pane" aria-labelledby="tab-talk" tabindex="-1"><div class="talk gut" id="talk-list"></div></main>
+<main id="panel-about" class="pane" aria-labelledby="tab-about" hidden tabindex="-1"><div class="talk gut" id="about-page"></div></main>
+<main id="panel-places" class="pane" aria-labelledby="tab-places" hidden tabindex="-1"><div class="talk gut"><div class="bmain" id="places-main"></div></div></main>
+<main id="panel-course" class="pane" aria-labelledby="tab-course" hidden tabindex="-1"><div class="talk gut" id="courses"></div></main>
+<main id="panel-near" aria-labelledby="tab-near" hidden tabindex="-1">
 
 <div id="main">
-  <section id="list" aria-live="polite"></section>
+  <section id="list"></section>
   <div id="mapwrap"><section id="map" aria-label="Map of services"></section><div class="tilenote" id="tilenote" hidden>Map tiles can't load here, so only the pins show. They load normally when the page is opened from your computer or a website.</div></div>
 </div>
 </main>
@@ -118,6 +119,7 @@
 /*@core:js/service-card.js*/
 /*@core:js/places-view.js*/
 /*@core:js/helpline-height.js*/
+/*@core:js/page-flow.js*/
 /*@core:js/sheet.js*/
 /*@page:js/setup.js*/
 /*@page:js/map.js*/

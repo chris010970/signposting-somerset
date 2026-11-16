@@ -3,7 +3,7 @@
    (.bmain, with the page's records as JSON). This shows them, runs 1. Support for, 3. When? and the cards, and swaps in
    another town's page in place. Needs schedule.js, records.js, cards.js (PLACE_RECS: the records shown) and service-card.js (the In person tab's card). */
 function placesView({ main, hdr, scroller, onChange = () => {}, onLink = () => false }) {
-  // main: where the listings go; hdr: where the filter boxes go (the #hdr-towns element); scroller: what scrolls the listings
+  // main: where the listings go; hdr: where the filter boxes go (the #hdr-towns element); scroller(): what scrolls the listings now
   // onChange(state): after any change (town, Support for, When?); onLink(url): a link out of Places, return true if handled
   const $ = id => document.getElementById(id);
   let href = "";   // the Places page showing
@@ -72,7 +72,7 @@ function placesView({ main, hdr, scroller, onChange = () => {}, onLink = () => f
       hdr.innerHTML = doc.getElementById("hdr-towns").innerHTML;
       href = new URL(url, location.href).pathname;
       wire({ support, when });
-      scroller.scrollTop = scroll;
+      scroller().scrollTop = scroll;
       onChange({ ...state(), title: doc.title, description: doc.querySelector('meta[name="description"]')?.content });
       return true;
     } catch (e) {

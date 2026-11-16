@@ -743,6 +743,17 @@ header.top { position: relative; overflow: hidden; background: var(--white); bor
 /* Where the header's content starts, measured on the window: content below the header that scrolls in its own panel
    uses it, so a panel's scrollbar (Windows) can't move it out of line with the header. 1432px = 1400 + the 16px gutters. */
 :root { --page-left: max(0px, calc((100vw - 1432px) / 2)); }
+/* A panel that scrolls under the fixed header; or, when the whole page scrolls (phones, short screens such as a laptop
+   zoomed in: core/js/page-flow.js), part of the page, with the helpline bar at the end on very short screens */
+.pane { flex: 1; min-height: 0; overflow-y: auto; }
+html.flow, html.flow body { height: auto; }
+html.flow body { display: block; }
+html.flow .pane { overflow: visible; }
+html.short footer.help { position: static; }
+/* "Skip to results": the first thing a keyboard reaches, shown only when it has focus */
+.skip { position: absolute; left: 8px; top: -60px; z-index: 2000; background: var(--white); color: var(--b900); padding: 8px 12px;
+  border-radius: 8px; font-weight: 700; box-shadow: 0 2px 8px rgba(0,0,0,.2); }
+.skip:focus { top: 8px; }
 h1 { font-family: var(--serif); color: var(--b900); font-size: 26px; margin: 0; }
 .lede { color: #6B645F; margin: 2px 0 14px; }
 .datasrc { color: #6B645F; font-size: 12px; margin: -10px 0 12px; }
@@ -1004,7 +1015,6 @@ footer.urgent p { color: #FEE2E2; }
 .toggle.on { background: var(--white); border-color: var(--b500); }
 
 /* Phone and online, Courses, About: a scrolling page of cards */
-#panel-talk { flex: 1; min-height: 0; overflow-y: auto; }
 .talk { max-width: 1432px; margin: 0 auto 0 var(--page-left); padding-block: 14px 110px; }   /* lined up with the header (core/css/page.css) */
 .tgrid { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 320px), 1fr)); gap: 12px; }   /* one column on the narrowest phones */
 .gh { font-family: var(--serif); color: var(--b900); font-size: 18px; margin: 20px 4px 10px; }
@@ -1055,6 +1065,13 @@ footer.urgent p { color: #FEE2E2; }
 /* Line the list and map up with the header's edges (same 16px gutter and width) */
 @media (min-width: 900px) { #main { max-width: 1432px; padding-inline: max(16px, env(safe-area-inset-left, 0px)); } #list { padding-left: 0; padding-right: 14px; } }
 #mapwrap { position: relative; min-height: 360px; }
+#panel-near { flex: 1; min-height: 0; display: flex; flex-direction: column; }
+/* When the whole page scrolls (core/js/page-flow.js): the list is part of the page, and the map stays in view beside it */
+html.flow #panel-near { display: block; }
+html.flow #main { margin-bottom: 0; }
+html.flow #list { overflow: visible; }
+html.flow #mapwrap { position: sticky; top: 0; align-self: start; height: calc(100vh - var(--footh, 0px)); min-height: 0; }
+html.short #mapwrap { height: 100vh; }
 #map { position: absolute; inset: 0; background: #EEF0EC; }
 .tilenote { position: absolute; left: 12px; bottom: 12px; z-index: 500; pointer-events: none; background: rgba(255,255,255,.95); border: 1px solid var(--line); border-radius: 8px; padding: 6px 10px; font-size: 12px; color: var(--muted); max-width: 70%; }
 .empty { background: var(--white); border: 1px solid var(--line); border-radius: 16px; padding: 28px; text-align: center; color: var(--muted); }
@@ -1065,6 +1082,7 @@ footer.urgent p { color: #FEE2E2; }
 <body>
 
 
+<a class="skip" id="skip" href="#">Skip to results</a>
 <aside class="crisis gut" aria-label="Crisis help">
   <div><b>Crisis</b>Immediate danger or medical emergency: call <a href="tel:999">999</a> or NHS <a href="tel:111">111 (option 2)</a></div>
   <!-- Quick exit replaces this page, so Back doesn't return to the site (it can't clear the browser's history) -->
@@ -1135,14 +1153,14 @@ footer.urgent p { color: #FEE2E2; }
   </div>
 </header>
 
-<main id="panel-talk" aria-labelledby="tab-talk"><div class="talk gut" id="talk-list"></div></main>
-<main id="panel-about" aria-labelledby="tab-about" hidden style="flex:1;min-height:0;overflow-y:auto"><div class="talk gut" id="about-page"></div></main>
-<main id="panel-places" aria-labelledby="tab-places" hidden style="flex:1;min-height:0;overflow-y:auto"><div class="talk gut"><div class="bmain" id="places-main"></div></div></main>
-<main id="panel-course" aria-labelledby="tab-course" hidden style="flex:1;min-height:0;overflow-y:auto"><div class="talk gut" id="courses"></div></main>
-<main id="panel-near" aria-labelledby="tab-near" hidden style="flex:1;min-height:0;display:flex;flex-direction:column">
+<main id="panel-talk" class="pane" aria-labelledby="tab-talk" tabindex="-1"><div class="talk gut" id="talk-list"></div></main>
+<main id="panel-about" class="pane" aria-labelledby="tab-about" hidden tabindex="-1"><div class="talk gut" id="about-page"></div></main>
+<main id="panel-places" class="pane" aria-labelledby="tab-places" hidden tabindex="-1"><div class="talk gut"><div class="bmain" id="places-main"></div></div></main>
+<main id="panel-course" class="pane" aria-labelledby="tab-course" hidden tabindex="-1"><div class="talk gut" id="courses"></div></main>
+<main id="panel-near" aria-labelledby="tab-near" hidden tabindex="-1">
 
 <div id="main">
-  <section id="list" aria-live="polite"></section>
+  <section id="list"></section>
   <div id="mapwrap"><section id="map" aria-label="Map of services"></section><div class="tilenote" id="tilenote" hidden>Map tiles can't load here, so only the pins show. They load normally when the page is opened from your computer or a website.</div></div>
 </div>
 </main>
@@ -1420,7 +1438,7 @@ function areaClusters(groups, m) {   // m: the Leaflet map the pins are on
 /* ---------- Copy details ---------- */
 // Plain text for a text message, email or case notes: the regular pattern rather than the next date, so it stays right
 const COPY_ICON = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>';
-const copyBtn = (s, when) => `<button type="button" class="copy" data-copy="${s.id}"${when ? ` data-when="${esc(when)}"` : ""} aria-label="Copy details" data-tip="Copy details">${COPY_ICON}</button>`;
+const copyBtn = (s, when) => `<button type="button" class="copy" data-copy="${s.id}"${when ? ` data-when="${esc(when)}"` : ""} aria-label="Copy details for ${esc(s.name)}" data-tip="Copy details">${COPY_ICON}</button>`;
 const ampm = t => { const [h, m] = t.split(":").map(Number); return `${h % 12 || 12}${m ? ":" + String(m).padStart(2, "0") : ""}${h < 12 ? "am" : "pm"}`; };
 function copyWhen(s) {
   const allDay = /^00:00-23:5\d$/.test(s.times || "");
@@ -1542,7 +1560,7 @@ function serviceCard(r, h = "h2", withId = true) {
    (.bmain, with the page's records as JSON). This shows them, runs 1. Support for, 3. When? and the cards, and swaps in
    another town's page in place. Needs schedule.js, records.js, cards.js (PLACE_RECS: the records shown) and service-card.js (the In person tab's card). */
 function placesView({ main, hdr, scroller, onChange = () => {}, onLink = () => false }) {
-  // main: where the listings go; hdr: where the filter boxes go (the #hdr-towns element); scroller: what scrolls the listings
+  // main: where the listings go; hdr: where the filter boxes go (the #hdr-towns element); scroller(): what scrolls the listings now
   // onChange(state): after any change (town, Support for, When?); onLink(url): a link out of Places, return true if handled
   const $ = id => document.getElementById(id);
   let href = "";   // the Places page showing
@@ -1611,7 +1629,7 @@ function placesView({ main, hdr, scroller, onChange = () => {}, onLink = () => f
       hdr.innerHTML = doc.getElementById("hdr-towns").innerHTML;
       href = new URL(url, location.href).pathname;
       wire({ support, when });
-      scroller.scrollTop = scroll;
+      scroller().scrollTop = scroll;
       onChange({ ...state(), title: doc.title, description: doc.querySelector('meta[name="description"]')?.content });
       return true;
     } catch (e) {
@@ -1643,6 +1661,24 @@ function placesView({ main, hdr, scroller, onChange = () => {}, onLink = () => f
 // Keep the map and list clear of the fixed helpline bar, whatever its height
 (() => { const f = document.getElementById("help"); const set = () => document.documentElement.style.setProperty("--footh", f.offsetHeight + "px");
   set(); if (window.ResizeObserver) new ResizeObserver(set).observe(f); else addEventListener("resize", set); })();
+// One scrolling page or a fixed header (the directory and the Places pages; core/css/page.css)
+// Usually the header and filters stay put and only the results scroll. On phones and narrow windows, and wherever the header
+// would leave the results under 40% of the screen's height (a laptop zoomed in, a phone on its side), the whole page scrolls
+// instead (class "flow" on <html>), so the results always get the screen. On very short screens the helpline bar sits at the
+// end of the page rather than over the content (class "short"). Every tab's header is the same height on wide screens
+// (the alignment tests), so all tabs make the same choice.
+const pageFlows = () => document.documentElement.classList.contains("flow");
+const scrollerFor = el => pageFlows() ? document.scrollingElement : el;   // what scrolls a panel's content now
+(() => {
+  const root = document.documentElement, header = document.querySelector("header.top"), help = document.getElementById("help");
+  const fit = () => {
+    const room = innerHeight - (header.offsetTop + header.offsetHeight) - (help ? help.offsetHeight : 0);
+    root.classList.toggle("flow", innerWidth < 900 || room < 0.4 * innerHeight);
+    root.classList.toggle("short", innerHeight < 500);
+  };
+  fit(); addEventListener("resize", fit);
+  if (window.ResizeObserver) new ResizeObserver(fit).observe(header);   // the filter boxes change with the tab
+})();
 /* ---------- live records: read from the published Google Sheet (CSV) ---------- */
 // The sheet's "Publish to web → CSV" link, from build/directory/sheet_url.txt (filled in by the build)
 const SHEET_CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQOdzHvjorJsKwgMF6itFW5CKbpzfge4fXlJXxmFiVBTQJdodYABCJS5hxxu8nGp_tqWU-kVsByaMbw/pub?output=csv";
@@ -1902,6 +1938,7 @@ function showCard(id) {
   const c = $("c" + id); if (!c) return;
   if (innerWidth < 900) setView("list");
   c.scrollIntoView({ behavior: "smooth", block: "center" });
+  c.querySelector(".cbtn")?.focus({ preventScroll: true });   // keyboard and screen readers carry on from the card
   c.classList.add("flash"); setTimeout(() => c.classList.remove("flash"), 1200);
 }
 $("map").addEventListener("click", e => { const b = e.target.closest(".plink"); if (b) { map && map.closePopup(); showCard(b.dataset.id); } });
@@ -1963,7 +2000,7 @@ function render() {
     : `<div class="empty"><strong>No matches</strong><br>Try a wider distance or a different time, or use the 24/7 helplines below.</div>`;
   else $("list").innerHTML = rows.map(r => serviceCard(r)).join("") + moreLine +
     (checkRows.length ? `<div class="groupline">Times to check${win ? " (may also run then)" : ""}</div>` + checkRows.map(r => serviceCard(r)).join("") : "");
-  $("list").scrollTop = top;
+  scroller("near").scrollTop = top;
   $("help").classList.toggle("urgent", total <= 2);
   $("help-title").textContent = total <= 2 ? "Nothing suitable right now? Talk to someone straight away" : "Always available: 24/7 helplines";
   drawMap([...rows, ...checkRows], rad);
@@ -2184,7 +2221,7 @@ function renderAbout() {
     </section>
     </div></div>
     <p class="small">Service information belongs to the providers listed. Map data © <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap</a> contributors, © <a href="https://carto.com/attributions" target="_blank" rel="noopener">CARTO</a>.</p>
-    <p class="small" id="site-version">Version: test 2026-11-16 19:46</p>
+    <p class="small" id="site-version">Version: test 2026-11-16 20:04</p>
   </article>`;
 }
 /* ---------- Places: the town listings, as a tab of the directory ----------
@@ -2195,7 +2232,7 @@ function renderAbout() {
 const PLACES_URL = new URL("places/", location.href).pathname;   // the Places pages beside this copy of the directory
 let placesOpened = false;
 const places = placesView({
-  main: $("places-main"), hdr: $("hdr-towns"), scroller: $("panel-places"),
+  main: $("places-main"), hdr: $("hdr-towns"), scroller: () => scroller("places"),
   onChange: () => setTimeout(syncLink, 0),   // remembered with the other tabs' choices
   onLink: u => {   // links from Places to the directory's other tabs open them here
     if (u.pathname !== location.pathname) return false;
@@ -2229,7 +2266,7 @@ function placesFromLink() {
 }
 // The first time the tab opens: the remembered town (or the choose-a-town page), where it was left
 async function showPlaces() {
-  if (placesOpened) { $("panel-places").scrollTop = scrollPos.places || 0; return; }   // back to it: where it was
+  if (placesOpened) { scroller("places").scrollTop = scrollPos.places || 0; return; }   // back to it: where it was
   placesOpened = true;
   const p = LINK_TAB === "places" ? placesFromLink() : placesSaved();
   const href = p.href && p.href.startsWith(PLACES_URL) ? p.href : PLACES_URL;
@@ -2240,9 +2277,9 @@ async function showPlaces() {
 /* ---------- tabs: In person, Phone and online, Courses, Places, About (Tools → is a link to the tools page) ---------- */
 const SITE_TABS = ["talk", "near", "course", "places", "about"];
 function setSiteTab(t) {
-  if (t !== tab && recordsIn && $(SCROLLERS[tab]).offsetParent) scrollPos[tab] = $(SCROLLERS[tab]).scrollTop;   // where the tab being left was
-  tab = t;
-  try { $("tab-" + t).scrollIntoView({ block: "nearest", inline: "nearest" }); } catch (e) {}
+  if (t !== tab && recordsIn && (pageFlows() || $(SCROLLERS[tab]).offsetParent)) scrollPos[tab] = scroller(tab).scrollTop;   // where the tab being left was
+  tab = t; tabSwitchedAt = performance.now();
+  showInRow($("tab-" + t));
   for (const k of SITE_TABS) { currentTab($("tab-" + k), k === t); $("panel-" + k).hidden = k !== t; $("hdr-" + k).hidden = k !== t; }
   if (t === "talk") renderTalk();
   else if (t === "course") renderCourses();
@@ -2254,6 +2291,14 @@ function setSiteTab(t) {
   try { localStorage.setItem("ss-tab", t); } catch (e) {}
 }
 for (const k of SITE_TABS) $("tab-" + k).onclick = () => setSiteTab(k);
+// Phones: the chosen tab in view in the tab row. The row itself scrolls: scrollIntoView would also move the keyboard's starting
+// point to the tab, so the first Tab on opening the page would pass over Skip to results and the crisis bar.
+function showInRow(b) {
+  const nav = b.closest(".sitetabs"), r = b.getBoundingClientRect(), n = nav.getBoundingClientRect();
+  if (r.left < n.left) nav.scrollLeft -= n.left - r.left; else if (r.right > n.right) nav.scrollLeft += r.right - n.right;
+}
+// "Skip to results": into the tab showing (its panel takes the focus; the address keeps its #tab)
+$("skip").onclick = e => { e.preventDefault(); $("panel-" + tab).focus(); };
 // Phones: a fade at the right edge of the tab row while more tabs are hidden off-screen
 {
   const nav = document.querySelector(".sitetabs");
@@ -2344,6 +2389,7 @@ function syncLink() {
 // Switching tabs, going to Places and back, or reloading: each tab's list is where it was left (In person's list starts at
 // the top again when its filters change). Kept with the other choices; a link that opens the directory filtered starts at the top.
 const SCROLLERS = { near: "list", talk: "panel-talk", course: "panel-course", places: "panel-places", about: "panel-about" };
+const scroller = t => scrollerFor($(SCROLLERS[t]));   // the tab's panel, or the page when it scrolls as one (core/js/page-flow.js)
 const scrollPos = (() => {   // this visit's positions; a link opens its list at the top (e.g. "In person view" from Places: In person)
   try {
     const all = { ...(JSON.parse(sessionStorage.getItem(STATE_KEY) || "null") || {}).scroll };
@@ -2354,18 +2400,25 @@ const scrollPos = (() => {   // this visit's positions; a link opens its list at
 let lastListKey = null;          // In person's filters at its last draw (in-person.js)
 const scrollRestored = new Set();   // tabs whose remembered position has been put back since the page opened
 let scrollSaving = 0;
-for (const [t, id] of Object.entries(SCROLLERS)) $(id).addEventListener("scroll", () => {
-  if (!$(id).offsetParent) return;   // being hidden (a hidden list reads as scrolled to the top)
+function noteScroll(t) {
   if (t === "near" ? lastListKey === null : !scrollRestored.has(t)) return;   // still loading: keep the remembered position
-  scrollPos[t] = $(id).scrollTop;
+  scrollPos[t] = scroller(t).scrollTop;
   clearTimeout(scrollSaving); scrollSaving = setTimeout(saveState, 250);
+}
+for (const [t, id] of Object.entries(SCROLLERS)) $(id).addEventListener("scroll", () => {
+  if ($(id).offsetParent && !pageFlows()) noteScroll(t);   // (a hidden panel reads as scrolled to the top)
 }, { passive: true });
+// The whole page: the tab showing. Just after switching tabs the page jumps as the new tab's content replaces the old one's;
+// that isn't the person scrolling, so it isn't kept.
+let tabSwitchedAt = 0;
+addEventListener("scroll", () => { if (pageFlows() && performance.now() - tabSwitchedAt > 400) noteScroll(tab); }, { passive: true });
 addEventListener("pagehide", saveState);
 // After a tab's content is drawn (setSiteTab): put back where it was, once (In person does this as it draws its list)
 function restoreScroll(t) {   // (In person and Places do this as their lists arrive)
-  if (t === "near" || t === "places" || !recordsIn || scrollRestored.has(t)) return;
+  if (t === "near" || t === "places" || !recordsIn) return;
+  if (scrollRestored.has(t) && !pageFlows()) return;   // its own panel kept its place; when the page scrolls as one, every time
   scrollRestored.add(t);
-  if (scrollPos[t]) $(SCROLLERS[t]).scrollTop = scrollPos[t];
+  scroller(t).scrollTop = scrollPos[t] || 0;
 }
 
 /* ---------- opening the page ---------- */

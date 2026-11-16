@@ -1,5 +1,5 @@
 /* ---------- the standalone Places pages' own frame (the listings' styles are build/core/css/places-content.css) ---------- */
 /* As on the directory: the header (tabs and filter boxes) stays put and only the listings scroll, between it and the helpline bar */
-.bw { flex: 1; min-height: 0; overflow-y: auto; padding-top: 14px; padding-bottom: calc(var(--footh, 56px) + 16px);
+.bw { padding-top: 14px; padding-bottom: calc(var(--footh, 56px) + 16px);
   position: relative; }   /* keeps hidden headings inside, so the page itself never scrolls */
 .bw > .bmain { max-width: 1400px; margin: 0 auto 0 var(--page-left); }   /* lined up with the header (core/css/page.css) */

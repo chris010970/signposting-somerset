@@ -81,6 +81,7 @@ function syncLink() {
 // Switching tabs, going to Places and back, or reloading: each tab's list is where it was left (In person's list starts at
 // the top again when its filters change). Kept with the other choices; a link that opens the directory filtered starts at the top.
 const SCROLLERS = { near: "list", talk: "panel-talk", course: "panel-course", places: "panel-places", about: "panel-about" };
+const scroller = t => scrollerFor($(SCROLLERS[t]));   // the tab's panel, or the page when it scrolls as one (core/js/page-flow.js)
 const scrollPos = (() => {   // this visit's positions; a link opens its list at the top (e.g. "In person view" from Places: In person)
   try {
     const all = { ...(JSON.parse(sessionStorage.getItem(STATE_KEY) || "null") || {}).scroll };
@@ -91,18 +92,25 @@ const scrollPos = (() => {   // this visit's positions; a link opens its list at
 let lastListKey = null;          // In person's filters at its last draw (in-person.js)
 const scrollRestored = new Set();   // tabs whose remembered position has been put back since the page opened
 let scrollSaving = 0;
-for (const [t, id] of Object.entries(SCROLLERS)) $(id).addEventListener("scroll", () => {
-  if (!$(id).offsetParent) return;   // being hidden (a hidden list reads as scrolled to the top)
+function noteScroll(t) {
   if (t === "near" ? lastListKey === null : !scrollRestored.has(t)) return;   // still loading: keep the remembered position
-  scrollPos[t] = $(id).scrollTop;
+  scrollPos[t] = scroller(t).scrollTop;
   clearTimeout(scrollSaving); scrollSaving = setTimeout(saveState, 250);
+}
+for (const [t, id] of Object.entries(SCROLLERS)) $(id).addEventListener("scroll", () => {
+  if ($(id).offsetParent && !pageFlows()) noteScroll(t);   // (a hidden panel reads as scrolled to the top)
 }, { passive: true });
+// The whole page: the tab showing. Just after switching tabs the page jumps as the new tab's content replaces the old one's;
+// that isn't the person scrolling, so it isn't kept.
+let tabSwitchedAt = 0;
+addEventListener("scroll", () => { if (pageFlows() && performance.now() - tabSwitchedAt > 400) noteScroll(tab); }, { passive: true });
 addEventListener("pagehide", saveState);
 // After a tab's content is drawn (setSiteTab): put back where it was, once (In person does this as it draws its list)
 function restoreScroll(t) {   // (In person and Places do this as their lists arrive)
-  if (t === "near" || t === "places" || !recordsIn || scrollRestored.has(t)) return;
+  if (t === "near" || t === "places" || !recordsIn) return;
+  if (scrollRestored.has(t) && !pageFlows()) return;   // its own panel kept its place; when the page scrolls as one, every time
   scrollRestored.add(t);
-  if (scrollPos[t]) $(SCROLLERS[t]).scrollTop = scrollPos[t];
+  scroller(t).scrollTop = scrollPos[t] || 0;
 }
 
 /* ---------- opening the page ---------- */
