@@ -23,7 +23,7 @@ window.assistAbout = () => `<section>
 const SITE = "/*SITE_URL*/";   // the plan always points people to the public site
 const RISK = /suicid|kill (my|him|her|them)sel|end (my|his|her|their) life|self[- ]?harm|cutting (my|him|her)|overdos|want(s|ed)? to die|no reason to live|better off dead/i;
 const $a = id => document.getElementById(id);
-const e_ = s => String(s ?? "").replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+const e_ = esc;   // core/js/text.js
 // Code: this browser session only.
 const sess = { get: k => { try { return sessionStorage.getItem(k); } catch { return null; } }, set: (k, v) => { try { v == null ? sessionStorage.removeItem(k) : sessionStorage.setItem(k, v); } catch {} } };
 try { localStorage.removeItem("assist-code"); } catch {}   // never keep the code long-term
@@ -141,8 +141,7 @@ let amap = null, marker = null, circle = null, pinLayer = null;
 function initAMap() {
   if (amap || !window.L) return;
   amap = L.map("a-map", { zoomSnap: 0.25 }).setView([51.1, -2.95], 8);
-  L.tileLayer("https://basemaps.cartocdn.com/rastertiles/light_all/{z}/{x}/{y}.png?key=cb1_4v7b_1_0f5ea1a12b0919dd5e3cbbb7",
-    { maxZoom: 19, attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> &copy; <a href="https://carto.com/attributions">CARTO</a>' }).addTo(amap);
+  L.tileLayer(TILE_URLS[0], { maxZoom: 19, attribution: TILE_CREDIT }).addTo(amap);
   if (typeof OUTLINE !== "undefined" && OUTLINE) L.geoJSON(OUTLINE, { interactive: false, style: { color: "#3D6C53", weight: 1.5, dashArray: "4 4", fill: false } }).addTo(amap);
   amap.on("click", e => {
     const p = [round2(e.latlng.lat), round2(e.latlng.lng)];
@@ -383,7 +382,6 @@ function datesText(raw) {
   return parts.length > 5 ? parts.slice(0, 5).join(", ") + "…" : parts.join(", ");
 }
 // "Mon-Fri 09:00-20:00" reads as "Mon to Fri, 9am to 8pm"; "Mon-Sun 00:00-23:59" as "Every day, 24 hours"
-const DAYN = { Mon: "Mon", Tue: "Tue", Wed: "Wed", Thu: "Thu", Fri: "Fri", Sat: "Sat", Sun: "Sun" };
 function clock(t) { const m = /^(\d\d):(\d\d)$/.exec(t); if (!m) return t; const h = +m[1], mi = +m[2]; if (h === 12 && !mi) return "noon"; return `${h % 12 || 12}${mi ? ":" + m[2] : ""}${h < 12 ? "am" : "pm"}`; }
 function timesText(t) { if (!t) return ""; if (/^00:00-23:59$/.test(t)) return "24 hours"; return t.split(/\s*[;,]\s*/).map(x => x.split("-").map(clock).join(" to ")).join(", "); }
 function daysText(d) {
@@ -398,7 +396,7 @@ function whenText(s) {
   return [[daysText(s.days), timesText(s.times)].filter(Boolean).join(", "), f && !/^see website$/i.test(f) ? f : ""].filter(Boolean).join(", ");
 }
 const telOf = s => s.phone ? s.phone.split(" (")[0].split(" or ")[0].replace(/\s/g, "") : "";
-const isUrl = u => /^https?:\/\//.test(u || "");
+const isUrl = u => !!webUrl(u);   // core/js/text.js
 const ICON = {
   phone: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6.6 10.8a15.1 15.1 0 0 0 6.6 6.6l2.2-2.2a1 1 0 0 1 1-.25 11.4 11.4 0 0 0 3.6.57 1 1 0 0 1 1 1V20a1 1 0 0 1-1 1A17 17 0 0 1 3 4a1 1 0 0 1 1-1h3.5a1 1 0 0 1 1 1c0 1.25.2 2.45.57 3.57a1 1 0 0 1-.25 1z"/></svg>',
   online: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5h16a1 1 0 0 1 1 1v10a1 1 0 0 1-1 1h-6l1 2h2v2H7v-2h2l1-2H4a1 1 0 0 1-1-1V6a1 1 0 0 1 1-1zm1 2v8h14V7z"/></svg>',

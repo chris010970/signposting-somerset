@@ -1,6 +1,6 @@
 
 (() => {
-  // Schedules use the directory's own rules (build/core/js/text-time.js, included before this script):
+  // Schedules use the directory's own rules (build/core/js/schedule.js, included before this script):
   // blank frequency = every week, "1st Tue of month" style patterns, dated events; anything else has no set times.
   const rec = el => withSchedule({ days: el.dataset.days, times: el.dataset.times, frequency: el.dataset.freq, mode: el.dataset.mode,
     dates: el.dataset.dates, access: el.dataset.access, type: el.dataset.type });

@@ -6,9 +6,7 @@
 <style>/*LEAFLET_CSS*/</style>
 <style>
 /*@core:css/base.css*/
-
 /*@core:css/crisis.css*/
-
 /*@core:css/header.css*/
 /*@core:css/page.css*/
 /*@core:css/cards.css*/
@@ -19,6 +17,8 @@
 .sitetabs a.back:hover, .sitetabs a.back:focus-visible { color: var(--b900); }
 #about.talk { max-width: 1432px; margin: 0 auto; padding-block: 14px 110px; }
 @media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
+/*@page:assist/assist.css*/
+/*@page:analytics/analytics.css*/
 </style>
 
 <!--@core:html/crisis.html-->
@@ -49,15 +49,23 @@
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.js"></script>
 <script>
-/*@core:js/helpline-height.js*/
+/* The tools page's script: shared code from build/core/js/, then the page's own (tools.js: tabs, About, records),
+   then Analytics. Assist follows in a script of its own. */
+/*@core:js/text.js*/
+/*@core:js/schedule.js*/
 /*@core:js/places.js*/
-/*@core:js/text-time.js*/
 /*@core:js/records.js*/
 /*@core:js/kinds.js*/
+/*@core:js/map-tiles.js*/
 /*@core:js/map-pins.js*/
+/*@core:js/cards.js*/
+/*@core:js/helpline-height.js*/
+/*@core:js/sheet.js*/
 const $ = id => document.getElementById(id);
 let ALL = [];
-/*@core:js/cards.js*/
-/*@core:js/sheet.js*/
-/*TOOLS_JS*/
+/*@page:tools.js*/
+/*@page:analytics/analytics.js*/
+</script>
+<script>
+/*@page:assist/assist.js*/
 </script>

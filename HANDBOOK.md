@@ -95,12 +95,13 @@ These are decisions, not accidents. Keep to them unless deliberately changed (an
 
 | Folder | What |
 |---|---|
-| `build/directory/` | The directory: `template.html`, `build.py`, `towns.json` (town centres), `sheet_url.txt`, the county outline |
-| `build/analytics/` | Analytics: `DESIGN.md` (decisions so far), the v24 code, `make_analytics_data.py` (rebuilds `docs/assets/analytics-lsoa.geojson`) |
+| `build/directory/` | The directory: `template.html` (the page's HTML), `directory.css` and `js/` (its own styles and script, one file per tab or job), `build.py`, `towns.json` (town centres), `sheet_url.txt`, the county outline |
+| `build/analytics/` | Analytics design record: `DESIGN.md` (decisions so far), `make_analytics_data.py` (rebuilds `docs/assets/analytics-lsoa.geojson`). Its code is in `build/tools/analytics/` |
 | `build/tools/` | The tools page (`/tools/`): Assist (`assist/`, including the worker: `worker-template.js` with the AI prompt, `build_worker.py`), Analytics (`analytics/`, desktop only), About. `build_tools.py`, `template.html`, `tools.js`. The directory links to it ("Tools →"); old `#assist` links forward there |
-| `build/core/` | Code shared by the directory and the tools pages (styles, crisis and helpline bars, places, schedules, cards, sheet loading); see its README |
+| `build/core/` | Code shared by the directory, the tools page and the Places pages (styles, crisis and helpline bars, places, schedules, cards, sheet loading), and its data (`data/where.json`: the 2. Where? places; `data/bank-holidays.json`); see its README |
 | `build/places/` | Places (the directory's Places tab, `/directory/places/`): `build_places.py`, `places.css`, `places.js`, `towns.json`, `categories.json` |
-| `build/shared/` | Build helpers: `site_config.py` (base path), `core.py` (stitches `build/core/` into pages) |
+| `build/shared/` | Build helpers: `site_config.py` (base path), `core.py` (stitches `build/core/` and a page's own files into pages), `page.py` (version stamp, markers), `records.py` (reads and cleans up the records) |
+| `build/tests/` | Checks: run `python build/tests/run_tests.py` before committing a code change (GitHub also runs it on every push) |
 
 ```
 cd build
@@ -111,6 +112,9 @@ python tools/assist/build_worker.py               # rebuilds the worker: tools/a
 ```
 
 - Edit the sources above; never edit the generated files.
+- **Check:** `python build/tests/run_tests.py` (from the repo root) runs the tests, rebuilds the directory and tools pages, and checks every link in `docs/`. GitHub runs the same on every push: a red cross by a commit means a check failed (click it to see which).
+- **Once a year:** add the next year's bank holidays to `build/core/data/bank-holidays.json` (from gov.uk/bank-holidays). The tests fail six months before the list runs out, as a reminder.
+- Site settings are in `build/site.json`: `base_path` (below) and `feedback_form_url` (the About tab's Suggest a change form).
 - Each build stamps a version (`directory 2026-11-15 12:50`), visible on the site and in Assist, so you can tell which build is live.
 - **Deploy the site:** copy `build/directory/github/directory/index.html` → repo `docs/directory/index.html` and `build/directory/github/test/directory/index.html` → `docs/test/directory/index.html`, and `build/tools/out/tools/index.html` → `docs/tools/index.html`, `build/tools/out/test/tools/index.html` → `docs/test/tools/index.html`; and `build/places/out/directory/places/` → `docs/directory/places/`, `build/places/out/test/directory/places/` → `docs/test/directory/places/`, `build/places/out/sitemap.xml` → `docs/sitemap.xml`. Commit, push. GitHub Pages updates in a few minutes.
 - **Deploy the worker:** Cloudflare → `signposting-assist` → Edit code → paste `build/tools/assist/cloudflare-worker.js` → Deploy. Also copy it to `src/`. Check the version shown on the Assist tab.

@@ -1,0 +1,21 @@
+{
+ "_about": "England and Wales bank holidays (gov.uk/bank-holidays). Sessions on these days are marked 'bank holiday: check it's running'. Add the next year's dates before these run out: build/tests/ warns when fewer than six months are left.",
+ "dates": [
+  "2026-01-01",
+  "2026-04-03",
+  "2026-04-06",
+  "2026-05-04",
+  "2026-05-25",
+  "2026-08-31",
+  "2026-12-25",
+  "2026-12-28",
+  "2027-01-01",
+  "2027-03-26",
+  "2027-03-29",
+  "2027-05-03",
+  "2027-05-31",
+  "2027-08-30",
+  "2027-12-27",
+  "2027-12-28"
+ ]
+}

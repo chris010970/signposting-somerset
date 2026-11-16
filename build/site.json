@@ -1,4 +1,5 @@
 {
-  "_about": "Where the site is served. base_path is the folder the site lives under: \"\" on signpostingsomerset.org.uk, \"/signposting-somerset-v2\" on the github.io preview of this repo. The build adds it to every link and image that starts with /.",
-  "base_path": "/signposting-somerset-v2"
+  "_about": "Site settings for the builds. base_path: the folder the site lives under: \"\" on signpostingsomerset.org.uk, \"/signposting-somerset-v2\" on the github.io preview of this repo (the build adds it to every link and image that starts with /). feedback_form_url: the Google Form behind the About tab's 'Suggest a change' button (leave empty to hide the button).",
+  "base_path": "/signposting-somerset-v2",
+  "feedback_form_url": "https://docs.google.com/forms/d/e/1FAIpQLSf8NCl7EpGkgKNACUMDJEFzToJnoQp_xs7Fj0E9z4o2pLiqOQ/viewform"
 }

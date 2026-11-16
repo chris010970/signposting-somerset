@@ -1,0 +1,76 @@
+/* ---------- the directory's own styles (shared ones are in build/core/css/) ---------- */
+:root {
+  --endcol: 168px;   /* width of Sort on In person, and of the checkbox on the other tabs */
+  --lastdd: 25%;     /* width of the rightmost dropdown on every tab */
+}
+
+/* Filter bars. In person: four columns at full width. Phone and online, Courses: the dropdowns share the width evenly,
+   with the checkbox at the right, where Sort is on In person */
+@media (min-width: 900px) { .qs { grid-template-columns: minmax(0, 1fr) minmax(0, 1.3fr) var(--lastdd) var(--endcol); } }
+.tq { display: flex; gap: 10px; align-items: stretch; }
+.tq > .q { flex: 1 1 0; min-width: 0; }
+.tq > div.q:last-of-type:not(:first-child) { flex: 0 0 var(--lastdd); }
+.tq > .toggle { flex: 0 0 var(--endcol); white-space: nowrap; }
+@media (max-width: 899px) {
+  .tq { flex-direction: column; }
+  .tq > .q, .tq > div.q:last-of-type:not(:first-child), .tq > .toggle { flex: none; }
+}
+.toggle { display: flex; align-items: center; gap: 8px; background: var(--b50); border: 2px solid transparent; border-radius: 12px; padding: 8px 14px; font-weight: 600; cursor: pointer; }
+.toggle.on { background: var(--white); border-color: var(--b500); }
+
+/* Phone and online, Courses, About: a scrolling page of cards */
+#panel-talk { flex: 1; min-height: 0; overflow-y: auto; }
+.talk { max-width: 1400px; margin: 0 auto; padding-block: 14px 110px; }
+.tgrid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 12px; }
+.gh { font-family: var(--serif); color: var(--b900); font-size: 18px; margin: 20px 4px 10px; }
+.talk > .gh:first-child { margin-top: 0; }  /* first heading sits as close to the filters as the In person cards */
+.gh small { font-family: var(--sans); font-size: 12px; color: var(--muted); font-weight: 500; margin-left: 8px; }
+.tcard { background: var(--white); border-radius: 16px; padding: 14px 16px; box-shadow: 0 1px 2px rgba(0,0,0,.05); border: 1px solid var(--line); display: grid; grid-template-columns: minmax(0, 1fr); gap: 8px; align-content: start; min-width: 0; }
+.tcard h3 { font-family: var(--serif); color: var(--b900); font-size: 17px; margin: 0; overflow-wrap: anywhere; }
+.reach { font-size: 18px; font-weight: 700; color: var(--b800); font-variant-numeric: tabular-nums; overflow-wrap: anywhere; }
+.reach.email { font-size: 15px; font-weight: 600; }
+.reach a { color: inherit; text-decoration: none; }
+.mode { font-size: 10px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: var(--b700); }
+.tcard .row1 { flex-wrap: nowrap; align-items: center; }
+.tcard .row1 .mode { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.tcard .row1 .openp { flex-shrink: 0; white-space: nowrap; }
+
+/* Status pill: open now = green; not open yet: later today = amber, this week = blue, further off stays grey */
+.openp { display: inline-flex; align-items: center; gap: 6px; font-size: 12px; font-weight: 700; padding: 3px 9px; border-radius: 999px; }
+.openp.yes { background: #D1FAE5; color: #064E3B; }
+.openp.no { background: #F5F5F4; color: #57534E; }
+.openp.today { background: #FEF3C7; color: #78350F; }
+.openp.week { background: #E0ECF8; color: #1E3A5F; }
+.openp.today::before, .openp.week::before { content: ""; width: 7px; height: 7px; border-radius: 50%; border: 1.5px solid currentColor; box-sizing: border-box; }
+.openp.yes::before { content: ""; width: 7px; height: 7px; border-radius: 50%; background: #10B981; }
+
+/* Copy details (and Directions): a small icon on each card; copies plain text ready to paste into a message */
+.chipr { align-items: center; }
+.tcard .row1 .chipr { flex-shrink: 0; flex-wrap: nowrap; }
+.copy { position: relative; width: 28px; height: 28px; display: inline-grid; place-items: center; flex: none; border: 1px solid var(--line); border-radius: 8px; background: #fff; color: var(--b700); cursor: pointer; padding: 0; }
+.copy:hover, .copy:focus-visible { border-color: var(--b200); background: var(--b50); }
+.copy svg { width: 15px; height: 15px; }
+.copy::after { content: attr(data-tip); position: absolute; right: 0; top: calc(100% + 6px); z-index: 5; background: var(--ink); color: #fff; font: 600 12px var(--sans); padding: 4px 8px; border-radius: 6px; white-space: nowrap; opacity: 0; pointer-events: none; transition: opacity .1s; }
+@media (hover: hover) { .copy:hover::after { opacity: 1; } }
+.copy:focus-visible::after { opacity: 1; }
+/* After a click: a brief "Copied" acknowledgement, shown on touch screens too */
+.copy.copied { border-color: var(--b500); background: var(--b50); }
+.copy.copied::after { content: "Copied"; opacity: 1; }
+
+/* In person: the list beside the map (on phones, one or the other, with the List / Map switch) */
+@media (max-width: 899px) { .tabs { display: inline-flex; } }
+main { flex: 1; min-height: 0; display: grid; grid-template-columns: minmax(0, 42%) minmax(0, 1fr); max-width: 1400px; width: 100%; margin: 0 auto var(--footh, 50px); }
+@media (max-width: 899px) {
+  main { grid-template-columns: 1fr; }
+  main.show-map #list { display: none; }
+  main:not(.show-map) #mapwrap { display: none; }
+}
+#list { overflow-y: auto; padding: 14px 14px 90px; border-right: 1px solid var(--line); min-height: 0; }
+/* Line the list and map up with the header's edges (same 16px gutter and width) */
+@media (min-width: 900px) { main { max-width: 1432px; padding-inline: max(16px, env(safe-area-inset-left, 0px)); } #list { padding-left: 0; } }
+#mapwrap { position: relative; min-height: 360px; }
+#map { position: absolute; inset: 0; background: #EEF0EC; }
+.tilenote { position: absolute; left: 12px; bottom: 12px; z-index: 500; pointer-events: none; background: rgba(255,255,255,.95); border: 1px solid var(--line); border-radius: 8px; padding: 6px 10px; font-size: 12px; color: var(--muted); max-width: 70%; }
+.empty { background: var(--white); border: 1px solid var(--line); border-radius: 16px; padding: 28px; text-align: center; color: var(--muted); }
+
+@media (prefers-reduced-motion: reduce) { * { transition: none !important; } }

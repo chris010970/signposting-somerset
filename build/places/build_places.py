@@ -13,27 +13,20 @@ Rules kept here: only in-person services (not courses) with a place; Crisis Safe
 none are shown; distances are straight lines; 'next session' is worked out in the visitor's browser, so pages never go stale
 on that. Everything else is as of the build date shown on each page.
 """
-import csv, datetime, html, io, json, math, pathlib, re, sys, urllib.request, zoneinfo
+import html, json, math, pathlib, re, sys, urllib.parse
 sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent.parent / "shared"))
-from site_config import rebase
 from core import inline_core
+from page import LIVE as SITE, NOINDEX, NOW, STAMP
+from records import read_records, web_url
+from site_config import rebase
 
-HERE = pathlib.Path(__file__).parent
+HERE = pathlib.Path(__file__).resolve().parent
 BUILD = HERE.parent
-SITE = "https://signpostingsomerset.org.uk"
 args = [a for a in sys.argv[1:] if a != "test"]
 ONLY_TEST = "test" in sys.argv[1:]
 
 # ---------- inputs ----------
-def read_records():
-    if args:
-        text = pathlib.Path(args[0]).read_text(encoding="utf-8-sig")
-    else:
-        url = (BUILD / "directory" / "sheet_url.txt").read_text().strip()
-        text = urllib.request.urlopen(url, timeout=60).read().decode("utf-8-sig")
-    return [{k.strip().lower(): (v or "").strip() for k, v in r.items() if k} for r in csv.DictReader(io.StringIO(text))]
-
-recs = read_records()
+recs = read_records(args[0] if args else None)   # dates and times cleaned up as the directory does
 TOWNS = json.loads((BUILD / "directory" / "towns.json").read_text(encoding="utf-8"))["TOWNS"]
 CONF = json.loads((HERE / "towns.json").read_text(encoding="utf-8"))
 CATS = json.loads((HERE / "categories.json").read_text(encoding="utf-8"))["categories"]
@@ -41,14 +34,13 @@ RADIUS = CONF["radius_miles"]
 AREAS = [(a["area"], a["towns"]) for a in CONF["areas"]]
 for _, ts in AREAS:
     for t in ts:
-        assert t in TOWNS, f"{t} is not in build/directory/places.json"
-NOW = datetime.datetime.now(zoneinfo.ZoneInfo("Europe/London"))
+        assert t in TOWNS, f"{t} (places/towns.json) has no centre in build/directory/towns.json"
+LABEL_LEFT = set(CONF.get("label_left", []))   # towns whose name sits left of the pin on the landing page's map
 TODAY = NOW.date().isoformat()
 UPDATED = f"{NOW.day} {NOW:%B %Y}"
-STAMP = f"{NOW:%Y-%m-%d %H:%M}"   # the version line, as on the directory and tools pages
 
 # Shared look: the directory's own stylesheet, taken from its template at build time, so the two never drift apart.
-tpl = inline_core((BUILD / "directory" / "template.html").read_text(encoding="utf-8"))   # with the shared code from build/core/
+tpl = inline_core((BUILD / "directory" / "template.html").read_text(encoding="utf-8"), BUILD / "directory")   # with its shared and own code
 SITE_CSS = re.search(r"<style>\n(.*?)</style>", tpl, re.S).group(1)
 
 e = lambda s: html.escape(str(s), quote=True)
@@ -60,16 +52,13 @@ def miles(a, b):
     h = math.sin(dla / 2) ** 2 + math.cos(a[0] * r) * math.cos(b[0] * r) * math.sin(dlo / 2) ** 2
     return 7917.6 * math.asin(math.sqrt(h))
 
-def norm_date(v):   # 25/10/2026 -> 2026-10-25 (as the directory does)
-    return re.sub(r"\b(\d{1,2})/(\d{1,2})/(\d{4})\b", lambda m: f"{m[3]}-{m[2].zfill(2)}-{m[1].zfill(2)}", v)
-
 # ---------- which services ----------
 SERVICES = []
 for r in recs:
     if not r.get("name") or r.get("type") == "Course" or "in-person" not in split(r.get("mode", "")):
         continue
     if r.get("dates"):
-        ds = re.findall(r"\d{4}-\d\d-\d\d", norm_date(r["dates"]))
+        ds = re.findall(r"\d{4}-\d\d-\d\d", r["dates"])
         if ds and max(ds) < TODAY:
             continue   # ended
     try:
@@ -116,7 +105,8 @@ def row(d, r, town):
             f'<span class="bwhen" data-days="{e(r.get("days",""))}" data-times="{e(r.get("times",""))}" data-freq="{e(r.get("frequency",""))}" data-mode="{e(r.get("mode",""))}" data-dates="{e(r.get("dates",""))}" data-access="{e(r.get("access",""))}" data-type="{e(r.get("type",""))}">{e(pattern(r))}</span>']
     meta = " · ".join(b for b in bits if b)
     contact = []
-    if r.get("url"): contact.append(f'<a href="{e(r["url"])}" target="_blank" rel="noopener">Website</a>')
+    url = web_url(r.get("url"))
+    if url: contact.append(f'<a href="{e(url)}" target="_blank" rel="noopener">Website</a>')
     if r.get("phone"):
         tel = re.sub(r"[^\d+]", "", r["phone"].split(" or ")[0].split("(")[0])
         contact.append(f'<a href="tel:{e(tel)}">{e(r["phone"])}</a>' if len(tel) >= 10 else e(r["phone"]))
@@ -126,7 +116,7 @@ def row(d, r, town):
     if who and who != "anyone": extra.append("For " + who.replace(";", ", "))
     if r.get("eligibility"): extra.append(r["eligibility"])
     if r.get("cost"): extra.append(r["cost"])
-    name = f'<a href="{e(r["url"])}" target="_blank" rel="noopener">{e(r["name"])}</a>' if r.get("url") else e(r["name"])
+    name = f'<a href="{e(url)}" target="_blank" rel="noopener">{e(r["name"])}</a>' if url else e(r["name"])
     chip = f'<span class="badge {acc[0]}">{e(acc[1])}</span>' if acc else ""
     return (f'<li class="br"><div class="brow"><h4 class="bn">{name}</h4>{chip}</div><div class="bmeta">{meta}</div><p>{e(r.get("description",""))}</p>'
             + (f'<p class="bextra">{e(" · ".join(extra))}</p>' if extra else "")
@@ -172,7 +162,7 @@ def town_main(town, items, dirbase, base):
         if not n: continue
         inn = [row(d, r, town) for d, r in items if c["id"] in r["_cats"] and r.get("town") == town]
         near = [row(d, r, town) for d, r in items if c["id"] in r["_cats"] and r.get("town") != town]
-        maplink = f'{dirbase}?' + (f'support={urllib.request.quote(c["map"])}&' if c["map"] else "") + f'town={urllib.request.quote(town)}&lat={TOWNS[town][0]}&lon={TOWNS[town][1]}&label={urllib.request.quote(town)}#near'   # town if the directory lists it, otherwise its centre
+        maplink = f'{dirbase}?' + (f'support={urllib.parse.quote(c["map"])}&' if c["map"] else "") + f'town={urllib.parse.quote(town)}&lat={TOWNS[town][0]}&lon={TOWNS[town][1]}&label={urllib.parse.quote(town)}#near'   # town if the directory lists it, otherwise its centre
         secs.append(f'<section class="bsec" id="{c["id"]}" data-k="{c["id"]}"><div class="bsh"><h2>{e(c["label"])} <span>{n}</span></h2>'
                     f'<a class="bmap" href="{maplink}">On the map →</a></div>'
                     + (f'<h3 class="vh" data-l="In {e(town)}">In {e(town)} · {len(inn)}</h3><ul class="blist">{"".join(inn)}</ul>' if inn else "")   # (the page heading already names the town: label for screen readers only)
@@ -183,7 +173,7 @@ def town_main(town, items, dirbase, base):
             + "".join(secs) +
             f'<p class="bfoot">Also: <a href="{dirbase}#talk">phone and online support</a> you can use from anywhere. '
             f'Distances are straight lines. Please check with the service before going, as details can change. Updated {UPDATED}.</p>' + other_towns(base, town)
-            + f'<p class="otowns">Version: {{VERSION}}</p>')
+            + '<p class="otowns">Version: {VERSION}</p>')
 
 def load_outline():
     """All three council areas, merged from the LSOA boundaries (docs/assets/analytics-lsoa.geojson) and simplified."""
@@ -208,11 +198,10 @@ def area_map(base, totals):
     k = math.cos(math.radians((la0 + la1) / 2)); W = 600; H = W * (la1 - la0) / ((lo1 - lo0) * k)
     xy = lambda lo, la: ((lo - lo0) * k / ((lo1 - lo0) * k) * W, (la1 - la) / (la1 - la0) * H)
     path = " ".join("M" + " L".join(f"{x:.1f},{y:.1f}" for x, y in (xy(*p) for p in ring)) + "Z" for poly in polys for ring in poly)
-    left = {"Weston-super-Mare", "Clevedon", "Burnham-on-Sea", "Bridgwater", "Glastonbury", "Wellington", "Chard", "Minehead"}
     pins = []
     for _, ts in AREAS:
         for t in ts:
-            x, y = xy(TOWNS[t][1], TOWNS[t][0]); l = t in left
+            x, y = xy(TOWNS[t][1], TOWNS[t][0]); l = t in LABEL_LEFT
             pins.append(f'<a href="{base}{slug(t)}/" aria-label="{e(t)}: {totals[t]} groups and services"><circle cx="{x:.1f}" cy="{y:.1f}" r="5.5"/>'
                         f'<text x="{x + (-9 if l else 9):.1f}" y="{y + 4:.1f}" text-anchor="{"end" if l else "start"}">{e(t)}</text></a>')
     return (f'<svg class="bmapsvg" viewBox="-70 -10 {W + 140:.0f} {H + 20:.0f}" role="img" aria-label="Map of Somerset, North Somerset and Bath and North East Somerset with the towns marked">'
@@ -230,8 +219,10 @@ def landing_main(base, dirbase, totals):
 PAGE_CSS = (HERE / "places.css").read_text(encoding="utf-8")
 
 # The page script: next session and 3. When? (worked out in the browser with the directory's schedule rules, from
-# build/core/js/text-time.js), the filter boxes, remembering the place for the visit, and swapping towns without a full reload.
-PAGE_JS = (BUILD / "core" / "js" / "text-time.js").read_text(encoding="utf-8") + (HERE / "places.js").read_text(encoding="utf-8")
+# build/core/js/schedule.js), the filter boxes, remembering the place for the visit, and swapping towns without a full reload.
+# The crisis bar and the helpline bar are the directory's (build/core/html/).
+PAGE_JS = inline_core("/*@core:js/helpline-height.js*/\n/*@core:js/text.js*/\n/*@core:js/schedule.js*/\n/*@page:places.js*/\n", HERE)
+CRISIS, HELPLINE = (inline_core(f"<!--@core:html/{n}.html-->\n") for n in ("crisis", "helpline"))
 
 FONTS = "\n".join(l for l in tpl.splitlines() if "fonts.g" in l)   # the directory's font links, as they are
 
@@ -255,11 +246,7 @@ def page(title, desc, canonical, robots, main_html, filters_html, dirbase, crumb
 </style>
 </head>
 <body>
-<div class="crisis gut">
-  <div><b>Crisis</b>Immediate danger or medical emergency: call <a href="tel:999">999</a> or NHS <a href="tel:111">111 (option 2)</a></div>
-  <a class="exit" href="https://www.bbc.co.uk/weather" rel="noopener">Quick exit</a>
-</div>
-<header class="top gut">
+{CRISIS}<header class="top gut">
   <div class="inner">
     <div class="masthead">
       <div class="illus" role="img" aria-label="Watercolour illustration of Somerset fields with a path, map pins and a signpost"></div>
@@ -277,14 +264,7 @@ def page(title, desc, canonical, robots, main_html, filters_html, dirbase, crumb
 {main_html}
 </div>
 </div>
-<footer class="help gut" id="help">
-  <div class="inner">
-    <div><h4 id="help-title">Always available: 24/7 helpline</h4><p>Free listening support when someone needs to talk right now.</p></div>
-    <div class="lines"><a class="line" href="tel:116123" aria-label="Call Samaritans on 116 123">Samaritans<span class="num">: 116 123</span></a></div>
-  </div>
-</footer>
-<script>
-(() => {{ const f = document.getElementById("help"); const set = () => document.documentElement.style.setProperty("--footh", f.offsetHeight + "px"); set(); addEventListener("resize", set); }})();
+{HELPLINE}<script>
 {PAGE_JS}
 </script>
 </body>
@@ -292,7 +272,7 @@ def page(title, desc, canonical, robots, main_html, filters_html, dirbase, crumb
 """)
 
 # ---------- build ----------
-TARGETS = [("test", "/test/directory/places/", "/test/directory/", None, '<meta name="robots" content="noindex, nofollow">\n')]
+TARGETS = [("test", "/test/directory/places/", "/test/directory/", None, NOINDEX + "\n")]
 if not ONLY_TEST:
     TARGETS.insert(0, ("towns", "/directory/places/", "/directory/", SITE, ""))
 OUT = HERE / "out"

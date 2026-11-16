@@ -1,0 +1,19 @@
+{
+  "_about": "Values as spreadsheets can turn them, and what the pages and builds should read them as. Checked against both clean-ups: build/core/js/sheet.js (in the browser) and build/shared/records.py (in the builds).",
+  "dates": [
+    ["17/12/2026", "2026-12-17"],
+    ["2026-12-17", "2026-12-17"],
+    ["1/2/2027", "2027-02-01"],
+    ["03/11/2026; 17/11/2026", "2026-11-03; 2026-11-17"],
+    ["02/11/2026 to 14/12/2026", "2026-11-02 to 2026-12-14"],
+    ["", ""]
+  ],
+  "times": [
+    ["10:00-12:00", "10:00-12:00"],
+    ["10:00:00-12:00:00", "10:00-12:00"],
+    ["9:30-11:00", "09:30-11:00"],
+    ["10:00 - 12:00", "10:00-12:00"],
+    ["19:00", "19:00"],
+    ["", ""]
+  ]
+}

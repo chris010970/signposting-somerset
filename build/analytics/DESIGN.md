@@ -1,7 +1,7 @@
 # Analytics: design record
 
 Where the Analytics work stood when it was taken out of the directory (15 Nov 2026), and why it looks the way it does.
-The working code is kept here as `analytics-v24.js`, `analytics-v24.css` and `analytics-v24.html`; `analytics-v24.webp` is a screenshot.
+The working code is in `build/tools/analytics/` (`analytics.js`, `analytics.css`, `analytics.html`); `analytics.webp` here is a screenshot.
 It last ran as a tab in the directory (commit `3d48734`); it will become the standalone page `/analytics/`.
 
 ## Purpose and audience
@@ -74,7 +74,7 @@ One entry per indicator in `AN_IND`: bands (most need first), rank order, option
 
 ## Moving to `/analytics/`
 
-- Needs from the directory: the record loading and helpers listed at the top of `analytics-v24.js`; these should move to `build/shared/` rather than be copied.
+- Needs from the directory: the record loading and helpers, which it takes from `build/core/` (no copies).
 - "View services" should open the directory with filters in the link (the planned deep links), not by setting the directory's variables.
 - Keep the data file at `docs/assets/analytics-lsoa.geojson`, loaded only when the page opens.
 

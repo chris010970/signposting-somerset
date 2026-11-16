@@ -10,7 +10,7 @@ function clusterBg(g) {
   return stops.length === 1 ? stops[0].split(" ")[0] : `conic-gradient(${stops.join(", ")})`;
 }
 const AREA_ZOOM = 11, AREA_PX = 52;   // at zoom 11 or less, pins within ~52px merge into one numbered circle
-function areaClusters(groups, m = map) {   // m: the Leaflet map (the directory's own map unless another is given)
+function areaClusters(groups, m) {   // m: the Leaflet map the pins are on
   // Greedy merge of same-spot groups by on-screen distance; biggest spots seed the clusters
   const z = m.getZoom(), cl = [];
   [...groups.entries()].sort((a, b) => b[1].length - a[1].length).forEach(([k, g]) => {

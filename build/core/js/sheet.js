@@ -1,13 +1,15 @@
-/* ---------- live data: read records from a published Google Sheet (CSV) ---------- */
-// Paste the sheet's "Publish to web → CSV" link between the quotes. Leave empty to use the built-in copy only.
-const SHEET_CSV_URL = "";
-const BUILT = "/*BUILT*/";
+/* ---------- live records: read from the published Google Sheet (CSV) ---------- */
+// The sheet's "Publish to web → CSV" link, from build/directory/sheet_url.txt (filled in by the build)
+const SHEET_CSV_URL = "/*SHEET_CSV_URL*/";
+// CSV text -> rows (lists of fields), allowing for quoted fields with commas, quotes and line breaks
 function parseCSV(text) {
   text = text.replace(/^﻿/, "");
   const rows = []; let row = [], f = "", q = false;
   for (let i = 0; i < text.length; i++) {
     const c = text[i];
-    if (q) { if (c === '"') { if (text[i + 1] === '"') { f += '"'; i++; } else q = false; } else f += c; }
+    if (q) {
+      if (c === '"') { if (text[i + 1] === '"') { f += '"'; i++; } else q = false; } else f += c;
+    }
     else if (c === '"') q = true;
     else if (c === ",") { row.push(f); f = ""; }
     else if (c === "\n" || c === "\r") { if (c === "\r" && text[i + 1] === "\n") i++; row.push(f); rows.push(row); row = []; f = ""; }
@@ -17,8 +19,10 @@ function parseCSV(text) {
   return rows;
 }
 // Undo what spreadsheets do to values: 25/10/2026 -> 2026-10-25, 10:00:00 -> 10:00
+// (the builds do the same in build/shared/records.py; build/tests/ checks the two agree)
 const fixDate = v => v.replace(/\b(\d{1,2})\/(\d{1,2})\/(\d{4})\b/g, (m, d, mo, y) => `${y}-${mo.padStart(2, "0")}-${d.padStart(2, "0")}`);
 const fixTime = v => v.replace(/\b(\d{1,2}):(\d\d)(?::\d\d)?\b/g, (m, h, mi) => `${h.padStart(2, "0")}:${mi}`).replace(/\s*-\s*/g, "-");
+// The records (one object per row with a name, keyed by lower-case column name), or { error } if the columns look wrong
 function recordsFromCSV(text) {
   const rows = parseCSV(text), head = (rows[0] || []).map(h => h.trim().toLowerCase());
   const missing = ["name", "type", "mode"].filter(k => !head.includes(k));
@@ -35,12 +39,15 @@ function recordsFromCSV(text) {
   return { recs };
 }
 // The records this browser last loaded, kept for the visit (this tab's session only), so coming back to the directory
-// from the town pages, or opening the tools page, shows them at once while the sheet is checked again in the background
+// from the Places pages, or opening the tools page, shows them at once while the sheet is checked again in the background
 const RECORDS_KEY = "ss-records";
-function cachedRecords() { try { const v = JSON.parse(sessionStorage.getItem(RECORDS_KEY) || "null"); return v && Array.isArray(v.recs) && v.recs.length ? v.recs : null; } catch (e) { return null; } }
+function cachedRecords() {
+  try { const v = JSON.parse(sessionStorage.getItem(RECORDS_KEY) || "null"); return v && Array.isArray(v.recs) && v.recs.length ? v.recs : null; }
+  catch (e) { return null; }
+}
 function keepRecords(recs) { try { sessionStorage.setItem(RECORDS_KEY, JSON.stringify({ at: Date.now(), recs })); } catch (e) {} }
 const sameRecords = (a, b) => !!a && !!b && JSON.stringify(a) === JSON.stringify(b);
-// The latest records from the published sheet (rejects if it can't be reached or looks wrong); remembered for the visit
+// The latest records from the published sheet (rejects if it can't be reached within 15 seconds or looks wrong)
 function fetchRecords() {
   const ctl = new AbortController(); setTimeout(() => ctl.abort(), 15000);
   return fetch(SHEET_CSV_URL, { cache: "no-store", signal: ctl.signal })

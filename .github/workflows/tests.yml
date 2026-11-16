@@ -1,0 +1,20 @@
+# Runs build/tests/run_tests.py on every push and pull request: the builds' tests, the schedule rules,
+# that the directory and tools pages still build, and that every link in docs/ works.
+# A red cross next to a commit on GitHub means something failed: open it to see which check.
+name: Tests
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - run: python build/tests/run_tests.py

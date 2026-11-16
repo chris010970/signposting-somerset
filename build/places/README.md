@@ -10,8 +10,9 @@ The Places page itself (no town chosen yet) is two cards: what to do, with plain
 
 - `build_places.py`: builds them from the sheet (a CSV path, or the published sheet if none is given). Writes `out/directory/places/` (live),
   `out/test/directory/places/` (test, not indexed) and `out/sitemap.xml`. Add `test` to build the test copy only.
-- `towns.json`: which towns get a page, by area, and the radius. `categories.json`: the sections, headings and buttons, mapped from `support_for`.
+- `towns.json`: which towns get a page, by area, the radius, and which town names sit left of their pin on the map. `categories.json`: the sections, headings and buttons, mapped from `support_for`.
 - Styles, header and colours come from the directory's template and `build/core/` at build time, so they always match.
 - Publish: `out/directory/places/` -> `docs/directory/places/`, `out/test/directory/places/` -> `docs/test/directory/places/`, `out/sitemap.xml` -> `docs/sitemap.xml`.
 
-- `places.css`, `places.js`: the pages' own styles and script. Next sessions and 3. When? use the directory's schedule rules (`build/core/js/text-time.js`, included in each page), so the two always agree.
+- `places.css`, `places.js`: the pages' own styles and script. Next sessions and 3. When? use the directory's schedule rules (`build/core/js/schedule.js`, included in each page), so the two always agree.
+- Records are read and cleaned up as the directory does (`build/shared/records.py`: dates like 17/12/2026 become 2026-12-17).

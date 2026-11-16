@@ -14,12 +14,12 @@ const AN_LUT = [
   ["#B1D9C7", "#C4D8BD", "#D8D3AD", "#DDC49D", "#D5AF88"],
   ["#E9F3EC", "#E9EDE2", "#EEE9D8", "#EDE0C9", "#E9D2B8"]];
 const AN_NODATA = "#D9D9D6";
-const AN_RUC = { Urban: "#4E9C88", Rural: "#A08A5C" }, AN_A = "#7A2E8E", AN_B = "#1B5FA8";
+const AN_A = "#7A2E8E", AN_B = "#1B5FA8";
 const AN_N = 33755, AN_HALF = AN_N / 2;   // LSOAs in England (IMD 2025)
 // One entry per indicator. Everything that differs between indicators lives here: the grid rows, the map shading and key,
 // the ranking, the optional "higher half" filter, the profile tile, the compare row and the copy line all come from it.
 // bands: most need first (the top row and the darkest shading). has: whether an LSOA has a value (otherwise "No data").
-const aFmt = n => n.toLocaleString("en-GB"), aDec = r => Math.ceil(r / (AN_N / 10));
+const aFmt = n => n.toLocaleString("en-GB");
 const aDecBands = k => [["Decile 1–2", "most deprived", 1], ["Decile 3–4", "", 3], ["Decile 5–6", "", 5], ["Decile 7–8", "", 7], ["Decile 9–10", "least deprived", 9]]
   .map(([label, sub, d]) => ({ label, sub, row: `${d}–${d + 1}`, test: p => p[k] === d || p[k] === d + 1 }));
 const aNum = k => p => Number.isFinite(p[k]);
@@ -370,8 +370,7 @@ async function initAnalytics() {
   if (typeof L === "undefined") { $("an-loading").textContent = "The map library couldn't load."; return; }
   amap = L.map("amap", { zoomControl: false, zoomSnap: .25, zoomDelta: .5 });
   L.control.zoom({ position: "topright" }).addTo(amap);
-  L.tileLayer("https://basemaps.cartocdn.com/rastertiles/light_all/{z}/{x}/{y}.png?key=cb1_4v7b_1_0f5ea1a12b0919dd5e3cbbb7", { maxZoom: 19,
-    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> &copy; <a href="https://carto.com/attributions">CARTO</a> · Data: ONS, MHCLG (OGL)' }).addTo(amap);
+  L.tileLayer(TILE_URLS[0], { maxZoom: 19, attribution: TILE_CREDIT + " · Data: ONS, MHCLG (OGL)" }).addTo(amap);
   amap.setView([51.1, -2.9], 9);
   try {
     const r = await fetch(SITE_BASE + "/assets/analytics-lsoa.geojson", { cache: "no-cache" });
