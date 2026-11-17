@@ -12,7 +12,7 @@ DIR = HERE.parent / "directory"
 sys.path.insert(0, str(HERE.parent / "shared"))
 from core import inline_core
 from page import LIVE, NOINDEX, STAMP, document, put, section
-from site_config import BASE, rebase
+from site_config import BASE, SETTINGS, rebase
 
 towns = json.loads((DIR / "towns.json").read_text(encoding="utf-8"))
 sheet = (DIR / "sheet_url.txt").read_text().strip()
@@ -25,6 +25,7 @@ page = put(page, "/*LEAFLET_CSS*/", (DIR / "leaflet.css").read_text(encoding="ut
 page = put(page, "/*TOWNS*/{}", json.dumps(towns["TOWNS"], ensure_ascii=False))
 page = put(page, "/*OUTLINE*/null", (DIR / "somerset-outline.json").read_text())
 page = put(page, "/*SHEET_CSV_URL*/", sheet)
+page = put(page, "/*SHEET_COPY_URL*/", BASE + SETTINGS["sheet_copy"])
 page = put(page, "/*ANALYTICS_ABOUT*/", section(analytics_html, "ABOUT"))
 page = put(page, "/*WORKER_URL*/", worker_url)
 for name in ("TAB", "HDR", "PANEL"):

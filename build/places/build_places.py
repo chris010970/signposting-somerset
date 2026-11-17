@@ -5,7 +5,8 @@
     python build_places.py                               # reads the published sheet (directory/sheet_url.txt)
 
 Publish: copy out/directory/places/ -> docs/directory/places/, out/test/directory/places/ -> docs/test/directory/places/,
-and out/sitemap.xml -> docs/sitemap.xml. They are the directory's "Places" tab.
+and out/sitemap.xml -> docs/sitemap.xml. They are the directory's "Places" tab. Also out/assets/services.csv (site.json sheet_copy):
+the sheet as read, which the directory and tools pages load first.
 Configuration (no code changes needed): towns.json (which towns, radius). The sections are the support types, in the groups
 the directory's Support for box uses (build/core/data/support-types.json), so every tab offers the same choices.
 The page frame and script are places.css and places.js; the listings' styles and code are shared with the directory's Places tab
@@ -19,8 +20,8 @@ import datetime, html, json, math, pathlib, re, sys, urllib.parse
 sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent.parent / "shared"))
 from core import inline_core
 from page import LIVE as SITE, NOINDEX, NOW, STAMP
-from records import read_records, web_url
-from site_config import rebase
+from records import read_records, sheet_text, web_url
+from site_config import SETTINGS, rebase
 
 HERE = pathlib.Path(__file__).resolve().parent
 BUILD = HERE.parent
@@ -28,7 +29,8 @@ args = [a for a in sys.argv[1:] if a != "test"]
 ONLY_TEST = "test" in sys.argv[1:]
 
 # ---------- inputs ----------
-recs = read_records(args[0] if args else None)   # dates and times cleaned up as the directory does
+SHEET_TEXT = sheet_text(args[0] if args else None)
+recs = read_records(text=SHEET_TEXT)   # dates and times cleaned up as the directory does
 # As the pages do: stop rather than publish pages from a sheet that looks wrong (unreachable, columns renamed, emptied)
 missing = [c for c in ("name", "type", "mode", "town", "support_for") if not any(c in r for r in recs)]
 assert not missing and len(recs) >= 10, f"the records look wrong ({len(recs)} rows; missing columns: {', '.join(missing) or 'none'}): nothing built"
@@ -362,4 +364,9 @@ if not ONLY_TEST:
     (OUT / "sitemap.xml").write_text('<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n' +
         "".join(f"  <url><loc>{u}</loc><changefreq>weekly</changefreq></url>\n" for u in urls) + "</urlset>\n", encoding="utf-8")
     print(f"out/sitemap.xml: {len(urls)} addresses")
+    # The sheet as read, saved on the site (site.json sheet_copy): the directory and tools pages load it first, then check the sheet
+    copy = OUT / SETTINGS["sheet_copy"].strip("/")
+    copy.parent.mkdir(parents=True, exist_ok=True)
+    copy.write_text(SHEET_TEXT, encoding="utf-8", newline="")
+    print(f"out/{SETTINGS['sheet_copy'].strip('/')}: {len(recs)} services")
 print("Towns:", ", ".join(f"{t} {n}" for t, n in totals.items()))

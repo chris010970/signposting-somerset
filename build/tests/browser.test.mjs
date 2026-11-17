@@ -55,7 +55,7 @@ async function open(path, { when = MON, width = 1400, height = 900, js = true } 
   if (js) await page.clock.setFixedTime(new Date(when));
   await page.route("**/*", r => {
     const u = r.request().url();
-    if (/docs\.google|googleusercontent/.test(u)) return r.fulfill({ status: 200, contentType: "text/csv", body: SHEET });
+    if (/docs\.google|googleusercontent|\/assets\/services\.csv/.test(u)) return r.fulfill({ status: 200, contentType: "text/csv", body: SHEET });
     if (LEAFLET && /leaflet\.js$/.test(u)) return r.fulfill({ status: 200, contentType: "text/javascript", body: LEAFLET });
     if (/fonts\.googleapis\.com\/css2/.test(u)) return r.fulfill({ status: 200, contentType: "text/css", body: FONT_CSS });
     if (u.startsWith("https://fonts.test/")) return r.fulfill({ status: 200, contentType: "font/woff2", body: readFileSync(fontFile(u)) });
@@ -400,7 +400,7 @@ test("Details checked: a tick when checked in the last 90 days, saying how long 
   const p = await open("/test/directory/#talk");
   // one record checked long ago, one ten days ago (the test clock is Mon 16 Nov 2026)
   const sheet = SHEET.replace(/^(Test Online Group,.*,)16\/11\/2026(,[^,]*,[^,]*)$/m, "$101/01/2026$2").replace(/^(Test 24\/7 Line,.*,)16\/11\/2026(,[^,]*,[^,]*)$/m, "$106/11/2026$2");
-  await p.route(/docs\.google|googleusercontent/, r => r.fulfill({ status: 200, contentType: "text/csv", body: sheet }));
+  await p.route(/docs\.google|googleusercontent|\/assets\/services\.csv/, r => r.fulfill({ status: 200, contentType: "text/csv", body: sheet }));
   await p.reload(); await p.waitForTimeout(1200);
   const card = name => p.evaluate(n => [...document.querySelectorAll("#panel-talk .tcard")].find(c => c.querySelector("h3").textContent.includes(n))?.querySelector(".checked")
     ?.getAttribute("title") ?? null, name);
@@ -487,10 +487,28 @@ test("Keyboard and screen readers: Skip to results; the list isn't read out on e
   await p.done();
 });
 
+test("Services load from the site's copy of the sheet first, then the sheet itself; the error only when neither loads", async () => {
+  const p = await open("/test/directory/#talk");
+  const names = () => p.$$eval("#panel-talk .tcard h3", hs => hs.map(h => h.textContent));
+  const CSV = /docs\.google|googleusercontent|\/assets\/services\.csv/;
+  const serve = async (copy, sheet) => { await p.unroute(CSV); await p.route(CSV, r =>
+    { const body = /services\.csv/.test(r.request().url()) ? copy : sheet; return body === null ? r.abort() : r.fulfill({ status: 200, contentType: "text/csv", body }); }); };
+  const again = async () => { await p.evaluate(() => sessionStorage.clear()); await p.reload(); await p.waitForTimeout(1200); };
+  const older = SHEET.replace(/^Test Online Group,.*\r?\n/m, "");   // last night's copy, before a service was added
+  await serve(older, null); await again();   // Google not answering: the copy
+  assert.ok((await names()).length > 0 && !(await names()).includes("Test Online Group"), "the site's copy shows when the sheet can't be reached");
+  assert.ok(!(await p.innerText("body")).includes("can't be loaded"), "no error while the copy is there");
+  await serve(older, SHEET); await again();   // both: the sheet's newer records replace the copy's
+  assert.ok((await names()).includes("Test Online Group"), "an edit made since last night shows once the sheet answers");
+  await serve(null, null); await again();   // neither
+  assert.match(await p.innerText("body"), /Services can't be loaded right now/);
+  await p.done();
+});
+
 test("Phone and online lists services with a place too, if they can be phoned or joined online; no tick beside \"Check dates\"", async () => {
   const p = await open("/test/directory/#talk");
   const sheet = SHEET.replace(/^(Test Weekly Drop-in,(?:[^,]*,){4})in-person,/m, "$1in-person;online,");   // a drop-in that can also be joined online
-  await p.route(/docs\.google|googleusercontent/, r => r.fulfill({ status: 200, contentType: "text/csv", body: sheet }));
+  await p.route(/docs\.google|googleusercontent|\/assets\/services\.csv/, r => r.fulfill({ status: 200, contentType: "text/csv", body: sheet }));
   await p.evaluate(() => sessionStorage.clear()); await p.reload(); await p.waitForTimeout(1200);
   const talk = await p.$$eval("#panel-talk .tcard h3", hs => hs.map(h => h.textContent));
   assert.ok(talk.includes("Test Weekly Drop-in"), "on Phone and online");

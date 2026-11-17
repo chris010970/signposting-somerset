@@ -48,8 +48,5 @@ function useRecords(recs) {
   sel.innerHTML = supportOptions(ALL); sel.value = v;
   try { if (aReady) anRefilter(); } catch (e) {}   // Analytics already open: recount with the latest records (before its code has run, aReady isn't there yet)
 }
-if (SHEET_CSV_URL) {
-  const kept = cachedRecords();   // loaded earlier in this visit (e.g. in the directory): use at once
-  if (kept) useRecords(kept);
-  fetchRecords().then(recs => { if (!sameRecords(recs, kept)) useRecords(recs); }).catch(e => console.error("Sheet load error", e));
-}
+// Those loaded earlier in this visit (e.g. in the directory), else the site's copy, at once; then the sheet (core/js/sheet-load.js)
+if (SHEET_CSV_URL) loadRecords(useRecords);

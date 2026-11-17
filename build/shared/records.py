@@ -29,10 +29,10 @@ def web_url(u):
     """The address if it's a web page (http or https), otherwise "" (so nothing else becomes a link)."""
     return u if re.match(r"https?://", u or "", re.I) else ""
 
-def read_records(csv_path=None):
-    """The records with a name, from a CSV file, or from the published sheet when no file is given."""
+def sheet_text(csv_path=None):
+    """The sheet as CSV text: from a CSV file, or from the published sheet when no file is given."""
     if csv_path:
-        text = Path(csv_path).read_text(encoding="utf-8-sig")
+        return Path(csv_path).read_text(encoding="utf-8-sig")
     else:
         url = SHEET_URL_FILE.read_text().strip()
         for attempt in range(3):   # Google is sometimes slow to answer: try again before giving up
@@ -41,4 +41,9 @@ def read_records(csv_path=None):
             except OSError:   # (timeouts and connection errors)
                 if attempt == 2: raise
                 time.sleep(10)
+    return text
+
+def read_records(csv_path=None, text=None):
+    """The records with a name, from CSV text, a CSV file, or the published sheet when neither is given."""
+    if text is None: text = sheet_text(csv_path)
     return [r for r in map(clean, csv.DictReader(io.StringIO(text))) if r.get("name")]

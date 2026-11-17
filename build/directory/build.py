@@ -31,6 +31,7 @@ page = put(page, "/*LEAFLET_CSS*/", (HERE / "leaflet.css").read_text(encoding="u
 page = put(page, "/*TOWNS*/{}", json.dumps(TOWNS, ensure_ascii=False))
 page = put(page, "/*OUTLINE*/null", (HERE / "somerset-outline.json").read_text())
 page = put(page, "/*SHEET_CSV_URL*/", sheet)
+page = put(page, "/*SHEET_COPY_URL*/", BASE + SETTINGS["sheet_copy"])
 page = put(page, "/*FEEDBACK_FORM_URL*/", SETTINGS.get("feedback_form_url", ""))
 page = document(page)
 
