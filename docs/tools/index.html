@@ -806,17 +806,17 @@ h1 { font-family: var(--serif); color: var(--b900); font-size: 26px; margin: 0; 
 .aboutpage a:not(.btn):hover { color: var(--b900); text-decoration-color: currentColor; }
 /* Every item in the tab row (tab buttons, links to other pages, "Tools →") is the same size, font and line height,
    whatever its element, so the row sits identically on every page */
-.sitetabs button, .sitetabs a.tab, .sitetabs a.tolink, .sitetabs a.back { display: block; white-space: nowrap; padding: 9px 14px 10px; font: 700 14px/20px var(--sans);
+.sitetabs button, .sitetabs a.tab, .sitetabs a.tolink { display: block; white-space: nowrap; padding: 9px 14px 10px; font: 700 14px/20px var(--sans);
   color: #6B645F; text-decoration: none; background: none; border: 0; border-bottom: 3px solid transparent; margin-bottom: -1px; cursor: pointer; }
 .sitetabs button[aria-current="page"] { color: var(--b900); border-bottom-color: var(--b600); }
 /* Tabs in groups: Browse (In person, Phone and online, Courses) | Assist | About */
 .sitetabs { align-items: flex-end; }
 .sitetabs .tgrp { display: inline-flex; align-items: flex-end; gap: 4px; position: relative; flex: none; }
-.sitetabs #tab-assist, .sitetabs #tab-about { margin-left: 6px; padding-left: 14px; position: relative; }
-.sitetabs #tab-assist::before, .sitetabs #tab-about::before { content: ""; position: absolute; left: 0; top: 10px; bottom: 12px; border-left: 1px solid var(--line); }
+.sitetabs #tab-about { margin-left: 6px; padding-left: 14px; position: relative; }
+.sitetabs #tab-about::before { content: ""; position: absolute; left: 0; top: 10px; bottom: 12px; border-left: 1px solid var(--line); }
 /* On narrow phones the last tab may not fit: fade the edge so it's clear the row scrolls */
 .sitetabs.more { -webkit-mask-image: linear-gradient(to right, #000 calc(100% - 36px), transparent); mask-image: linear-gradient(to right, #000 calc(100% - 36px), transparent); }
-@media (max-width: 420px) { .sitetabs { gap: 0; } .sitetabs .tgrp { gap: 0; } .sitetabs button { padding-inline: 5px; font-size: 13px; } .sitetabs #tab-assist, .sitetabs #tab-about { margin-left: 1px; padding-left: 7px; } .sitetabs #tab-assist { gap: 4px; } .sitetabs .lg { display: none; } .sitetabs .sh { display: inline; } }
+@media (max-width: 420px) { .sitetabs { gap: 0; } .sitetabs .tgrp { gap: 0; } .sitetabs button { padding-inline: 5px; font-size: 13px; } .sitetabs #tab-about { margin-left: 1px; padding-left: 7px; } .sitetabs #tab-assist { gap: 4px; } .sitetabs .lg { display: none; } .sitetabs .sh { display: inline; } }
 /* Tabs that are links to other pages (Places in the directory; every tab on the town pages), looking like the tab buttons */
 .sitetabs a.tab:hover, .sitetabs a.tab:focus-visible { color: var(--b900); }
 .sitetabs a.tab[aria-current] { color: var(--b900); border-bottom-color: var(--b600); }
@@ -947,8 +947,6 @@ footer.urgent p { color: #FEE2E2; }
 .line { font-size: 12px; font-weight: 700; padding: 6px 12px; border-radius: 8px; background: #fff; color: var(--b900); text-decoration: none; white-space: nowrap; }
 .line.ghost { background: transparent; color: #fff; border: 1px solid rgba(255,255,255,.45); }
 /* The way back to the directory, in the tab row: a link, styled like the tabs */
-.sitetabs a.back { margin-right: 6px; }   /* sized like the tabs (core/css/page.css) */
-.sitetabs a.back:hover, .sitetabs a.back:focus-visible { color: var(--b900); }
 #about-page.talk { max-width: 1432px; margin: 0 auto 0 var(--page-left); padding-block: 14px 110px; }
 @media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
 /* ---------- Assist tab (v2 only). Everything is scoped to #panel-assist or prefixed a- so it can't affect the rest of the site. ---------- */
@@ -1312,10 +1310,13 @@ footer.urgent p { color: #FEE2E2; }
       <p class="lede" id="lede"><span class="lg">Connecting people with local mental health and wellbeing support.</span><span class="sh">Local mental health and wellbeing support.</span></p>
     </div>
     <nav class="sitetabs" aria-label="Tools">
-      <a class="back" href="/signposting-somerset-v2/directory/">← Find support</a>
-      <button type="button" id="tab-assist" aria-controls="panel-assist" title="Assist: for invited support workers (access code needed)"><svg class="lock" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M12 2a5 5 0 0 1 5 5v3h1a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2v-8a2 2 0 0 1 2-2h1V7a5 5 0 0 1 5-5zm0 2a3 3 0 0 0-3 3v3h6V7a3 3 0 0 0-3-3z"/></svg><span>Assist</span><span class="sr-lock" id="tab-assist-sr" style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)"> (access code needed)</span></button>
+      <!-- As on the directory: the page's own tabs, a divider, About, a divider and a link to the other page -->
+      <span class="tgrp">
       <button type="button" id="tab-analytics" aria-controls="panel-analytics">Analytics</button>
+      <button type="button" id="tab-assist" aria-controls="panel-assist" title="Assist: for invited support workers (access code needed)"><svg class="lock" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M12 2a5 5 0 0 1 5 5v3h1a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2v-8a2 2 0 0 1 2-2h1V7a5 5 0 0 1 5-5zm0 2a3 3 0 0 0-3 3v3h6V7a3 3 0 0 0-3-3z"/></svg><span>Assist</span><span class="sr-lock" id="tab-assist-sr" style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)"> (access code needed)</span></button>
+      </span>
       <button type="button" id="tab-about" aria-controls="panel-about">About</button>
+      <a class="tolink" href="/signposting-somerset-v2/directory/">Directory →</a>
     </nav>
     </div>
     <div id="hdr-assist" hidden>
@@ -1926,7 +1927,7 @@ let ALL = [];
 // Analytics (analytics/analytics.js) follows this script; Assist (assist/assist.js) is added after it.
 const SITE_BASE = "/signposting-somerset-v2";           // the folder the site is served from ("" on signpostingsomerset.org.uk)
 const DIRECTORY_URL = "/signposting-somerset-v2/directory/";   // the directory beside this page (Analytics opens it filtered)
-const TABS = ["assist", "analytics", "about"];
+const TABS = ["analytics", "assist", "about"];   // in the tab row's order (Assist, with its padlock, next to the divider)
 const wideEnough = () => matchMedia("(min-width: 760px)").matches;   // Analytics is desktop only
 let tab = TABS.includes(location.hash.slice(1)) ? location.hash.slice(1) : "assist";
 if (tab === "analytics" && !wideEnough()) { tab = "assist"; try { history.replaceState(null, "", location.pathname + location.search + "#assist"); } catch (e) {} }
@@ -1968,7 +1969,7 @@ function renderAbout() {
       <li><strong>Data:</strong> ONS boundaries, population (mid-2022) and urban/rural classification; MHCLG Indices of Deprivation 2025; Census 2021; open postcode data (2016). Open Government Licence.</li>
     </ul>
     </div></div>
-    <p class="small" id="site-version">Version: tools 2026-11-16 23:17${typeof window.assistRelayVersion === "function" ? window.assistRelayVersion() : ""}</p>
+    <p class="small" id="site-version">Version: tools 2026-11-17 16:00${typeof window.assistRelayVersion === "function" ? window.assistRelayVersion() : ""}</p>
   </article>`;
 }
 
@@ -2450,7 +2451,7 @@ async function initAnalytics() {
    this page only remembers it for the current browser session. */
 (() => {
 const WORKER_URL = "https://signposting-assist.c-r-williams0109.workers.dev";
-const PAGE_VERSION = "tools 2026-11-16 23:17";
+const PAGE_VERSION = "tools 2026-11-17 16:00";
 let relayVersion = "";
 // The version line is at the bottom of the About tab: "Version: test 2026-11-06 11:30 · Assist relay 2026-11-06 11:07"
 window.assistRelayVersion = () => relayVersion ? ` · Assist relay ${relayVersion}` : "";

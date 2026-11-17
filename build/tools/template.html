@@ -13,8 +13,6 @@
 /*@core:css/pins.css*/
 /*@core:css/helpline.css*/
 /* The way back to the directory, in the tab row: a link, styled like the tabs */
-.sitetabs a.back { margin-right: 6px; }   /* sized like the tabs (core/css/page.css) */
-.sitetabs a.back:hover, .sitetabs a.back:focus-visible { color: var(--b900); }
 #about-page.talk { max-width: 1432px; margin: 0 auto 0 var(--page-left); padding-block: 14px 110px; }
 @media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
 /*@page:assist/assist.css*/
@@ -30,10 +28,13 @@
 <!--@core:html/brand.html-->
     </div>
     <nav class="sitetabs" aria-label="Tools">
-      <a class="back" href="/*DIRECTORY*/">← Find support</a>
-<!--ASSIST_TAB-->
+      <!-- As on the directory: the page's own tabs, a divider, About, a divider and a link to the other page -->
+      <span class="tgrp">
 <!--ANALYTICS_TAB-->
+<!--ASSIST_TAB-->
+      </span>
       <button type="button" id="tab-about" aria-controls="panel-about">About</button>
+      <a class="tolink" href="/*DIRECTORY*/">Directory →</a>
     </nav>
     </div>
 <!--ASSIST_HDR-->

@@ -202,6 +202,13 @@ test("Alignment: on every tab and Places, nothing moves sideways or up and down 
 });
 
 test("Tools page: Assist asks for the access code; Analytics opens", async () => {
+  // The tab row as on the directory: the page's own tabs, About, then the link to the other page (last, underlined, with an arrow)
+  for (const [path, last] of [["/test/tools/", /^Directory →$/], ["/test/directory/", /^Tools →$/]]) {
+    const pg = await open(path);
+    assert.match(await pg.$eval(".sitetabs > :last-child", e => e.matches("a.tolink") ? e.textContent : ""), last, `${path}: the other page's link comes last`);
+    assert.equal(await pg.$eval(".sitetabs #tab-about", e => e.previousElementSibling.matches(".tgrp")), true, `${path}: About follows the page's own tabs`);
+    await pg.done();
+  }
   const phone = await open("/test/tools/#assist", { width: 390, height: 664 });
   assert.ok(await phone.evaluate(() => pageFlows()), "on a phone, the whole page scrolls (as the directory)");
   await phone.done();

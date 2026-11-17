@@ -2,7 +2,7 @@
 // Analytics (analytics/analytics.js) follows this script; Assist (assist/assist.js) is added after it.
 const SITE_BASE = "/*SITE_BASE*/";           // the folder the site is served from ("" on signpostingsomerset.org.uk)
 const DIRECTORY_URL = "/*DIRECTORY_URL*/";   // the directory beside this page (Analytics opens it filtered)
-const TABS = ["assist", "analytics", "about"];
+const TABS = ["analytics", "assist", "about"];   // in the tab row's order (Assist, with its padlock, next to the divider)
 const wideEnough = () => matchMedia("(min-width: 760px)").matches;   // Analytics is desktop only
 let tab = TABS.includes(location.hash.slice(1)) ? location.hash.slice(1) : "assist";
 if (tab === "analytics" && !wideEnough()) { tab = "assist"; try { history.replaceState(null, "", location.pathname + location.search + "#assist"); } catch (e) {} }
