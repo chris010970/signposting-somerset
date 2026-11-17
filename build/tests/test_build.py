@@ -48,6 +48,11 @@ class Settings(unittest.TestCase):
         slugs = {re.sub(r"[^a-z0-9]+", "-", t.lower()).strip("-") for t in types}
         self.assertEqual(len(slugs), len(types), "two support types make the same Places section id")
 
+    def test_analytics_types(self):   # the types Analytics maps (tools/analytics/types.json) are the sheet's own
+        types = load("tools/analytics/types.json")["types"]
+        self.assertTrue(types and set(types) <= VOCAB, f"not a support type: {set(types) - VOCAB}")
+        self.assertEqual(len(types), len(set(types)))
+
     def test_where_places(self):
         for a in load("core/data/where.json")["areas"]:
             for name, lat, lon in a["places"]:

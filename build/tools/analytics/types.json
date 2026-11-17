@@ -1,0 +1,4 @@
+{
+ "_about": "The support types Analytics maps (the tools page only): those where being there in person matters most. Its Support for box offers only these, and Anything, the pins, the grid and the local profile count only services with at least one of them. Each must be one of the sheet's support types (build/core/data/support-types.json): build/tests/ checks.",
+ "types": ["connect", "be active", "low mood", "anxiety", "bereavement", "dementia", "caring for someone", "addiction", "food", "finances", "housing", "crisis prevention"]
+}

@@ -76,8 +76,8 @@ function anBreaks() {   // cut points at 20/40/60/80% of residents, rounded to 0
 }
 let aReady = false, amap = null, aGeo = null, aAreas = null, aPins = null, aLegendEl = null, aScaleEl = null, aDisMed = 17;
 let aInd = "imd", aShow = "all", aSort = { col: "rk", dir: 1 }, aFind = "", aSel = null, aCmp = false, aA = null, aB = null, aShownNow = [];
-// Only the support types where being there in person matters most (core/data/support-types.json: analytics), for every figure here
-const AN_TYPES = SUPPORT_TYPES.analytics.types;
+// Only the support types where being there in person matters most (analytics/types.json), for every figure here
+const AN_TYPES = (/*@page:analytics/types.json*/).types;
 const aLocated = () => S.filter(s => !s.approx && !isNaN(s.lat) && !isNaN(s.lon) && s._sf.some(t => AN_TYPES.includes(t)));
 const aR = p => p.ruc === "Urban" ? 1 : 3;   // search area: 1 mile urban, 3 miles rural (stated in the header)
 const aMi = d => d >= 99 ? "–" : d < 10 ? d.toFixed(1) + " mi" : Math.round(d) + " mi";
