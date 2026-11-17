@@ -130,16 +130,7 @@
   #panel-assist .a-compose textarea { height: auto; min-height: 0; }
   #panel-assist #a-map { height: 210px; }
 }
-/* the Assist filter bar uses the In person bar's look; "Include phone and online" sits where When would be */
-#hdr-assist .qs { width: 100%; }
-/* same as Phone and online / Courses: dropdowns share the width, checkbox at the right */
-#hdr-assist .qs { display: flex; gap: 10px; align-items: stretch; }
-#hdr-assist .qs > .q { flex: 1 1 0; min-width: 0; }
-/* Support for matches its width on the In person tab (first of its 1 : 1.3 columns); Where takes the rest */
-#hdr-assist .qs > #aq-support { flex: 0 0 calc((100% - var(--lastdd, 25%) - var(--endcol, 168px) - 30px) / 2.3); }
-#hdr-assist .qs > #aq-where { flex: 1 1 0; }
-#hdr-assist .qs > .toggle, #hdr-assist .qs > #aq-remote { flex: 0 0 var(--endcol, 168px); white-space: nowrap; }
-@media (max-width: 899px) { #hdr-assist .qs { flex-direction: column; } #hdr-assist .qs > .q, #hdr-assist .qs > #aq-where, #hdr-assist .qs > .toggle, #hdr-assist .qs > #aq-remote { flex: none; min-width: 0; } }
+/* the filter bar: three boxes of equal width, laid out with Analytics' (build/tools/template.html) */
 
 #hdr-assist.a-locked .qs { display: none; }
 #hdr-assist #aq-where.a-off { opacity: .5; }

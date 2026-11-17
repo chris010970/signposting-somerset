@@ -13,6 +13,10 @@
 /*@core:css/pins.css*/
 /*@core:css/helpline.css*/
 /* The way back to the directory, in the tab row: a link, styled like the tabs */
+/* The filter bars (Assist, Analytics): three boxes of equal width, in the same places on both tabs; on phones (Assist), one under another */
+#hdr-assist .qs, #hdr-analytics .qs { display: flex; gap: 10px; align-items: stretch; width: 100%; }
+#hdr-assist .qs > .q, #hdr-analytics .qs > .q { flex: 1 1 0; min-width: 0; }
+@media (max-width: 899px) { #hdr-assist .qs { flex-direction: column; } #hdr-assist .qs > .q { flex: none; } }
 #about-page.talk { max-width: 1432px; margin: 0 auto 0 var(--page-left); padding-block: 14px 110px; }
 @media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
 /*@page:assist/assist.css*/

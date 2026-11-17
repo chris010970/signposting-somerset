@@ -202,6 +202,17 @@ test("Alignment: on every tab and Places, nothing moves sideways or up and down 
 });
 
 test("Tools page: Assist asks for the access code; Analytics opens", async () => {
+  // The filter bars: three boxes of equal width, in exactly the same places on Assist and Analytics
+  {
+    const pg = await open("/test/tools/#analytics");
+    const boxes = bar => pg.$$eval(`${bar} .qs > .q`, qs => qs.map(q => { const r = q.getBoundingClientRect(); return [Math.round(r.left), Math.round(r.width)]; }));
+    const an = await boxes("#hdr-analytics");
+    await pg.evaluate(() => { document.getElementById("tab-assist").click(); document.getElementById("hdr-assist").classList.remove("a-locked"); });
+    const as = await boxes("#hdr-assist");
+    assert.equal(an.length, 3); assert.ok(an.every(([, w]) => Math.abs(w - an[0][1]) <= 1), `equal widths: ${JSON.stringify(an)}`);
+    assert.deepEqual(as, an, "the same places on both tabs");
+    await pg.done();
+  }
   // The tab row as on the directory: the page's own tabs, About, then the link to the other page (last, underlined, with an arrow)
   for (const [path, last] of [["/test/tools/", /^Directory →$/], ["/test/directory/", /^Tools →$/]]) {
     const pg = await open(path);

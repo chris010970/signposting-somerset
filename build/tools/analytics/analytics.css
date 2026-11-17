@@ -3,10 +3,9 @@
 #amap a.plink { color: var(--b700); display: inline-block; }
 /* Analytics tab (desktop only): three columns — Explore (chart + list) · Locate (map) · Understand (profile). On short screens the page scrolls a little rather than squashing the header */
 .crisis, header.top { flex-shrink: 0; }
-#hdr-analytics .an-qs { grid-template-columns: minmax(0, 1.25fr) minmax(0, .9fr) minmax(0, 1.1fr) minmax(0, .95fr); }
-.an-area { display: flex; flex-direction: column; justify-content: center; }
-.an-area .v { font-weight: 600; color: var(--b900); font-size: 15px; line-height: 1.25; }
-.an-area a { font-size: 12px; color: var(--b700); margin-top: 1px; align-self: flex-start; }
+/* the filter bar: three boxes of equal width, laid out with Assist's (build/tools/template.html) */
+/* "How this works", at the right of a label (as the date is beside 3. When? on the directory) */
+.q label .an-how { float: right; text-transform: none; letter-spacing: 0; font-weight: 500; color: var(--b700); }
 .an:not([hidden]) { flex: 1; min-height: 420px; display: grid; grid-template-columns: minmax(0, 35fr) minmax(0, 40fr) minmax(0, 25fr); gap: 12px;
   max-width: 1432px; width: 100%; padding: 10px max(16px, env(safe-area-inset-left, 0px)) 0; margin: 0 auto var(--footh, 50px); box-sizing: border-box; }
 .an-col { min-height: 0; display: flex; flex-direction: column; gap: 10px; padding-bottom: 10px; }

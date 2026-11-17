@@ -947,6 +947,10 @@ footer.urgent p { color: #FEE2E2; }
 .line { font-size: 12px; font-weight: 700; padding: 6px 12px; border-radius: 8px; background: #fff; color: var(--b900); text-decoration: none; white-space: nowrap; }
 .line.ghost { background: transparent; color: #fff; border: 1px solid rgba(255,255,255,.45); }
 /* The way back to the directory, in the tab row: a link, styled like the tabs */
+/* The filter bars (Assist, Analytics): three boxes of equal width, in the same places on both tabs; on phones (Assist), one under another */
+#hdr-assist .qs, #hdr-analytics .qs { display: flex; gap: 10px; align-items: stretch; width: 100%; }
+#hdr-assist .qs > .q, #hdr-analytics .qs > .q { flex: 1 1 0; min-width: 0; }
+@media (max-width: 899px) { #hdr-assist .qs { flex-direction: column; } #hdr-assist .qs > .q { flex: none; } }
 #about-page.talk { max-width: 1432px; margin: 0 auto 0 var(--page-left); padding-block: 14px 110px; }
 @media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
 /* ---------- Assist tab (v2 only). Everything is scoped to #panel-assist or prefixed a- so it can't affect the rest of the site. ---------- */
@@ -1081,16 +1085,7 @@ footer.urgent p { color: #FEE2E2; }
   #panel-assist .a-compose textarea { height: auto; min-height: 0; }
   #panel-assist #a-map { height: 210px; }
 }
-/* the Assist filter bar uses the In person bar's look; "Include phone and online" sits where When would be */
-#hdr-assist .qs { width: 100%; }
-/* same as Phone and online / Courses: dropdowns share the width, checkbox at the right */
-#hdr-assist .qs { display: flex; gap: 10px; align-items: stretch; }
-#hdr-assist .qs > .q { flex: 1 1 0; min-width: 0; }
-/* Support for matches its width on the In person tab (first of its 1 : 1.3 columns); Where takes the rest */
-#hdr-assist .qs > #aq-support { flex: 0 0 calc((100% - var(--lastdd, 25%) - var(--endcol, 168px) - 30px) / 2.3); }
-#hdr-assist .qs > #aq-where { flex: 1 1 0; }
-#hdr-assist .qs > .toggle, #hdr-assist .qs > #aq-remote { flex: 0 0 var(--endcol, 168px); white-space: nowrap; }
-@media (max-width: 899px) { #hdr-assist .qs { flex-direction: column; } #hdr-assist .qs > .q, #hdr-assist .qs > #aq-where, #hdr-assist .qs > .toggle, #hdr-assist .qs > #aq-remote { flex: none; min-width: 0; } }
+/* the filter bar: three boxes of equal width, laid out with Analytics' (build/tools/template.html) */
 
 #hdr-assist.a-locked .qs { display: none; }
 #hdr-assist #aq-where.a-off { opacity: .5; }
@@ -1137,10 +1132,9 @@ footer.urgent p { color: #FEE2E2; }
 #amap a.plink { color: var(--b700); display: inline-block; }
 /* Analytics tab (desktop only): three columns — Explore (chart + list) · Locate (map) · Understand (profile). On short screens the page scrolls a little rather than squashing the header */
 .crisis, header.top { flex-shrink: 0; }
-#hdr-analytics .an-qs { grid-template-columns: minmax(0, 1.25fr) minmax(0, .9fr) minmax(0, 1.1fr) minmax(0, .95fr); }
-.an-area { display: flex; flex-direction: column; justify-content: center; }
-.an-area .v { font-weight: 600; color: var(--b900); font-size: 15px; line-height: 1.25; }
-.an-area a { font-size: 12px; color: var(--b700); margin-top: 1px; align-self: flex-start; }
+/* the filter bar: three boxes of equal width, laid out with Assist's (build/tools/template.html) */
+/* "How this works", at the right of a label (as the date is beside 3. When? on the directory) */
+.q label .an-how { float: right; text-transform: none; letter-spacing: 0; font-weight: 500; color: var(--b700); }
 .an:not([hidden]) { flex: 1; min-height: 420px; display: grid; grid-template-columns: minmax(0, 35fr) minmax(0, 40fr) minmax(0, 25fr); gap: 12px;
   max-width: 1432px; width: 100%; padding: 10px max(16px, env(safe-area-inset-left, 0px)) 0; margin: 0 auto var(--footh, 50px); box-sizing: border-box; }
 .an-col { min-height: 0; display: flex; flex-direction: column; gap: 10px; padding-bottom: 10px; }
@@ -1343,9 +1337,8 @@ footer.urgent p { color: #FEE2E2; }
     <div id="hdr-analytics" hidden>
     <div class="qs an-qs">
       <div class="q" id="q-asupport"><label for="an-support">1. Support for</label><select id="an-support"></select></div>
-      <div class="q" id="q-aoften"><label for="an-often">2. How often</label><select id="an-often"><option value="">Any</option><option value="daily">Most days (5+ a week)</option><option value="weekly">At least weekly</option><option value="less">Fortnightly or monthly</option></select></div>
-      <div class="q" id="q-aind"><label for="an-ind">3. Compare areas by</label><select id="an-ind"><option>Deprivation (IMD 2025)</option></select></div>
-      <div class="q an-area"><label>Search area (fixed)</label><span class="v">1 mile urban · 3 miles rural</span><a href="#about" id="an-how">How this works</a></div>
+      <div class="q" id="q-aind"><label for="an-ind">2. Compare areas by <a href="#about" id="an-how" class="an-how">How this works</a></label><select id="an-ind"><option>Deprivation (IMD 2025)</option></select></div>
+      <div class="q" id="q-aoften"><label for="an-often">3. How often</label><select id="an-often"><option value="">Any</option><option value="daily">Most days (5+ a week)</option><option value="weekly">At least weekly</option><option value="less">Fortnightly or monthly</option></select></div>
     </div>
     </div>
     <div id="hdr-about" hidden></div>
@@ -1962,7 +1955,7 @@ function renderAbout() {
       <li><strong>Data:</strong> ONS boundaries, population (mid-2022) and urban/rural classification; MHCLG Indices of Deprivation 2025; Census 2021; open postcode data (2016). Open Government Licence.</li>
     </ul>
     </div></div>
-    <p class="small" id="site-version">Version: tools 2026-11-17 18:23${typeof window.assistRelayVersion === "function" ? window.assistRelayVersion() : ""}</p>
+    <p class="small" id="site-version">Version: tools 2026-11-17 18:51${typeof window.assistRelayVersion === "function" ? window.assistRelayVersion() : ""}</p>
   </article>`;
 }
 
@@ -2475,7 +2468,7 @@ async function initAnalytics() {
    this page only remembers it for the current browser session. */
 (() => {
 const WORKER_URL = "https://signposting-assist.c-r-williams0109.workers.dev";
-const PAGE_VERSION = "tools 2026-11-17 18:23";
+const PAGE_VERSION = "tools 2026-11-17 18:51";
 let relayVersion = "";
 // The version line is at the bottom of the About tab: "Version: test 2026-11-06 11:30 · Assist relay 2026-11-06 11:07"
 window.assistRelayVersion = () => relayVersion ? ` · Assist relay ${relayVersion}` : "";
