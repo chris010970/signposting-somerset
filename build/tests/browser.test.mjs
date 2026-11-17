@@ -218,6 +218,11 @@ test("Tools page: Assist asks for the access code; Analytics opens", async () =>
   assert.match(await text(p, "#about-page"), /About Assist/);
   await p.click("#tab-analytics"); await p.waitForTimeout(1500);
   assert.match(await text(p, "#panel-analytics"), /Most deprived half/);
+  // Only the support types where being there in person matters (core/data/support-types.json: analytics)
+  const offered = await p.$$eval("#an-support option", os => os.map(o => o.value).filter(Boolean));
+  const kept = await p.evaluate(() => SUPPORT_TYPES.analytics.types);
+  assert.ok(offered.length && offered.every(v => kept.includes(v)), `Support for offers only ${kept.join(", ")}: ${offered.join(", ")}`);
+  assert.ok(await p.evaluate(() => aLocated().every(s => s._sf.some(t => AN_TYPES.includes(t)))), "and every service counted has one of them");
   assert.deepEqual(p.errors, []);
   await p.done();
 });

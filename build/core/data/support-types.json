@@ -1,5 +1,7 @@
 {
  "_about": "The support types (the sheet's support_for column), in the three groups the 'Support for' boxes show, and how a type is shown where it isn't just the sheet's word with a capital letter. Used by the pages (core/js/text.js), the Places build and the tests.",
+ "analytics": {"_about": "The types Analytics maps (tools page): those where being there in person matters most. Its Support for box offers only these, and Anything, the pins and the local profile count only services with one of them.",
+  "types": ["connect", "be active", "low mood", "anxiety", "bereavement", "dementia", "caring for someone", "addiction", "food", "finances", "housing", "crisis prevention"]},
  "groups": [
   {"group": "Specialist support", "types": ["crisis prevention", "low mood", "anxiety", "bereavement", "hearing voices", "eating disorders", "long-term pain", "dementia", "addiction", "abuse", "caring for someone"]},
   {"group": "Practical help and support", "types": ["housing", "finances", "food"]},

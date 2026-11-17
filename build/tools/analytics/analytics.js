@@ -76,7 +76,9 @@ function anBreaks() {   // cut points at 20/40/60/80% of residents, rounded to 0
 }
 let aReady = false, amap = null, aGeo = null, aAreas = null, aPins = null, aLegendEl = null, aScaleEl = null, aDisMed = 17;
 let aInd = "imd", aShow = "all", aSort = { col: "rk", dir: 1 }, aFind = "", aSel = null, aCmp = false, aA = null, aB = null, aShownNow = [];
-const aLocated = () => S.filter(s => !s.approx && !isNaN(s.lat) && !isNaN(s.lon));
+// Only the support types where being there in person matters most (core/data/support-types.json: analytics), for every figure here
+const AN_TYPES = SUPPORT_TYPES.analytics.types;
+const aLocated = () => S.filter(s => !s.approx && !isNaN(s.lat) && !isNaN(s.lon) && s._sf.some(t => AN_TYPES.includes(t)));
 const aR = p => p.ruc === "Urban" ? 1 : 3;   // search area: 1 mile urban, 3 miles rural (stated in the header)
 const aMi = d => d >= 99 ? "–" : d < 10 ? d.toFixed(1) + " mi" : Math.round(d) + " mi";
 const aShort = n => n.replace("Somerset West and Taunton", "Som. W & Taunton").replace("Bath and North East Somerset", "B&NES");
@@ -400,7 +402,7 @@ async function initAnalytics() {
     b.onclick = () => { aSel = aA = aB = null; aCmp = false; aCells.clear(); anSync(); amap.fitBounds(aAreas.getBounds(), { padding: [8, 8] }); }; return b; };
   whole.addTo(amap);
   // controls
-  $("an-support").innerHTML = supportOptions(S);
+  $("an-support").innerHTML = supportOptions(S, AN_TYPES);
   $("an-ind").innerHTML = Object.entries(AN_IND).map(([k, v]) => `<option value="${k}">${esc(v.name)}</option>`).join("");
   $("an-support").onchange = $("an-often").onchange = () => { $("q-asupport").classList.toggle("on", !!$("an-support").value); $("q-aoften").classList.toggle("on", !!$("an-often").value); anRefilter(); };
   $("an-ind").onchange = e => { aInd = e.target.value; anReindicator(); };

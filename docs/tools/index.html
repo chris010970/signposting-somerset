@@ -1420,6 +1420,8 @@ footer.urgent p { color: #FEE2E2; }
 // word with a capital letter (build/core/data/support-types.json)
 const SUPPORT_TYPES = ({
  "_about": "The support types (the sheet's support_for column), in the three groups the 'Support for' boxes show, and how a type is shown where it isn't just the sheet's word with a capital letter. Used by the pages (core/js/text.js), the Places build and the tests.",
+ "analytics": {"_about": "The types Analytics maps (tools page): those where being there in person matters most. Its Support for box offers only these, and Anything, the pins and the local profile count only services with one of them.",
+  "types": ["connect", "be active", "low mood", "anxiety", "bereavement", "dementia", "caring for someone", "addiction", "food", "finances", "housing", "crisis prevention"]},
  "groups": [
   {"group": "Specialist support", "types": ["crisis prevention", "low mood", "anxiety", "bereavement", "hearing voices", "eating disorders", "long-term pain", "dementia", "addiction", "abuse", "caring for someone"]},
   {"group": "Practical help and support", "types": ["housing", "finances", "food"]},
@@ -1645,8 +1647,8 @@ function shapeRecords(rows) {
   }).filter(s => s._kind !== "ended");
 }
 // The "Support for" choices, grouped, offering only the types that appear in the list given
-const supportOptions = list => `<option value="">Anything</option>` + GROUPS.map(([g, vals]) => {
-  const v = vals.filter(x => list.some(s => s._sf.includes(x)));
+const supportOptions = (list, only) => `<option value="">Anything</option>` + GROUPS.map(([g, vals]) => {   // only: offer just these types
+  const v = vals.filter(x => (!only || only.includes(x)) && list.some(s => s._sf.includes(x)));
   return v.length ? `<optgroup label="${g}">${v.map(x => `<option value="${x}">${esc(cap(x))}</option>`).join("")}</optgroup>` : "";
 }).join("");
 // Kinds of service and their colours, for map pins, the map key and cards (build/core/data/kinds.json): [kind, colour, [types]]
@@ -1963,13 +1965,14 @@ function renderAbout() {
     <h3>How Analytics works</h3>
     <ul>
       <li><strong>What it shows:</strong> each small census area (LSOA, about 1,500 people) beside the support recorded nearby in this directory. It's for exploring, not a measure of need.</li>
+      <li><strong>Which support:</strong> the kinds where being there in person matters most: connecting with others, being active, low mood, anxiety, bereavement, dementia, caring for someone, addiction, food, money and housing, and crisis support. Other kinds (learning, volunteering, and specialist support with only a handful of in-person services) aren't counted.</li>
       <li><strong>Ranking:</strong> by the indicator you choose, never by distance: the national deprivation or health rank from the English Indices of Deprivation 2025 (1 = most deprived of 33,755 in England), the share of residents disabled (Census 2021), or people per km² (least dense first). Ties go to the larger population. The grid groups areas into five bands of the chosen indicator (rows) and five distance bands (columns), each holding a fifth of residents by distance to the nearest matching support, so the miles change with Support for. Each square has its own colour, and the map uses the same colours.</li>
       <li><strong>Distances:</strong> straight lines from where people live in each area (the average position of its postcodes), not travel times. The search area is 1 mile in towns and 3 miles in rural areas (ONS urban/rural classification 2021).</li>
       <li><strong>What it can't tell you:</strong> how much a service can take, how good it is, or whether it's easy to reach. "None recorded" may mean a gap in this directory rather than in local provision.</li>
       <li><strong>Data:</strong> ONS boundaries, population (mid-2022) and urban/rural classification; MHCLG Indices of Deprivation 2025; Census 2021; open postcode data (2016). Open Government Licence.</li>
     </ul>
     </div></div>
-    <p class="small" id="site-version">Version: tools 2026-11-17 16:00${typeof window.assistRelayVersion === "function" ? window.assistRelayVersion() : ""}</p>
+    <p class="small" id="site-version">Version: tools 2026-11-17 16:42${typeof window.assistRelayVersion === "function" ? window.assistRelayVersion() : ""}</p>
   </article>`;
 }
 
@@ -2065,7 +2068,9 @@ function anBreaks() {   // cut points at 20/40/60/80% of residents, rounded to 0
 }
 let aReady = false, amap = null, aGeo = null, aAreas = null, aPins = null, aLegendEl = null, aScaleEl = null, aDisMed = 17;
 let aInd = "imd", aShow = "all", aSort = { col: "rk", dir: 1 }, aFind = "", aSel = null, aCmp = false, aA = null, aB = null, aShownNow = [];
-const aLocated = () => S.filter(s => !s.approx && !isNaN(s.lat) && !isNaN(s.lon));
+// Only the support types where being there in person matters most (core/data/support-types.json: analytics), for every figure here
+const AN_TYPES = SUPPORT_TYPES.analytics.types;
+const aLocated = () => S.filter(s => !s.approx && !isNaN(s.lat) && !isNaN(s.lon) && s._sf.some(t => AN_TYPES.includes(t)));
 const aR = p => p.ruc === "Urban" ? 1 : 3;   // search area: 1 mile urban, 3 miles rural (stated in the header)
 const aMi = d => d >= 99 ? "–" : d < 10 ? d.toFixed(1) + " mi" : Math.round(d) + " mi";
 const aShort = n => n.replace("Somerset West and Taunton", "Som. W & Taunton").replace("Bath and North East Somerset", "B&NES");
@@ -2389,7 +2394,7 @@ async function initAnalytics() {
     b.onclick = () => { aSel = aA = aB = null; aCmp = false; aCells.clear(); anSync(); amap.fitBounds(aAreas.getBounds(), { padding: [8, 8] }); }; return b; };
   whole.addTo(amap);
   // controls
-  $("an-support").innerHTML = supportOptions(S);
+  $("an-support").innerHTML = supportOptions(S, AN_TYPES);
   $("an-ind").innerHTML = Object.entries(AN_IND).map(([k, v]) => `<option value="${k}">${esc(v.name)}</option>`).join("");
   $("an-support").onchange = $("an-often").onchange = () => { $("q-asupport").classList.toggle("on", !!$("an-support").value); $("q-aoften").classList.toggle("on", !!$("an-often").value); anRefilter(); };
   $("an-ind").onchange = e => { aInd = e.target.value; anReindicator(); };
@@ -2451,7 +2456,7 @@ async function initAnalytics() {
    this page only remembers it for the current browser session. */
 (() => {
 const WORKER_URL = "https://signposting-assist.c-r-williams0109.workers.dev";
-const PAGE_VERSION = "tools 2026-11-17 16:00";
+const PAGE_VERSION = "tools 2026-11-17 16:42";
 let relayVersion = "";
 // The version line is at the bottom of the About tab: "Version: test 2026-11-06 11:30 · Assist relay 2026-11-06 11:07"
 window.assistRelayVersion = () => relayVersion ? ` · Assist relay ${relayVersion}` : "";
