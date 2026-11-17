@@ -52,6 +52,9 @@ class Settings(unittest.TestCase):
         types = load("tools/analytics/types.json")["types"]
         self.assertTrue(types and set(types) <= VOCAB, f"not a support type: {set(types) - VOCAB}")
         self.assertEqual(len(types), len(set(types)))
+        a = load("tools/analytics/types.json")
+        self.assertIn(a["default"], types)
+        self.assertTrue(set(a["title_words"]) <= set(types), "a title word for a type Analytics doesn't map")
 
     def test_where_places(self):
         for a in load("core/data/where.json")["areas"]:

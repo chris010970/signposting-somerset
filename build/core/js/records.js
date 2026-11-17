@@ -9,7 +9,8 @@ function shapeRecords(rows) {
   }).filter(s => s._kind !== "ended");
 }
 // The "Support for" choices, grouped, offering only the types that appear in the list given
-const supportOptions = (list, only) => `<option value="">Anything</option>` + GROUPS.map(([g, vals]) => {   // only: offer just these types
+// only: offer just these types; any: the first choice ("Anything"), or none when a type must be chosen
+const supportOptions = (list, only, any = "Anything") => (any ? `<option value="">${any}</option>` : "") + GROUPS.map(([g, vals]) => {
   const v = vals.filter(x => (!only || only.includes(x)) && list.some(s => s._sf.includes(x)));
   return v.length ? `<optgroup label="${g}">${v.map(x => `<option value="${x}">${esc(cap(x))}</option>`).join("")}</optgroup>` : "";
 }).join("");

@@ -1,4 +1,6 @@
 {
- "_about": "The support types Analytics maps (the tools page only): those where being there in person matters most. Its Support for box offers only these, and Anything, the pins, the grid and the local profile count only services with at least one of them. Each must be one of the sheet's support types (build/core/data/support-types.json): build/tests/ checks.",
- "types": ["connect", "be active", "low mood", "anxiety", "bereavement", "dementia", "caring for someone", "addiction", "food", "finances", "housing", "crisis prevention"]
+ "_about": "The support types Analytics maps (the tools page only): those where being there in person matters most. Its Support for box offers only these (always one of them: there's no 'Anything'), starting on 'default'. The chart's title reads 'Distance to nearest in-person ___ support' with the type's name, or its word in 'title_words' where the name doesn't read well there. Each type must be one of the sheet's support types (build/core/data/support-types.json): build/tests/ checks.",
+ "types": ["connect", "be active", "low mood", "anxiety", "bereavement", "dementia", "caring for someone", "addiction", "food", "finances", "housing", "crisis prevention"],
+ "default": "connect",
+ "title_words": {"connect": "social", "be active": "activity", "crisis prevention": "crisis", "addiction": "addiction", "caring for someone": "carers'", "finances": "money"}
 }

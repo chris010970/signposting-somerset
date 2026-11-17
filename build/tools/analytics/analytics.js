@@ -77,7 +77,9 @@ function anBreaks() {   // cut points at 20/40/60/80% of residents, rounded to 0
 let aReady = false, amap = null, aGeo = null, aAreas = null, aPins = null, aLegendEl = null, aScaleEl = null, aDisMed = 17;
 let aInd = "imd", aShow = "all", aSort = { col: "rk", dir: 1 }, aFind = "", aSel = null, aCmp = false, aA = null, aB = null, aShownNow = [];
 // Only the support types where being there in person matters most (analytics/types.json), for every figure here
-const AN_TYPES = (/*@page:analytics/types.json*/).types;
+const AN_TYPE_DATA = (/*@page:analytics/types.json*/), AN_TYPES = AN_TYPE_DATA.types;
+// The type in the chart's title: "Distance to nearest in-person bereavement support"
+const aTitleWord = v => AN_TYPE_DATA.title_words[v] || cap(v).toLowerCase();
 const aLocated = () => S.filter(s => !s.approx && !isNaN(s.lat) && !isNaN(s.lon) && s._sf.some(t => AN_TYPES.includes(t)));
 const aR = p => p.ruc === "Urban" ? 1 : 3;   // search area: 1 mile urban, 3 miles rural (stated in the header)
 const aMi = d => d >= 99 ? "–" : d < 10 ? d.toFixed(1) + " mi" : Math.round(d) + " mi";
@@ -219,25 +221,45 @@ function aCellLabel() {
   return ks.length + " squares";
 }
 const k1 = n => n >= 1000 ? (n / 1000).toFixed(n >= 10000 ? 0 : 1).replace(/\.0$/, "") + "k" : String(n);
+// Column widths: the row labels as wide as the longest; the distance columns all as wide as the longest heading on one line
+// ("Furthest 20%"), so every square is the same size. If that doesn't fit the panel, they share its width and the headings wrap.
+function anFitColumns(box) {
+  const t = box.querySelector(".g2"), ax = t.querySelector("col.g2-ax"), rl = t.querySelector("col.g2-rl"), cols = [...t.querySelectorAll("col.g2-c")];
+  const textW = el => {   // the widest line of text in a cell, plus its padding (not the column's current width)
+    const cs = getComputedStyle(el), r = document.createRange(), w = [...el.querySelectorAll("*"), el].flatMap(e => [...e.childNodes])
+      .filter(n => n.nodeType === 3 && n.textContent.trim()).map(n => { r.selectNodeContents(n); return Math.max(0, ...[...r.getClientRects()].map(q => q.width)); });
+    return Math.ceil(Math.max(0, ...w) + parseFloat(cs.paddingLeft) + parseFloat(cs.paddingRight));
+  };
+  const widest = sel => Math.max(...[...t.querySelectorAll(sel)].map(textW));
+  const w = widest("th.ch"), gap = parseFloat(getComputedStyle(t).borderSpacing);
+  const need = () => parseFloat(getComputedStyle(ax).width) + widest("th.rl") + cols.length * w + gap * (cols.length + 3);
+  t.classList.remove("short", "wrap");
+  if (need() > box.clientWidth && t.querySelector("th.rl .sh")) t.classList.add("short");   // tight: the row labels' short forms ("1k–4k")
+  rl.style.width = widest("th.rl") + "px";
+  const fits = need() <= box.clientWidth;
+  cols.forEach(c => { c.style.width = fits ? w + "px" : ""; });
+  t.style.width = fits ? need + "px" : "";
+  t.classList.toggle("wrap", !fits);
+}
 function anChart() {
   const box = $("an-svg"); if (!aReady || !box || !box.clientWidth) return;
   const I = AN_IND[aInd], sup = aSupL(), A = anAgg(), nR = A.nR, nC = A.nC;
   aVisR = [...I.bands.map((_, i) => i), ...(A.missing ? [nR] : [])];
   aVisC = [...AN_ACC.cols.map((_, j) => j), ...(A.none ? [nC] : [])];
-  const far = r => A.cells[r].slice(nC - 2).reduce((t, c) => t + c.ls.length, 0);   // furthest two fifths + none recorded
-  const pc = (a, b) => b ? Math.round(100 * a / b) + "%" : "–";
   const mine = aCmp ? aA : aSel, me = mine ? aCellOf(mine.properties) : [-1, -1];
   const rowLab = i => i < nR ? (I.bands[i].row || I.bands[i].label) : "No data";
   const fill = (i, j) => i < nR ? AN_LUT[aLutRow(i, nR)][Math.min(j, 4)] : AN_NODATA;
-  $("an-ctitle").textContent = `${I.short} and distance to the nearest ${sup ? sup + " " : ""}support`;
-  box.innerHTML = `<table class="g2"><thead><tr class="band"><td colspan="2"></td><th colspan="${aVisC.length}">${esc(AN_ACC.title(sup))}</th><td colspan="2"></td></tr>` +
+  $("an-ctitle").textContent = `Distance to nearest in-person ${aTitleWord($("an-support").value)} support`;
+  // Every square the same size (anFitColumns sets the widths)
+  box.innerHTML = `<table class="g2"><colgroup><col class="g2-ax"><col class="g2-rl">${aVisC.map(() => `<col class="g2-c">`).join("")}</colgroup><thead><tr class="band"><td colspan="2"></td><th colspan="${aVisC.length}">${esc(AN_ACC.title(sup))}</th></tr>` +
     `<tr><td colspan="2"></td>${aVisC.map(j => j < nC ? `<th class="ch" data-col="${j}" title="Select this column"><span>${esc(AN_ACC.cols[j].label)}</span>${esc(AN_ACC.cols[j].mi)}</th>`
-      : `<th class="ch" data-col="${j}"><span>None</span>recorded</th>`).join("")}<th class="tt">Total</th><th class="tt" title="Share of the row in the furthest two fifths (or with no matching support)">% in<br>furthest<br>40%</th></tr></thead><tbody>` +
-    aVisR.map((i, ri) => `<tr>${ri ? "" : `<th class="vax" rowspan="${aVisR.length}">${esc(I.axis)}</th>`}<th class="rl" data-row="${i}" title="Select this row">${esc(rowLab(i))}${i < nR && I.bands[i].sub ? `<small>${esc(I.bands[i].sub.replace(" residents", ""))}</small>` : ""}</th>` +
+      : `<th class="ch" data-col="${j}"><span>None</span>recorded</th>`).join("")}</tr></thead><tbody>` +
+    aVisR.map((i, ri) => `<tr>${ri ? "" : `<th class="vax" rowspan="${aVisR.length}">${esc(I.axis)}</th>`}<th class="rl" data-row="${i}" title="Select this row">${i < nR && I.bands[i].tick ? `<span class="lg">${esc(rowLab(i))}</span><span class="sh">${esc(I.bands[i].tick)}</span>` : esc(rowLab(i))}${i < nR && I.bands[i].sub ? `<small>${esc(I.bands[i].sub.replace(" residents", ""))}</small>` : ""}</th>` +
       aVisC.map(j => { const c = A.cells[i][j], n = c.ls.length, k = i + "," + j;
         return `<td class="c${n ? "" : " z"}${i <= 1 && i < nR && j >= nC - 2 ? " hot" : ""}${aCells.has(k) ? " on" : ""}${i === me[0] && j === me[1] ? " me" : ""}" data-r="${i}" data-c="${j}" style="background:${fill(i, j)};color:${i <= 1 && i < nR ? "#fff" : "var(--b900)"}" title="${n} LSOAs, ${aFmt(c.pop)} people"><b>${n || "–"}</b>${n ? `<span>${k1(c.pop)}</span>` : ""}</td>`; }).join("") +
-      `<td class="t">${A.rows[i].n}</td><td class="t pc">${pc(far(i), A.rows[i].n)}</td></tr>`).join("") +
-    `<tr class="tot"><td></td><th class="rl">Total</th>${aVisC.map(j => `<td class="t">${A.cols[j].n}</td>`).join("")}<td class="t">${A.total.n}</td><td class="t pc">${pc(aVisR.reduce((t, i) => t + far(i), 0), A.total.n)}</td></tr></tbody></table>`;
+      `</tr>`).join("") +
+    `<tr class="tot"><td></td><th class="rl">Total</th>${aVisC.map(j => `<td class="t">${A.cols[j].n}</td>`).join("")}</tr></tbody></table>`;
+  anFitColumns(box);
   const top = I.bands[0], tf = A.cells[0].slice(nC - 2).reduce((t, c) => ({ n: t.n + c.ls.length, pop: t.pop + c.pop }), { n: 0, pop: 0 });
   $("an-cap").innerHTML = `<div class="an-gkey"><span>Square colour = map colour · big figure: LSOAs · small: people</span><span><i class="hotk"></i>${esc(I.hot)}, furthest 40%</span></div>` +
     `<p class="an-take"><b>${tf.n} of ${A.rows[0].n}</b> LSOAs in the top band (${esc(top.label.toLowerCase())}${I.unit ? " " + I.unit : ""}, ${esc(top.sub)}) are in the furthest 40% of residents from ${esc(sup ? sup + " " : "")}support (${aMiF(AN_ACC.br[2])}+ miles, or none recorded): <b>${k1(tf.pop)} people</b>.</p>`;
@@ -402,9 +424,10 @@ async function initAnalytics() {
     b.onclick = () => { aSel = aA = aB = null; aCmp = false; aCells.clear(); anSync(); amap.fitBounds(aAreas.getBounds(), { padding: [8, 8] }); }; return b; };
   whole.addTo(amap);
   // controls
-  $("an-support").innerHTML = supportOptions(S, AN_TYPES);
+  $("an-support").innerHTML = supportOptions(S, AN_TYPES, null);   // always one type (no "Anything")
+  $("an-support").value = AN_TYPE_DATA.default;
   $("an-ind").innerHTML = Object.entries(AN_IND).map(([k, v]) => `<option value="${k}">${esc(v.name)}</option>`).join("");
-  $("an-support").onchange = $("an-often").onchange = () => { $("q-asupport").classList.toggle("on", !!$("an-support").value); $("q-aoften").classList.toggle("on", !!$("an-often").value); anRefilter(); };
+  $("an-support").onchange = $("an-often").onchange = () => { $("q-aoften").classList.toggle("on", !!$("an-often").value); anRefilter(); };
   $("an-ind").onchange = e => { aInd = e.target.value; anReindicator(); };
   $("an-how").onclick = e => { e.preventDefault(); setTab("about"); setTimeout(() => { const h = $("how-analytics"); if (h) h.scrollIntoView({ block: "start" }); }, 60); };
   $("an-chips").onclick = e => { const b = e.target.closest("button"); if (!b) return; aShow = b.dataset.show; anListHead(); anList(); anChart(); };

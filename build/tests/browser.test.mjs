@@ -223,6 +223,12 @@ test("Tools page: Assist asks for the access code; Analytics opens", async () =>
   const kept = await p.evaluate(() => AN_TYPES);
   assert.ok(offered.length && offered.every(v => kept.includes(v)), `Support for offers only ${kept.join(", ")}: ${offered.join(", ")}`);
   assert.ok(await p.evaluate(() => aLocated().every(s => s._sf.some(t => AN_TYPES.includes(t)))), "and every service counted has one of them");
+  assert.equal(await p.$$eval("#an-support option", os => os.filter(o => !o.value).length), 0, "always one type: no 'Anything'");
+  assert.equal(await p.inputValue("#an-support"), await p.evaluate(() => AN_TYPE_DATA.default));
+  await p.click('.an-ltabs button[data-lt="chart"]'); await p.selectOption("#an-support", "bereavement"); await p.waitForTimeout(300);
+  assert.equal(await text(p, "#an-ctitle"), "Distance to nearest in-person bereavement support");
+  await p.selectOption("#an-support", "connect"); await p.waitForTimeout(300);
+  assert.equal(await text(p, "#an-ctitle"), "Distance to nearest in-person social support", "a type's title word (tools/analytics/types.json)");
   assert.deepEqual(p.errors, []);
   await p.done();
 });

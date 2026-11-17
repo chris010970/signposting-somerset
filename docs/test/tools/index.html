@@ -1175,16 +1175,21 @@ footer.urgent p { color: #FEE2E2; }
 .an-grid td.tc { background: none; color: var(--muted); cursor: default; } .an-grid td.tc b { font-size: 13px; color: var(--b900); }
 @media (max-height: 820px) { .an-grid td { padding: 3px 2px; } .an-grid td b { font-size: 14.5px; } .an-grid td small { font-size: 9.5px; } .an-gsub { display: none; } }
 .an-gx { font-size: 11px; color: var(--muted); text-align: center; margin: 2px 0 0 92px; }
-.an-cap .hotk { border-radius: 3px; box-shadow: inset 0 0 0 2px #9B4A24; background: #fff; width: 13px; }
+.an-cap .hotk { border-radius: 3px; box-shadow: inset 0 0 0 2px #B5562A; background: #fff; width: 13px; }
 .an-cap .mek { border-radius: 3px; box-shadow: inset 0 0 0 2px #7A2E8E; background: #fff; width: 13px; }
 /* v24 grid: rotated row axis, distance bar over the columns, one colour per square (same colours as the map) */
-.g2 { width: 100%; border-collapse: separate; border-spacing: 4px; table-layout: auto; font-variant-numeric: tabular-nums; }
+.g2 { width: 100%; border-collapse: separate; border-spacing: 3px; table-layout: fixed; font-variant-numeric: tabular-nums; }
+/* Every square the same size: the distance columns share the width equally (labels wrap rather than widen a column), every row the same height */
+.g2 col.g2-ax { width: 24px; } .g2 col.g2-rl { width: 84px; }   /* (anFitColumns sizes the row labels and distance columns) */
+.g2 tbody tr:not(.tot) td.c { height: 46px; }
 .g2 .band th { background: var(--b50, #EEF2EF); border-radius: 6px; font-weight: 500; font-size: 11.5px; padding: 3px 4px; color: var(--ink); }
-.g2 th.ch { font-size: 12px; font-weight: 600; line-height: 1.15; white-space: nowrap; color: var(--ink); cursor: pointer; padding: 1px 2px; border-radius: 5px; }
+.g2 th.ch { font-size: 12px; font-weight: 600; line-height: 1.15; color: var(--ink); cursor: pointer; padding: 5px 2px 1px; border-radius: 5px; }   /* 5px above: the same gap under the miles bar as beside the axis label */
+.g2 th.ch, .g2 th.ch span { white-space: nowrap; }   /* each heading on one line (a narrow panel: .wrap, they wrap) */
+.g2.wrap th.ch, .g2.wrap th.ch span { white-space: normal; }
+.g2 th.rl .sh, .g2.short th.rl .lg { display: none; } .g2.short th.rl .sh { display: inline; }   /* row labels: short forms when tight */
 .g2 th.ch span { display: block; font-weight: 400; color: var(--muted); font-size: 10px; }
-.g2 th.tt { font-size: 11px; font-weight: 600; color: var(--muted); line-height: 1.15; }
-.g2 .vax { writing-mode: vertical-rl; transform: rotate(180deg); font-size: 11.5px; font-weight: 600; color: var(--muted); background: var(--b50, #EEF2EF); border-radius: 6px; padding: 4px 2px; width: 1%; }
-.g2 th.rl { text-align: right; font-size: 13px; font-weight: 600; white-space: nowrap; padding: 0 4px 0 2px; width: 1%; cursor: pointer; border-radius: 5px; color: var(--ink); }
+.g2 .vax { writing-mode: vertical-rl; transform: rotate(180deg); font-size: 11.5px; font-weight: 600; color: var(--muted); background: var(--b50, #EEF2EF); border-radius: 6px; padding: 4px 2px; }
+.g2 th.rl { text-align: right; font-size: 13px; font-weight: 600; white-space: nowrap; padding: 0 4px 0 2px; cursor: pointer; border-radius: 5px; color: var(--ink); }
 .g2 th.rl small { display: block; font-weight: 400; color: var(--muted); font-size: 10px; white-space: normal; max-width: 60px; margin-left: auto; line-height: 1.1; }
 .g2 .tot th.rl { cursor: default; }
 .g2 th[data-row]:hover, .g2 th[data-col]:hover { background: var(--b50, #EEF2EF); }
@@ -1196,14 +1201,17 @@ footer.urgent p { color: #FEE2E2; }
 .g2 td.c.hov { box-shadow: inset 0 0 0 2px #14302A; }
 .g2 td.c.me { box-shadow: inset 0 0 0 2px #fff, inset 0 0 0 4px #14302A; }
 .g2 td.c.on { box-shadow: inset 0 0 0 3px #7A2E8E, inset 0 0 0 5px #fff; filter: none; }
-.g2 td.t { text-align: center; font-weight: 700; font-size: 13px; color: var(--b900); } .g2 td.pc { font-weight: 500; color: var(--muted); font-size: 12px; }
+/* The most deprived, furthest squares keep their outline when they're also hovered, the selected area's square or chosen */
+.g2 td.c.hot.hov { box-shadow: inset 0 0 0 2px #B5562A, inset 0 0 0 4px #14302A; }
+.g2 td.c.hot.me { box-shadow: inset 0 0 0 2px #B5562A, inset 0 0 0 4px #fff, inset 0 0 0 6px #14302A; }
+.g2 td.c.hot.on { box-shadow: inset 0 0 0 2px #B5562A, inset 0 0 0 5px #7A2E8E, inset 0 0 0 7px #fff; }
+.g2 td.t { text-align: center; font-weight: 700; font-size: 13px; color: var(--b900); }
 .g2 .tot td.t { font-weight: 700; color: var(--b900); }
-.g2 th.ch span, .g2 th.ch { white-space: normal; }
-@media (max-height: 820px) { .g2 td.c { padding: 2px 1px; } .g2 td.c b { font-size: 14px; } .g2 td.c span { font-size: 9.5px; } .g2 { border-spacing: 3px; }
+@media (max-height: 820px) { .g2 td.c { padding: 2px 1px; } .g2 tbody tr:not(.tot) td.c { height: 38px; } .g2 td.c b { font-size: 14px; } .g2 td.c span { font-size: 9.5px; } .g2 { border-spacing: 3px; }
   .g2 th.rl small { display: none; } .g2 th.ch { font-size: 11px; } .an-take { font-size: 11.5px; padding: 4px 8px; margin-top: 5px; line-height: 1.3; } .an-gkey { font-size: 10.5px; } .an-pchart .an-ct { margin-bottom: 2px; } .g2 .band th { padding: 1px 4px; font-size: 11px; } }
 @media (max-height: 800px) { .an-gkey { display: none; } .an-pchart { padding-bottom: 4px; } .g2 th.ch { line-height: 1.05; } .g2 td.c { padding: 1px; } .g2 { border-spacing: 2px 3px; } }
-@media (max-height: 740px) { .g2 td.c span { display: none; } .g2 td.c { padding: 3px 1px; } }
-@media (max-width: 1500px) { .g2 th.ch span { font-size: 9.5px; } .g2 td.c span { font-size: 9.5px; } .g2 th.tt { font-size: 10px; } .g2 td.t { font-size: 12px; } }
+@media (max-height: 740px) { .g2 td.c span { display: none; } .g2 td.c { padding: 3px 1px; } .g2 tbody tr:not(.tot) td.c { height: 28px; } }
+@media (max-width: 1500px) { .g2 th.ch span { font-size: 9.5px; } .g2 td.c span { font-size: 9.5px; } .g2 td.t { font-size: 12px; } }
 #an-cap { display: block; }
 .an-gkey { display: flex; flex-wrap: wrap; gap: 3px 14px; font-size: 11.5px; color: var(--muted); margin-top: 4px; }
 .an-take { margin: 8px 0 0; padding: 7px 10px; background: var(--b50, #F4F7F5); border-left: 3px solid #176B55; font-size: 12.5px; line-height: 1.4; color: var(--ink); border-radius: 0 6px 6px 0; }
@@ -1334,7 +1342,7 @@ footer.urgent p { color: #FEE2E2; }
     </div>
     <div id="hdr-analytics" hidden>
     <div class="qs an-qs">
-      <div class="q" id="q-asupport"><label for="an-support">1. Support for</label><select id="an-support"><option value="">Anything</option></select></div>
+      <div class="q" id="q-asupport"><label for="an-support">1. Support for</label><select id="an-support"></select></div>
       <div class="q" id="q-aoften"><label for="an-often">2. How often</label><select id="an-often"><option value="">Any</option><option value="daily">Most days (5+ a week)</option><option value="weekly">At least weekly</option><option value="less">Fortnightly or monthly</option></select></div>
       <div class="q" id="q-aind"><label for="an-ind">3. Compare areas by</label><select id="an-ind"><option>Deprivation (IMD 2025)</option></select></div>
       <div class="q an-area"><label>Search area (fixed)</label><span class="v">1 mile urban · 3 miles rural</span><a href="#about" id="an-how">How this works</a></div>
@@ -1396,7 +1404,7 @@ footer.urgent p { color: #FEE2E2; }
         <div class="an-cellbar" id="an-cellbar" hidden></div>
         <section class="an-scroll" id="an-scroll" tabindex="0" aria-label="Areas, ranked"><table><thead id="an-thead"></thead><tbody id="an-tbody"></tbody></table></section>
       </div>
-      <div class="an-pane an-pchart" id="an-pchart" hidden><h2 class="an-ct" id="an-ctitle">Need and distance to support</h2><p class="an-gsub">Click squares, a row or a column to select those areas; click again to remove them.</p><div class="an-svg" id="an-svg"></div><div class="an-cap" id="an-cap"></div></div>
+      <div class="an-pane an-pchart" id="an-pchart" hidden><h2 class="an-ct" id="an-ctitle">Distance to nearest in-person support</h2><p class="an-gsub">Click cells to select and unselect areas</p><div class="an-svg" id="an-svg"></div><div class="an-cap" id="an-cap"></div></div>
     </div>
   </div>
   <div class="an-mapwrap"><section id="amap" aria-label="Map of LSOAs and services"></section><div class="an-loading" id="an-loading">Loading LSOAs…</div></div>
@@ -1627,7 +1635,8 @@ function shapeRecords(rows) {
   }).filter(s => s._kind !== "ended");
 }
 // The "Support for" choices, grouped, offering only the types that appear in the list given
-const supportOptions = (list, only) => `<option value="">Anything</option>` + GROUPS.map(([g, vals]) => {   // only: offer just these types
+// only: offer just these types; any: the first choice ("Anything"), or none when a type must be chosen
+const supportOptions = (list, only, any = "Anything") => (any ? `<option value="">${any}</option>` : "") + GROUPS.map(([g, vals]) => {
   const v = vals.filter(x => (!only || only.includes(x)) && list.some(s => s._sf.includes(x)));
   return v.length ? `<optgroup label="${g}">${v.map(x => `<option value="${x}">${esc(cap(x))}</option>`).join("")}</optgroup>` : "";
 }).join("");
@@ -1953,7 +1962,7 @@ function renderAbout() {
       <li><strong>Data:</strong> ONS boundaries, population (mid-2022) and urban/rural classification; MHCLG Indices of Deprivation 2025; Census 2021; open postcode data (2016). Open Government Licence.</li>
     </ul>
     </div></div>
-    <p class="small" id="site-version">Version: test 2026-11-17 17:43${typeof window.assistRelayVersion === "function" ? window.assistRelayVersion() : ""}</p>
+    <p class="small" id="site-version">Version: test 2026-11-17 18:23${typeof window.assistRelayVersion === "function" ? window.assistRelayVersion() : ""}</p>
   </article>`;
 }
 
@@ -2050,11 +2059,15 @@ function anBreaks() {   // cut points at 20/40/60/80% of residents, rounded to 0
 let aReady = false, amap = null, aGeo = null, aAreas = null, aPins = null, aLegendEl = null, aScaleEl = null, aDisMed = 17;
 let aInd = "imd", aShow = "all", aSort = { col: "rk", dir: 1 }, aFind = "", aSel = null, aCmp = false, aA = null, aB = null, aShownNow = [];
 // Only the support types where being there in person matters most (analytics/types.json), for every figure here
-const AN_TYPES = ({
- "_about": "The support types Analytics maps (the tools page only): those where being there in person matters most. Its Support for box offers only these, and Anything, the pins, the grid and the local profile count only services with at least one of them. Each must be one of the sheet's support types (build/core/data/support-types.json): build/tests/ checks.",
- "types": ["connect", "be active", "low mood", "anxiety", "bereavement", "dementia", "caring for someone", "addiction", "food", "finances", "housing", "crisis prevention"]
+const AN_TYPE_DATA = ({
+ "_about": "The support types Analytics maps (the tools page only): those where being there in person matters most. Its Support for box offers only these (always one of them: there's no 'Anything'), starting on 'default'. The chart's title reads 'Distance to nearest in-person ___ support' with the type's name, or its word in 'title_words' where the name doesn't read well there. Each type must be one of the sheet's support types (build/core/data/support-types.json): build/tests/ checks.",
+ "types": ["connect", "be active", "low mood", "anxiety", "bereavement", "dementia", "caring for someone", "addiction", "food", "finances", "housing", "crisis prevention"],
+ "default": "connect",
+ "title_words": {"connect": "social", "be active": "activity", "crisis prevention": "crisis", "addiction": "addiction", "caring for someone": "carers'", "finances": "money"}
 }
-).types;
+), AN_TYPES = AN_TYPE_DATA.types;
+// The type in the chart's title: "Distance to nearest in-person bereavement support"
+const aTitleWord = v => AN_TYPE_DATA.title_words[v] || cap(v).toLowerCase();
 const aLocated = () => S.filter(s => !s.approx && !isNaN(s.lat) && !isNaN(s.lon) && s._sf.some(t => AN_TYPES.includes(t)));
 const aR = p => p.ruc === "Urban" ? 1 : 3;   // search area: 1 mile urban, 3 miles rural (stated in the header)
 const aMi = d => d >= 99 ? "–" : d < 10 ? d.toFixed(1) + " mi" : Math.round(d) + " mi";
@@ -2196,25 +2209,45 @@ function aCellLabel() {
   return ks.length + " squares";
 }
 const k1 = n => n >= 1000 ? (n / 1000).toFixed(n >= 10000 ? 0 : 1).replace(/\.0$/, "") + "k" : String(n);
+// Column widths: the row labels as wide as the longest; the distance columns all as wide as the longest heading on one line
+// ("Furthest 20%"), so every square is the same size. If that doesn't fit the panel, they share its width and the headings wrap.
+function anFitColumns(box) {
+  const t = box.querySelector(".g2"), ax = t.querySelector("col.g2-ax"), rl = t.querySelector("col.g2-rl"), cols = [...t.querySelectorAll("col.g2-c")];
+  const textW = el => {   // the widest line of text in a cell, plus its padding (not the column's current width)
+    const cs = getComputedStyle(el), r = document.createRange(), w = [...el.querySelectorAll("*"), el].flatMap(e => [...e.childNodes])
+      .filter(n => n.nodeType === 3 && n.textContent.trim()).map(n => { r.selectNodeContents(n); return Math.max(0, ...[...r.getClientRects()].map(q => q.width)); });
+    return Math.ceil(Math.max(0, ...w) + parseFloat(cs.paddingLeft) + parseFloat(cs.paddingRight));
+  };
+  const widest = sel => Math.max(...[...t.querySelectorAll(sel)].map(textW));
+  const w = widest("th.ch"), gap = parseFloat(getComputedStyle(t).borderSpacing);
+  const need = () => parseFloat(getComputedStyle(ax).width) + widest("th.rl") + cols.length * w + gap * (cols.length + 3);
+  t.classList.remove("short", "wrap");
+  if (need() > box.clientWidth && t.querySelector("th.rl .sh")) t.classList.add("short");   // tight: the row labels' short forms ("1k–4k")
+  rl.style.width = widest("th.rl") + "px";
+  const fits = need() <= box.clientWidth;
+  cols.forEach(c => { c.style.width = fits ? w + "px" : ""; });
+  t.style.width = fits ? need + "px" : "";
+  t.classList.toggle("wrap", !fits);
+}
 function anChart() {
   const box = $("an-svg"); if (!aReady || !box || !box.clientWidth) return;
   const I = AN_IND[aInd], sup = aSupL(), A = anAgg(), nR = A.nR, nC = A.nC;
   aVisR = [...I.bands.map((_, i) => i), ...(A.missing ? [nR] : [])];
   aVisC = [...AN_ACC.cols.map((_, j) => j), ...(A.none ? [nC] : [])];
-  const far = r => A.cells[r].slice(nC - 2).reduce((t, c) => t + c.ls.length, 0);   // furthest two fifths + none recorded
-  const pc = (a, b) => b ? Math.round(100 * a / b) + "%" : "–";
   const mine = aCmp ? aA : aSel, me = mine ? aCellOf(mine.properties) : [-1, -1];
   const rowLab = i => i < nR ? (I.bands[i].row || I.bands[i].label) : "No data";
   const fill = (i, j) => i < nR ? AN_LUT[aLutRow(i, nR)][Math.min(j, 4)] : AN_NODATA;
-  $("an-ctitle").textContent = `${I.short} and distance to the nearest ${sup ? sup + " " : ""}support`;
-  box.innerHTML = `<table class="g2"><thead><tr class="band"><td colspan="2"></td><th colspan="${aVisC.length}">${esc(AN_ACC.title(sup))}</th><td colspan="2"></td></tr>` +
+  $("an-ctitle").textContent = `Distance to nearest in-person ${aTitleWord($("an-support").value)} support`;
+  // Every square the same size (anFitColumns sets the widths)
+  box.innerHTML = `<table class="g2"><colgroup><col class="g2-ax"><col class="g2-rl">${aVisC.map(() => `<col class="g2-c">`).join("")}</colgroup><thead><tr class="band"><td colspan="2"></td><th colspan="${aVisC.length}">${esc(AN_ACC.title(sup))}</th></tr>` +
     `<tr><td colspan="2"></td>${aVisC.map(j => j < nC ? `<th class="ch" data-col="${j}" title="Select this column"><span>${esc(AN_ACC.cols[j].label)}</span>${esc(AN_ACC.cols[j].mi)}</th>`
-      : `<th class="ch" data-col="${j}"><span>None</span>recorded</th>`).join("")}<th class="tt">Total</th><th class="tt" title="Share of the row in the furthest two fifths (or with no matching support)">% in<br>furthest<br>40%</th></tr></thead><tbody>` +
-    aVisR.map((i, ri) => `<tr>${ri ? "" : `<th class="vax" rowspan="${aVisR.length}">${esc(I.axis)}</th>`}<th class="rl" data-row="${i}" title="Select this row">${esc(rowLab(i))}${i < nR && I.bands[i].sub ? `<small>${esc(I.bands[i].sub.replace(" residents", ""))}</small>` : ""}</th>` +
+      : `<th class="ch" data-col="${j}"><span>None</span>recorded</th>`).join("")}</tr></thead><tbody>` +
+    aVisR.map((i, ri) => `<tr>${ri ? "" : `<th class="vax" rowspan="${aVisR.length}">${esc(I.axis)}</th>`}<th class="rl" data-row="${i}" title="Select this row">${i < nR && I.bands[i].tick ? `<span class="lg">${esc(rowLab(i))}</span><span class="sh">${esc(I.bands[i].tick)}</span>` : esc(rowLab(i))}${i < nR && I.bands[i].sub ? `<small>${esc(I.bands[i].sub.replace(" residents", ""))}</small>` : ""}</th>` +
       aVisC.map(j => { const c = A.cells[i][j], n = c.ls.length, k = i + "," + j;
         return `<td class="c${n ? "" : " z"}${i <= 1 && i < nR && j >= nC - 2 ? " hot" : ""}${aCells.has(k) ? " on" : ""}${i === me[0] && j === me[1] ? " me" : ""}" data-r="${i}" data-c="${j}" style="background:${fill(i, j)};color:${i <= 1 && i < nR ? "#fff" : "var(--b900)"}" title="${n} LSOAs, ${aFmt(c.pop)} people"><b>${n || "–"}</b>${n ? `<span>${k1(c.pop)}</span>` : ""}</td>`; }).join("") +
-      `<td class="t">${A.rows[i].n}</td><td class="t pc">${pc(far(i), A.rows[i].n)}</td></tr>`).join("") +
-    `<tr class="tot"><td></td><th class="rl">Total</th>${aVisC.map(j => `<td class="t">${A.cols[j].n}</td>`).join("")}<td class="t">${A.total.n}</td><td class="t pc">${pc(aVisR.reduce((t, i) => t + far(i), 0), A.total.n)}</td></tr></tbody></table>`;
+      `</tr>`).join("") +
+    `<tr class="tot"><td></td><th class="rl">Total</th>${aVisC.map(j => `<td class="t">${A.cols[j].n}</td>`).join("")}</tr></tbody></table>`;
+  anFitColumns(box);
   const top = I.bands[0], tf = A.cells[0].slice(nC - 2).reduce((t, c) => ({ n: t.n + c.ls.length, pop: t.pop + c.pop }), { n: 0, pop: 0 });
   $("an-cap").innerHTML = `<div class="an-gkey"><span>Square colour = map colour · big figure: LSOAs · small: people</span><span><i class="hotk"></i>${esc(I.hot)}, furthest 40%</span></div>` +
     `<p class="an-take"><b>${tf.n} of ${A.rows[0].n}</b> LSOAs in the top band (${esc(top.label.toLowerCase())}${I.unit ? " " + I.unit : ""}, ${esc(top.sub)}) are in the furthest 40% of residents from ${esc(sup ? sup + " " : "")}support (${aMiF(AN_ACC.br[2])}+ miles, or none recorded): <b>${k1(tf.pop)} people</b>.</p>`;
@@ -2379,9 +2412,10 @@ async function initAnalytics() {
     b.onclick = () => { aSel = aA = aB = null; aCmp = false; aCells.clear(); anSync(); amap.fitBounds(aAreas.getBounds(), { padding: [8, 8] }); }; return b; };
   whole.addTo(amap);
   // controls
-  $("an-support").innerHTML = supportOptions(S, AN_TYPES);
+  $("an-support").innerHTML = supportOptions(S, AN_TYPES, null);   // always one type (no "Anything")
+  $("an-support").value = AN_TYPE_DATA.default;
   $("an-ind").innerHTML = Object.entries(AN_IND).map(([k, v]) => `<option value="${k}">${esc(v.name)}</option>`).join("");
-  $("an-support").onchange = $("an-often").onchange = () => { $("q-asupport").classList.toggle("on", !!$("an-support").value); $("q-aoften").classList.toggle("on", !!$("an-often").value); anRefilter(); };
+  $("an-support").onchange = $("an-often").onchange = () => { $("q-aoften").classList.toggle("on", !!$("an-often").value); anRefilter(); };
   $("an-ind").onchange = e => { aInd = e.target.value; anReindicator(); };
   $("an-how").onclick = e => { e.preventDefault(); setTab("about"); setTimeout(() => { const h = $("how-analytics"); if (h) h.scrollIntoView({ block: "start" }); }, 60); };
   $("an-chips").onclick = e => { const b = e.target.closest("button"); if (!b) return; aShow = b.dataset.show; anListHead(); anList(); anChart(); };
@@ -2441,7 +2475,7 @@ async function initAnalytics() {
    this page only remembers it for the current browser session. */
 (() => {
 const WORKER_URL = "https://signposting-assist.c-r-williams0109.workers.dev";
-const PAGE_VERSION = "test 2026-11-17 17:43";
+const PAGE_VERSION = "test 2026-11-17 18:23";
 let relayVersion = "";
 // The version line is at the bottom of the About tab: "Version: test 2026-11-06 11:30 · Assist relay 2026-11-06 11:07"
 window.assistRelayVersion = () => relayVersion ? ` · Assist relay ${relayVersion}` : "";
