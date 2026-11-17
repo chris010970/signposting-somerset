@@ -12,7 +12,7 @@ const read = p => readFileSync(new URL(p, BUILD), "utf8");
 // The core files as the build stitches them (data files go in where their markers are)
 const stitch = p => read(p).replace(/\/\*@core:(data\/[\w.-]+)\*\//g, (m, f) => read("core/" + f).trimEnd());
 const ctx = vm.createContext({ console });
-vm.runInContext(["core/js/text.js", "core/js/schedule.js", "core/js/sheet.js"].map(stitch).join("\n") +
+vm.runInContext(["core/js/text.js", "core/js/page-text.js", "core/js/schedule.js", "core/js/when.js", "core/js/sheet.js"].map(stitch).join("\n") +
   "\nthis.api = { split, webUrl, parseDays, parseTimes, nthOk, withSchedule, occurrences, nextText, windowFor, meetsIn, BANK, TERMS, iso, fixDate, fixTime, parseCSV, recordsFromCSV };", ctx);
 const S = ctx.api;
 const at = s => new Date(s);   // a local (UK) time, e.g. "2026-11-16T10:30"

@@ -16,7 +16,7 @@ function scrub(txt) {
     .replace(/\b\d{3}\s?\d{3}\s?\d{4}\b/g, () => hit("NHS or ID number", "[number]"))
     .replace(/\b[A-Z]{2}\s?\d{2}\s?\d{2}\s?\d{2}\s?[A-D]\b/gi, () => hit("NI number", "[number]"))
     .replace(/\b([A-Z]{1,2}\d[A-Z\d]?)\s?\d[A-Z]{2}\b/gi, (m, out) => hit("full postcode", out.toUpperCase()))
-    .replace(/\b\d{1,2}[\/.-]\d{1,2}[\/.-](?:19|20)?\d{2}\b/g, () => hit("date", "[date]"))
+    .replace(/\b\d{1,2}[/.-]\d{1,2}[/.-](?:19|20)?\d{2}\b/g, () => hit("date", "[date]"))
     .replace(/\b(?:born(?: in| on)?|d\.?o\.?b\.?:?)\s*(?:(?:19|20)\d{2}|\d{1,2}(?:st|nd|rd|th)?\s+[A-Za-z]+(?:\s+(?:19|20)\d{2})?)/gi, () => hit("date of birth", "[date of birth]"))
     .replace(/\b\d{1,4}[a-z]?,?\s+(?:[A-Za-z']+\s){1,3}(?:road|rd|street|st|lane|ln|avenue|ave|close|drive|dr|way|crescent|place|court|gardens|terrace|hill|row|square|walk|mews|grove)\b\.?/gi, () => hit("street address", "[address]"))
     .replace(/\b(?:Mr|Mrs|Ms|Miss|Mx|Dr)\.?\s+[A-Z][a-z'-]+(?:\s+[A-Z][a-z'-]+)?/g, () => hit("name", "[name]"))

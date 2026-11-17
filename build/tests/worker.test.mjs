@@ -59,6 +59,14 @@ test("the file to paste into Cloudflare is up to date with its sources (rebuild:
   assert.equal(stamp(readFileSync(join(HERE, "..", "..", "src", "cloudflare-worker.js"), "utf8")), stamp(build("x")));
 });
 
+test("the relay carries only code it uses (shared code it doesn't need belongs in the pages' own files: core/js/page-text.js, when.js, where.js, sheet-load.js)", () => {
+  const code = build("x").replace(/\/\*[\s\S]*?\*\/|\/\/[^\n]*/g, "").replace(/\.\.\./g, " ");   // no comments; "...f(x)" uses f
+  const names = [...code.matchAll(/^(?:const|let|var|async function\*?|function\*?)\s+([A-Za-z_$][\w$]*)/gm)].map(m => m[1])
+    .concat([...code.matchAll(/^const [^\n]*$/gm)].flatMap(l => [...l[0].matchAll(/,\s*([A-Za-z_$][\w$]*)\s*=/g)].map(m => m[1])));
+  const uses = n => code.match(new RegExp(`(?<![\\w$.])${n.replace(/\$/g, "\\$")}(?![\\w$])`, "g")).length - 1;
+  assert.deepEqual([...new Set(names)].filter(n => !uses(n)), []);
+});
+
 test("only this site, with the access code", async () => {
   assert.equal((await call("/", {}, { method: "OPTIONS" })).status, 204);
   assert.equal((await call("/verify", {}, { origin: "https://elsewhere.test" })).status, 403);

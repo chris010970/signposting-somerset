@@ -276,7 +276,7 @@ PAGE_CSS = (HERE / "places.css").read_text(encoding="utf-8")
 # The page script: next session and 3. When? (worked out in the browser with the directory's schedule rules, from
 # build/core/js/schedule.js), the filter boxes, remembering the place for the visit, and swapping towns without a full reload.
 # The crisis bar and the helpline bar are the directory's (build/core/html/).
-PAGE_JS = inline_core("\n".join(["/*@core:js/helpline-height.js*/", "/*@core:js/page-flow.js*/", "/*@core:js/text.js*/", "/*@core:js/schedule.js*/",
+PAGE_JS = inline_core("\n".join(["/*@core:js/helpline-height.js*/", "/*@core:js/page-flow.js*/", "/*@core:js/text.js*/", "/*@core:js/page-text.js*/", "/*@core:js/schedule.js*/", "/*@core:js/when.js*/",
     "/*@core:js/records.js*/", "/*@core:js/kinds.js*/", "/*@core:js/cards.js*/", "/*@core:js/service-card.js*/", "/*@core:js/places-view.js*/",
     "const TOWNS = " + json.dumps(TOWNS, ensure_ascii=False) + ";   // town centres, for records with no postcode",
     "/*@page:places.js*/", ""]), HERE)

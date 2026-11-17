@@ -1,6 +1,6 @@
 # Core: code shared by the directory, the tools page and the Places pages
 
-One copy of each shared piece. A page template marks where a piece goes with a marker such as
+One copy of each shared piece. Assist's relay (`build/tools/assist/`) includes only the files marked **shared with the relay** below, so they hold just what it uses; anything only the pages need goes in the pages-only files beside them (a test fails if the built relay carries code it doesn't use: `build/tests/worker.test.mjs`). A page template marks where a piece goes with a marker such as
 `/*@core:js/schedule.js*/` (inside a `<style>` or `<script>`) or `<!--@core:html/crisis.html-->` (in the HTML),
 and the build replaces it with the file, exactly (`build/shared/core.py`). The built page is the same as if the
 code were written in the template. A page's own files are put in the same way with `@page:` (e.g. `/*@page:js/map.js*/`
@@ -16,11 +16,15 @@ in `build/directory/template.html` is `build/directory/js/map.js`).
 | `css/cards.css` | service cards: badges, chips, kind tag, details, footer line |
 | `css/helpline.css`, `html/helpline.html`, `js/helpline-height.js` | the 24/7 helpline bar at the bottom (and keeping content clear of it) |
 | `js/page-flow.js` | phones and short screens (a laptop zoomed in): the whole page scrolls instead of only the results (directory, Places pages) |
-| `js/text.js` | the support types and their labels, card wording, and text helpers (`esc`, `split`, `webUrl`) |
-| `js/schedule.js` | schedule rules: next session, "1st Tue of month", the 3. When? windows, bank holidays |
-| `js/places.js` | town centres (records without a postcode), county outline, the 2. Where? places, distances |
+| `js/text.js` | card wording (`CARD_TEXT`, `isGroupType`) and `split`: **shared with Assist's relay** |
+| `js/page-text.js` | the support types and their labels (`cap`), and page helpers (`esc`, `webUrl`, `currentTab`): pages only |
+| `js/schedule.js` | schedule rules: next session, "1st Tue of month", term time, bank holidays: **shared with the relay** |
+| `js/when.js` | the 3. When? windows (`windowFor`, `meetsIn`) and lists of sessions (`occurrences`): pages only |
+| `js/places.js` | town centres (records without a postcode) and distances: **shared with the relay** |
+| `js/where.js` | the map's county outline and the 2. Where? places: pages only |
 | `js/records.js` | records as the pages use them (`shapeRecords`), and the grouped 1. Support for choices (`supportOptions`) |
-| `js/sheet.js` | reading the records from the published Google Sheet (`fetchRecords()`), kept for the visit |
+| `js/sheet.js` | reading the published Google Sheet's CSV (`recordsFromCSV`): **shared with the relay** |
+| `js/sheet-load.js` | fetching the records in the browser (`fetchRecords()`), kept for the visit: pages only |
 | `js/kinds.js` | kinds of service and their colours |
 | `js/map-tiles.js` | the map background (CARTO tiles and their credit) for every map |
 | `css/pins.css`, `js/map-pins.js` | map pins, numbered spots and area circles (directory map and Analytics map) |

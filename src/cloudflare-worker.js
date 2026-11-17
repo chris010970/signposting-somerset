@@ -25,20 +25,7 @@
  * below comes from build/core/ (the same sheet reading, schedule rules, places and distances as the site) and scrub.js.
  */
 
-/* ---------- support types and text helpers ---------- */
-// The "Support for" choices, in three groups: [group, [types]], and how a type is shown where it isn't just the sheet's
-// word with a capital letter (build/core/data/support-types.json)
-const SUPPORT_TYPES = ({
- "_about": "The support types (the sheet's support_for column), in the three groups the 'Support for' boxes show, and how a type is shown where it isn't just the sheet's word with a capital letter. Used by the pages (core/js/text.js), the Places build and the tests.",
- "groups": [
-  {"group": "Specialist support", "types": ["crisis prevention", "low mood", "anxiety", "bereavement", "hearing voices", "eating disorders", "long-term pain", "dementia", "addiction", "abuse", "caring for someone"]},
-  {"group": "Practical help and support", "types": ["housing", "finances", "food"]},
-  {"group": "Everyday wellbeing", "types": ["connect", "be active", "take notice", "keep learning", "giving"]}
- ],
- "labels": {"hearing voices": "Psychosis and hearing voices", "crisis prevention": "Crisis support", "addiction": "Addiction (alcohol, drugs, gambling)", "abuse": "Abuse (domestic, child or adult)"}
-});
-const GROUPS = SUPPORT_TYPES.groups.map(g => [g.group, g.types]);
-const LABEL = SUPPORT_TYPES.labels;
+/* ---------- text helpers shared with Assist's relay ---------- */
 // Card wording: the access badges (build/core/data/card-text.json)
 const CARD_TEXT = ({
  "_about": "Wording on the service cards (In person, Places) and in Copy details. access: the badge for each value of the sheet's access column (class sets its colour). A 'call' service reads 'Call first' for groups and activities, and 'Phone line' for anything else; any other value reads 'Contact provider'. checked: a tick on a card when the sheet's last_checked is within 'days' days. Its hover text is 'label' and how long ago ('today', 'yesterday', 'ago'); Copy details gives 'label' and the date, since notes outlive 'days ago'.",
@@ -55,15 +42,8 @@ const CARD_TEXT = ({
 });
 // Groups, activities, courses and volunteering (by type), as opposed to one-to-one services and phone lines
 const isGroupType = s => new RegExp(CARD_TEXT.group_types.join("|"), "i").test(s.type || "");
-const cap = s => LABEL[s] || s[0].toUpperCase() + s.slice(1);
-// Text from the sheet, made safe to put in the page
-const esc = s => String(s ?? "").replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
 // A ;-separated sheet value as a list
 const split = s => (s || "").split(";").map(x => x.trim()).filter(Boolean);
-// A website address only if it's a web page (http or https), so nothing else in the url column becomes a link
-const webUrl = u => /^https?:\/\//i.test(u || "") ? u : "";
-// The tab showing is marked aria-current="page" (styled in core/css/page.css)
-const currentTab = (el, on) => on ? el.setAttribute("aria-current", "page") : el.removeAttribute("aria-current");
 /* ---------- schedules: when a service next meets ----------
    Used by the directory, the tools page and the Places pages, so they always agree. A record's schedule is its
    days ("Mon-Fri", "Tue;Thu"), times ("10:00-12:00" or a start time), frequency (blank = every week,
@@ -182,7 +162,6 @@ function* sessions(s, from, days) {
     yield { st, en, bank: BANK.has(iso(d)), timed: !!t };
   }
 }
-const occurrences = (s, from, days) => [...sessions(s, from, days)];
 // The "Next" line on a card. from: the start of the chosen time window (e.g. tomorrow), so the card shows that session.
 // Returns { cls, txt, at } (at: when the next session starts, for sorting; missing when there's no date to give)
 function nextText(s, now, from = now) {
@@ -200,43 +179,9 @@ function nextText(s, now, from = now) {
     : split(s.mode).includes("in-person") ? " (time not given: check)" : " (no set time)";
   return { cls: dd === 0 ? "today" : "", txt: `${day}${t}${o.bank ? " (bank holiday: check it's running)" : ""}${s._term ? " (term time)" : ""}`, at: o.st };
 }
-
-// The "3. When?" choices as a time window [from, to): today, this evening, tomorrow, this weekend, next 7 days, next 4 weeks
-// ("any" and "now" have no window: null)
-function windowFor(v, now) {
-  const d0 = dayStart(now);
-  if (v === "today") return [now, addDays(d0, 1)];
-  if (v === "evening") return [new Date(Math.max(now, d0.getTime() + 17 * 3600e3)), addDays(d0, 1)];
-  if (v === "tomorrow") return [addDays(d0, 1), addDays(d0, 2)];
-  if (v === "weekend") {
-    const dow = now.getDay(), sat = dow === 0 ? addDays(d0, -1) : addDays(d0, 6 - dow);
-    return [new Date(Math.max(now, sat)), addDays(sat, 2)];
-  }
-  if (v === "week") return [now, addDays(d0, 7)];
-  if (v === "month") return [now, addDays(d0, 28)];
-  return null;
-}
-// Does it meet in that window? (only services whose sessions can be worked out)
-const meetsIn = (s, win) => s._kind === "dated" &&
-  occurrences(s, win[0], Math.ceil((win[1] - dayStart(win[0])) / 864e5)).some(o => o.en > win[0] && o.st < win[1]);
-/* ---------- places: town centres, the county outline, the "Where?" places, distances ---------- */
+/* ---------- places: town centres and distances (shared with the relay; core/js/where.js has the outline and "Where?" places) ---------- */
 // Town centres (build/directory/towns.json): where a record with no postcode is pinned, marked approximate
 const TOWNS = {"Axbridge": [51.2866, -2.8188], "Berrow": [51.268, -3.007], "Bishops Lydeard": [51.06, -3.187], "Brean": [51.293, -3.012], "Bridgwater": [51.1279, -3.0036], "Bruton": [51.1118, -2.4532], "Burnham-on-Sea": [51.2384, -2.9972], "Castle Cary": [51.089, -2.513], "Chard": [50.8722, -2.9616], "Cheddar": [51.2771, -2.7781], "Cotford St Luke": [51.042, -3.177], "Creech St Michael": [51.025, -3.035], "Crewkerne": [50.884, -2.795], "Dulverton": [51.04, -3.55], "Frome": [51.2283, -2.3218], "Glastonbury": [51.1486, -2.7145], "Highbridge": [51.2187, -2.9727], "Ilminster": [50.9265, -2.9112], "Langport": [51.038, -2.828], "Minehead": [51.2041, -3.4794], "North Petherton": [51.093, -3.013], "Porlock": [51.208, -3.595], "Shepton Mallet": [51.1906, -2.5462], "Somerton": [51.055, -2.734], "South Petherton": [50.948, -2.81], "Stoke St Gregory": [51.04, -2.935], "Street": [51.1268, -2.7393], "Taunton": [51.015, -3.103], "Watchet": [51.181, -3.33], "Wellington": [50.9787, -3.2263], "Wells": [51.2093, -2.6474], "West Huntspill": [51.198, -2.99], "Williton": [51.162, -3.322], "Wincanton": [51.056, -2.41], "Wiveliscombe": [51.041, -3.312], "Woolavington": [51.168, -2.94], "Yeovil": [50.9421, -2.633], "Cannington": [51.15, -3.064], "Coleford": [51.239, -2.444], "Drayton": [51.006, -2.836], "Dunster": [51.183, -3.444], "East Huntspill": [51.2, -2.96], "Evercreech": [51.148, -2.502], "Galmington": [51.011, -3.122], "Keinton Mandeville": [51.068, -2.645], "Lisieux Way": [51.018, -3.075], "Long Load": [50.997, -2.756], "Long Sutton": [51.023, -2.758], "Martock": [50.97, -2.768], "Merriott": [50.905, -2.795], "Milborne Port": [50.966, -2.462], "Milverton": [51.026, -3.257], "Mudford": [50.968, -2.611], "Oake": [51.024, -3.199], "Oakhill": [51.226, -2.522], "Queen Camel": [51.022, -2.582], "Staplegrove": [51.033, -3.12], "Stogursey": [51.18, -3.14], "West Monkton": [51.04, -3.06], "Weston-super-Mare": [51.346, -2.977], "Edington": [51.162, -2.885], "Ruishton": [51.017, -3.055], "Steart": [51.203, -3.046], "Stoke-sub-Hamdon": [50.953, -2.749], "Wedmore": [51.227, -2.811], "Westhay": [51.183, -2.783], "Nailsea": [51.432, -2.757], "Backwell": [51.411, -2.732], "Bath": [51.381, -2.359], "Batheaston": [51.405, -2.318], "Chew Magna": [51.367, -2.609], "Chilcompton": [51.267, -2.511], "Keynsham": [51.414, -2.498], "Midsomer Norton": [51.284, -2.482], "Newton St Loe": [51.373, -2.43], "Radstock": [51.293, -2.448], "Saltford": [51.402, -2.457], "Sparkford": [51.034, -2.565], "Stanton Drew": [51.367, -2.577], "Tatworth": [50.852, -2.957], "Timberscombe": [51.168, -3.487], "Timsbury": [51.328, -2.478], "Tunley": [51.343, -2.45], "Norton St Philip": [51.3, -2.326], "Nunney": [51.21, -2.378], "Paulton": [51.307, -2.504], "Peasedown St John": [51.316, -2.43], "Ash": [50.981, -2.747], "Banwell": [51.329, -2.867], "Binegar": [51.242, -2.543], "Bleadon": [51.308, -2.947], "Cleeve": [51.392, -2.777], "Clevedon": [51.435, -2.854], "Congresbury": [51.373, -2.809], "Coxley": [51.187, -2.68], "Curry Rivel": [51.024, -2.87], "Flax Bourton": [51.421, -2.711], "Kenn": [51.415, -2.836], "Locking": [51.333, -2.915], "Long Ashton": [51.431, -2.666], "Lympsham": [51.297, -2.947], "Pill": [51.479, -2.685], "Portishead": [51.486, -2.766], "Sandford": [51.334, -2.823], "Shepton Montague": [51.085, -2.456], "Walton-in-Gordano": [51.455, -2.829], "Winscombe": [51.315, -2.833], "Worle": [51.358, -2.925], "Wrington": [51.362, -2.765], "Yatton": [51.384, -2.815]};
-// Outline of the historic county (Somerset, North Somerset, Bath and North East Somerset), simplified from ONS boundaries
-const OUTLINE = /*OUTLINE*/null;
-// The "2. Where?" places, by area: [area, [[name, lat, lon], ...]] (build/core/data/where.json)
-const PLACES = ({
- "_about": "The places in the In person tab's '2. Where?' box (and Assist's), by area: name, latitude, longitude of a fixed centre point. With 'within 10 miles' these cover almost all of the area; anywhere else is reached with the location button or by tapping the map. Joint entries sit between the two towns.",
- "areas": [
-  {"area": "Somerset", "places": [
-   ["Taunton", 51.015, -3.103], ["Yeovil", 50.942, -2.633], ["Bridgwater", 51.128, -3.003], ["Frome", 51.228, -2.322],
-   ["Wells", 51.209, -2.645], ["Glastonbury and Street", 51.137, -2.727], ["Burnham-on-Sea", 51.238, -2.997], ["Minehead", 51.204, -3.475],
-   ["Dulverton", 51.041, -3.551], ["Chard", 50.872, -2.964], ["Wincanton", 51.056, -2.410], ["Langport", 51.038, -2.828]]},
-  {"area": "North Somerset", "places": [["Weston-super-Mare", 51.346, -2.977], ["Nailsea and Clevedon", 51.435, -2.805]]},
-  {"area": "Bath and North East Somerset", "places": [["Bath", 51.381, -2.359], ["Midsomer Norton and Radstock", 51.288, -2.465]]}
- ]
-}).areas.map(a => [a.area, a.places]);
-const PLACE = Object.fromEntries(PLACES.flatMap(([, ps]) => ps.map(([n, la, lo]) => [n, [la, lo]])));
 
 // Straight-line distance in miles between two { lat, lon } points
 function miles(a, b) {
@@ -244,12 +189,10 @@ function miles(a, b) {
   const h = Math.sin(dLa / 2) ** 2 + Math.cos(a.lat * r) * Math.cos(b.lat * r) * Math.sin(dLo / 2) ** 2;
   return 2 * R * Math.asin(Math.sqrt(h));
 }
-/* ---------- live records: read from the published Google Sheet (CSV) ---------- */
-// The sheet's "Publish to web → CSV" link, from build/directory/sheet_url.txt (filled in by the build)
-const SHEET_CSV_URL = "/*SHEET_CSV_URL*/";
+/* ---------- live records: reading the published Google Sheet's CSV (shared with the relay; core/js/sheet-load.js fetches it in the browser) ---------- */
 // CSV text -> rows (lists of fields), allowing for quoted fields with commas, quotes and line breaks
 function parseCSV(text) {
-  text = text.replace(/^﻿/, "");
+  text = text.replace(/^\uFEFF/, "");   // the byte-order mark some spreadsheet exports start with
   const rows = []; let row = [], f = "", q = false;
   for (let i = 0; i < text.length; i++) {
     const c = text[i];
@@ -284,28 +227,7 @@ function recordsFromCSV(text) {
   }
   return { recs };
 }
-// The records this browser last loaded, kept for the visit (this tab's session only), so coming back to the directory
-// from the Places pages, or opening the tools page, shows them at once while the sheet is checked again in the background
-const RECORDS_KEY = "ss-records";
-function cachedRecords() {
-  try { const v = JSON.parse(sessionStorage.getItem(RECORDS_KEY) || "null"); return v && Array.isArray(v.recs) && v.recs.length ? v.recs : null; }
-  catch (e) { return null; }
-}
-function keepRecords(recs) { try { sessionStorage.setItem(RECORDS_KEY, JSON.stringify({ at: Date.now(), recs })); } catch (e) {} }
-const sameRecords = (a, b) => !!a && !!b && JSON.stringify(a) === JSON.stringify(b);
-// The latest records from the published sheet (rejects if it can't be reached within 15 seconds or looks wrong)
-function fetchRecords() {
-  const ctl = new AbortController(); setTimeout(() => ctl.abort(), 15000);
-  return fetch(SHEET_CSV_URL, { cache: "no-store", signal: ctl.signal })
-    .then(r => { if (!r.ok) throw new Error("HTTP " + r.status); return r.text(); })
-    .then(text => {
-      const { recs, error } = recordsFromCSV(text);
-      if (error || recs.length < 10) throw new Error(error || "too few records");
-      keepRecords(recs);
-      return recs;
-    });
-}
-const VERSION = "2026-11-16 23:17";        // set when the worker is built; shown on the Assist tab
+const VERSION = "2026-11-17 17:43";        // set when the worker is built; shown on the Assist tab
 const DEFAULT_MODEL = "claude-sonnet-5-5";
 const MAX_PER_HOUR = 30;               // per visitor (best effort: counts reset when Cloudflare restarts the Worker)
 const RISK = /suicid|kill (my|him|her|them)sel|end (my|his|her|their) life|self[- ]?harm|cutting (my|him|her)|overdos|want(s|ed)? to die|no reason to live|better off dead/i;
@@ -328,7 +250,7 @@ function scrub(txt) {
     .replace(/\b\d{3}\s?\d{3}\s?\d{4}\b/g, () => hit("NHS or ID number", "[number]"))
     .replace(/\b[A-Z]{2}\s?\d{2}\s?\d{2}\s?\d{2}\s?[A-D]\b/gi, () => hit("NI number", "[number]"))
     .replace(/\b([A-Z]{1,2}\d[A-Z\d]?)\s?\d[A-Z]{2}\b/gi, (m, out) => hit("full postcode", out.toUpperCase()))
-    .replace(/\b\d{1,2}[\/.-]\d{1,2}[\/.-](?:19|20)?\d{2}\b/g, () => hit("date", "[date]"))
+    .replace(/\b\d{1,2}[/.-]\d{1,2}[/.-](?:19|20)?\d{2}\b/g, () => hit("date", "[date]"))
     .replace(/\b(?:born(?: in| on)?|d\.?o\.?b\.?:?)\s*(?:(?:19|20)\d{2}|\d{1,2}(?:st|nd|rd|th)?\s+[A-Za-z]+(?:\s+(?:19|20)\d{2})?)/gi, () => hit("date of birth", "[date of birth]"))
     .replace(/\b\d{1,4}[a-z]?,?\s+(?:[A-Za-z']+\s){1,3}(?:road|rd|street|st|lane|ln|avenue|ave|close|drive|dr|way|crescent|place|court|gardens|terrace|hill|row|square|walk|mews|grove)\b\.?/gi, () => hit("street address", "[address]"))
     .replace(/\b(?:Mr|Mrs|Ms|Miss|Mx|Dr)\.?\s+[A-Z][a-z'-]+(?:\s+[A-Z][a-z'-]+)?/g, () => hit("name", "[name]"))

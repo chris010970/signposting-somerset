@@ -1,11 +1,6 @@
-/* ---------- places: town centres, the county outline, the "Where?" places, distances ---------- */
+/* ---------- places: town centres and distances (shared with the relay; core/js/where.js has the outline and "Where?" places) ---------- */
 // Town centres (build/directory/towns.json): where a record with no postcode is pinned, marked approximate
 const TOWNS = /*TOWNS*/{};
-// Outline of the historic county (Somerset, North Somerset, Bath and North East Somerset), simplified from ONS boundaries
-const OUTLINE = /*OUTLINE*/null;
-// The "2. Where?" places, by area: [area, [[name, lat, lon], ...]] (build/core/data/where.json)
-const PLACES = (/*@core:data/where.json*/).areas.map(a => [a.area, a.places]);
-const PLACE = Object.fromEntries(PLACES.flatMap(([, ps]) => ps.map(([n, la, lo]) => [n, [la, lo]])));
 
 // Straight-line distance in miles between two { lat, lon } points
 function miles(a, b) {

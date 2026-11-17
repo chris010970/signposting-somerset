@@ -24,7 +24,7 @@ Usage:
   pip install rdata pyreadr
   python make_analytics_data.py            # clones what it needs into ./_src, writes analytics-lsoa.geojson
 """
-import json, math, os, subprocess, sys
+import json, math, os, subprocess
 import rdata, pyreadr
 
 SRC = "_src"
