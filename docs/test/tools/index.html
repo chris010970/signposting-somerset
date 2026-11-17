@@ -1169,8 +1169,6 @@ footer.urgent p { color: #FEE2E2; }
 .an-grid td.tc { background: none; color: var(--muted); cursor: default; } .an-grid td.tc b { font-size: 13px; color: var(--b900); }
 @media (max-height: 820px) { .an-grid td { padding: 3px 2px; } .an-grid td b { font-size: 14.5px; } .an-grid td small { font-size: 9.5px; } .an-gsub { display: none; } }
 .an-gx { font-size: 11px; color: var(--muted); text-align: center; margin: 2px 0 0 92px; }
-.an-cap .hotk { border-radius: 3px; box-shadow: inset 0 0 0 2px #B5562A; background: #fff; width: 13px; }
-.an-cap .mek { border-radius: 3px; box-shadow: inset 0 0 0 2px #7A2E8E; background: #fff; width: 13px; }
 /* v24 grid: rotated row axis, distance bar over the columns, one colour per square (same colours as the map) */
 .g2 { width: 100%; border-collapse: separate; border-spacing: 3px; table-layout: fixed; font-variant-numeric: tabular-nums; }
 /* Every square the same size: the distance columns share the width equally (labels wrap rather than widen a column), every row the same height */
@@ -1194,23 +1192,20 @@ footer.urgent p { color: #FEE2E2; }
 .g2 td.c.hot { box-shadow: inset 0 0 0 2px #B5562A; }
 .g2 td.c.hov { box-shadow: inset 0 0 0 2px #14302A; }
 .g2 td.c.me { box-shadow: inset 0 0 0 2px #fff, inset 0 0 0 4px #14302A; }
-.g2 td.c.on { box-shadow: inset 0 0 0 3px #7A2E8E, inset 0 0 0 5px #fff; filter: none; }
+.g2 td.c.on { box-shadow: inset 0 0 0 1px #7A2E8E; filter: none; }   /* chosen: a single-pixel line */
 /* The most deprived, furthest squares keep their outline when they're also hovered, the selected area's square or chosen */
 .g2 td.c.hot.hov { box-shadow: inset 0 0 0 2px #B5562A, inset 0 0 0 4px #14302A; }
 .g2 td.c.hot.me { box-shadow: inset 0 0 0 2px #B5562A, inset 0 0 0 4px #fff, inset 0 0 0 6px #14302A; }
-.g2 td.c.hot.on { box-shadow: inset 0 0 0 2px #B5562A, inset 0 0 0 5px #7A2E8E, inset 0 0 0 7px #fff; }
+.g2 td.c.hot.on { box-shadow: inset 0 0 0 2px #B5562A, inset 0 0 0 3px #7A2E8E; }
 .g2 td.t { text-align: center; font-weight: 700; font-size: 13px; color: var(--b900); }
 .g2 .tot td.t { font-weight: 700; color: var(--b900); }
 @media (max-height: 820px) { .g2 td.c { padding: 2px 1px; } .g2 tbody tr:not(.tot) td.c { height: 38px; } .g2 td.c b { font-size: 14px; } .g2 td.c span { font-size: 9.5px; } .g2 { border-spacing: 3px; }
-  .g2 th.rl small { display: none; } .g2 th.ch { font-size: 11px; } .an-take { font-size: 11.5px; padding: 4px 8px; margin-top: 5px; line-height: 1.3; } .an-gkey { font-size: 10.5px; } .an-pchart .an-ct { margin-bottom: 2px; } .g2 .band th { padding: 1px 4px; font-size: 11px; } }
-@media (max-height: 800px) { .an-gkey { display: none; } .an-pchart { padding-bottom: 4px; } .g2 th.ch { line-height: 1.05; } .g2 td.c { padding: 1px; } .g2 { border-spacing: 2px 3px; } }
+  .g2 th.rl small { display: none; } .g2 th.ch { font-size: 11px; } .an-take { font-size: 11.5px; padding: 4px 8px; margin-top: 5px; line-height: 1.3; } .an-pchart .an-ct { margin-bottom: 2px; } .g2 .band th { padding: 1px 4px; font-size: 11px; } }
+@media (max-height: 800px) { .an-pchart { padding-bottom: 4px; } .g2 th.ch { line-height: 1.05; } .g2 td.c { padding: 1px; } .g2 { border-spacing: 2px 3px; } }
 @media (max-height: 740px) { .g2 td.c span { display: none; } .g2 td.c { padding: 3px 1px; } .g2 tbody tr:not(.tot) td.c { height: 28px; } }
 @media (max-width: 1500px) { .g2 th.ch span { font-size: 9.5px; } .g2 td.c span { font-size: 9.5px; } .g2 td.t { font-size: 12px; } }
 #an-cap { display: block; }
-.an-gkey { display: flex; flex-wrap: wrap; gap: 3px 14px; font-size: 11.5px; color: var(--muted); margin-top: 4px; }
 .an-take { margin: 8px 0 0; padding: 7px 10px; background: var(--b50, #F4F7F5); border-left: 3px solid #176B55; font-size: 12.5px; line-height: 1.4; color: var(--ink); border-radius: 0 6px 6px 0; }
-.an-bik { display: grid; grid-template-columns: repeat(5, 13px); gap: 1px; margin: 6px 0 3px; } .an-bik i { width: 13px; height: 13px; display: block; }
-.an-bil { display: flex; justify-content: space-between; gap: 10px; font-size: 11px; color: var(--muted); }
 #amap path.an-lift { filter: drop-shadow(0 4px 4px rgba(0,0,0,.4)); transform: translate(-1px, -3px); }
 .an-tiles.t3 div { font-size: 10.5px; }
 .an-towns { font-size: 12.5px; line-height: 1.5; margin: 2px 0 10px; color: var(--ink); } .an-towns b { color: var(--b900); }
@@ -1249,9 +1244,6 @@ footer.urgent p { color: #FEE2E2; }
 .an-legend b { font-size: 10.5px; letter-spacing: .06em; text-transform: uppercase; color: var(--b700); }
 .an-whole { font: inherit; font-size: 12px; font-weight: 600; color: var(--b900); background: #fff; border: 1px solid var(--line); border-radius: 8px; padding: 6px 10px; cursor: pointer; box-shadow: 0 1px 3px rgba(0,0,0,.12); }
 .an-tt { font-size: 12px; }
-.an-nod { display:inline-block; width:10px; height:10px; background:#D9D9D6; margin-right:4px; vertical-align:-1px; }
-.an-scale { background: rgba(255,255,255,.95); border: 1px solid var(--line); border-radius: 10px; padding: 8px 10px 6px; width: 240px; box-shadow: 0 1px 4px rgba(0,0,0,.12); font-family: var(--sans); }
-.an-scale b { display: block; font-size: 12px; color: var(--b900); margin-bottom: 5px; }
 .an-ramp { display: flex; height: 12px; border-radius: 4px; overflow: hidden; } .an-ramp i { flex: 1; }
 .an-ticks, .an-ends { display: flex; justify-content: space-between; font-size: 11px; color: var(--muted); margin-top: 4px; }
 .an-ticks.even span { flex: 1; text-align: center; }
@@ -1955,7 +1947,7 @@ function renderAbout() {
       <li><strong>Data:</strong> ONS boundaries, population (mid-2022) and urban/rural classification; MHCLG Indices of Deprivation 2025; Census 2021; open postcode data (2016). Open Government Licence.</li>
     </ul>
     </div></div>
-    <p class="small" id="site-version">Version: test 2026-11-17 18:51${typeof window.assistRelayVersion === "function" ? window.assistRelayVersion() : ""}</p>
+    <p class="small" id="site-version">Version: test 2026-11-17 19:22${typeof window.assistRelayVersion === "function" ? window.assistRelayVersion() : ""}</p>
   </article>`;
 }
 
@@ -2049,7 +2041,7 @@ function anBreaks() {   // cut points at 20/40/60/80% of residents, rounded to 0
   AN_ACC.cols = AN_ACC.names.map((label, j) => ({ label, mi: j === 0 ? "< " + aMiF(br[0]) : j === 4 ? aMiF(br[3]) + "+" : aMiF(br[j - 1]) + "–" + aMiF(br[j]),
     test: d => j === 4 || d < br[j] }));
 }
-let aReady = false, amap = null, aGeo = null, aAreas = null, aPins = null, aLegendEl = null, aScaleEl = null, aDisMed = 17;
+let aReady = false, amap = null, aGeo = null, aAreas = null, aPins = null, aLegendEl = null, aDisMed = 17;
 let aInd = "imd", aShow = "all", aSort = { col: "rk", dir: 1 }, aFind = "", aSel = null, aCmp = false, aA = null, aB = null, aShownNow = [];
 // Only the support types where being there in person matters most (analytics/types.json), for every figure here
 const AN_TYPE_DATA = ({
@@ -2120,12 +2112,6 @@ function anStyle(f) {
   const any = !!((aCmp ? aA : aSel) || aCells.size), on = anOn(f), cmp = aCmp && (f === aA || f === aB);
   return { fillColor: anFill(f.properties), fillOpacity: any ? (on ? 1 : .45) : .9, opacity: 1, dashArray: null,
     color: cmp ? (f === aA ? AN_A : AN_B) : on ? "#fff" : "rgba(255,255,255,.55)", weight: cmp ? 2.5 : on ? 1.5 : .35 };
-}
-function anScale() {   // the map key: the same 5 × 5 colours as the grid
-  if (!aScaleEl) return;
-  const I = AN_IND[aInd], miss = aGeo.features.some(f => !I.has(f.properties));
-  aScaleEl.innerHTML = `<b>${esc(I.short)} × distance</b><div class="an-bik">${AN_LUT.map(r => r.map(c => `<i style="background:${c}"></i>`).join("")).join("")}</div>` +
-    `<div class="an-bil"><span>near → far</span><span>↑ ${esc(I.ends[1].toLowerCase())}</span></div>` + (miss ? `<div class="an-bil"><span><i class="an-nod"></i>No data</span></div>` : "");
 }
 function anLegendPlain() {   // a plain legend: the filters live in the header, not on the map
   if (!aLegendEl) return;
@@ -2242,8 +2228,7 @@ function anChart() {
     `<tr class="tot"><td></td><th class="rl">Total</th>${aVisC.map(j => `<td class="t">${A.cols[j].n}</td>`).join("")}</tr></tbody></table>`;
   anFitColumns(box);
   const top = I.bands[0], tf = A.cells[0].slice(nC - 2).reduce((t, c) => ({ n: t.n + c.ls.length, pop: t.pop + c.pop }), { n: 0, pop: 0 });
-  $("an-cap").innerHTML = `<div class="an-gkey"><span>Square colour = map colour · big figure: LSOAs · small: people</span><span><i class="hotk"></i>${esc(I.hot)}, furthest 40%</span></div>` +
-    `<p class="an-take"><b>${tf.n} of ${A.rows[0].n}</b> LSOAs in the top band (${esc(top.label.toLowerCase())}${I.unit ? " " + I.unit : ""}, ${esc(top.sub)}) are in the furthest 40% of residents from ${esc(sup ? sup + " " : "")}support (${aMiF(AN_ACC.br[2])}+ miles, or none recorded): <b>${k1(tf.pop)} people</b>.</p>`;
+  $("an-cap").innerHTML = `<p class="an-take"><b>${tf.n} of ${A.rows[0].n}</b> LSOAs in the top band (${esc(top.label.toLowerCase())}${I.unit ? " " + I.unit : ""}, ${esc(top.sub)}) are in the furthest 40% of residents from ${esc(sup ? sup + " " : "")}support (${aMiF(AN_ACC.br[2])}+ miles, or none recorded): <b>${k1(tf.pop)} people</b>.</p>`;
 }
 function anGridHover(f) {   // map hover → ring the square that LSOA belongs to
   document.querySelectorAll("#an-svg td.hov").forEach(td => td.classList.remove("hov")); if (!f || $("an-pchart").hidden) return;
@@ -2368,7 +2353,7 @@ function anSync() {
   anChart(); anList(); anProfile();
 }
 function anRefilter() { anCompute(); anListHead(); anLegendPlain(); anDrawPins(); anSync(); }   // keeps the selected squares; their members are recalculated   // Support for / How often
-function anReindicator() { aCells.clear(); if (!AN_IND[aInd].hi && (aShow === "hi" || aShow === "both")) aShow = "all"; anRank(); anScale(); anListHead(); anSync(); }                          // Compare areas by
+function anReindicator() { aCells.clear(); if (!AN_IND[aInd].hi && (aShow === "hi" || aShow === "both")) aShow = "all"; anRank(); anListHead(); anSync(); }                          // Compare areas by
 
 async function initAnalytics() {
   if (amap) { setTimeout(() => { amap.invalidateSize(); anChart(); }, 30); return; }
@@ -2397,9 +2382,6 @@ async function initAnalytics() {
   const legend = L.control({ position: "topleft" });
   legend.onAdd = () => { aLegendEl = L.DomUtil.create("div", "an-legend"); return aLegendEl; };
   legend.addTo(amap);
-  const scale = L.control({ position: "bottomright" });
-  scale.onAdd = () => { aScaleEl = L.DomUtil.create("div", "an-scale"); L.DomEvent.disableClickPropagation(aScaleEl); return aScaleEl; };
-  scale.addTo(amap);
   const whole = L.control({ position: "topright" });
   whole.onAdd = () => { const b = L.DomUtil.create("button", "an-whole"); b.type = "button"; b.textContent = "Whole area"; L.DomEvent.disableClickPropagation(b);
     b.onclick = () => { aSel = aA = aB = null; aCmp = false; aCells.clear(); anSync(); amap.fitBounds(aAreas.getBounds(), { padding: [8, 8] }); }; return b; };
@@ -2454,7 +2436,7 @@ async function initAnalytics() {
   };
   addEventListener("resize", () => { clearTimeout(initAnalytics._t); initAnalytics._t = setTimeout(() => tab === "analytics" && anChart(), 150); });
   amap.fitBounds(aAreas.getBounds(), { padding: [8, 8] });
-  anCompute(); anRank(); anScale(); anListHead(); anLegendPlain(); anDrawPins();
+  anCompute(); anRank(); anListHead(); anLegendPlain(); anDrawPins();
   aSel = aGeo.features.find(f => f.properties.rk === 1);   // start with the top of the list, so the profile isn't empty
   aReady = true; anSync();
   $("an-loading").hidden = true;
@@ -2468,7 +2450,7 @@ async function initAnalytics() {
    this page only remembers it for the current browser session. */
 (() => {
 const WORKER_URL = "https://signposting-assist.c-r-williams0109.workers.dev";
-const PAGE_VERSION = "test 2026-11-17 18:51";
+const PAGE_VERSION = "test 2026-11-17 19:22";
 let relayVersion = "";
 // The version line is at the bottom of the About tab: "Version: test 2026-11-06 11:30 · Assist relay 2026-11-06 11:07"
 window.assistRelayVersion = () => relayVersion ? ` · Assist relay ${relayVersion}` : "";

@@ -74,7 +74,7 @@ function anBreaks() {   // cut points at 20/40/60/80% of residents, rounded to 0
   AN_ACC.cols = AN_ACC.names.map((label, j) => ({ label, mi: j === 0 ? "< " + aMiF(br[0]) : j === 4 ? aMiF(br[3]) + "+" : aMiF(br[j - 1]) + "–" + aMiF(br[j]),
     test: d => j === 4 || d < br[j] }));
 }
-let aReady = false, amap = null, aGeo = null, aAreas = null, aPins = null, aLegendEl = null, aScaleEl = null, aDisMed = 17;
+let aReady = false, amap = null, aGeo = null, aAreas = null, aPins = null, aLegendEl = null, aDisMed = 17;
 let aInd = "imd", aShow = "all", aSort = { col: "rk", dir: 1 }, aFind = "", aSel = null, aCmp = false, aA = null, aB = null, aShownNow = [];
 // Only the support types where being there in person matters most (analytics/types.json), for every figure here
 const AN_TYPE_DATA = (/*@page:analytics/types.json*/), AN_TYPES = AN_TYPE_DATA.types;
@@ -139,12 +139,6 @@ function anStyle(f) {
   const any = !!((aCmp ? aA : aSel) || aCells.size), on = anOn(f), cmp = aCmp && (f === aA || f === aB);
   return { fillColor: anFill(f.properties), fillOpacity: any ? (on ? 1 : .45) : .9, opacity: 1, dashArray: null,
     color: cmp ? (f === aA ? AN_A : AN_B) : on ? "#fff" : "rgba(255,255,255,.55)", weight: cmp ? 2.5 : on ? 1.5 : .35 };
-}
-function anScale() {   // the map key: the same 5 × 5 colours as the grid
-  if (!aScaleEl) return;
-  const I = AN_IND[aInd], miss = aGeo.features.some(f => !I.has(f.properties));
-  aScaleEl.innerHTML = `<b>${esc(I.short)} × distance</b><div class="an-bik">${AN_LUT.map(r => r.map(c => `<i style="background:${c}"></i>`).join("")).join("")}</div>` +
-    `<div class="an-bil"><span>near → far</span><span>↑ ${esc(I.ends[1].toLowerCase())}</span></div>` + (miss ? `<div class="an-bil"><span><i class="an-nod"></i>No data</span></div>` : "");
 }
 function anLegendPlain() {   // a plain legend: the filters live in the header, not on the map
   if (!aLegendEl) return;
@@ -261,8 +255,7 @@ function anChart() {
     `<tr class="tot"><td></td><th class="rl">Total</th>${aVisC.map(j => `<td class="t">${A.cols[j].n}</td>`).join("")}</tr></tbody></table>`;
   anFitColumns(box);
   const top = I.bands[0], tf = A.cells[0].slice(nC - 2).reduce((t, c) => ({ n: t.n + c.ls.length, pop: t.pop + c.pop }), { n: 0, pop: 0 });
-  $("an-cap").innerHTML = `<div class="an-gkey"><span>Square colour = map colour · big figure: LSOAs · small: people</span><span><i class="hotk"></i>${esc(I.hot)}, furthest 40%</span></div>` +
-    `<p class="an-take"><b>${tf.n} of ${A.rows[0].n}</b> LSOAs in the top band (${esc(top.label.toLowerCase())}${I.unit ? " " + I.unit : ""}, ${esc(top.sub)}) are in the furthest 40% of residents from ${esc(sup ? sup + " " : "")}support (${aMiF(AN_ACC.br[2])}+ miles, or none recorded): <b>${k1(tf.pop)} people</b>.</p>`;
+  $("an-cap").innerHTML = `<p class="an-take"><b>${tf.n} of ${A.rows[0].n}</b> LSOAs in the top band (${esc(top.label.toLowerCase())}${I.unit ? " " + I.unit : ""}, ${esc(top.sub)}) are in the furthest 40% of residents from ${esc(sup ? sup + " " : "")}support (${aMiF(AN_ACC.br[2])}+ miles, or none recorded): <b>${k1(tf.pop)} people</b>.</p>`;
 }
 function anGridHover(f) {   // map hover → ring the square that LSOA belongs to
   document.querySelectorAll("#an-svg td.hov").forEach(td => td.classList.remove("hov")); if (!f || $("an-pchart").hidden) return;
@@ -387,7 +380,7 @@ function anSync() {
   anChart(); anList(); anProfile();
 }
 function anRefilter() { anCompute(); anListHead(); anLegendPlain(); anDrawPins(); anSync(); }   // keeps the selected squares; their members are recalculated   // Support for / How often
-function anReindicator() { aCells.clear(); if (!AN_IND[aInd].hi && (aShow === "hi" || aShow === "both")) aShow = "all"; anRank(); anScale(); anListHead(); anSync(); }                          // Compare areas by
+function anReindicator() { aCells.clear(); if (!AN_IND[aInd].hi && (aShow === "hi" || aShow === "both")) aShow = "all"; anRank(); anListHead(); anSync(); }                          // Compare areas by
 
 async function initAnalytics() {
   if (amap) { setTimeout(() => { amap.invalidateSize(); anChart(); }, 30); return; }
@@ -416,9 +409,6 @@ async function initAnalytics() {
   const legend = L.control({ position: "topleft" });
   legend.onAdd = () => { aLegendEl = L.DomUtil.create("div", "an-legend"); return aLegendEl; };
   legend.addTo(amap);
-  const scale = L.control({ position: "bottomright" });
-  scale.onAdd = () => { aScaleEl = L.DomUtil.create("div", "an-scale"); L.DomEvent.disableClickPropagation(aScaleEl); return aScaleEl; };
-  scale.addTo(amap);
   const whole = L.control({ position: "topright" });
   whole.onAdd = () => { const b = L.DomUtil.create("button", "an-whole"); b.type = "button"; b.textContent = "Whole area"; L.DomEvent.disableClickPropagation(b);
     b.onclick = () => { aSel = aA = aB = null; aCmp = false; aCells.clear(); anSync(); amap.fitBounds(aAreas.getBounds(), { padding: [8, 8] }); }; return b; };
@@ -473,7 +463,7 @@ async function initAnalytics() {
   };
   addEventListener("resize", () => { clearTimeout(initAnalytics._t); initAnalytics._t = setTimeout(() => tab === "analytics" && anChart(), 150); });
   amap.fitBounds(aAreas.getBounds(), { padding: [8, 8] });
-  anCompute(); anRank(); anScale(); anListHead(); anLegendPlain(); anDrawPins();
+  anCompute(); anRank(); anListHead(); anLegendPlain(); anDrawPins();
   aSel = aGeo.features.find(f => f.properties.rk === 1);   // start with the top of the list, so the profile isn't empty
   aReady = true; anSync();
   $("an-loading").hidden = true;
