@@ -19,8 +19,8 @@
 <meta name="twitter:card" content="summary_large_image">
 <script type="application/ld+json">{"@context":"https://schema.org","@type":"WebSite","name":"Signposting Somerset","url":"https://signpostingsomerset.org.uk/","description":"Discover mental health and wellbeing support across Somerset, North Somerset and B&NES: what's on, when and where."}</script>
 <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2064%2064%22%3E%3Crect%20width%3D%2264%22%20height%3D%2264%22%20rx%3D%2214%22%20fill%3D%22%23F2F6F4%22%2F%3E%3Cellipse%20cx%3D%2232%22%20cy%3D%2256%22%20rx%3D%2217%22%20ry%3D%224.5%22%20fill%3D%22%23C2D6CA%22%2F%3E%3Crect%20x%3D%2227.5%22%20y%3D%227%22%20width%3D%229%22%20height%3D%2249%22%20rx%3D%222.5%22%20fill%3D%22%238B735A%22%20stroke%3D%22%234A3A2C%22%20stroke-width%3D%223%22%2F%3E%3Cpath%20d%3D%22M8%2017h38l11%2011-11%2011H8z%22%20fill%3D%22%23CEB69B%22%20stroke%3D%22%234A3A2C%22%20stroke-width%3D%223.5%22%20stroke-linejoin%3D%22round%22%2F%3E%3Cpath%20d%3D%22M13%2025h27M13%2031h20%22%20stroke%3D%22%23A88E72%22%20stroke-width%3D%222%22%20stroke-linecap%3D%22round%22%2F%3E%3C%2Fsvg%3E">
-<link rel="icon" type="image/png" sizes="192x192" href="/signposting-somerset-v2/assets/icon-192.png">
-<link rel="apple-touch-icon" href="/signposting-somerset-v2/assets/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="192x192" href="/assets/icon-192.png">
+<link rel="apple-touch-icon" href="/assets/apple-touch-icon.png">
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -710,7 +710,7 @@ button, select { font: inherit; }
 .crisis a { color: #fff; }
 .exit { background: #1E293B; color: #fff; border: 1px solid #334155; border-radius: 6px; padding: 5px 10px; font-size: 12px; font-weight: 600; text-decoration: none; white-space: nowrap; line-height: 15px; }
 /* Header: slim, so the lists and plans get the room. A watercolour strip on the right (computers); text only on phones */
-:root { --strip: url("/signposting-somerset-v2/assets/banner.webp"); }
+:root { --strip: url("/assets/banner.webp"); }
 .hero { position: relative; display: flex; flex-direction: column; justify-content: center; margin-bottom: 2px; }
 @media (min-width: 761px) { .hero { padding-block: 8px 6px; } }
 .hero > :not(.illus) { position: relative; z-index: 1; max-width: min(48%, 680px); }
@@ -1112,7 +1112,7 @@ html.short #mapwrap { height: 100vh; }
     <div class="masthead">
       <div class="illus" role="img" aria-label="Watercolour illustration: a path with map pins winding through Somerset fields towards Glastonbury Tor, people meeting and walking together, and a signpost to drop-ins, peer support, advice and community"></div>
     <div class="hero">
-      <h1 class="brand"><img class="logo" src="/signposting-somerset-v2/assets/logo-signpost.webp" alt="" width="31" height="34">Signposting Somerset</h1>
+      <h1 class="brand"><img class="logo" src="/assets/logo-signpost.webp" alt="" width="31" height="34">Signposting Somerset</h1>
       <p class="lede" id="lede"><span class="lg">Connecting people with local mental health and wellbeing support.</span><span class="sh">Local mental health and wellbeing support.</span></p>
       <p class="datasrc" id="datasrc" hidden></p>
       <span id="copy-live" role="status" aria-live="polite" style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)"></span>
@@ -1122,7 +1122,7 @@ html.short #mapwrap { height: 100vh; }
       <button type="button" id="tab-talk" aria-controls="panel-talk"><span class="lg">Phone and online</span><span class="sh">Phone &amp; online</span></button>
       <button type="button" id="tab-course" aria-controls="panel-course">Courses</button><button type="button" id="tab-places" aria-controls="panel-places">Places</button></span>
       <button type="button" id="tab-about" aria-controls="panel-about">About</button>
-      <a class="tolink" href="/signposting-somerset-v2/tools/">Tools →</a>    </nav>
+      <a class="tolink" href="/tools/">Tools →</a>    </nav>
     </div>
     <!-- The filter boxes (selects) have autocomplete="off": on Back, the browser mustn't put old values back in them (the page keeps
          its own choices: js/links.js) -->
@@ -2243,7 +2243,7 @@ $("c-book").onchange = renderCourses;
 /* ---------- About ---------- */
 // The "Suggest a change" form (build/site.json: feedback_form_url); without one, About says a form is coming
 const FEEDBACK_FORM_URL = "https://docs.google.com/forms/d/e/1FAIpQLSf8NCl7EpGkgKNACUMDJEFzToJnoQp_xs7Fj0E9z4o2pLiqOQ/viewform";
-const TOOLS_URL = "/signposting-somerset-v2/tools/";   // the tools page beside this copy of the directory (Assist, Analytics)
+const TOOLS_URL = "/tools/";   // the tools page beside this copy of the directory (Assist, Analytics)
 function renderAbout() {
   const n = ALL.length, providers = new Set(ALL.map(s => s.provider).filter(Boolean)).size;
   const stats = n ? `${n} services from ${providers} providers.` : "Loading services…";
@@ -2293,7 +2293,7 @@ function renderAbout() {
     </section>
     </div></div>
     <p class="small">Service information belongs to the providers listed. Map data © <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap</a> contributors, © <a href="https://carto.com/attributions" target="_blank" rel="noopener">CARTO</a>.</p>
-    <p class="small" id="site-version">Version: directory 2026-11-17 18:23</p>
+    <p class="small" id="site-version">Version: directory 2026-11-17 19:40</p>
   </article>`;
 }
 /* ---------- Places: the town listings, as a tab of the directory ----------
