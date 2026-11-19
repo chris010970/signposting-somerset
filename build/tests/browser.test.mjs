@@ -258,7 +258,7 @@ test("Assist, with a stand-in relay: unlock, a plan from the records, Copy plan,
     if (path.endsWith("/verify")) return r.fulfill({ status: 200, contentType: "application/json", body: JSON.stringify({ ok: true, version: "test" }) });
     if (path.endsWith("/web")) return r.fulfill({ status: 200, contentType: "application/json", body: JSON.stringify({ query: "befriending Wells", keep: [{ n: 1, step: "First step" }],
       items: [{ name: "Example Befriending", provider: "Example", what: "Weekly phone befriending", access: "call", mode: "phone", days: "Mon-Fri", times: "", frequency: "", address: "", town: "",
-        phone: "01234 567890", email: "", cost: "Free", eligibility: "", note: "", url: "https://example.org/b", source: "example.org", step: "Next step", why: "Company between groups." }] }) });
+        phone: "01234 567890", email: "", cost: "Free", eligibility: "Ask your GP surgery to refer you", note: "", url: "https://example.org/b", source: "example.org", step: "Next step", why: "Company between groups." }] }) });
     return r.fulfill({ status: 200, contentType: "application/x-ndjson", body: [{ stage: "reading" }, { stage: "writing", picks: 1 }, { done: true, result: plan }].map(o => JSON.stringify({ ...o, version: "test" })).join("\n") + "\n" });
   });
   await p.fill("#a-code", "test-code"); await p.click("#a-codeBtn"); await p.waitForTimeout(300);
@@ -280,6 +280,7 @@ test("Assist, with a stand-in relay: unlock, a plan from the records, Copy plan,
   assert.match(await text(p, "#a-pick-1 .a-pk-when"), /^WhenEvery Wed, 10am–12pm$/);
   assert.match(copied, /Test Weekly Drop-in\n   Every Wed, 10am–12pm, Wells, BA5 1AA\n   Just turn up\. Free\n/);
   assert.match(copied, /Example Befriending[^\n]*\n   By phone\. Mon-Fri\n   Phone line\. Free\n/, "not in person: how to take part first, then when");
+  assert.match(copied, /Phone line\. Free\n   Ask your GP surgery to refer you\n/, "the eligibility note is in the plan: it says how to join");
   // The suggestions are the directory's folding cards: closed until the name is clicked (no links inside a <summary> any more)
   const pick = () => p.$eval("#a-pick-1", c => [c.classList.contains("open"), c.querySelector(".cbtn").getAttribute("aria-expanded"), c.querySelector(".who").offsetParent !== null, c.querySelector(".a-pk-why").offsetParent !== null]);
   assert.deepEqual(await pick(), [false, "false", false, true], "closed: why it was chosen shows; who it's for waits");

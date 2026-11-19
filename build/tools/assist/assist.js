@@ -450,7 +450,8 @@ function plan() {
       const remoteHow = inPerson ? "" : [modes.includes("online") && "online", modes.includes("phone") && "by phone"].filter(Boolean).join(" or ").replace(/^./, c => c.toUpperCase());
       // In person: when, then where ("Every Wed, 10am–12pm, Albemarle Centre..."); otherwise how first ("Online or by phone. Times vary: see website")
       const first = inPerson ? [when, where].filter(Boolean).join(", ") : [remoteHow, when].filter(Boolean).join(". ");
-      const lines = [first, how, s.note].filter(Boolean);
+      // The eligibility note goes with it: it often says how to join ("Ask your surgery for..."), which a bare "Needs a referral" doesn't
+      const lines = [first, how, s.eligibility, s.note].filter(Boolean);
       const contactH = [s.phone && `<a href="tel:${e_(telOf(s))}">${e_(s.phone)}</a>`, s.email && `<a href="mailto:${e_(s.email)}">${e_(s.email)}</a>`].filter(Boolean).join(" · ");
       const contactT = [s.phone, s.email].filter(Boolean).join(" · ");
       const name = (isUrl(s.url) ? `<a href="${e_(s.url)}"><b>${e_(s.name)}</b></a>` : `<b>${e_(s.name)}</b>`) + (p.web ? ` <i style="font-size:12px">(found online, not checked)</i>` : "");
