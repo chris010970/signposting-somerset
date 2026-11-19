@@ -1475,7 +1475,9 @@ function areaClusters(groups, m) {   // m: the Leaflet map the pins are on
   return cl;
 }
 /* ---------- Copy details ---------- */
-// Plain text for a text message, email or case notes: the regular pattern rather than the next date, so it stays right
+// Plain text for a text message, email or case notes: the regular pattern rather than the next date, so it stays right.
+// A service that lists its particular dates (a monthly group with no fixed week, a course's sessions) gives those dates,
+// not "Every Tue": its weekday alone would send someone on the wrong week. A run between two dates keeps its weekly pattern.
 const COPY_ICON = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>';
 const copyBtn = (s, when) => `<button type="button" class="copy" data-copy="${s.id}"${when ? ` data-when="${esc(when)}"` : ""} aria-label="Copy details for ${esc(s.name)}" data-tip="Copy details">${COPY_ICON}</button>`;
 const ampm = t => { const [h, m] = t.split(":").map(Number); return `${h % 12 || 12}${m ? ":" + String(m).padStart(2, "0") : ""}${h < 12 ? "am" : "pm"}`; };
@@ -1485,13 +1487,15 @@ function copyWhen(s) {
   let days = (s.days || "").split(";").map(x => x.trim()).filter(Boolean).join(", ");
   if (/^mon-sun$/i.test(days) && !s.frequency) { if (allDay) return "24/7"; days = ""; tm = "Every day" + (tm ? ", " + tm : ""); }
   const f = (s.frequency || "").trim(), hasDay = /\b(mon|tue|wed|thu|fri|sat|sun)/i.test(f);
+  const listed = split(s.dates || "").some(d => !/ to /.test(d));   // particular dates, not only a run between two
   let when = "";
-  if (f && !/^see /i.test(f)) when = hasDay ? f : cap(f) + (days ? ", " + days : "");
-  else if (days) when = (/-/.test(days) ? "" : "Every ") + days;
+  if (f && !/^see /i.test(f) && (hasDay || !listed)) when = hasDay ? f : cap(f) + (days ? ", " + days : "");
+  else if (days && !listed) when = (/-/.test(days) ? "" : "Every ") + days;
   else if (s.dates) {   // the dates still to come, a range by its ends: "Dates: 17 Dec, 14 Jan, 2 Feb to 9 Mar…"
     const dm = d => /^\d{4}-\d\d-\d\d$/.test(d) ? new Date(d + "T12:00").toLocaleDateString("en-GB", { day: "numeric", month: "short" }) : d;
     const left = split(s.dates).filter(d => d.split(" to ").pop() >= iso(new Date()));
     if (left.length) when = "Dates: " + left.slice(0, 3).map(d => d.split(" to ").map(dm).join(" to ")).join(", ") + (left.length > 3 ? "…" : "");
+    else if (listed) return "No upcoming dates";
   }
   return [when, tm].filter(Boolean).join(", ");
 }
@@ -2307,7 +2311,7 @@ function renderAbout() {
     </section>
     </div></div>
     <p class="small">Service information belongs to the providers listed. Map data © <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap</a> contributors, © <a href="https://carto.com/attributions" target="_blank" rel="noopener">CARTO</a>.</p>
-    <p class="small" id="site-version">Version: test 2026-11-17 21:23</p>
+    <p class="small" id="site-version">Version: test 2026-11-19 20:42</p>
   </article>`;
 }
 /* ---------- Places: the town listings, as a tab of the directory ----------

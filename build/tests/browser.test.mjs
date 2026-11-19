@@ -396,6 +396,20 @@ test("Narrow phones (320px): nothing runs off the side, on every tab and page", 
   }
 });
 
+test("Copy details and Assist plans: a service that lists its dates gives those dates, not \"Every Tue\"", async () => {
+  const p = await open("/test/directory/");   // the test clock is Mon 16 Nov 2026
+  const when = s => p.evaluate(x => copyWhen(x), s);
+  const monthly = { days: "Tue", times: "13:30-15:00", dates: "2026-10-20;2026-11-17;2026-12-15" };
+  assert.equal(await when(monthly), "Dates: 17 Nov, 15 Dec, 1:30pm–3pm", "listed dates, not the weekday");
+  assert.equal(await when({ ...monthly, dates: "2026-11-17;2026-12-15;2027-01-19;2027-02-16" }), "Dates: 17 Nov, 15 Dec, 19 Jan…, 1:30pm–3pm", "the next three");
+  assert.equal(await when({ ...monthly, dates: "2026-09-15;2026-10-20" }), "No upcoming dates");
+  assert.equal(await when({ days: "Tue", times: "10:00", frequency: "fortnightly", dates: "2026-11-24;2026-12-08" }), "Dates: 24 Nov, 8 Dec, 10am", "fortnightly with its dates: the dates say which weeks");
+  assert.equal(await when({ days: "Wed", times: "14:00-16:00", frequency: "2nd Wed of month", dates: "2026-12-09" }), "2nd Wed of month, 2pm–4pm", "a named week of the month stays");
+  assert.equal(await when({ days: "Mon", times: "10:00-12:00", dates: "2026-11-23 to 2026-12-14" }), "Every Mon, 10am–12pm", "a run between two dates is weekly within it");
+  assert.equal(await when({ days: "Wed", times: "10:00-12:00" }), "Every Wed, 10am–12pm", "no dates: as before");
+  await p.done();
+});
+
 test("Details checked: a tick when checked in the last 90 days, saying how long ago (hover, screen readers); Copy details gives the date", async () => {
   const p = await open("/test/directory/#talk");
   // one record checked long ago, one ten days ago (the test clock is Mon 16 Nov 2026)
