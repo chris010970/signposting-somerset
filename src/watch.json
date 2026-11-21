@@ -1,0 +1,54 @@
+{
+  "_about": "Settings shared by the change detector (src/detect.py), the checker (src/check_sources.py) and the scraper (src/monitor.py). user_agent: how they introduce themselves to websites. timeout_s: how long to wait for a page. delay_s: the pause between two pages on the same site, so no site gets more than one request at a time. sources_file: the rules for checking records (src/sources.csv). drop_selectors: parts of a page to ignore: navigation, headers, footers, cookie banners. main_selectors: where to look for the main content, in order; the body if none match. site_drop_selectors: extra parts to ignore on particular sites, such as panels repeated on every page. watch_fields: the record fields src/check_sources.py writes scraper recipes for and src/monitor.py checks (who and access are checked once, when a record is verified; postcode isn't watched, as it only changes with the address).",
+  "user_agent": "Mozilla/5.0 (compatible; SignpostingSomersetChecker/0.2; +https://signpostingsomerset.org.uk)",
+  "timeout_s": 25,
+  "delay_s": 1.5,
+  "sources_file": "src/sources.csv",
+  "drop_selectors": [
+    "script",
+    "style",
+    "noscript",
+    "template",
+    "svg",
+    "iframe",
+    "form",
+    "nav",
+    "header",
+    "footer",
+    "aside",
+    "[role=navigation]",
+    "[role=banner]",
+    "[role=contentinfo]",
+    "#cookie-banner",
+    ".cookie-banner",
+    ".cookie-consent",
+    "#onetrust-banner-sdk",
+    "#cookie-law-info-bar",
+    ".cc-window",
+    ".skip-link"
+  ],
+  "main_selectors": [
+    "main",
+    "[role=main]",
+    "article",
+    "#content",
+    ".entry-content"
+  ],
+  "site_drop_selectors": {
+    "mindinsomerset.org.uk": [
+      "section.circle-links",
+      "#funders",
+      ".banner-content"
+    ]
+  },
+  "watch_fields": [
+    "days",
+    "times",
+    "dates",
+    "phone",
+    "email",
+    "address",
+    "mode",
+    "cost"
+  ]
+}

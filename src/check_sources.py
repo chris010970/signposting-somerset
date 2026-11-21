@@ -34,6 +34,10 @@ Outputs:
   <out>.csv             one row per record
   <out>-fields.csv      one row per record per field (sheet value, page value, result, quote)
   <out>-new.csv         services found on checked pages that aren't in the sheet (candidates only)
+  <out>-review.md       read this first: each record's problems in plain words, quoting the provider's page
+  <out>-recipes.csv     for each watched field (days, times, place, contacts, mode, cost): the page and the exact
+                        words that state it. src/monitor.py checks these later with no AI; run it once straight away
+                        to check every quote can be found by a plain scraper
   <out>.jsonl           full detail, for auditing
 
 Setup:
@@ -43,7 +47,9 @@ Setup:
 
 Usage:
   python check_sources.py --csv services_7.csv --sample 30 --out trial.csv
-  python check_sources.py --csv services_7.csv --rows 37,88,155 --out some.csv
+  python check_sources.py --csv services_7.csv --ids R0037,R0088,R0150-R0155 --out some.csv   (by record ID)
+  python check_sources.py --csv services_7.csv --provider "Mind in Somerset" --out checks/mind.csv   (one organisation)
+  python check_sources.py --csv services_7.csv --site mindinsomerset.org.uk --out checks/mind.csv    (one website)
   python check_sources.py --csv services_7.csv --out checks.csv            (everything)
   python check_sources.py --csv "https://docs.google.com/...pub?output=csv" --out checks.csv
 Options:
@@ -53,6 +59,7 @@ Options:
 """
 import argparse, csv, io, json, random, re, sys, time, datetime
 from collections import defaultdict
+from pathlib import Path
 from urllib.parse import urljoin, urlparse
 
 import requests
@@ -208,6 +215,11 @@ def time_pair(s):
     t = [f"{int(h):02d}:{m}" for h, m in re.findall(r"(\d{1,2})[:.](\d{2})", s or "")]
     return (t[0] if t else "", t[1] if len(t) > 1 else "")
 
+def fix_am_typo(t):
+    """'10:00-00:30' is a page typo ('10am - 12.30am') for 10:00-12:30: an end in the small hours, before a daytime start."""
+    m = re.match(r"\s*(\d{2}):(\d{2})-00:(\d{2})\s*$", t or "")
+    return f"{m[1]}:{m[2]}-12:{m[3]}" if m and 6 <= int(m[1]) <= 12 else t
+
 def phones(s):
     out = set()
     for part in re.split(r"[;,/]|\bor\b|\(|\)|text", s or "", flags=re.I):
@@ -282,7 +294,9 @@ JUDGE_SYSTEM = """You compare details in Signposting Somerset's directory with w
 Be strict: if a visitor following the directory would turn up at the wrong place, on the wrong terms, or pay a different amount, it's different.
 For "access", the directory's values mean: drop in = just turn up; sign up = contact the service to join (by phone, email or a form); call = the service itself is a phone line or helpline; referral = needs a professional referral; book = book a place. So a group the page says to "call us to join" is "sign up": that is the same, not different.
 For "mode" and contact details: a page that mentions only some of the ways in (e.g. only the phone number, when the service also has text or online chat) is the same, not different, unless the page says "only" or that the other way has stopped (e.g. "remote only", "no longer face to face").
-For "who": a specialist service that says it is "for anyone" usually means anyone within its own group (e.g. an LGBT+ helpline "for anyone" means anyone LGBT+ or questioning; a carers' line "for anyone" means any carer). That is the same, not different."""
+For "who": a specialist service that says it is "for anyone" usually means anyone within its own group (e.g. an LGBT+ helpline "for anyone" means anyone LGBT+ or questioning; a carers' line "for anyone" means any carer). That is the same, not different.
+Narrower is different: if the page sets a limit the directory doesn't have - an age ("13-18", "aged 14+", "60 and over"), an area ("must live in...", "Somerset residents"), membership or a gate ("invite only", "by referral only", "members only"), or only one way in ("face-to-face only", "remote only") - that is different, never page_more_specific. A visitor going by the directory could be turned away.
+But a description of who a service is aimed at, or what it's about, is not a limit: "for anyone experiencing poor mental health", "for people who hear voices", "for adults affected by mental health issues and those supporting them" describe the audience of a mental health group and turn nobody away. Those are the same as the directory's "adults" or "anyone"."""
 
 def ask(client, **kw):
     """One AI call. Streamed, because the Anthropic library refuses long requests otherwise;
@@ -325,7 +339,8 @@ def extract_page(client, model, url, page, total, rules=""):
     data, stop = forced_tool_call(client, model, system, page_block(url, page) + rules_block(rules), tool, total, max_tokens=32000)
     data = data or {"page_kind": "not_relevant", "services": []}
     data["truncated"] = stop == "max_tokens"
-    for s in data.get("services", []):
+    data["services"] = [s for s in data.get("services") or [] if isinstance(s, dict)]   # the AI sometimes lists a bare name
+    for s in data["services"]:
         verify(s, url, listing=data.get("page_kind") == "listing" or len(data.get("services", [])) > 1)
     _extracted[url] = data
     return data
@@ -334,7 +349,7 @@ def extract_page(client, model, url, page, total, rules=""):
 
 DAY_WORDS = {"mon": r"mon(day)?s?", "tue": r"tue(s|sday)?s?", "wed": r"wed(s|nesday)?s?", "thu": r"thu(r|rs|rsday)?s?",
              "fri": r"fri(day)?s?", "sat": r"sat(urday)?s?", "sun": r"sun(day)?s?"}
-ALL_WEEK = r"every ?day|daily|7 days|seven days|24\s*/\s*7|24 hours|day or night|any ?time|365 days|round the clock"
+ALL_WEEK = r"every ?day|daily|7 days|7-days?|seven days|24\s*/\s*7|24 hours|24-hours?|day or night|any ?time|365 days|round the clock"
 
 def days_in(q):
     q, out = squash(q), set()
@@ -556,6 +571,9 @@ def find_service(client, model, rec, start_url, allow_search, use_js, total, log
                         else:
                             log.append(f"find: source '{src or 'blank'}' wasn't read by the checker - rejected")
                             return None
+                    if not isinstance(out.get("service"), dict):
+                        log.append("find: the answer had no service details")
+                        return None
                     return verify(out["service"], src)
                 log.append("find: not found. " + str(out.get("notes", ""))[:200])
                 return None
@@ -580,12 +598,48 @@ def judge(client, model, pairs, total):
         return {}
     tool = {"name": "judgements", "description": "Your judgement for each field.",
             "input_schema": {"type": "object", "properties": {f: {"type": "object", "properties": {
-                "verdict": {"type": "string", "enum": ["same", "page_more_specific", "different"]},
-                "reason": {"type": "string"}}, "required": ["verdict"]} for f in pairs}, "required": list(pairs)}}
+                "reason": {"type": "string", "description": "Your reasoning, written first. End with the conclusion it reaches."},
+                "verdict": {"type": "string", "enum": ["same", "page_more_specific", "different"],
+                            "description": "The conclusion your reasoning reached."}}, "required": ["reason", "verdict"]} for f in pairs},
+                "required": list(pairs)}}
     body = "\n\n".join(f"{f}:\n  directory: {a}\n  page: {b}\n  page wording: \"{q}\"" for f, (a, b, q) in pairs.items())
     data, _ = forced_tool_call(client, model, JUDGE_SYSTEM, body, tool, total, max_tokens=2000)
-    return {f: ((data or {}).get(f, {}).get("verdict", "different"), (data or {}).get(f, {}).get("reason", ""))
-            for f in pairs}
+    out = {}
+    for f in pairs:
+        d = (data or {}).get(f, {})
+        d = _unjson(d)
+        if isinstance(d, dict):
+            d = {k: _unjson(v) for k, v in d.items()}
+            if isinstance(d.get("reason"), dict):          # the whole answer was put inside "reason"
+                d = {**d, **d["reason"]}
+            d = {k: (v if isinstance(v, str) else json.dumps(v)) for k, v in d.items() if k in ("reason", "verdict")}
+        if isinstance(d, str):        # the model sometimes answers a field with just the word, or just its reasoning
+            d = {"verdict": d} if d in ("same", "page_more_specific", "different") else {"reason": d}
+        v, why = d.get("verdict") or conclusion(d.get("reason", "")) or "different", d.get("reason", "")
+        said = conclusion(why)
+        if said and said != v:   # the reasoning concluded one thing and the label says another: don't trust either
+            v, why = "different", why + f" [check this: the reasoning concludes '{said}' but was labelled '{v}']"
+        out[f] = (v, why)
+    return out
+
+def _unjson(v):
+    """The model sometimes writes its answer as JSON text inside a field: read it as the object it is."""
+    if isinstance(v, str) and v.strip().startswith("{"):
+        try:
+            return json.loads(v)
+        except ValueError:
+            m = re.search(r'"reason"\s*:\s*"((?:[^"\\]|\\.)*)', v)           # cut off part-way: keep the reasoning
+            return {"reason": m.group(1)} if m else v
+    return v
+
+def conclusion(why):
+    """What the reasoning's last sentence concludes, when it says so plainly: same / page_more_specific / different."""
+    last = re.split(r"(?<=[.!?])\s+", (why or "").strip())[-1].lower() if why else ""
+    if re.search(r"\b(verdict|so|therefore|thus)\b.{0,30}\bsame\b|\bthey match\b|\bnot (a )?(conflict|different)\b", last):
+        return "same"
+    if re.search(r"\b(verdict|so|therefore|thus)\b.{0,30}\bdifferent\b|\breal (change|difference|conflict)\b", last):
+        return "different"
+    return ""
 
 # ======================================================================= matching + comparing
 
@@ -645,6 +699,8 @@ def compare(rec, svc, client, model, total):
     res, fuzzy = {}, {}
     for f in FIELDS:
         sheet = (rec.get(f) or "").strip()
+        if f == "who" and (rec.get("eligibility") or "").strip():
+            sheet = f"{sheet} (eligibility: {rec['eligibility'].strip()})"   # limits are kept in the eligibility column
         page = pf.get(f, {}).get("value", "")
         quote = pf.get(f, {}).get("quote", "")
         if not sheet and not page:
@@ -668,8 +724,14 @@ def compare(rec, svc, client, model, total):
         if f == "days":
             ok = day_set(sheet) == day_set(page)
         elif f == "times":
+            page = fix_am_typo(page)
             (s1, e1), (s2, e2) = time_pair(sheet), time_pair(page)
             ok = s1 == s2 and (not e1 or not e2 or e1 == e2)
+            if not ok and s1 and s1 in times_in(page_text(svc["source_url"])) and (not e1 or e1 in times_in(page_text(svc["source_url"]))):
+                # the page also lists the sheet's own times (e.g. morning, afternoon and evening sessions): the AI matched
+                # this record to another session, so this isn't a change. Treat it as found, but not tied to its entry.
+                res[f] = ("match", sheet, "", f"value appears on the page  [the page lists several sessions; this one's times {sheet} are among them]")
+                continue
         elif f == "dates":
             ok = future_dates(sheet) <= future_dates(page) or not future_dates(page)
         elif f == "postcode":
@@ -679,6 +741,11 @@ def compare(rec, svc, client, model, total):
                  or all(on_page(x, svc["source_url"]) for x in re.split(r"\s*;\s*", sheet))
         elif f == "email":
             ok = emails(sheet) <= emails(page) or all(on_page(x, svc["source_url"]) for x in emails(sheet))
+        elif f == "mode":
+            ok = {x.strip() for x in re.split(r"[;,]", sheet) if x.strip()} == {x.strip() for x in re.split(r"[;,]", page) if x.strip()}
+            if not ok:
+                fuzzy[f] = (sheet, page, quote)
+                continue
         elif f == "address" and "postcode" in res and res["postcode"][0] == "match":
             ok = True
         else:
@@ -689,8 +756,129 @@ def compare(rec, svc, client, model, total):
         res[f] = ("match" if ok else "differs", sheet, page, quote)
     for f, (v, why) in judge(client, model, fuzzy, total).items():
         sheet, page, quote = fuzzy[f]
-        res[f] = ({"same": "match", "page_more_specific": "refine"}.get(v, "differs"), sheet, page, quote + (f"  [{why}]" if why else ""))
+        st = {"same": "match", "page_more_specific": "refine"}.get(v, "differs")
+        if st == "differs":
+            st, why = second_look(f, sheet, page, quote, why)
+        res[f] = (st, sheet, page, quote + (f"  [{why}]" if why else ""))
+    # details the AI didn't pull out, but which the page does give
+    quotes = " | ".join(str((v or {}).get("quote", "")) for v in pf.values())
+    for f, r in list(res.items()):
+        if r[0] != "not_on_page":
+            continue
+        if f == "days" and day_set(r[1]) and day_set(r[1]) <= days_in(quotes):
+            res[f] = ("match", r[1], "", f"value appears on the page  [in the page's wording: {quotes[:150]}]")
+        elif f == "times" and time_pair(r[1]) == ("00:00", "23:59") and re.search(ALL_WEEK, page_text(svc["source_url"])):
+            res[f] = ("match", r[1], "", re.search(ALL_WEEK, page_text(svc["source_url"])).group(0))
+        elif f == "address" and street_on_page(r[1], svc["source_url"]):
+            res[f] = ("match", r[1], "", street_on_page(r[1], svc["source_url"]))
+    # backstop for the rule above: wording that restricts ("only", "must", "invite") is never just extra detail
+    for f, r in list(res.items()):
+        if r[0] in ("refine", "match") and f in RESTRICT_FIELDS and RESTRICTS.search(r[3].split("  [")[0] + " " + r[2]) \
+                and not RESTRICTS.search(r[1]):
+            res[f] = ("differs", r[1], r[2], r[3] + "  [flagged by code: the page's wording restricts this service; check it]")
+    # the service's own heading can restrict it ("Taunton * Invite only"): that counts as a difference in how to join
+    head = (svc.get("name_quote") or "") + " " + (svc.get("name") or "")
+    if RESTRICTS.search(head) and not RESTRICTS.search((rec.get("access") or "") + " " + (rec.get("eligibility") or "")):
+        word = RESTRICTS.search(head).group(0)
+        res["access"] = ("differs", rec.get("access", ""), f"see heading ('{word}')",
+                         (svc.get("name_quote") or svc.get("name") or "") + "  [flagged by code: the service's heading restricts it]")
+    for f, r in list(res.items()):
+        if r[0] == "add" and not worth_adding(f, r[2], r[3]):
+            del res[f]
+    # postcode helps confirm the address (above) but isn't reported on its own: it only changes when the address does
+    if "postcode" not in WATCH:
+        res.pop("postcode", None)
+    # never suggest a named person's email or a mobile number (directory rule): note it, don't offer it
+    for f, r in list(res.items()):
+        if r[0] == "add" and ((f == "email" and personal_email(r[2])) or (f == "phone" and re.sub(r"\D", "", r[2]).startswith("07"))):
+            res[f] = ("not_suggested", r[1], r[2], r[3] + "  [a named person's email or a mobile: not suggested]")
+        elif r[0] == "add" and f == "email" and re.fullmatch(r"[a-z]+", r[2].split("@")[0], re.I) and len(r[2].split("@")[0]) > 3:
+            res[f] = ("add", r[1], r[2], r[3] + "  [check this isn't one person's address before adding]")
     return res
+
+RESTRICT_FIELDS = {"who", "access", "mode", "cost", "frequency"}
+
+# ---- a second look, in code, at what the AI judged different (it is often over-strict on these)
+
+LIMIT = re.compile(r"\b(\d{1,2}\s*(-|–|to)\s*\d{1,2}|\d{1,2}\s*\+|(aged|over|under|between)\s+\d{1,2}|"
+                   r"only|must|invite|invitation|members?|referr\w*|live[sd]? in|living in|residents?|registered with)\b", re.I)
+ACCESS_CUES = {"drop in": r"drop[ -]?in|just (turn|come|pop) (up|along)|no need to book|come along",
+               "book": r"\bbook", "sign up": r"contact|call|ring|phone|email|register|sign[ -]?up|join|referral form|get in touch",
+               "call": r"\b(call|ring|phone|text|chat|helpline|line)\b", "referral": r"referr"}
+def second_look(f, sheet, page, quote, why):
+    """(status, why) for a field the AI judged different. Only a real limit or a real conflict stays 'differs'."""
+    q = quote.split("  [")[0]
+    sheet_l = sheet.lower()
+    if f == "who":
+        limits = [m.group(0) for m in LIMIT.finditer(q + " " + page)]
+        new = [x for x in limits if not _limit_known(x, sheet_l)]
+        groups = {g for g, rx in WHO_GROUPS.items() if re.search(rx, q + " " + page, re.I) and not re.search(rx, sheet_l, re.I)}
+        if "lgbtq+" in sheet_l:
+            groups.discard("lgbtq+")
+        if not new and not groups:
+            return "match", "[code: the page describes who it's for, but sets no limit the record lacks]"
+    if f == "access":
+        cue = ACCESS_CUES.get(sheet_l.strip())
+        if cue and re.search(cue, q, re.I) and not RESTRICTS.search(q):
+            return "match", f"[code: the page's wording fits '{sheet}']"
+    if f == "mode":
+        a = {x.strip() for x in re.split(r"[;,]", sheet_l) if x.strip()}
+        b = {x.strip() for x in re.split(r"[;,]", page.lower()) if x.strip()}
+        if b and b < a and not RESTRICTS.search(q) and not re.search(r"no longer|stopped|moved (online|to)", q, re.I):
+            return "match", "[code: the page mentions only some of the ways in, and doesn't say the others have stopped]"
+    return "differs", why
+
+def _limit_known(limit, sheet_l):
+    """True if the record already carries this limit (in who or eligibility), or it's what 'adults' means."""
+    l = limit.lower()
+    nums = re.findall(r"\d+", l)
+    if nums and ("adults" in sheet_l and nums in (["18"],) and not re.search(r"under|-|to", l)):
+        return True                                      # over 18 / 18+ is what adults means
+    if nums and all(n in sheet_l for n in nums):
+        return True
+    if re.search(r"live|living|resident", l) and re.search(r"somerset|bath|area|only", sheet_l):
+        return True
+    return bool(nums) is False and l in sheet_l
+
+WHO_GROUPS = {"women": r"\bwomen|\bfemale|\bladies", "men": r"(?<!wo)\bmen\b|\bmale\b", "carers": r"\bcarers?\b|caring for",
+              "young people": r"young (people|person)|youth|teen|children|\bkids", "older people": r"older|over 50|over 60|over 65|retired",
+              "lgbtq+": r"lgbt|trans\b|non-binary|gender", "refugees and asylum seekers": r"refugee|asylum",
+              "new families": r"parents?\b|mums?\b|dads?\b|new families|babies|toddlers", "veterans": r"veteran|armed forces"}
+FREQ_OK = re.compile(r"fortnightly|monthly \(dates vary\)|see website|(1st|2nd|3rd|4th|last) (mon|tue|wed|thu|fri|sat|sun) of month", re.I)
+COST_WORDS = re.compile(r"free|no charge|no cost|£|\bcost|charge|donation|pay|fee|price", re.I)
+def worth_adding(f, value, quote):
+    """Drop suggestions that don't stand up: a frequency outside the sheet's words (or 'weekly', which is the
+    default), and a cost whose quote says nothing about cost."""
+    q = quote.split("  [")[0]
+    if f == "frequency":
+        return bool(FREQ_OK.fullmatch(value.strip()))
+    if f == "cost":
+        return bool(COST_WORDS.search(q))
+    return True
+
+ABBR = [(r"\bstreet\b", "st"), (r"\broad\b", "rd"), (r"\blane\b", "ln"), (r"\bavenue\b", "ave"), (r"\bplace\b", "pl"),
+        (r"\bsquare\b", "sq"), (r"\bclose\b", "cl"), (r"\bdrive\b", "dr"), (r"\bterrace\b", "ter")]
+def _abbr(s):
+    s = re.sub(r"[^a-z0-9 ]", " ", squash(s))
+    for a, b in ABBR:
+        s = re.sub(a, b, s)
+    return re.sub(r"\s+", " ", s).strip()
+def street_on_page(address, url):
+    """The street part of the sheet's address (the part with a number or a street word), if the page prints it.
+    'Yeovil Foyer, Peter Street' -> 'peter st'; '... Hub, 57C High Street' -> '57c high st'."""
+    t = _abbr(page_text(url))
+    for part in reversed([p for p in re.split(r"\s*,\s*", address or "") if p]):
+        a = _abbr(part)
+        if (re.search(r"\d", a) or any(re.search(rf"\b{b}$", a) for _, b in ABBR)) and len(a) > 4:
+            return part if re.search(rf"\b{re.escape(a)}\b", t) else ""
+    return ""
+RESTRICTS = re.compile(r"\b(only|must|invite|invitation|referral required|members? only)\b", re.I)
+WEBMAIL = re.compile(r"@(gmail|googlemail|hotmail|outlook|live|yahoo|icloud|me|aol|btinternet|sky|talktalk|virginmedia)\.", re.I)
+def personal_email(addr):
+    """An address that is clearly one person's: a personal webmail account, or first.last@."""
+    local = (addr or "").split("@")[0]
+    return bool(WEBMAIL.search(addr or "")) or bool(re.fullmatch(r"[a-z]+[._][a-z]+\d*", local, re.I))
+
 
 def verdict(found, res, svc, record_url_ok):
     if not found:
@@ -770,7 +958,8 @@ def first_url(s):
     return m.group(0).rstrip(".") if m else ""
 
 def is_crisis_safe_space(rec, src):
-    return "crisis safe space" in (rec.get("name", "") + " " + rec.get("type", "")).lower() or \
+    """Crisis Safe Spaces, and other evening crisis spaces such as Youth SAFE Space: never suggest an address (directory rule)."""
+    return bool(re.search(r"safe ?space", (rec.get("name", "") + " " + rec.get("type", "")).lower())) or \
            "crisis-safe-space" in ((src or {}).get("source_id", ""))
 
 # ======================================================================= main
@@ -784,7 +973,46 @@ def load_csv(src):
         data = open(src, encoding="utf-8-sig").read()
     return list(csv.DictReader(io.StringIO(data)))
 
+def on_site(rec, site):
+    """Does the record point to a page on this site: its url, the links in its source column, or its rule's pages?"""
+    src = source_for(rec)
+    urls = [rec.get("url", "")] + re.findall(r"https?://[^\s;,)]+", rec.get("source", "") + " " + ((src or {}).get("where_to_look") or ""))
+    return any(site in urlparse(u).netloc.lower() for u in urls if u)
+
+def rid(rec):
+    """The record's ID (the sheet's record_id column, e.g. R0105), or its row number on an older sheet without one."""
+    return (rec.get("record_id") or "").strip() or f"row {rec['_row']}"
+
+def parse_ids(text):
+    """'R0001,R0005-R0009' -> {'R0001', 'R0005', ..., 'R0009'}"""
+    out = set()
+    for part in (x.strip().upper() for x in (text or "").split(",") if x.strip()):
+        m = re.fullmatch(r"R(\d+)\s*-\s*R?(\d+)", part)
+        if m:
+            width = len(m[1])
+            out.update(f"R{n:0{width}d}" for n in range(int(m[1]), int(m[2]) + 1))
+        else:
+            out.add(part)
+    return out
+
 def pick(recs, a):
+    if a.ids:
+        want = parse_ids(a.ids)
+        found = [r for r in recs if (r.get("record_id") or "").strip().upper() in want]
+        missing = want - {(r.get("record_id") or "").strip().upper() for r in found}
+        if missing:
+            print(f"not in the sheet: {', '.join(sorted(missing))}", file=sys.stderr)
+        return found
+    if a.provider:
+        recs = [r for r in recs if (r.get("provider") or "").strip().lower() == a.provider.strip().lower()]
+        print(f"{len(recs)} records from {a.provider}", file=sys.stderr)
+        if not a.rows and not a.sample and not a.site and not a.ids:
+            return recs
+    if a.site:
+        recs = [r for r in recs if on_site(r, a.site.lower())]
+        print(f"{len(recs)} records on {a.site}", file=sys.stderr)
+        if not a.rows and not a.sample:
+            return recs
     if a.rows:
         want = {int(x) for x in a.rows.split(",") if x.strip()}
         return [r for r in recs if r["_row"] in want]
@@ -865,6 +1093,8 @@ def check_one(client, a, rec, total):
     # the sources file says which fields this source is trusted for: other differences are noted, not counted
     sc = scope(src)
     for f, r in list(res.items()):
+        if f == "who" and r[0] == "differs":
+            continue      # who a service is for is checked once, now: a page that limits it always counts, whatever the source's scope
         if f not in sc and r[0] in ("differs", "add", "refine", "not_on_page"):
             res[f] = ("outside_source", r[1], r[2], r[3])
     # safeguarding: never suggest an address for a Crisis Safe Space
@@ -896,13 +1126,129 @@ def check_one(client, a, rec, total):
         "notes": "; ".join(x for x in log if not x.startswith("fetch ")),
     }), res, svc
 
+# ======================================================================= the review: what each result means, in words
+
+LABEL = {"days": "Days", "times": "Times", "dates": "Dates", "postcode": "Postcode", "phone": "Phone", "email": "Email",
+         "address": "Address", "cost": "Cost", "access": "How to join", "who": "Who it's for", "frequency": "How often", "mode": "How it runs"}
+
+def _q(quote):
+    q, _, why = (quote or "").partition("  [")
+    return q.strip(), why.rstrip("]").strip()
+
+def _short(why, n=2):
+    """The first sentences of the checker's reasoning: enough to see why, without the whole working."""
+    parts = re.split(r"(?<=[.!?])\s+", why.strip())
+    return " ".join(parts[:n]) + (" ..." if len(parts) > n else "")
+
+def issue_lines(res):
+    """One line per field that needs attention: the sheet, the page's own words, and why it was flagged."""
+    out = []
+    for f, (st, sheet, page, quote) in res.items():
+        q, why = _q(quote)
+        said = f' Page: "{q.rstrip(".")}".' if q and not q.startswith(("[", "value appears")) else ""
+        note = f" Why: {_short(why)}" if why else ""
+        name = LABEL.get(f, f)
+        if st == "differs":
+            out.append(f"- **{name}: doesn't match.** Sheet: \"{sheet or 'blank'}\". Should probably be: \"{page}\".{said}{note}")
+        elif st == "not_on_page" and f in WATCH:
+            out.append(f"- **{name}: not on the page.** The sheet's \"{sheet}\" couldn't be confirmed: it may be on another page, or out of date.")
+        elif st == "add":
+            out.append(f"- **{name}: could be added:** \"{page}\".{said}{note}")
+        elif st == "refine" and f in ("who", "access", "cost"):
+            out.append(f"- {name}: the page is more specific: \"{page}\".{said}")
+        elif st == "not_suggested":
+            out.append(f"- {name}: the page gives a named person's email or a mobile ({page}); left out, as the directory's rules say.")
+    return out
+
+def review_md(reviews, a):
+    groups = {"act": [], "look": [], "cant": [], "ok": []}
+    for base, res, svc in reviews:
+        v = base["verdict"]
+        key = "act" if v in ("needs_update", "wrong_url", "possibly_stale") else "cant" if v in ("cannot_verify", "error") \
+            else "look" if v == "partly_checked" or any(r[0] in ("add",) for r in res.values()) else "ok"
+        groups[key].append((base, res, svc))
+    summary = (f"Checked {TODAY:%d %B %Y}, {len(reviews)} records. {len(groups['act'])} need action, {len(groups['look'])} are worth a look, "
+               f"{len(groups['cant'])} couldn't be checked, {len(groups['ok'])} match their page.")
+    md = [f"# Check results: {a.provider or a.site or a.ids or a.rows or 'records'}", "", summary, "",
+          "Nothing here has been changed in the sheet. Each point quotes the provider's page; check it before changing anything.", ""]
+
+    def head(base):
+        return f"### {base['record_id']}: {base['name']}"
+
+    def where(base, svc):
+        u = (svc or {}).get("source_url") or base.get("url", "")
+        return f"Checked against: {u}" if u else ""
+
+    if groups["act"]:
+        md += ["## Need action", ""]
+        for base, res, svc in groups["act"]:
+            md += [head(base), ""]
+            if base["verdict"] == "wrong_url":
+                md += [(f"- **The link doesn't work** ({base.get('fetch', '')}), and the service couldn't be found elsewhere on the provider's site."
+                        " It may have ended, or moved. Ring or email the provider before removing it.")]
+            elif base["verdict"] == "possibly_stale":
+                md += [f"- **The page may be out of date:** {base.get('stale_signs', '')}"]
+            md += issue_lines(res)
+            if base.get("better_url"):
+                md += [f"- **Better link found:** {base['better_url']}"]
+            md += ["", where(base, svc), ""]
+    if groups["look"]:
+        md += ["## Worth a look", ""]
+        for base, res, svc in groups["look"]:
+            md += [head(base), ""] + (issue_lines(res) or ["- Partly confirmed: " + (base.get("matched") or "nothing") + " matched; " +
+                                                             (base.get("not_on_page") or "nothing else") + " not on the page."])
+            if base.get("better_url"):
+                md += [f"- **Better link found:** {base['better_url']}"]
+            md += ["", where(base, svc), ""]
+    if groups["cant"]:
+        md += ["## Couldn't be checked", ""]
+        for base, _, _ in groups["cant"]:
+            why = base.get("notes") or base.get("fetch") or ""
+            md += [f"- {base['record_id']}, {base['name']}: {why[:300]}"]
+        md += [""]
+    if groups["ok"]:
+        md += ["## Match their page", ""] + [f"- {b['record_id']}, {b['name']}: {b.get('matched', '')} confirmed" for b, _, _ in groups["ok"]] + [""]
+    return "\n".join(md) + "\n"
+
+# ======================================================================= recipes for the scraper (src/monitor.py)
+
+# fields that change, and so get scraper recipes: watch_fields in src/watch.json (who/access are checked once;
+# postcode isn't watched, as it only changes with the address)
+try:
+    WATCH = json.loads((Path(__file__).resolve().parent / "watch.json").read_text(encoding="utf-8"))["watch_fields"]
+except (OSError, KeyError, ValueError):
+    WATCH = ["days", "times", "dates", "phone", "email", "address", "mode", "cost"]
+RECIPE_COLS = ["record_id", "name", "town", "field", "sheet_value", "result", "source_url", "quote", "checked_on"]
+
+def recipe_rows(rec, res, svc):
+    """For each watched field the page states: the page and the exact words to look for next time.
+    A field that only matched because its value is printed somewhere on the page gets the value itself as its quote."""
+    out = []
+    if not svc or not svc.get("source_url", "").startswith("http"):
+        return out
+    for f in WATCH:
+        r = res.get(f)
+        if not r or r[0] in ("not_on_page", "outside_source", "not_suggested"):
+            continue
+        quote = r[3].split("  [")[0].strip()
+        if not quote or quote.startswith("[") or quote.startswith("on the page, but"):
+            continue
+        if quote == "value appears on the page":
+            quote = r[1].split(";")[0].strip()
+        out.append({"record_id": rid(rec), "name": rec.get("name", ""), "town": rec.get("town", ""), "field": f, "sheet_value": r[1], "result": r[0],
+                    "source_url": svc["source_url"], "quote": quote, "checked_on": TODAY.isoformat()})
+    return out
+
 def main():
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("--csv", required=True)
     ap.add_argument("--out", default="checks.csv")
     ap.add_argument("--sample", type=int)
     ap.add_argument("--seed", type=int, default=20261107)
-    ap.add_argument("--rows")
+    ap.add_argument("--ids", help="records by ID, e.g. R0016,R0018 or a range R0020-R0030")
+    ap.add_argument("--rows", help="(older) records by sheet row number; --ids is safer, as row numbers change")
+    ap.add_argument("--provider", help="only one organisation's records, by the sheet's provider column, e.g. \"Age UK Somerset\"")
+    ap.add_argument("--site", help="only the records whose url, source links or rule point to this site, e.g. mindinsomerset.org.uk")
     ap.add_argument("--model", default="claude-haiku-5-5")
     ap.add_argument("--no-search", action="store_true")
     ap.add_argument("--js", action="store_true")
@@ -935,38 +1281,47 @@ def main():
         todo = [r for r in todo if due(r, source_for(r)).startswith("yes")]
         print(f"{len(todo)} records due a recheck", file=sys.stderr)
     stem = re.sub(r"\.csv$", "", a.out)
+    Path(a.out).parent.mkdir(parents=True, exist_ok=True)
     jl = open(stem + ".jsonl", "w", encoding="utf-8")
-    rows, frows, tally, total = [], [], defaultdict(int), defaultdict(int)
+    rows, frows, recipes, reviews, tally, total = [], [], [], [], defaultdict(int), defaultdict(int)
 
     for n, rec in enumerate(todo, 1):
-        print(f"[{n}/{len(todo)}] row {rec['_row']}: {rec.get('name','')}", file=sys.stderr)
-        base = {"row": rec["_row"], "name": rec.get("name", ""), "provider": rec.get("provider", ""),
+        print(f"[{n}/{len(todo)}] {rid(rec)}: {rec.get('name','')}", file=sys.stderr)
+        base = {"record_id": rid(rec), "name": rec.get("name", ""), "provider": rec.get("provider", ""),
                 "url": rec.get("url", ""), "source": rec.get("source", ""),
                 "last_checked": rec.get("last_checked", ""), "checked_on": TODAY.isoformat()}
         try:
             out, res, svc = check_one(client, a, rec, total)
         except Exception as e:
-            out, res, svc = {"verdict": "error", "notes": f"{type(e).__name__}: {e}"}, {}, None
+            import traceback
+            where = traceback.extract_tb(e.__traceback__)[-1]
+            out, res, svc = {"verdict": "error", "notes": f"{type(e).__name__}: {e} (check_sources.py line {where.lineno}, in {where.name})"}, {}, None
         if out["verdict"] == "cannot_verify" and rec.get("source", "").strip().lower() in OFFLINE_SOURCES:
             out["notes"] = (out.get("notes", "") + f" Record came from an offline source ({rec['source']}).").strip()
         base.update(out)
         rows.append(base)
         tally[base["verdict"]] += 1
         for f, (st, sheet, page, quote) in res.items():
-            frows.append({"row": rec["_row"], "name": rec.get("name", ""), "field": f, "result": st,
+            frows.append({"record_id": rid(rec), "name": rec.get("name", ""), "field": f, "result": st,
                           "sheet_value": sheet, "page_value": page, "page_wording": quote,
                           "source_url": (svc or {}).get("source_url", "")})
-        jl.write(json.dumps({"row": rec["_row"], "result": base, "fields": res, "extracted": svc}, ensure_ascii=False) + "\n")
+        recipes += recipe_rows(rec, res, svc)
+        reviews.append((base, res, svc))
+        jl.write(json.dumps({"record_id": rid(rec), "result": base, "fields": res, "extracted": svc}, ensure_ascii=False) + "\n")
         jl.flush()
 
-    cols = ["row", "name", "provider", "verdict", "changes", "could_add", "matched", "not_on_page", "outside_source",
+    cols = ["record_id", "name", "provider", "verdict", "changes", "could_add", "matched", "not_on_page", "outside_source",
             "stale_signs", "better_url", "found_via", "fetch", "pages_read", "notes", "url", "source", "source_id",
             "source_method", "due", "last_checked", "checked_on"]
     with open(a.out, "w", newline="", encoding="utf-8") as f:
         w = csv.DictWriter(f, fieldnames=cols, extrasaction="ignore"); w.writeheader(); w.writerows(rows)
     with open(stem + "-fields.csv", "w", newline="", encoding="utf-8") as f:
-        w = csv.DictWriter(f, fieldnames=["row", "name", "field", "result", "sheet_value", "page_value", "page_wording", "source_url"])
+        w = csv.DictWriter(f, fieldnames=["record_id", "name", "field", "result", "sheet_value", "page_value", "page_wording", "source_url"])
         w.writeheader(); w.writerows(frows)
+
+    Path(stem + "-review.md").write_text(review_md(reviews, a), encoding="utf-8")
+    with open(stem + "-recipes.csv", "w", newline="", encoding="utf-8") as f:
+        w = csv.DictWriter(f, fieldnames=RECIPE_COLS); w.writeheader(); w.writerows(recipes)
 
     # services on checked pages that don't match anything in the sheet
     new = []
@@ -976,13 +1331,16 @@ def main():
                                        (s.get("provider") or r.get("provider") or "").lower() or r.get("url", "").strip() == url):
                 row = {"name": s.get("name", ""), "provider": s.get("provider", ""), "town": s.get("town", ""), "source_url": url}
                 row.update({f: s["fields"].get(f, {}).get("value", "") for f in FIELDS})
-                if "crisis safe space" in (s.get("name") or "").lower():
+                if re.search(r"safe ?space", (s.get("name") or "").lower()):
                     row["address"] = row["postcode"] = ""        # safeguarding: never record these
                 new.append(row)
     with open(stem + "-new.csv", "w", newline="", encoding="utf-8") as f:
         w = csv.DictWriter(f, fieldnames=["name", "provider", "town", "source_url"] + FIELDS); w.writeheader(); w.writerows(new)
 
-    print(f"\n{len(rows)} records -> {a.out}, {stem}-fields.csv, {stem}-new.csv ({len(new)} possible new services)", file=sys.stderr)
+    print(f"\nRead first: {stem}-review.md", file=sys.stderr)
+    print(f"{len(rows)} records -> {a.out}, {stem}-fields.csv, {stem}-recipes.csv ({len(recipes)} quotes to watch), "
+          f"{stem}-new.csv ({len(new)} possible new services)", file=sys.stderr)
+    print(f"  Next: python src/monitor.py {stem}-recipes.csv   (checks the scraper finds every quote)", file=sys.stderr)
     for k in ("confirmed", "partly_checked", "needs_update", "possibly_stale", "wrong_url", "cannot_verify", "error"):
         if tally[k]:
             print(f"  {k:15} {tally[k]}", file=sys.stderr)

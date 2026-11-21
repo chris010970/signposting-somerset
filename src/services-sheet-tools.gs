@@ -7,6 +7,8 @@
  *   - Clear check marks: removes the highlights and notes.
  *   - Add / refresh dropdowns: dropdown lists for type, access and area. (who, support_for and mode
  *     can hold several values separated by ";", so they have no dropdown; any old dropdown is removed.)
+ *   - Give new records an ID: fills a blank record_id with the next number (the highest R number in the
+ *     sheet, plus one). Existing IDs are never changed or reused.
  *   - Fill blank areas: sets area from the town (North Somerset / Bath and North East Somerset towns
  *     below; any other town = Somerset). Rows with no town are left for you to fill.
  *
@@ -19,6 +21,10 @@
  * The records must be on the FIRST tab (the one the website reads). The "Check report" tab is
  * always added at the end, so it never becomes the first tab.
  * Same rules as check.py.
+ *
+ * record_id (first column): every record's permanent ID, R0001, R0002 and so on. Check records flags a
+ * blank, badly formed or repeated ID. A removed record's ID is retired (verified/removed.csv in the repo),
+ * so the next number always comes after the highest in the sheet, never a gap.
  */
 
 const LISTS = {
@@ -47,7 +53,7 @@ const AREA_TOWNS = {
 // Towns whose postal town crosses the boundary (e.g. Ammerdown has a Radstock address but is in Somerset):
 // filled as above, but never flagged as a mismatch.
 const AREA_BORDER_TOWNS = ["Radstock"];
-const REQUIRED = ["name", "provider", "type", "access", "support_for", "mode", "who", "source", "last_checked"];
+const REQUIRED = ["record_id", "name", "provider", "type", "access", "support_for", "mode", "who", "source", "last_checked"];
 const DAYS = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
 const JS_DAY = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 const RED = "#F8D7DA", AMBER = "#FFF3CD";
@@ -59,6 +65,7 @@ function onOpen() {
     .addItem("Clear check marks", "clearCheckMarks")
     .addSeparator()
     .addItem("Add / refresh dropdowns", "addDropdowns")
+    .addItem("Give new records an ID", "fillIds")
     .addItem("Fill blank areas", "fillAreas")
     .addToUi();
 }
@@ -69,6 +76,9 @@ function addDropdowns() {
   const headers = headers_(sheet);
   const rows = Math.max(sheet.getMaxRows() - 1, 1);
   const done = [], missing = [];
+  // Start clean: dropdowns stick to column positions, so after a column is added or moved an old rule
+  // can end up on the wrong column (e.g. the type list on provider). Remove every rule, then add them back.
+  sheet.getRange(2, 1, rows, sheet.getMaxColumns()).clearDataValidations();
   for (const [name, values] of Object.entries(LISTS)) {
     const col = headers.indexOf(name) + 1;
     if (!col) { missing.push(name); continue; }
@@ -77,11 +87,30 @@ function addDropdowns() {
     sheet.getRange(2, col, rows, 1).setDataValidation(rule);
     done.push(name);
   }
-  for (const name of Object.keys(MULTI)) {          // multi-value columns: make sure no dropdown blocks "a;b"
-    const col = headers.indexOf(name) + 1;
-    if (col) sheet.getRange(2, col, rows, 1).clearDataValidations();
-  }
   toast_("Dropdowns added: " + done.join(", ") + (missing.length ? ". Not found: " + missing.join(", ") : ""));
+}
+
+/* ---------------- record IDs ---------------- */
+const ID_RE = /^R(\d{4,})$/;
+
+function fillIds() {
+  const sheet = recordsSheet_();
+  const headers = headers_(sheet);
+  const ic = headers.indexOf("record_id"), nc = headers.indexOf("name");
+  if (ic < 0) { toast_("No 'record_id' column: add it as the first column."); return; }
+  const n = sheet.getLastRow() - 1;
+  if (n < 1) return;
+  const idRange = sheet.getRange(2, ic + 1, n, 1);
+  const ids = idRange.getDisplayValues(), names = sheet.getRange(2, nc + 1, n, 1).getDisplayValues();
+  let next = 1 + Math.max(0, ...ids.map(r => { const m = String(r[0]).trim().toUpperCase().match(ID_RE); return m ? +m[1] : 0; }));
+  const width = Math.max(4, ...ids.map(r => { const m = String(r[0]).trim().match(ID_RE); return m ? m[1].length : 0; }));
+  let given = 0;
+  const out = ids.map((r, i) => {
+    if (String(r[0]).trim() || !String(names[i][0]).trim()) return [r[0]];   // keep existing IDs; skip empty rows
+    given++; return ["R" + String(next++).padStart(width, "0")];
+  });
+  idRange.setValues(out);
+  toast_(given ? `Gave ${given} new record${given > 1 ? "s" : ""} an ID (up to R${String(next - 1).padStart(width, "0")}).` : "Every record already has an ID.");
 }
 
 /* ---------------- areas ---------------- */
@@ -124,7 +153,7 @@ function checkRecords() {
   const notes = values.map(r => r.map(() => ""));
   const issues = [];
   const today = new Date(); today.setHours(0, 0, 0, 0);
-  const seenNames = {};
+  const seenNames = {}, seenIds = {};
   // postcode districts per town (to spot a postcode that doesn't belong to its town)
   const townDistricts = {};
   values.forEach(row => {
@@ -138,16 +167,23 @@ function checkRecords() {
     if (!v.name && row.every(c => !String(c).trim())) return;   // empty row
     const sheetRow = i + 2;
     const add = (sev, field, msg) => {
-      issues.push([sev, sheetRow, v.name, field, msg]);
+      issues.push([sev, sheetRow, v.record_id || "", v.name, field, msg]);
       const j = col(field) >= 0 ? col(field) : 0;
       if (bg[i][j] !== RED) bg[i][j] = sev === "error" ? RED : AMBER;
       notes[i][j] = (notes[i][j] ? notes[i][j] + "\n" : "") + (sev === "error" ? "ERROR: " : "Check: ") + msg;
     };
 
-    REQUIRED.forEach(f => { if (col(f) >= 0 && !v[f]) add("error", f, "required field is blank"); });
+    REQUIRED.forEach(f => { if (col(f) >= 0 && !v[f]) add("error", f, f === "record_id" ? "no ID (menu: Give new records an ID)" : "required field is blank"); });
+    if (col("record_id") < 0 && i === 0) add("error", "name", "no record_id column: add it as the first column");
+    if (v.record_id) {
+      const id = v.record_id.toUpperCase();
+      if (!ID_RE.test(id)) add("error", "record_id", "should be R and four digits, e.g. R0105");
+      else if (seenIds[id]) add("error", "record_id", "same ID as row " + seenIds[id] + ": every record needs its own (give one of them a new ID)");
+      else seenIds[id] = sheetRow;
+    }
     if (v.name) {
       const key = v.name.toLowerCase();
-      if (seenNames[key]) add("error", "name", "same name as row " + seenNames[key]); else seenNames[key] = sheetRow;
+      if (seenNames[key]) add("error", "name", "same name as row " + seenNames[key]); else seenNames[key] = sheetRow + (v.record_id ? " (" + v.record_id + ")" : "");
     }
     for (const [f, ok] of Object.entries(LISTS)) if (v[f] && !ok.includes(v[f])) add("error", f, "not in the agreed list: " + v[f]);
     for (const [f, ok] of Object.entries(MULTI)) if (v[f]) {
@@ -199,7 +235,7 @@ function checkRecords() {
     if (v.town && v.days && v.times) {
       const key = [v.town.toLowerCase(), v.days, v.times, v.address.toLowerCase().slice(0, 20)].join("|");
       if (slots[key] && slots[key].name !== v.name) add("warn", "name", "same town, day, time and venue as row " + slots[key].row + " (" + slots[key].name + "): duplicate?");
-      else slots[key] = { row: sheetRow, name: v.name };
+      else slots[key] = { row: sheetRow + (v.record_id ? " (" + v.record_id + ")" : ""), name: v.name };
     }
     if (v.lat || v.lon) {
       const la = Number(v.lat), lo = Number(v.lon);
@@ -279,10 +315,10 @@ function writeReport_(issues) {
   rep.clear();
   const order = { error: 0, warn: 1 };
   issues.sort((a, b) => order[a[0]] - order[b[0]] || a[1] - b[1]);
-  const rows = [["severity", "row", "name", "field", "issue"]].concat(issues.length ? issues : [["", "", "No problems found", "", ""]]);
-  rep.getRange(1, 1, rows.length, 5).setValues(rows);
-  rep.getRange(1, 1, 1, 5).setFontWeight("bold");
-  rep.getRange(1, 1, 1, 5).offset(0, 0).getSheet().setFrozenRows(1);
-  rep.getRange(1, 6).setValue("Checked " + new Date().toLocaleString("en-GB"));
-  rep.autoResizeColumns(1, 5);
+  const rows = [["severity", "row", "record_id", "name", "field", "issue"]].concat(issues.length ? issues : [["", "", "", "No problems found", "", ""]]);
+  rep.getRange(1, 1, rows.length, 6).setValues(rows);
+  rep.getRange(1, 1, 1, 6).setFontWeight("bold");
+  rep.setFrozenRows(1);
+  rep.getRange(1, 7).setValue("Checked " + new Date().toLocaleString("en-GB"));
+  rep.autoResizeColumns(1, 6);
 }

@@ -26,12 +26,15 @@ Last updated: 15 November 2026.
 | Tools | `src/`: `run_scenarios.py` and the `scenarios-*.json` files, `check_sources.py`, `church_events.py`, `geocode.py`, `services-sheet-tools.gs` (not part of the site build) |
 | Search | Google Search Console (property for signpostingsomerset.org.uk; sitemap submitted) |
 
-## 3. The data: 25 columns
+## 3. The data: 26 columns
 
 One row per service **session pattern**. If a group meets at different times on different days, or at different venues, it gets one row per pattern (for example "Greenlinks gardening (Monksdale, Tuesday)" and "(Monksdale, Thursday)").
 
+Every record has a permanent ID in the first column, `record_id`: `R0001`, `R0002` and so on. It never changes, even if the service is renamed or moves, and it is never reused: a removed record's ID retires with it (see `verified/removed.csv`), and a new record takes the next number after the highest in the sheet. The checking tools, the evidence files and conversations refer to records by this ID, because row numbers change whenever rows are added or removed. The site and Assist don't use it.
+
 | Column | Meaning and format |
 |---|---|
+| `record_id` | Permanent ID, `R` and four digits. Next number after the highest; never reused or changed. |
 | `name` | Short, specific name. Add the place in brackets when the same group runs in several places: `Talking Café Brean`, `SoBS Support Group (Bath)`. Make ambiguous places explicit: `(Weston, Bath)` not just `Weston`. |
 | `provider` | Organisation that runs it. |
 | `type` | One of: `Activity group`, `Peer group`, `Community`, `Practical support`, `One-to-one support`, `Advocacy`, `Course`, `Counselling or therapy`, `Volunteering` (the sheet's dropdown; nothing else). Helplines are `One-to-one support`, or `Practical support` for advice lines. |
@@ -84,7 +87,7 @@ These are decisions, not accidents. Keep to them unless deliberately changed (an
 
 1. **Find candidates** (provider pages, council directories, other plans). Check each against the current sheet first (name, provider, phone/email) to avoid duplicates.
 2. **Verify** each on its own source (rule 1). Note conflicts between sources rather than picking silently; prefer the provider's own page and the most recent date.
-3. **Write rows** with the 25 columns in order, using only the allowed values in section 3. Check descriptions are under 128 characters.
+3. **Write rows** with the 26 columns in order (a new record gets the next `record_id`), using only the allowed values in section 3. Check descriptions are under 128 characters.
 4. **Collect them in one append CSV** (UTF-8, with header). Paste into the sheet **without the header row** (a pasted header becomes a junk record).
 5. **Geocode** new rows with postcodes (`python src/geocode.py`).
 6. **Spot-check** with Assist or `run_scenarios.py` (section 8).
