@@ -86,6 +86,77 @@ def tidy(html_text, url=""):
 def fp(text):
     return hashlib.sha256(text.encode("utf-8")).hexdigest()[:16]
 
+def is_csv(url, content_type=""):
+    """A spreadsheet export: a .csv link, a published Google Sheet's output=csv link, or a CSV content type."""
+    u = url.lower()
+    return "text/csv" in content_type.lower() or u.split("?")[0].endswith(".csv") or "output=csv" in u
+
+def csv_text(raw):
+    """A CSV as readable lines, one per row: 'Class: Tai Chi · Venue: Village Hall · Day: Monday' (as check_sources.py reads it)."""
+    import io
+    rows = list(csv.reader(io.StringIO(raw)))
+    head = next((r for r in rows if sum(bool(c.strip()) for c in r) >= 2), None)
+    if not head:
+        return " ".join(raw.split())
+    lines = []
+    for r in rows[rows.index(head) + 1:]:
+        cells = [f"{h.strip()}: {c.strip()}" if h.strip() else c.strip() for h, c in zip(head, r) if c.strip()]
+        if cells:
+            lines.append(" · ".join(cells))
+    return "\n".join(lines)
+
+def fetch_csv(url):
+    """(status, text or None, note): a published spreadsheet, as csv_text lines."""
+    import requests
+    try:
+        r = requests.get(url, headers={"User-Agent": SETTINGS["user_agent"]}, timeout=SETTINGS["timeout_s"])
+    except Exception as e:
+        return None, None, f"unreachable ({type(e).__name__})"
+    if r.status_code >= 400:
+        return r.status_code, None, f"unreachable ({r.status_code})"
+    if "html" in r.headers.get("Content-Type", "").lower():        # e.g. the sheet was unpublished: a sign-in page comes back
+        return r.status_code, None, "not a spreadsheet any more (unpublished or moved?)"
+    return r.status_code, csv_text(r.content.decode("utf-8-sig", errors="replace")), "(spreadsheet)"
+
+_browser = None
+def render_html(url):
+    """(status, html or None, note) from a real browser (Playwright), for pages whose details are loaded by script.
+    Waits for the page to load, then a few seconds for its scripts (some sites, e.g. Wix, never go quiet)."""
+    global _browser
+    try:
+        from playwright.sync_api import sync_playwright
+    except ImportError:
+        return None, None, "needs a browser: pip install playwright, then: python -m playwright install chromium"
+    try:
+        if _browser is None:
+            _browser = sync_playwright().start().chromium.launch()
+        page = _browser.new_page(user_agent=SETTINGS["user_agent"])
+        try:
+            resp = page.goto(url, timeout=45000, wait_until="domcontentloaded")
+            try:
+                page.wait_for_load_state("networkidle", timeout=8000)
+            except Exception:
+                pass
+            page.wait_for_timeout(2000)
+            status = resp.status if resp else 200
+            return status, (page.content() if status < 400 else None), "(browser)" if status < 400 else f"HTTP {status}"
+        finally:
+            page.close()
+    except Exception as e:
+        return None, None, f"browser failed ({type(e).__name__})"
+
+def browser_hosts():
+    """Websites whose rule in sources.csv says they need a real browser (method mentions 'browser' or 'script')."""
+    out = set()
+    try:
+        with open(ROOT / SETTINGS["sources_file"], encoding="utf-8-sig") as fh:
+            for x in csv.DictReader(fh):
+                if re.search(r"browser|script", x.get("method") or "", re.I):
+                    out |= {host(u) for u in links(x.get("where_to_look"))}
+    except OSError:
+        pass
+    return out
+
 def fetch_html(url):
     """(status, html or None, note). Uses the requests library when it's installed (as check_sources.py does): it carries
     its own up-to-date certificate list, so it reaches sites whose security setup Python's built-in fetcher rejects."""

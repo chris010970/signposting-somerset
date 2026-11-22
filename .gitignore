@@ -23,3 +23,6 @@ desktop.ini
 .idea/
 
 build/tests/node_modules/
+checks/
+monitor-*
+*.zip

@@ -20,6 +20,10 @@ it the same way as src/detect.py (menus, footers and banners removed), and looks
                    Run straight after check_sources.py, every "missing" is the second kind: a recipe to fix
   page failed      the page couldn't be fetched (blocked, needs a browser, gone)
 
+Pages on sites whose rule in src/sources.csv says they need a real browser (e.g. Balsam's, whose days load by script)
+are opened in one (Playwright). For days and times, calendar dates are ignored: 'Monday 23 Nov 10:00' is looked for as
+'Monday 10:00', so a list of upcoming sessions reads the same from week to week.
+
 Run it straight after check_sources.py to verify the recipes work; after that, run it whenever you like: a quote
 that was "found" and is now "missing" is a change to look at. Writes <out>.csv (one row per quote) and
 <out>.md: each record under Needs you (page failed, or a detail changed or removed), Can't be watched (a detail
@@ -30,7 +34,7 @@ from collections import Counter, defaultdict
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
-from detect import SETTINGS, fetch_html, host, tidy, whole_page
+from detect import SETTINGS, browser_hosts, fetch_csv, fetch_html, host, is_csv, render_html, tidy, whole_page
 
 def parse_ids(text):
     """'R0001,R0005-R0009' -> {'R0001', 'R0005', ..., 'R0009'}"""
@@ -56,10 +60,42 @@ def plain(s):
     s = re.sub(r"\s*-\s*", " - ", s)          # "10am–12pm" and "10am - 12pm" read the same
     return re.sub(r"\s+", " ", s).strip()
 
-def classify(quote, main, whole):
+DATE = re.compile(r"\b\d{1,2}(st|nd|rd|th)?\s+(jan|feb|mar|apr|may|jun|jul|aug|sep|sept|oct|nov|dec)[a-z]*\.?(\s+\d{4})?\b")
+PAIR = re.compile(r"\b(monday|tuesday|wednesday|thursday|friday|saturday|sunday)s?\b\W{0,3}"
+                  r"(\d{1,2}[:.]\d{2}\s*(?:am|pm)?|\d{1,2}\s*(?:am|pm))")
+def undated(t):
+    """Text without calendar dates: 'Monday 23 Nov 10:00' -> 'monday 10:00', so a listing of upcoming sessions reads the
+    same from one week to the next."""
+    return re.sub(r"\s+", " ", DATE.sub(" ", t)).strip()
+
+def _hhmm(t):
+    m = re.match(r"(\d{1,2})(?:[:.](\d{2}))?\s*(am|pm)?", t.strip())
+    h, mi = int(m[1]), int(m[2] or 0)
+    h += 12 if m[3] == "pm" and h < 12 else 0
+    h -= 12 if m[3] == "am" and h == 12 else 0
+    return f"{h:02d}:{mi:02d}"
+
+def classify(quote, main, whole, field=None, value=None):
     q = plain(quote)
     if not q:
         return "no quote"
+    if field in ("days", "times"):
+        # session listings carry dates that change every week: check the day-and-time pairs, without the dates
+        q, main, whole = undated(q), undated(main), undated(whole)
+        pairs = PAIR.findall(q)
+        if pairs:
+            mine = pairs
+            if field == "days" and value:
+                want = {d.strip()[:3].lower() for d in re.split(r"[;,]", value)}
+                mine = [p for p in pairs if p[0][:3] in want] or pairs
+            if field == "times" and value and re.match(r"\d{1,2}:\d{2}", value):
+                mine = [p for p in pairs if _hhmm(p[1]) == value[:5]] or pairs
+            rx = [re.compile(rf"\b{d}s?\W{{0,3}}{re.escape(t)}") for d, t in mine]
+            if all(r.search(main) for r in rx):
+                return "found"
+            if all(r.search(whole) for r in rx):
+                return "found, footer"
+            return "missing"
     n = main.count(q)
     if n == 1:
         return "found"
@@ -99,21 +135,27 @@ def main():
     stem = a.out or "monitor-" + label
 
     pages, last_host = {}, {}
+    js_hosts = browser_hosts()                     # sites sources.csv says load their details by script
     urls = sorted({r["source_url"] for r in recipes})
     print(f"{len(recipes)} quotes for {len({(key(r), r['name']) for r in recipes})} records, on {len(urls)} pages.")
     for u in urls:
         h = host(u)
         if h in last_host:
             time.sleep(max(0, SETTINGS["delay_s"] - (time.time() - last_host[h])))
-        status, html_text, note = fetch_html(u)
+        if is_csv(u):                              # a published spreadsheet (e.g. Age UK's timetable): its rows are the content
+            status, text, note = fetch_csv(u)
+            pages[u] = (plain(text), plain(text), "") if text is not None else ("", "", note or f"status {status}")
+            html_text = text
+        else:
+            status, html_text, note = render_html(u) if h in js_hosts else fetch_html(u)
+            pages[u] = (plain(tidy(html_text, u)), plain(whole_page(html_text)), "") if html_text is not None else ("", "", note or f"status {status}")
         last_host[h] = time.time()
-        pages[u] = (plain(tidy(html_text, u)), plain(whole_page(html_text)), "") if html_text is not None else ("", "", note or f"status {status}")
         print(f"  {'ok    ' if html_text is not None else 'FAILED'} {u} {note}")
 
     out = []
     for r in recipes:
         main_t, whole_t, problem = pages[r["source_url"]]
-        out.append({**r, "status": f"page failed: {problem}" if problem else classify(r["quote"], main_t, whole_t)})
+        out.append({**r, "status": f"page failed: {problem}" if problem else classify(r["quote"], main_t, whole_t, r.get("field"), r.get("value") or r.get("sheet_value"))})
     with open(stem + ".csv", "w", newline="", encoding="utf-8") as fh:
         w = csv.DictWriter(fh, fieldnames=list(recipes[0]) + ["status"]); w.writeheader(); w.writerows(out)
 

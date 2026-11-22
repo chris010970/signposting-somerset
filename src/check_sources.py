@@ -132,12 +132,42 @@ def render_js(url):
         _pw = sync_playwright().start().chromium.launch()
     p = _pw.new_page(user_agent=UA)
     try:
-        p.goto(url, timeout=45000, wait_until="networkidle")
+        # some sites (e.g. Wix) never go quiet on the network, so don't wait for that: load the page, then give its
+        # scripts a few seconds to fill in what they load (e.g. Balsam's days)
+        p.goto(url, timeout=45000, wait_until="domcontentloaded")
+        try:
+            p.wait_for_load_state("networkidle", timeout=8000)
+        except Exception:
+            pass
+        p.wait_for_timeout(2000)
         return p.content(), p.url
     finally:
         p.close()
 
+def is_csv(url, content_type=""):
+    """A spreadsheet export: a .csv link, a published Google Sheet's output=csv link, or a CSV content type."""
+    u = url.lower()
+    return "text/csv" in content_type.lower() or u.split("?")[0].endswith(".csv") or "output=csv" in u
+
+def csv_text(raw):
+    """A CSV as readable lines, one per row: 'Class: Tai Chi · Venue: Village Hall · Day: Monday'. Same as detect.csv_text."""
+    rows = list(csv.reader(io.StringIO(raw)))
+    head = next((r for r in rows if sum(bool(c.strip()) for c in r) >= 2), None)   # first row with 2+ filled cells
+    if not head:
+        return " ".join(raw.split())
+    lines = []
+    for r in rows[rows.index(head) + 1:]:
+        cells = [f"{h.strip()}: {c.strip()}" if h.strip() else c.strip() for h, c in zip(head, r) if c.strip()]
+        if cells:
+            lines.append(" · ".join(cells))
+    return "\n".join(lines)
+
+def data_url(src):
+    """The download address in a source's 'where to look' when it's a spreadsheet export the checker can fetch itself."""
+    return next((u.rstrip(".") for u in re.findall(r"https?://[^\s,;)\"']+", (src or {}).get("where_to_look") or "") if is_csv(u)), "")
+
 _pages = {}
+_warned_js = False
 def fetch(url, use_js=False):
     """dict(status, final_url, text, links, ok). Cached."""
     if url in _pages:
@@ -148,6 +178,8 @@ def fetch(url, use_js=False):
         out["final_url"] = r.url
         if r.status_code >= 400:
             out["status"] = f"HTTP {r.status_code}"
+        elif is_csv(url, r.headers.get("content-type", "")):
+            out["text"], out["status"] = csv_text(r.content.decode("utf-8-sig", errors="replace")), "ok (csv)"
         elif "pdf" in r.headers.get("content-type", "").lower() or url.lower().split("?")[0].endswith(".pdf"):
             from pypdf import PdfReader
             pdf = PdfReader(io.BytesIO(r.content))
@@ -158,13 +190,20 @@ def fetch(url, use_js=False):
             out["status"] = "ok"
     except Exception as e:
         out["status"] = f"error: {type(e).__name__}"
-    if use_js and not out["status"].startswith(("HTTP 4", "ok (pdf)")) and (use_js == "force" or len(out["text"]) < 800):
+    if use_js and not out["status"].startswith(("HTTP 4", "ok (pdf)", "ok (csv)")) and (use_js == "force" or len(out["text"]) < 800):
         try:
             html, final = render_js(url)
             out["text"], out["links"] = parse_html(html, final)
             out["final_url"], out["status"] = final, "ok (js)"
         except Exception as e:
-            out["status"] = out["status"] or f"error (js): {type(e).__name__}"
+            out["status"] = (out["status"] or "error") + f" (browser failed: {type(e).__name__})"
+            global _warned_js
+            if not _warned_js:
+                _warned_js = True
+                how = ("Install it with: pip install playwright, then: python -m playwright install chromium"
+                       if isinstance(e, ImportError) or "Executable doesn't exist" in str(e) else "")
+                print(f"WARNING: a page needs a real browser, but it failed ({type(e).__name__}: {str(e)[:120]}). "
+                      f"Details loaded by script (e.g. Balsam's days) will show as not on the page. {how}", file=sys.stderr)
     if urlparse(out["final_url"]).path in ("", "/") and urlparse(url).path not in ("", "/"):
         out["status"] += " (redirected to homepage)"
     out["ok"] = out["status"].startswith("ok") and len(out["text"]) > 50
@@ -214,6 +253,16 @@ def day_set(s):
 def time_pair(s):
     t = [f"{int(h):02d}:{m}" for h, m in re.findall(r"(\d{1,2})[:.](\d{2})", s or "")]
     return (t[0] if t else "", t[1] if len(t) > 1 else "")
+
+DAYNAME = {"monday": "Mon", "tuesday": "Tue", "wednesday": "Wed", "thursday": "Thu", "friday": "Fri", "saturday": "Sat", "sunday": "Sun"}
+def day_time_pairs(q):
+    """[('Mon', '14:00'), ...] from session listings like 'Monday 23 Nov 14:00 Friday 27 Nov 13:00'."""
+    out = []
+    for d, t in re.findall(r"\b(monday|tuesday|wednesday|thursday|friday|saturday|sunday)\b[^|]{0,25}?(\d{1,2}[:.]\d{2}\s*(?:am|pm)?|\d{1,2}\s*(?:am|pm))", (q or "").lower()):
+        tt = times_in(t)
+        if tt:
+            out.append((DAYNAME[d], sorted(tt)[0]))
+    return out
 
 def fix_am_typo(t):
     """'10:00-00:30' is a page typo ('10am - 12.30am') for 10:00-12:30: an end in the small hours, before a daytime start."""
@@ -557,13 +606,16 @@ def find_service(client, model, rec, start_url, allow_search, use_js, total, log
                 continue
             if b.name == "submit_service":
                 out = b.input
+                if out.get("found") and out.get("service") and not isinstance(out.get("service"), dict):
+                    log.append("find: the answer had no service details")
+                    return None
                 if out.get("found") and out.get("service"):
                     src = str(out.get("source_url", "")).strip()
                     if src not in _pages:
                         # the AI left the page out, or named one it only saw in search results: try the pages
                         # the checker actually read in this search, and use the one that backs the most quotes
                         read = [x[6:] for x in log if x.startswith("fetch ")] + [start_url]
-                        quotes = [str((v or {}).get("quote", "")) for v in (out["service"].get("fields") or {}).values()]
+                        quotes = [str(v.get("quote", "")) for v in (out["service"].get("fields") or {}).values() if isinstance(v, dict)]
                         best = max(read, key=lambda u: sum(on_page(q, u) for q in quotes), default="")
                         if best and best in _pages and any(on_page(q, best) for q in quotes):
                             log.append(f"find: source given as '{src or 'blank'}'; using {best}, which the checker read")
@@ -607,6 +659,9 @@ def judge(client, model, pairs, total):
     out = {}
     for f in pairs:
         d = (data or {}).get(f, {})
+        if not d:                                  # no answer for this field: unknown, not different
+            out[f] = ("page_more_specific", "the checker gave no verdict for this: check it")
+            continue
         d = _unjson(d)
         if isinstance(d, dict):
             d = {k: _unjson(v) for k, v in d.items()}
@@ -661,11 +716,23 @@ def match_score(rec, s):
         score += 0.5
     return score, name
 
+NAME_NOISE = {"alcoholics", "anonymous", "aa", "meeting", "group", "session", "class", "the", "and", "of", "for", "in", "at"}
 def best_match(rec, services):
     best, top = None, 0
     rp = words(rec.get("provider")) - {"somerset", "uk", "trust", "nhs", "the", "and", "of"}
+    tw = words(rec.get("town")) - {"on", "the", "super", "mare"} or words(rec.get("town"))
     for s in services:
         sc, nm = match_score(rec, s)
+        # a service the page places in another town isn't this one (e.g. 'Tai Chi QiGong' in Frome for the Berrow class)
+        where = words(s.get("town")) | words(s.get("fields", {}).get("address", {}).get("value")) | words(s.get("name"))
+        if tw and (s.get("town") or s.get("fields", {}).get("address", {}).get("value")) and not tw <= where:
+            continue
+        # on a long listing many entries share the town and provider (e.g. ten AA meetings in Weston-super-Mare): the
+        # words that make the name distinctive ('Safe Harbour', 'Came To Believe') have to agree when both have them
+        own = words(rec.get("name")) - rp - words(rec.get("town")) - NAME_NOISE
+        theirs = words(s.get("name")) - rp - words(rec.get("town")) - NAME_NOISE
+        if own and theirs and not own & theirs:
+            continue
         # place and day alone aren't enough: on a venue's listing page every session shares them
         # (e.g. a Money Cafe matched to 'Free welfare checks' at the same town hall on Thursdays)
         kin = nm > 0 or bool(rp & (words(s.get("provider")) | words(s.get("name"))))
@@ -723,6 +790,15 @@ def compare(rec, svc, client, model, total):
             continue
         if f == "days":
             ok = day_set(sheet) == day_set(page)
+            if not ok and day_set(sheet) and day_set(sheet) < day_set(page):
+                # a page listing several sessions (e.g. Tai Chi on Monday and Friday, each its own record): fine if the
+                # quote pairs this record's day with this record's start time
+                start = time_pair(rec.get("times"))[0]
+                if start and any(d in day_set(sheet) and t == start for d, t in day_time_pairs(quote)):
+                    res[f] = ("match", sheet, page, quote + "  [the page lists other sessions too; this one's day and time are there]")
+                    continue
+                res[f] = ("refine", sheet, page, quote + "  [the page lists other days too: another session, or a new day?]")
+                continue
         elif f == "times":
             page = fix_am_typo(page)
             (s1, e1), (s2, e2) = time_pair(sheet), time_pair(page)
@@ -737,10 +813,15 @@ def compare(rec, svc, client, model, total):
         elif f == "postcode":
             ok = pc(sheet) == pc(page)
         elif f == "phone":
-            ok = phones(sheet) <= phones(page) or bool(phones(page)) and phones(page) <= phones(sheet) \
-                 or all(on_page(x, svc["source_url"]) for x in re.split(r"\s*;\s*", sheet))
+            ok = phones(sheet) <= phones(page) or bool(phones(page)) and phones(page) <= phones(sheet)
+            if not ok and all(on_page(x, svc["source_url"]) for x in re.split(r"\s*;\s*", sheet)):
+                res[f] = ("match", sheet, "", "value appears on the page")   # the sheet's number is printed there (e.g. the centre's)
+                continue
         elif f == "email":
-            ok = emails(sheet) <= emails(page) or all(on_page(x, svc["source_url"]) for x in emails(sheet))
+            ok = emails(sheet) <= emails(page)
+            if not ok and emails(sheet) and all(on_page(x, svc["source_url"]) for x in emails(sheet)):
+                res[f] = ("match", sheet, "", "value appears on the page")
+                continue
         elif f == "mode":
             ok = {x.strip() for x in re.split(r"[;,]", sheet) if x.strip()} == {x.strip() for x in re.split(r"[;,]", page) if x.strip()}
             if not ok:
@@ -758,15 +839,18 @@ def compare(rec, svc, client, model, total):
         sheet, page, quote = fuzzy[f]
         st = {"same": "match", "page_more_specific": "refine"}.get(v, "differs")
         if st == "differs":
-            st, why = second_look(f, sheet, page, quote, why)
+            st, why = second_look(f, sheet, page, quote, why, svc["source_url"])
         res[f] = (st, sheet, page, quote + (f"  [{why}]" if why else ""))
     # details the AI didn't pull out, but which the page does give
-    quotes = " | ".join(str((v or {}).get("quote", "")) for v in pf.values())
+    quotes = " | ".join(str(v.get("quote", "")) for v in pf.values() if isinstance(v, dict))
     for f, r in list(res.items()):
         if r[0] != "not_on_page":
             continue
         if f == "days" and day_set(r[1]) and day_set(r[1]) <= days_in(quotes):
             res[f] = ("match", r[1], "", f"value appears on the page  [in the page's wording: {quotes[:150]}]")
+        elif f == "times" and time_pair(r[1])[0] and time_pair(r[1])[0] in times_in(quotes) \
+                and (not time_pair(r[1])[1] or time_pair(r[1])[1] in times_in(quotes)):
+            res[f] = ("match", r[1], "", next((q for q in quotes.split(" | ") if time_pair(r[1])[0] in times_in(q)), quotes)[:300])
         elif f == "times" and time_pair(r[1]) == ("00:00", "23:59") and re.search(ALL_WEEK, page_text(svc["source_url"])):
             res[f] = ("match", r[1], "", re.search(ALL_WEEK, page_text(svc["source_url"])).group(0))
         elif f == "address" and street_on_page(r[1], svc["source_url"]):
@@ -800,19 +884,22 @@ RESTRICT_FIELDS = {"who", "access", "mode", "cost", "frequency"}
 
 # ---- a second look, in code, at what the AI judged different (it is often over-strict on these)
 
-LIMIT = re.compile(r"\b(\d{1,2}\s*(-|–|to)\s*\d{1,2}|\d{1,2}\s*\+|(aged|over|under|between)\s+\d{1,2}|"
+LIMIT = re.compile(r"\b\d{1,2}\s*\+|\b(\d{1,2}\s*(-|–|to)\s*\d{1,2}|(aged|over|under)\s+(\d{1,2}|eighteen|sixteen|sixty|fifty|sixty-five)|between (the )?ages|"
                    r"only|must|invite|invitation|members?|referr\w*|live[sd]? in|living in|residents?|registered with)\b", re.I)
 ACCESS_CUES = {"drop in": r"drop[ -]?in|just (turn|come|pop) (up|along)|no need to book|come along",
-               "book": r"\bbook", "sign up": r"contact|call|ring|phone|email|register|sign[ -]?up|join|referral form|get in touch",
+               "book": r"\bbook|reserve", "sign up": r"contact|call|ring|phone|email|register|sign[ -]?up|join|referral form|get in touch",
                "call": r"\b(call|ring|phone|text|chat|helpline|line)\b", "referral": r"referr"}
-def second_look(f, sheet, page, quote, why):
+def second_look(f, sheet, page, quote, why, url=""):
     """(status, why) for a field the AI judged different. Only a real limit or a real conflict stays 'differs'."""
     q = quote.split("  [")[0]
     sheet_l = sheet.lower()
     if f == "who":
-        limits = [m.group(0) for m in LIMIT.finditer(q + " " + page)]
+        # a limit counts only if the page says it: in the quote, or (the AI's value) printed on the page. The AI's value
+        # alone can carry a limit it made up ('adults 18+' from 'All welcome.')
+        said = q + " " + " ".join(m.group(0) for m in LIMIT.finditer(page) if on_page(m.group(0), url))
+        limits = [m.group(0) for m in LIMIT.finditer(said)]
         new = [x for x in limits if not _limit_known(x, sheet_l)]
-        groups = {g for g, rx in WHO_GROUPS.items() if re.search(rx, q + " " + page, re.I) and not re.search(rx, sheet_l, re.I)}
+        groups = {g for g, rx in WHO_GROUPS.items() if re.search(rx, said, re.I) and not re.search(rx, sheet_l, re.I)}
         if "lgbtq+" in sheet_l:
             groups.discard("lgbtq+")
         if not new and not groups:
@@ -821,6 +908,9 @@ def second_look(f, sheet, page, quote, why):
         cue = ACCESS_CUES.get(sheet_l.strip())
         if cue and re.search(cue, q, re.I) and not RESTRICTS.search(q):
             return "match", f"[code: the page's wording fits '{sheet}']"
+        own = ACCESS_CUES.get(page.lower().strip())
+        if own and not re.search(own, q, re.I):
+            return "match", f"[code: the page's wording doesn't say '{page}' (nothing to change)]"
     if f == "mode":
         a = {x.strip() for x in re.split(r"[;,]", sheet_l) if x.strip()}
         b = {x.strip() for x in re.split(r"[;,]", page.lower()) if x.strip()}
@@ -834,6 +924,10 @@ def _limit_known(limit, sheet_l):
     nums = re.findall(r"\d+", l)
     if nums and ("adults" in sheet_l and nums in (["18"],) and not re.search(r"under|-|to", l)):
         return True                                      # over 18 / 18+ is what adults means
+    words = {"eighteen": "18", "sixteen": "16", "fifty": "50", "sixty": "60", "sixty-five": "65"}
+    nums += [words[w] for w in re.findall(r"eighteen|sixteen|sixty-five|sixty|fifty", l)]
+    if nums and ("adults" in sheet_l and nums == ["18"] and not re.search(r"\d\s*(-|to)|between", l)):
+        return True                                      # over/under 18 with adults: what adults means
     if nums and all(n in sheet_l for n in nums):
         return True
     if re.search(r"live|living|resident", l) and re.search(r"somerset|bath|area|only", sheet_l):
@@ -841,7 +935,7 @@ def _limit_known(limit, sheet_l):
     return bool(nums) is False and l in sheet_l
 
 WHO_GROUPS = {"women": r"\bwomen|\bfemale|\bladies", "men": r"(?<!wo)\bmen\b|\bmale\b", "carers": r"\bcarers?\b|caring for",
-              "young people": r"young (people|person)|youth|teen|children|\bkids", "older people": r"older|over 50|over 60|over 65|retired",
+              "young people": r"young (people|person)|youth|\bteen(s|age|ager|agers)?\b|children|\bkids", "older people": r"older|over 50|over 60|over 65|retired",
               "lgbtq+": r"lgbt|trans\b|non-binary|gender", "refugees and asylum seekers": r"refugee|asylum",
               "new families": r"parents?\b|mums?\b|dads?\b|new families|babies|toddlers", "veterans": r"veteran|armed forces"}
 FREQ_OK = re.compile(r"fortnightly|monthly \(dates vary\)|see website|(1st|2nd|3rd|4th|last) (mon|tue|wed|thu|fri|sat|sun) of month", re.I)
@@ -866,13 +960,23 @@ def _abbr(s):
 def street_on_page(address, url):
     """The street part of the sheet's address (the part with a number or a street word), if the page prints it.
     'Yeovil Foyer, Peter Street' -> 'peter st'; '... Hub, 57C High Street' -> '57c high st'."""
-    t = _abbr(page_text(url))
+    t = page_text(url)
+    full = {b: a.strip(r"\b") for a, b in ABBR}           # st -> street, rd -> road ...
     for part in reversed([p for p in re.split(r"\s*,\s*", address or "") if p]):
         a = _abbr(part)
         if (re.search(r"\d", a) or any(re.search(rf"\b{b}$", a) for _, b in ABBR)) and len(a) > 4:
-            return part if re.search(rf"\b{re.escape(a)}\b", t) else ""
+            # each word as written on the page: 'peter st' matches 'Peter St', 'Peter St.' or 'Peter Street'
+            rx = r"[\s,]+".join(rf"(?:{full[w]}|{w}\.?)" if w in full else re.escape(w) for w in a.split())
+            m = re.search(rf"\b{rx}(?![a-z])", t)
+            return m.group(0) if m else ""             # the page's own words, so the scraper can find them again
     return ""
-RESTRICTS = re.compile(r"\b(only|must|invite|invitation|referral required|members? only)\b", re.I)
+RESTRICTS_RX = re.compile(r"\b(only|must|invite|invitation|referral required|members? only)\b", re.I)
+NOT_A_GATE = re.compile(r"\bterm[- ]?time[- ]only\b|\bduring term[- ]?time only\b", re.I)   # when it runs, not who may come
+class _Restricts:
+    """RESTRICTS.search(text), ignoring wording about when a service runs ('term-time only')."""
+    def search(self, text):
+        return RESTRICTS_RX.search(NOT_A_GATE.sub(" ", text or ""))
+RESTRICTS = _Restricts()
 WEBMAIL = re.compile(r"@(gmail|googlemail|hotmail|outlook|live|yahoo|icloud|me|aol|btinternet|sky|talktalk|virginmedia)\.", re.I)
 def personal_email(addr):
     """An address that is clearly one person's: a personal webmail account, or first.last@."""
@@ -1059,6 +1163,19 @@ def check_one(client, a, rec, total):
                         notes=(src.get("if_unavailable") or "Needs the maintainer's copy of the source.") +
                               f" (Put it in the --files folder as {src['source_id']}.pdf/.txt to check it.)"), {}, None
         url = key
+    elif data_url(src):
+        # a published spreadsheet (e.g. Age UK's exercise timetable): download it and read its rows. A big sheet is too
+        # long to read whole, so give the AI only the rows for this record's town (it then matches the class by name)
+        needs_js = False
+        url = data_url(src)
+        page = fetch(url)
+        town = (rec.get("town") or "").strip()
+        if page["ok"] and town:
+            rows = [l for l in page["text"].split("\n") if town.lower() in l.lower()]
+            if rows:
+                key = f"{url}#{town}"
+                _pages[key] = dict(page, text="\n".join(rows), final_url=url)
+                url, page = key, _pages[key]
     else:
         # sources the file says need a real browser (content loaded by script) get one, if Playwright is installed
         needs_js = "force" if re.search(r"browser|script", (src or {}).get("method", ""), re.I) else a.js
@@ -1184,8 +1301,13 @@ def review_md(reviews, a):
         for base, res, svc in groups["act"]:
             md += [head(base), ""]
             if base["verdict"] == "wrong_url":
-                md += [(f"- **The link doesn't work** ({base.get('fetch', '')}), and the service couldn't be found elsewhere on the provider's site."
-                        " It may have ended, or moved. Ring or email the provider before removing it.")]
+                fetch = base.get("fetch", "")
+                if fetch.startswith("ok"):          # the page loads; the service just isn't on it (or the page can't be read, e.g. Facebook)
+                    md += ["- **The service isn't on its linked page**, and couldn't be found elsewhere on the provider's site. "
+                           "It may have ended or moved, or the page may not be readable automatically (e.g. Facebook): check it by hand."]
+                else:
+                    md += [(f"- **The link doesn't work** ({fetch}), and the service couldn't be found elsewhere on the provider's site."
+                            " It may have ended, or moved. Ring or email the provider before removing it.")]
             elif base["verdict"] == "possibly_stale":
                 md += [f"- **The page may be out of date:** {base.get('stale_signs', '')}"]
             md += issue_lines(res)
