@@ -887,9 +887,11 @@ h1 { font-family: var(--serif); color: var(--b900); font-size: 26px; margin: 0; 
 }
 .card.open .desc, .desc.full { -webkit-line-clamp: unset; display: block; }
 .cname .cbtn, .tname .cbtn { font: inherit; color: inherit; background: none; border: 0; padding: 0; margin: 0; text-align: left; cursor: pointer; }   /* the name: a button that opens the card */
-.who { font-size: 12px; color: var(--ink); margin-bottom: 8px; }
-.who em { font-style: normal; color: #92400E; }
-.who .cost { font-weight: 600; }
+/* An opened card's who-and-how block (factsBlock): small grey labels, plain answers */
+.facts { display: grid; grid-template-columns: max-content minmax(0, 1fr); gap: 5px 14px; font-size: 12.5px; line-height: 1.45; margin: 2px 0 10px; padding-top: 10px; border-top: 1px solid #F5F5F4; }
+.facts dt { color: #6B645F; font-weight: 600; font-size: 11.5px; }
+.facts dd { margin: 0; color: var(--ink); }
+@media (max-width: 360px) { .facts { grid-template-columns: minmax(0, 1fr); gap: 1px 0; } .facts dd { margin-bottom: 5px; } }
 .foot { font-size: 12px; color: #6B645F; border-top: 1px solid #F5F5F4; padding-top: 8px; display: grid; gap: 3px; }
 .foot a { color: var(--b700); }
 a.copy.dirs { text-decoration: none; }
@@ -899,13 +901,13 @@ a.copy.dirs { text-decoration: none; }
 .cbtn .nw { white-space: nowrap; }   /* the arrow stays with the name's last word */
 .cbtn .chev { width: 14px; height: 14px; margin-left: 5px; vertical-align: -1px; color: var(--b600); transition: transform .15s; }
 .open .cbtn .chev { transform: rotate(180deg); }
-.fold:not(.open) :is(.meta, .who, .foot) { display: none; }
+.fold:not(.open) :is(.meta, .facts, .foot) { display: none; }
 .fold:not(.open) .desc { margin-bottom: 0; }
 @media (max-width: 899px) { .fold:not(.open) .desc { -webkit-line-clamp: 1; } }   /* phones and narrow windows: one line */
 .fold.open .desc { -webkit-line-clamp: unset; display: block; }
-.restrict { font-size: 12px; font-weight: 600; color: #92400E; }   /* a restriction, on a closed card (once open, the For line says it) */
-.card .restrict { margin-top: 6px; }
-.fold.open .restrict { display: none; }
+/* A blocker ("Currently full: ..."): on folded and opened cards (restrictLine) */
+.notice { display: flex; align-items: flex-start; gap: 6px; font-size: 12px; font-weight: 600; color: #92400E; background: #FFFBEB; border: 1px solid #FDE68A; border-radius: 8px; padding: 6px 8px; margin: 6px 0 8px; }
+.notice svg { width: 14px; height: 14px; flex: none; margin-top: 1px; }
 @media (prefers-reduced-motion: reduce) { .cbtn .chev { transition: none; } }
 .morehint { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 8px 12px; margin: 14px 0 6px; padding: 12px 14px; border: 1px dashed var(--line); border-radius: 12px; background: var(--white); font-size: 14px; color: var(--muted); }
 .morehint b { color: inherit; }
@@ -1040,7 +1042,9 @@ footer.urgent p { color: #FEE2E2; }
 #panel-assist .a-desc { font-size: 14px; color: var(--ink); line-height: 1.5; margin: 10px 0 8px; }
 #panel-assist .fold:not(.open) .a-desc { display: none; }
 #panel-assist .a-pick .meta { margin: 10px 0 0; }
-#panel-assist .a-pick .restrict { margin-top: 8px; }
+#panel-assist .a-pick .notice { margin-top: 8px; }
+#panel-assist .fold:not(.open) :is(.facts, .a-note) { display: none; }
+#panel-assist .a-pick .facts { margin-top: 10px; }
 #panel-assist .a-pk-why { font-size: 14px; color: var(--b900); background: rgba(242,246,244,.8); border: 1px solid var(--b100); border-radius: 10px; padding: 8px 10px; margin-top: 8px; }
 #panel-assist .a-pk-acts { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px; }
 #panel-assist .a-pk-acts:empty { display: none; }
@@ -1411,17 +1415,60 @@ footer.urgent p { color: #FEE2E2; }
 /* ---------- text helpers shared with Assist's relay ---------- */
 // Card wording: the access badges (build/core/data/card-text.json)
 const CARD_TEXT = ({
- "_about": "Wording on the service cards (In person, Places) and in Copy details. access: the badge for each value of the sheet's access column (class sets its colour). A 'call' service reads 'Call first' for groups and activities, and 'Phone line' for anything else; any other value reads 'Contact provider'. checked: a tick on a card when the sheet's last_checked is within 'days' days. Its hover text is 'label' and how long ago ('today', 'yesterday', 'ago'); Copy details gives 'label' and the date, since notes outlive 'days ago'.",
- "access": {
-  "drop in": {"class": "b-drop", "label": "Just turn up"},
-  "sign up": {"class": "b-sign", "label": "Contact to join"},
-  "book": {"class": "b-book", "label": "Book first"},
-  "referral": {"class": "b-ref", "label": "Needs a referral"},
-  "call": {"class": "b-ref", "label": "Call first", "label_not_group": "Phone line"}
- },
- "access_other": {"class": "b-ref", "label": "Contact provider"},
- "group_types": ["group", "community", "course", "volunteering"],
- "checked": {"days": 90, "label": "Details checked", "today": "today", "yesterday": "yesterday", "ago": "{n} days ago"}
+  "_about": "Wording on the service cards (In person, Places) and in Copy details. access: the badge for each value of the sheet's access column (class sets its colour). A 'call' service reads 'Call first' for groups and activities, and 'Phone line' for anything else; any other value reads 'Contact provider'. checked: a tick on a card when the sheet's last_checked is within 'days' days. Its hover text is 'label' and how long ago ('today', 'yesterday', 'ago'); Copy details gives 'label' and the date, since notes outlive 'days ago'. notice: a blocker that stops someone joining. When a service's how_to_join (or, in an older row, eligibility) starts with one of 'starts' (HANDBOOK rule 8: 'Currently full: ...'), that first sentence shows as a small amber notice on folded and opened cards; nothing else about who and how shows until a card is opened. facts: the labels of the block an opened card shows (who it's for, who can use it: eligibility, how to join: the how_to_join column, cost); a line is left out when it's empty.",
+  "access": {
+    "drop in": {
+      "class": "b-drop",
+      "label": "Just turn up"
+    },
+    "sign up": {
+      "class": "b-sign",
+      "label": "Contact to join"
+    },
+    "book": {
+      "class": "b-book",
+      "label": "Book first"
+    },
+    "referral": {
+      "class": "b-ref",
+      "label": "Needs a referral"
+    },
+    "call": {
+      "class": "b-ref",
+      "label": "Call first",
+      "label_not_group": "Phone line"
+    }
+  },
+  "access_other": {
+    "class": "b-ref",
+    "label": "Contact provider"
+  },
+  "group_types": [
+    "group",
+    "community",
+    "course",
+    "volunteering"
+  ],
+  "checked": {
+    "days": 90,
+    "label": "Details checked",
+    "today": "today",
+    "yesterday": "yesterday",
+    "ago": "{n} days ago"
+  },
+  "notice": {
+    "starts": [
+      "Currently full",
+      "Closed to new",
+      "Not taking new"
+    ]
+  },
+  "facts": {
+    "who": "Who it's for",
+    "eligibility": "Who can use it",
+    "how": "How to join",
+    "cost": "Cost"
+  }
 });
 // Groups, activities, courses and volunteering (by type), as opposed to one-to-one services and phone lines
 const isGroupType = s => new RegExp(CARD_TEXT.group_types.join("|"), "i").test(s.type || "");
@@ -1713,7 +1760,7 @@ function copyText(s, when) {
   const how = !inPerson && modes.length ? modes.map(m => m === "phone" ? "Phone" : m === "online" ? "Online" : m).join(" or ") : "";
   return [
     s.name + (s.provider && s.provider !== s.name ? ` (${s.provider})` : ""),
-    [when || copyWhen(s), how, ACC, s.cost, s.eligibility].filter(Boolean).join(" · "),
+    [when || copyWhen(s), how, ACC, s.cost, s.eligibility, s.how_to_join].filter(Boolean).join(" · "),
     inPerson ? [s.address, [s.town, s.postcode].filter(Boolean).join(" ")].filter(Boolean).join(", ") : "",
     [s.phone, s.email, s.url].filter(Boolean).join(" · "),
     checkedText(s),
@@ -1762,8 +1809,30 @@ const OPENED_KEY = "ss-opened";
 const OPENED = new Set((() => { try { return JSON.parse(sessionStorage.getItem(OPENED_KEY)) || []; } catch (e) { return []; } })()), cardKey = s => `${s.name}|${s.postcode || s.town || ""}`;
 const isOpen = s => OPENED.has(cardKey(s));
 const foldClass = s => isOpen(s) ? " open" : "", keyAttr = s => ` data-key="${esc(cardKey(s))}"`;
-// A restriction ("Over 18s only", "Currently full: referrals paused"): shown on a closed card too, so nobody misses it
-const restrictLine = s => s.eligibility ? `<div class="restrict">${esc(s.eligibility)}</div>` : "";
+// A blocker that stops someone joining: the first sentence of how_to_join (or, in an older row, of eligibility) when it starts
+// with one of CARD_TEXT.notice.starts (HANDBOOK rule 8: "Currently full: contact Age UK to join the waiting list").
+// Shown on folded and opened cards alike; everything else about who and how shows only once a card is opened (factsBlock).
+const startsBlocked = t => (CARD_TEXT.notice?.starts || []).some(p => t.toLowerCase().startsWith(p.toLowerCase()));
+function noticeFrom(s) {   // [the field it's in, its first sentence] or []
+  for (const f of ["how_to_join", "eligibility"]) {
+    const t = (s[f] || "").trim();
+    if (startsBlocked(t)) return [f, t.split(/(?<=\.)\s+/)[0].replace(/\.$/, "")];
+  }
+  return [];
+}
+const noticeText = s => noticeFrom(s)[1] || "";
+const NOTICE_ICON = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v6M12 16.5v.5"/></svg>';
+const restrictLine = s => { const n = noticeText(s); return n ? `<div class="notice">${NOTICE_ICON}<span>${esc(n)}</span></div>` : ""; };
+// What an opened card says about who and how: Who it's for (the who tags, "anyone" left out), Who can use it (eligibility,
+// less the notice above it), How to join (how_to_join) and Cost; labels in CARD_TEXT.facts, empty lines left out.
+const whoText = s => { const w = split(s.who).filter(x => x !== "anyone").join(", "); return w && w[0].toUpperCase() + w.slice(1); };
+function factsBlock(s, withCost = true) {
+  const [nf, n] = noticeFrom(s), F = CARD_TEXT.facts;
+  const less = f => { const t = (s[f] || "").trim(); return f === nf ? t.slice(t.indexOf(n) + n.length).replace(/^[.;\s]+/, "") : t; };   // less the notice
+  const rows = [[F.who, whoText(s)], [F.eligibility, less("eligibility")], [F.how, less("how_to_join")], [F.cost, withCost ? s.cost : ""]]
+    .filter(([, v]) => v);
+  return rows.length ? `<dl class="facts">${rows.map(([l, v]) => `<dt>${esc(l)}</dt><dd>${esc(v)}</dd>`).join("")}</dl>` : "";
+}
 // Open or close a service card's full details (a click anywhere on it, or its name button by keyboard), saying so to screen readers
 function toggleCard(card) {
   card.classList.toggle("open");
@@ -1802,9 +1871,6 @@ function serviceCard(r, h = "h2", withId = true) {
     telLink(s.phone),
     s.email ? `<a href="mailto:${esc(s.email.split(";")[0].trim())}">${esc(s.email)}</a>` : ""].filter(Boolean).join(" · ");
   const dist = r.d != null ? `<span class="chip dist">${r.d < .1 ? "&lt;0.1" : r.d.toFixed(1)} mi</span>` : "";   // (an approximate place says so in the footer)
-  // Who it's for, what it costs and any restriction: a line of any length under the description, so the top row stays one line
-  const forLine = [s.who ? `For: ${esc(s.who)}` : "", s.cost ? `<span class="cost">${esc(s.cost)}</span>` : "",
-    s.eligibility ? `<em>${esc(s.eligibility)}</em>` : ""].filter(Boolean).join(" · ");
   const types = s._sf.length ? " · " + s._sf.map(cap).map(esc).join(", ") : "";
   const place = esc([s.address, s.town, s.postcode].filter(Boolean).join(", ")) + (s.approx ? ` <span class="approx">(approx. location)</span>` : "");
   return `<article class="card fold${foldClass(s)}"${keyAttr(s)}${withId ? ` id="c${s.id}"` : ""} data-id="${s.id}">
@@ -1813,7 +1879,7 @@ function serviceCard(r, h = "h2", withId = true) {
       ${kindTag(s)}<div class="meta">${esc(s.provider)} · ${esc(s.type)}${types}</div>
       <div class="next">${["check", "website"].includes(s._kind) ? "" : checkedTick(s)}<div class="lab">Next</div><div class="val ${r.nx.cls}">${esc(r.nx.txt)}</div></div>
       <p class="desc">${esc(s.description)}</p>${restrictLine(s)}
-      ${forLine ? `<div class="who">${forLine}</div>` : ""}
+      ${factsBlock(s)}
       <div class="foot"><span>${place}</span>${contact ? `<span>${contact}</span>` : ""}</div>
     </article>`;
 }
@@ -1967,7 +2033,7 @@ function renderAbout() {
       <li><strong>Data:</strong> ONS boundaries, population (mid-2022) and urban/rural classification; MHCLG Indices of Deprivation 2025; Census 2021; open postcode data (2016). Open Government Licence.</li>
     </ul>
     </div></div>
-    <p class="small" id="site-version">Version: tools 2026-11-19 22:53${typeof window.assistRelayVersion === "function" ? window.assistRelayVersion() : ""}</p>
+    <p class="small" id="site-version">Version: tools 2026-11-23 21:51${typeof window.assistRelayVersion === "function" ? window.assistRelayVersion() : ""}</p>
   </article>`;
 }
 
@@ -2467,7 +2533,7 @@ async function initAnalytics() {
    this page only remembers it for the current browser session. */
 (() => {
 const WORKER_URL = "https://signposting-assist.c-r-williams0109.workers.dev";
-const PAGE_VERSION = "tools 2026-11-19 22:53";
+const PAGE_VERSION = "tools 2026-11-23 21:51";
 let relayVersion = "";
 // The version line is at the bottom of the About tab: "Version: test 2026-11-06 11:30 · Assist relay 2026-11-06 11:07"
 window.assistRelayVersion = () => relayVersion ? ` · Assist relay ${relayVersion}` : "";
@@ -2902,7 +2968,6 @@ function card(p) {
     ? `<span class="chip dist">${e_(near ? `${p.distance} mi` : s.town || "In person")}</span>`
     : `<span class="chip dist a-m">${mode.includes("phone") ? ICON.phone : ""}${mode.includes("online") ? ICON.online : ""}${e_(mode.replace(/;/g, " / ").replace("phone", "Phone").replace("online", "Online"))}</span>`;
   const contact = [s.phone && telLink(s.phone), s.email && `<a href="mailto:${e_(s.email)}">${e_(s.email)}</a>`, isUrl(s.url) && `<a href="${e_(s.url)}" target="_blank" rel="noopener">Website</a>`].filter(Boolean).join(" · ");
-  const forLine = [s.who ? `For: ${e_(s.who.replace(/;/g, ", "))}` : "", s.cost ? `<span class="cost">${e_(s.cost)}</span>` : "", s.eligibility ? `<em>${e_(s.eligibility)}</em>` : ""].filter(Boolean).join(" · ");
   const types = (s.support_for || "").split(";").filter(Boolean).map(cap).map(e_).join(", ");
   const about = [e_(s.provider), e_(s.type), types].filter(Boolean).join(" · ");
   return `<article class="card fold a-pick${p.web ? " a-webpick" : ""}${foldClass(s)}"${keyAttr(s)} id="a-pick-${p.n}">
@@ -2913,8 +2978,8 @@ function card(p) {
     <div class="a-pk-acts">${actions(s)}</div>
     ${about ? `<div class="meta">${about}</div>` : ""}
     ${s.description ? `<p class="a-desc">${e_(s.description)}</p>` : ""}
-    ${forLine ? `<div class="who">${forLine}</div>` : ""}
-    ${s.note ? `<div class="who"><em>${e_(s.note)}</em></div>` : ""}
+    ${factsBlock(s)}
+    ${s.note ? `<div class="notice a-note">${NOTICE_ICON}<span>${e_(s.note)}</span></div>` : ""}
     <div class="foot">${inPerson && where ? `<span>${e_(where)}${near ? ` (${p.distance} miles)` : ""}</span>` : ""}${contact ? `<span>${contact}</span>` : ""}
       <span>${p.web ? `Found by an online search (${e_(p.web.source)}). Signposting Somerset hasn't checked it: please confirm the details with the service.` : e_(checkedText(s))}</span></div>
   </article>`;
