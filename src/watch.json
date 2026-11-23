@@ -1,9 +1,10 @@
 {
-  "_about": "Settings shared by the change detector (src/detect.py), the checker (src/check_sources.py) and the scraper (src/monitor.py). user_agent: how they introduce themselves to websites. timeout_s: how long to wait for a page. delay_s: the pause between two pages on the same site, so no site gets more than one request at a time. sources_file: the rules for checking records (src/sources.csv). drop_selectors: parts of a page to ignore: navigation, headers, footers, cookie banners. main_selectors: where to look for the main content, in order; the body if none match. site_drop_selectors: extra parts to ignore on particular sites, such as panels repeated on every page. watch_fields: the record fields src/check_sources.py writes scraper recipes for and src/monitor.py checks (who and access are checked once, when a record is verified; postcode isn't watched, as it only changes with the address).",
+  "_about": "Settings shared by the change detector (src/detect.py), the checker (src/check_sources.py) and the scraper (src/monitor.py). user_agent: how they introduce themselves to websites. timeout_s: how long to wait for a page. delay_s: the pause between two pages on the same site, so no site gets more than one request at a time. sources_file: the rules for checking records (src/sources.csv). drop_selectors: parts of a page to ignore: navigation, headers, footers, cookie banners. main_selectors: where to look for the main content, in order; the body if none match. site_drop_selectors: extra parts to ignore on particular sites, such as panels repeated on every page. watch_fields: the record fields src/check_sources.py writes scraper recipes for and src/monitor.py checks (who and access are checked once, when a record is verified; postcode isn't watched, as it only changes with the address). by_hand_skip: details never listed under Check by hand when there's no quote for them (cost: small charges, and groups help people who can't pay; mode: pages rarely say 'in person', and a venue that closes shows up as a missing address). status_words: wording that, when it appears on a page within status_window characters of a record's own quotes, puts the record under Needs you (a group suspended or full while its day and time are still listed); words the record already carries in its name, description, eligibility or dates are ignored. status_ignore_phrases: general wording that never counts as a status word for any record, because it's a standing notice rather than news ('Somerset Health Walks may be cancelled due to Health Walk Leader availability or adverse weather'). status_ignore: record ID -> words to stop flagging for that record, once you've looked and they don't matter. image_model: the AI model check_sources.py uses to read timetable images (e.g. Chard Community Hub's What's On): a careful one, as the checks trust its reading. unwatchable_hosts: sites the scraper can't read (Facebook shows a log-in wall to scripts): their records go under Check by hand instead of Needs you. ics_days_ahead: for a provider's public calendar feed (.ics), how far ahead one-off events are listed (regular sessions are always listed, with their repeat rule). hidden_selectors: page parts that are never shown to visitors but still sit in the page, so the checker and the scraper skip them (Citizens Advice Somerset keeps its 2023 list of advice sessions in a block hidden on every device).",
   "user_agent": "Mozilla/5.0 (compatible; SignpostingSomersetChecker/0.2; +https://signpostingsomerset.org.uk)",
   "timeout_s": 25,
   "delay_s": 1.5,
   "sources_file": "src/sources.csv",
+  "image_model": "claude-sonnet-5-5",
   "drop_selectors": [
     "script",
     "style",
@@ -50,5 +51,53 @@
     "address",
     "mode",
     "cost"
+  ],
+  "by_hand_skip": [
+    "cost",
+    "mode"
+  ],
+  "status_words": [
+    "suspended",
+    "cancelled",
+    "canceled",
+    "postponed",
+    "paused",
+    "on hold",
+    "currently full",
+    "now full",
+    "fully booked",
+    "temporarily closed",
+    "now closed",
+    "has closed",
+    "closed until",
+    "no longer running",
+    "no longer meeting",
+    "no longer available",
+    "not running",
+    "not currently running",
+    "has ended",
+    "have ended",
+    "last session",
+    "final session",
+    "ceased"
+  ],
+  "status_window": 250,
+  "status_ignore": {
+    "R0696": [
+      "suspended"
+    ]
+  },
+  "status_ignore_phrases": [
+    "may be cancelled",
+    "may be canceled"
+  ],
+  "unwatchable_hosts": [
+    "facebook.com",
+    "m.facebook.com",
+    "instagram.com"
+  ],
+  "ics_days_ahead": 90,
+  "hidden_selectors": [
+    ".elementor-hidden-desktop.elementor-hidden-tablet.elementor-hidden-mobile"
   ]
 }

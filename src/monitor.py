@@ -19,6 +19,9 @@ it the same way as src/detect.py (menus, footers and banners removed), and looks
   missing          not on the page: either the details changed, or the quote never matched the page's own text.
                    Run straight after check_sources.py, every "missing" is the second kind: a recipe to fix
   page failed      the page couldn't be fetched (blocked, needs a browser, gone)
+  found, image     the quote came from a timetable image (read by the checker's AI). The monitor can't read images,
+                   so it checks the web page still shows the same image; a new image means a new timetable, and the
+                   record goes under Needs you
 
 Pages on sites whose rule in src/sources.csv says they need a real browser (e.g. Balsam's, whose days load by script)
 are opened in one (Playwright). For days and times, calendar dates are ignored: 'Monday 23 Nov 10:00' is looked for as
@@ -34,7 +37,8 @@ from collections import Counter, defaultdict
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
-from detect import SETTINGS, browser_hosts, fetch_csv, fetch_html, host, is_csv, render_html, tidy, whole_page
+from calendar_feed import is_ics   # noqa: E402
+from detect import SETTINGS, browser_hosts, fetch_csv, fetch_ics, fetch_html, fetch_pdf, host, image_on_page, image_page, is_csv, is_image, is_pdf, render_html, source_scopes, tidy, whole_page
 
 def parse_ids(text):
     """'R0001,R0005-R0009' -> {'R0001', 'R0005', ..., 'R0009'}"""
@@ -75,10 +79,36 @@ def _hhmm(t):
     h -= 12 if m[3] == "am" and h == 12 else 0
     return f"{h:02d}:{mi:02d}"
 
+ANCHOR_NOISE = {"monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday", "mondays", "tuesdays",
+                "wednesdays", "thursdays", "fridays", "saturdays", "sundays", "every", "each", "from", "until", "with",
+                "noon", "midday", "time", "times", "date", "dates", "upcoming", "month", "week", "weekly", "session",
+                "sessions", "duration", "hour", "hours", "minutes"}
+def _near_anchor(rx, text, q):
+    """Is the day-and-time pair on the page where this record's entry is? The quote's own words ('Pilates', 'Tai
+    Chi') mark the entry; the pair has to be within the quote's length of one of them. Otherwise 'Monday 14:30' in a
+    list of upcoming dates further down would hide Pilates moving to Tuesday. A quote of only days and times has no
+    such words, so there the pair may be anywhere on the page, as before."""
+    anchors = [w for w in re.findall(r"[a-z][a-z&']{3,}", q) if w not in ANCHOR_NOISE]
+    if not anchors:
+        return bool(rx.search(text))
+    span = len(q) + 20
+    for a in anchors:
+        for m in re.finditer(rf"\b{re.escape(a)}", text):
+            if rx.search(text, max(0, m.start() - span), m.start() + span):
+                return True
+    return False
+
+MARKER = re.compile(r"^\[?contact links on page:\s*|\]$")
 def classify(quote, main, whole, field=None, value=None):
-    q = plain(quote)
+    q = MARKER.sub("", plain(quote)).strip()      # the checker's '[Contact links on page: x]' means x, given as a link
     if not q:
         return "no quote"
+    parts = [p.strip() for p in re.split(r"\s*(?:\.\.\.|…)\s*", q) if p.strip()]
+    if len(parts) > 1:                             # 'contact the team on: ... 01823 653990': each part, word for word
+        got = [classify(p, main, whole, field, value) for p in parts]
+        if "missing" in got:
+            return "missing"
+        return "found" if all(g == "found" for g in got) else "found, footer" if "found, footer" in got else "found, shared"
     if field in ("days", "times"):
         # session listings carry dates that change every week: check the day-and-time pairs, without the dates
         q, main, whole = undated(q), undated(main), undated(whole)
@@ -91,9 +121,9 @@ def classify(quote, main, whole, field=None, value=None):
             if field == "times" and value and re.match(r"\d{1,2}:\d{2}", value):
                 mine = [p for p in pairs if _hhmm(p[1]) == value[:5]] or pairs
             rx = [re.compile(rf"\b{d}s?\W{{0,3}}{re.escape(t)}") for d, t in mine]
-            if all(r.search(main) for r in rx):
+            if all(_near_anchor(r, main, q) for r in rx):
                 return "found"
-            if all(r.search(whole) for r in rx):
+            if all(_near_anchor(r, whole, q) for r in rx):
                 return "found, footer"
             return "missing"
     n = main.count(q)
@@ -134,34 +164,110 @@ def main():
     label = files[0].stem.removesuffix("-recipes") if len(files) == 1 else Path(a.recipes[0]).name.strip("/\\") or "all"
     stem = a.out or "monitor-" + label
 
-    pages, last_host = {}, {}
+    pages, last_host, lines, images = {}, {}, {}, set()
     js_hosts = browser_hosts()                     # sites sources.csv says load their details by script
+    unreadable = {x.lower().removeprefix("www.") for x in SETTINGS.get("unwatchable_hosts") or []}
     urls = sorted({r["source_url"] for r in recipes})
     print(f"{len(recipes)} quotes for {len({(key(r), r['name']) for r in recipes})} records, on {len(urls)} pages.")
     for u in urls:
         h = host(u)
         if h in last_host:
             time.sleep(max(0, SETTINGS["delay_s"] - (time.time() - last_host[h])))
-        if is_csv(u):                              # a published spreadsheet (e.g. Age UK's timetable): its rows are the content
-            status, text, note = fetch_csv(u)
+        if h in unreadable:                        # e.g. Facebook: shows a log-in wall, not the page
+            pages[u], lines[u] = ("", "", "unreadable"), []
+            print(f"  skip   {u} (in watch.json's unwatchable_hosts)")
+            continue
+        if is_image(u):                            # a timetable image: is the page still showing this one?
+            pg = image_page(u)
+            if not pg:
+                status, html_text, note = None, None, "no page for this image in sources.csv"
+            else:
+                status, html_text, note = render_html(pg) if host(pg) in js_hosts else fetch_html(pg)
+                if html_text is not None and not image_on_page(u, html_text):
+                    html_text, note = None, f"timetable image no longer on {pg}: a new one may be out (copy its link into sources.csv, then re-check)"
+            pages[u] = ("", "", "") if html_text is not None else ("", "", note or f"status {status}")
+            lines[u] = []
+            if html_text is not None:
+                images.add(u)
+        elif is_csv(u) or is_pdf(u) or is_ics(u):  # a published spreadsheet (e.g. Age UK's timetable), a PDF listing or a calendar feed
+            status, text, note = (fetch_csv if is_csv(u) else fetch_ics if is_ics(u) else fetch_pdf)(u)
             pages[u] = (plain(text), plain(text), "") if text is not None else ("", "", note or f"status {status}")
+            lines[u] = [plain(l) for l in (text or "").split("\n") if l.strip()]
             html_text = text
         else:
             status, html_text, note = render_html(u) if h in js_hosts else fetch_html(u)
             pages[u] = (plain(tidy(html_text, u)), plain(whole_page(html_text)), "") if html_text is not None else ("", "", note or f"status {status}")
+            lines[u] = [plain(l) for l in tidy(html_text, u).split("\n") if l.strip()] if html_text is not None else []
         last_host[h] = time.time()
         print(f"  {'ok    ' if html_text is not None else 'FAILED'} {u} {note}")
 
     out = []
     for r in recipes:
         main_t, whole_t, problem = pages[r["source_url"]]
-        out.append({**r, "status": f"page failed: {problem}" if problem else classify(r["quote"], main_t, whole_t, r.get("field"), r.get("value") or r.get("sheet_value"))})
+        st = ("can't read" if problem == "unreadable" else f"page failed: {problem}" if problem else
+              ("found, image" if r.get("quote") else "no quote") if r["source_url"] in images else
+              classify(r["quote"], main_t, whole_t, r.get("field"), r.get("value") or r.get("sheet_value")))
+        out.append({**r, "status": st})
     with open(stem + ".csv", "w", newline="", encoding="utf-8") as fh:
         w = csv.DictWriter(fh, fieldnames=list(recipes[0]) + ["status"]); w.writeheader(); w.writerows(out)
 
     hand = by_hand(a, files, recipes)
-    Path(stem + ".md").write_text(report(out, files, a.services, stem, hand), encoding="utf-8")
+    records = {}
+    if Path(a.services).exists():
+        with open(a.services, encoding="utf-8-sig") as fh:
+            records = {(r.get("record_id") or "").upper(): r for r in csv.DictReader(fh)}
+    alerts = status_alerts([r for r in out if r["status"].startswith("found")], pages, records, lines)
+    Path(stem + ".md").write_text(report(out, files, a.services, stem, hand, alerts), encoding="utf-8")
     print(f"\nReport: {stem}.md")
+
+ENTRY = re.compile(r"\b(mon|tue|wed|thu|fri|sat|sun)[a-z]*\b|\b\d{1,2}([:.]\d{2})?\s*(am|pm)\b|\b\d{1,2}:\d{2}\b")
+def status_alerts(recipes, pages, records, lines=None):
+    """{record ID: [status words]}: wording from watch.json's status_words ('suspended', 'currently full', ...) on the
+    page close to the record's own quotes (within status_window characters), so a group that is suspended or full while
+    its day and time are still listed doesn't pass as Fine. Words the record already carries (in its name, description,
+    eligibility, access or dates) and those in status_ignore for it are left out, as are words inside a status_ignore_phrases
+    phrase (a general notice such as 'may be cancelled'). pages: url -> (main text, ...);
+    records: ID -> the record's row; lines: url -> the page's main text line by line (paragraphs, list items, table
+    rows), when it has them. Then 'near' means the quote's own line and the one after it (unless that's the next
+    entry, with its own day or time), so a neighbouring group's 'currently full' isn't put on this one; a page with no lines (a PDF) uses the character window."""
+    words = [plain(w) for w in SETTINGS.get("status_words") or []]
+    win = int(SETTINGS.get("status_window") or 250)
+    ignore = {k.upper(): {plain(w) for w in v} for k, v in (SETTINGS.get("status_ignore") or {}).items()}
+    general = [plain(w) for w in SETTINGS.get("status_ignore_phrases") or []]
+    out = defaultdict(set)
+    groups = defaultdict(list)                     # one record's quotes on one page
+    for r in recipes:
+        groups[(str(key(r)).upper(), r["source_url"])].append(plain(r.get("quote", "")))
+    for (k, url), qs in groups.items():
+        main = (pages.get(url) or ("",))[0]
+        qs = [q for q in qs if q and q in main]
+        # only the record's own wording marks where it is: a quote the page has more than once (a shared contact line,
+        # 'walks@sasp.co.uk') would put a page-wide notice ('walks may be cancelled in bad weather') on every walk
+        qs = [q for q in qs if main.count(q) == 1]
+        if not qs:
+            continue
+        ls = (lines or {}).get(url) or []
+        # the record's own line(s): the ones holding the most of its quotes. A short quote ('When: Fridays at 10am')
+        # can sit in several rows of a timetable; the row that also has its venue is this record's
+        score = [sum(q in l for q in qs) for l in ls]
+        best = max(score) if score else 0
+        if len(ls) > 1 and best:
+            at = [n for n, sc in enumerate(score) if sc == best]
+            # the line after counts too ('Suspended over Christmas.'), unless it's the next entry, which gives a day or time
+            # (not in a spreadsheet: there each row is its own entry, so the next row is another group's: Age UK's
+            # 'Strong and Steady *CURRENTLY SUSPENDED' under Functional Fitness)
+            nxt = not (is_csv(url) or is_ics(url))
+            near = " ".join(ls[n] + (" " + ls[n + 1] if nxt and n + 1 < len(ls) and not ENTRY.search(ls[n + 1]) else "") for n in at)
+        else:
+            near = " ".join(main[max(0, main.find(q) - win): main.find(q) + len(q) + win] for q in qs)
+        for ph in general:                         # general notices: 'walks may be cancelled in bad weather'
+            near = near.replace(ph, " ")
+        rec = records.get(k, {})
+        known = plain(" ".join(rec.get(f, "") or "" for f in ("name", "description", "eligibility", "access", "dates")))
+        for w in words:
+            if re.search(rf"\b{re.escape(w)}\b", near) and w not in known and w not in ignore.get(k, set()):
+                out[k].add(w)
+    return {k: sorted(v) for k, v in out.items()}
 
 LABEL = {"days": "days", "times": "times", "dates": "dates", "address": "address", "phone": "phone", "email": "email",
          "mode": "how it runs", "cost": "cost", "postcode": "postcode"}
@@ -182,6 +288,8 @@ def by_hand(a, files, recipes):
     for r in recipes:
         have[(r.get("record_id") or "").upper()].add(r.get("field"))
     watched = SETTINGS.get("watch_fields") or sorted({r.get("field") for r in recipes})
+    skip = set(SETTINGS.get("by_hand_skip") or [])
+    scopes = source_scopes()
     want = parse_ids(a.ids) if a.ids else None
     out = {}
     with open(sp, encoding="utf-8-sig") as fh:
@@ -194,18 +302,26 @@ def by_hand(a, files, recipes):
                 why = f"not verified yet ({stage})" if stage in ("not checked yet", "rerun pending") else "nothing on its page the scraper can watch"
                 out[i] = (r.get("name", ""), [why])
                 continue
-            missing = [LABEL.get(f, f) for f in watched if (r.get(f) or "").strip() and f not in have[i]]
+            # a detail with no quote is listed only if it matters (not in by_hand_skip) and the record's source is meant
+            # to confirm it: AA's meeting pages, say, never give the cost, so that isn't something to check by hand
+            trusted = scopes.get((r.get("source") or "").strip())
+            missing = [LABEL.get(f, f) for f in watched if (r.get(f) or "").strip() and f not in have[i]
+                       and f not in skip and (trusted is None or f in trusted)]
             if missing:
                 out[i] = (r.get("name", ""), [f"{', '.join(missing)}: no quote from its page (not stated there, e.g. only on a flyer; or not yet captured)"])
     return out
 
-def report(out, files, services, stem, hand=None):
+def report(out, files, services, stem, hand=None, alerts=None):
     """One line per record, sorted by what needs doing: Needs you / Can't be watched / Fine."""
     by_rec = defaultdict(list)
     for x in out:
         by_rec[(key(x), x["name"])].append(x)
-    need, cant, fine = [], [], []
+    need, cant, fine, minor = [], [], [], []
     for (k, name), xs in sorted(by_rec.items(), key=lambda kv: str(kv[0][0])):
+        if all(x["status"] == "can't read" for x in xs):
+            (hand or {}).pop(str(k).upper(), None)
+            cant.append(f"- {k} {name}: its page can't be read by the scraper ({host(xs[0]['source_url'])} needs a log-in): look at it yourself {xs[0]['source_url']}")
+            continue
         failed = next((x["status"] for x in xs if x["status"].startswith("page failed")), "")
         gone = [x for x in xs if x["status"] == "missing"]
         if failed:
@@ -214,26 +330,39 @@ def report(out, files, services, stem, hand=None):
         if gone and len(gone) == len(xs):
             need.append((k, f"- **{k} {name}**: none of its details are on the page any more: it may have moved or ended. {xs[0]['source_url']}"))
             continue
-        if gone:
-            bits = "; ".join(f"{LABEL.get(x['field'], x['field'])} changed or removed (was \"{x['quote']}\")" for x in gone)
-            need.append((k, f"- **{k} {name}**: {bits}. {xs[0]['source_url']}"))
-        weak = [x for x in xs if x["status"] in ("found, shared", "no quote")]
+        said = (alerts or {}).get(str(k).upper(), [])
+        # cost and 'how it runs' wording (by_hand_skip) changing is listed, but doesn't need you
+        quiet = set(SETTINGS.get("by_hand_skip") or [])
+        small = [x for x in gone if x["field"] in quiet]
+        gone = [x for x in gone if x["field"] not in quiet]
+        if small:
+            minor.append(f"- {k} {name}: " + "; ".join(f"{LABEL.get(x['field'], x['field'])} wording changed (was \"{x['quote']}\")" for x in small))
+        if gone or said:
+            bits = [f"{LABEL.get(x['field'], x['field'])} changed or removed (was \"{x['quote']}\")" for x in gone]
+            bits += [f"the page now says \"{w}\" near its details" for w in said]
+            need.append((k, f"- **{k} {name}**: {'; '.join(bits)}. {xs[0]['source_url']}"))
+        # 'found, shared': the wording is still there, but other records use it too (e.g. '£3' across a timetable, or the
+        # same hours for every Crisis Safe Space). Counted as fine: a change to one of them alone may not show
+        weak = [x for x in xs if x["status"] == "no quote" and x["field"] not in set(SETTINGS.get("by_hand_skip") or [])]
         extra = (hand or {}).pop(str(k).upper(), (None, []))[1]
         if weak or extra:
-            why = {"found, shared": "on the page more than once, so can't show a change to this record alone",
-                   "no quote": "no quote to look for"}
+            why = {"no quote": "no quote to look for"}
             grouped = defaultdict(list)
             for x in weak:
                 grouped[x["status"]].append(LABEL.get(x["field"], x["field"]))
             bits = "; ".join([f"{', '.join(fs)}: {why[st]}" for st, fs in grouped.items()] + extra)
             cant.append(f"- {k} {name}: {bits}")
-        if not gone and not weak and not extra:
+        if not gone and not said and not weak and not extra:   # small changes alone still count as fine
             fine.append(k)
+    waiting = []
     for k, (name, why) in (hand or {}).items():          # records with no quotes at all
-        cant.append(f"- {k} {name}: {'; '.join(why)}")
+        if why and why[0].startswith("not verified yet"):
+            waiting.append(k)                            # still to be checked: counted, not listed one by one
+        else:
+            cant.append(f"- {k} {name}: {'; '.join(why)}")
     cant.sort()
     today = time.strftime("%d %B %Y").lstrip("0")
-    md = [f"# Monitor: {today}, {len(need) + len(cant) + len(fine)} records", "",
+    md = [f"# Monitor: {today}, {len(need) + len(cant) + len(fine) + len(waiting)} records", "",
           f"Checked against {', '.join(f.name for f in files)}. Fine means every watched detail is still on the page, word for word. "
           "Monitor can't say what a new value is: for anything under Needs you, look at the page or run check_sources on it.", "",
           f"## Needs you ({len(need)})", ""] + ([l for _, l in need] or ["Nothing."])
@@ -245,7 +374,12 @@ def report(out, files, services, stem, hand=None):
                "```"]
     md += ["", f"## Check by hand ({len(cant)})", "",
            "The scraper can't check these (or these details of them): check them yourself now and then.", ""] + (cant or ["Nothing."])
+    if minor:
+        md += ["", f"## Small changes ({len(minor)})", "", "Cost or 'how it runs' wording has changed: worth a look when you're next updating these records.", ""] + minor
     md += ["", f"## Fine ({len(fine)})", "", ", ".join(map(str, fine)) or "None."]
+    if waiting:
+        md += ["", f"## Not checked yet ({len(waiting)})", "", "In the records file but not yet verified, so nothing to watch: "
+               + ", ".join(map(str, sorted(waiting)))]
     return "\n".join(md) + "\n"
 
 if __name__ == "__main__":

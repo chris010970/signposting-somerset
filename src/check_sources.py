@@ -57,7 +57,7 @@ Options:
   --no-search    only use the provider's own site
   --js           render JavaScript-heavy pages (Wix etc.): pip install playwright && playwright install chromium
 """
-import argparse, csv, io, json, random, re, sys, time, datetime
+import argparse, csv, io, json, random, re, sys, time, datetime, unicodedata
 from collections import defaultdict
 from pathlib import Path
 from urllib.parse import urljoin, urlparse
@@ -65,11 +65,15 @@ from urllib.parse import urljoin, urlparse
 import requests
 from bs4 import BeautifulSoup
 
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+from calendar_feed import is_ics, ics_text   # noqa: E402  a provider's public calendar feed
+
 UA = "Mozilla/5.0 (compatible; SignpostingSomerset-checker/3.0; +https://signpostingsomerset.org.uk)"
 OFFLINE_SOURCES = {"flyer", "heads-up-flyers", "phone", "phone-call", "email", "direct"}
 PAGE_CHARS = 40000
 MAX_TURNS, MAX_FETCHES, MAX_SEARCHES = 10, 5, 3
 TODAY = datetime.date.today()
+SETTINGS = json.loads((Path(__file__).resolve().parent / "watch.json").read_text(encoding="utf-8"))   # shared settings
 
 # the sheet fields the checker extracts and compares
 EXACT = ["days", "times", "dates", "postcode", "phone", "email"]
@@ -102,6 +106,9 @@ def cf_decode(h):
 
 def parse_html(html, base):
     soup = BeautifulSoup(html, "html.parser")
+    for sel in SETTINGS.get("hidden_selectors", []):   # old content kept in the page but never shown (hidden_selectors, watch.json)
+        for e in soup.select(sel):
+            e.decompose()
     extra, links, seen = [], [], set()
     for e in soup.select("[data-cfemail]"):
         extra.append(cf_decode(e["data-cfemail"]))
@@ -157,14 +164,44 @@ def csv_text(raw):
         return " ".join(raw.split())
     lines = []
     for r in rows[rows.index(head) + 1:]:
-        cells = [f"{h.strip()}: {c.strip()}" if h.strip() else c.strip() for h, c in zip(head, r) if c.strip()]
+        # a cell can run over several lines (an address with its postcode below): keep each row on one line
+        cells = [(f"{h.strip()}: {c.strip()}" if h.strip() else c.strip()).replace("\n", " ") for h, c in zip(head, r) if c.strip()]
         if cells:
             lines.append(" · ".join(cells))
     return "\n".join(lines)
 
+def is_pdf(url):
+    return (url or "").lower().split("?")[0].endswith(".pdf")
+
+IMAGE_EXT = (".jpg", ".jpeg", ".png", ".webp", ".gif")
+def is_image(url):
+    """A picture of a timetable (e.g. Chard Community Hub's monthly What's On). Same as detect.is_image."""
+    return (url or "").lower().split("?")[0].endswith(IMAGE_EXT)
+
 def data_url(src):
-    """The download address in a source's 'where to look' when it's a spreadsheet export the checker can fetch itself."""
-    return next((u.rstrip(".") for u in re.findall(r"https?://[^\s,;)\"']+", (src or {}).get("where_to_look") or "") if is_csv(u)), "")
+    """The download address in a source's 'where to look' when it's a file the checker can fetch itself: a spreadsheet
+    export, a PDF listing (e.g. Somerset Carers' groups) or a timetable image. Its address changes with each new
+    version, so the old one failing is the sign to recheck."""
+    return next((u.rstrip(".") for u in re.findall(r"https?://[^\s,;)\"']+", (src or {}).get("where_to_look") or "")
+                 if is_csv(u.rstrip(".")) or is_pdf(u.rstrip(".")) or is_image(u.rstrip(".")) or is_ics(u.rstrip("."))), "")
+
+# Timetable images are read by the AI (the model is image_model in src/watch.json). The code's checks then test quotes
+# against that reading, not the picture itself, so each reading is saved (<out>-images.md) for the maintainer to compare.
+_client, _images = None, []
+TRANSCRIBE = ("Write out all the text in this image exactly as printed: the same words, numbers, times and spelling. "
+              "Don't correct, summarise or add anything. Put each activity or entry on its own line. Where the day (or "
+              "date) is given by a heading or column rather than in the entry, start the line with it, as printed. "
+              "Reply with the text only.")
+
+def read_image(content, media_type):
+    import base64
+    model = SETTINGS.get("image_model") or "claude-sonnet-5-5"
+    if media_type not in ("image/jpeg", "image/png", "image/gif", "image/webp"):
+        media_type = "image/jpeg"
+    resp = ask(_client, model=model, max_tokens=8000, messages=[{"role": "user", "content": [
+        {"type": "image", "source": {"type": "base64", "media_type": media_type, "data": base64.b64encode(content).decode()}},
+        {"type": "text", "text": TRANSCRIBE}]}])
+    return "".join(b.text for b in resp.content if b.type == "text").strip()
 
 _pages = {}
 _warned_js = False
@@ -178,19 +215,32 @@ def fetch(url, use_js=False):
         out["final_url"] = r.url
         if r.status_code >= 400:
             out["status"] = f"HTTP {r.status_code}"
+        elif is_ics(url, r.headers.get("content-type", "")):
+            out["text"] = ics_text(r.content.decode("utf-8-sig", errors="replace"), days_ahead=int(SETTINGS.get("ics_days_ahead") or 90))
+            out["status"] = "ok (calendar)"
         elif is_csv(url, r.headers.get("content-type", "")):
             out["text"], out["status"] = csv_text(r.content.decode("utf-8-sig", errors="replace")), "ok (csv)"
+        elif r.headers.get("content-type", "").lower().startswith("image/") or is_image(url):
+            if _client is None:
+                out["status"] = "image (no AI client to read it)"
+            else:
+                out["text"] = read_image(r.content, r.headers.get("content-type", "").split(";")[0].strip().lower())
+                out["status"] = "ok (image)"
+                _images.append((url, out["text"]))
         elif "pdf" in r.headers.get("content-type", "").lower() or url.lower().split("?")[0].endswith(".pdf"):
             from pypdf import PdfReader
+            import logging; logging.getLogger("pypdf").setLevel(logging.ERROR)   # quiet its "odd-length line" warnings
             pdf = PdfReader(io.BytesIO(r.content))
             out["text"] = " ".join(" ".join((pg.extract_text() or "").split()) for pg in pdf.pages)
             out["status"] = "ok (pdf)"
         else:
+            if "charset" not in r.headers.get("content-type", "").lower():
+                r.encoding = r.apparent_encoding or "utf-8"   # no stated encoding: don't let requests assume Latin-1 ('Â£')
             out["text"], out["links"] = parse_html(r.text, r.url)
             out["status"] = "ok"
     except Exception as e:
         out["status"] = f"error: {type(e).__name__}"
-    if use_js and not out["status"].startswith(("HTTP 4", "ok (pdf)", "ok (csv)")) and (use_js == "force" or len(out["text"]) < 800):
+    if use_js and not out["status"].startswith(("HTTP 4", "ok (pdf)", "ok (csv)", "ok (calendar)", "ok (image)", "image")) and (use_js == "force" or len(out["text"]) < 800):
         try:
             html, final = render_js(url)
             out["text"], out["links"] = parse_html(html, final)
@@ -236,10 +286,19 @@ def on_page(quote, url):
     if len(q) < 2 or not url:
         return False
     t = page_text(url)
-    if q in t:
+    if q in t or phone_on_page(q, url):
         return True
     parts = [x.strip() for x in q.split("...") if len(x.strip()) >= 3]
     return len(parts) > 1 and all(x in t for x in parts)
+
+def phone_on_page(value, url):
+    """The page's own wording of a phone number, spaced however the page spaces it ('03000 120 120' for the sheet's
+    '03000 120120'), or ''."""
+    d = re.sub(r"\D", "", value or "")
+    if not re.fullmatch(r"[\d\s()+-]{8,}", (value or "").strip()) or len(d) < 8:
+        return ""
+    m = re.search(r"(?<!\d)" + r"[\s-]?".join(d) + r"(?!\d)", page_text(url))
+    return m.group(0) if m else ""
 
 DAYS = ["mon", "tue", "wed", "thu", "fri", "sat", "sun"]
 def day_set(s):
@@ -368,8 +427,22 @@ def forced_tool_call(client, model, system, content, tool, total, max_tokens=160
     usage_add(total, resp)
     for b in resp.content:
         if b.type == "tool_use":
-            return b.input, resp.stop_reason
+            return unstring(b.input), resp.stop_reason
     return None, resp.stop_reason
+
+def unstring(d):
+    """A tool answer with its objects and lists sometimes sent as JSON text: turn those back into objects/lists."""
+    if not isinstance(d, dict):
+        return d
+    out = {}
+    for k, v in d.items():
+        if isinstance(v, str) and v.strip()[:1] in "{[":
+            try:
+                v = json.loads(v)
+            except ValueError:
+                pass
+        out[k] = v
+    return out
 
 _extracted = {}
 def rules_block(rules):
@@ -451,6 +524,20 @@ def times_in(q):
     for h, m in re.findall(r"\b([01]?\d|2[0-3])[:.]([0-5]\d)\b", q):
         out.add(f"{int(h):02d}:{m}")
     return out
+
+def times_on_page(value, url):
+    """The page's own wording of a time range ('10:30am - 11:30am' for the sheet's '10:30-11:30'), with the day in front
+    when the page puts one there ('thursday 10:30am - 11:30am'), or ''."""
+    start, end = time_pair(value)
+    if not start:
+        return ""
+    t = page_text(url)
+    rx = rf"(?:\b(?:mon|tue|wed|thu|fri|sat|sun)[a-z]*\W{{0,3}})?\b\d{{1,2}}(?:[:.]\d{{2}})?\s*{AMPM}?\s*(?:-|–|to|till|until)\s*\d{{1,2}}(?:[:.]\d{{2}})?\s*{AMPM}?"
+    for m in re.finditer(rx, t):
+        got = times_in(m.group(0))
+        if start in got and (not end or end in got):
+            return m.group(0).strip()
+    return ""
 
 NUM = {"one": 1, "two": 2, "three": 3, "four": 4, "an": 1, "a": 1}
 def duration_mins(q):
@@ -573,6 +660,20 @@ def verify(service, url, listing=False):
         service["stale_signs"] = ""
     return service
 
+def as_service(x):
+    """The AI's service details as a dict. It sometimes sends them as JSON text (a string) instead of an object;
+    those were being thrown away as "no service details". Anything that isn't a dict after this is left as it is."""
+    if isinstance(x, str):
+        t = x.strip()
+        if t.startswith("```"):
+            t = t.strip("`").removeprefix("json").strip()
+        try:
+            y = json.loads(t)
+        except ValueError:
+            return x
+        return y if isinstance(y, dict) else x
+    return x
+
 def find_service(client, model, rec, start_url, allow_search, use_js, total, log, src=None):
     tools = [{"name": "fetch_page", "description": "Read a web page. Returns its text and same-site links.",
               "input_schema": {"type": "object", "properties": {"url": {"type": "string"}}, "required": ["url"]}},
@@ -605,7 +706,8 @@ def find_service(client, model, rec, start_url, allow_search, use_js, total, log
             if b.type != "tool_use":
                 continue
             if b.name == "submit_service":
-                out = b.input
+                out = unstring(b.input)
+                out["service"] = as_service(out.get("service"))   # sometimes sent as JSON text, not an object
                 if out.get("found") and out.get("service") and not isinstance(out.get("service"), dict):
                     log.append("find: the answer had no service details")
                     return None
@@ -700,7 +802,9 @@ def conclusion(why):
 
 STOP = set("the a an and of for in at on with group groups session sessions club cafe café community support wellbeing".split())
 def words(s):
-    return {w for w in re.findall(r"[a-z0-9]+", (s or "").lower()) if w not in STOP and len(w) > 1}
+    # accents folded first, so 'Café' is the word 'cafe' (not 'caf')
+    s = unicodedata.normalize("NFKD", s or "").encode("ascii", "ignore").decode()
+    return {w for w in re.findall(r"[a-z0-9]+", s.lower()) if w not in STOP and len(w) > 1}
 
 def match_score(rec, s):
     a, b = words(rec.get("name")), words(s.get("name"))
@@ -717,6 +821,9 @@ def match_score(rec, s):
     return score, name
 
 NAME_NOISE = {"alcoholics", "anonymous", "aa", "meeting", "group", "session", "class", "the", "and", "of", "for", "in", "at"}
+# day words in a name ('(Wed)', 'first Wednesday drop-in') don't make it distinctive: the day is scored on its own
+NAME_DAY_WORDS = {d for x in ("monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday")
+             for d in (x, x[:3], x + "s")} | {"tues", "weds", "thurs"}
 def best_match(rec, services):
     best, top = None, 0
     rp = words(rec.get("provider")) - {"somerset", "uk", "trust", "nhs", "the", "and", "of"}
@@ -729,8 +836,8 @@ def best_match(rec, services):
             continue
         # on a long listing many entries share the town and provider (e.g. ten AA meetings in Weston-super-Mare): the
         # words that make the name distinctive ('Safe Harbour', 'Came To Believe') have to agree when both have them
-        own = words(rec.get("name")) - rp - words(rec.get("town")) - NAME_NOISE
-        theirs = words(s.get("name")) - rp - words(rec.get("town")) - NAME_NOISE
+        own = words(rec.get("name")) - rp - words(rec.get("town")) - NAME_NOISE - NAME_DAY_WORDS
+        theirs = words(s.get("name")) - rp - words(rec.get("town")) - NAME_NOISE - NAME_DAY_WORDS
         if own and theirs and not own & theirs:
             continue
         # place and day alone aren't enough: on a venue's listing page every session shares them
@@ -1138,6 +1245,7 @@ def local_page(src):
     if key not in _pages:
         if path.lower().endswith(".pdf"):
             from pypdf import PdfReader
+            import logging; logging.getLogger("pypdf").setLevel(logging.ERROR)   # quiet its "odd-length line" warnings
             text = " ".join(" ".join((pg.extract_text() or "").split()) for pg in PdfReader(path).pages)
             links = []
         elif path.lower().endswith((".html", ".htm")):
@@ -1164,13 +1272,14 @@ def check_one(client, a, rec, total):
                               f" (Put it in the --files folder as {src['source_id']}.pdf/.txt to check it.)"), {}, None
         url = key
     elif data_url(src):
-        # a published spreadsheet (e.g. Age UK's exercise timetable): download it and read its rows. A big sheet is too
-        # long to read whole, so give the AI only the rows for this record's town (it then matches the class by name)
+        # a published spreadsheet (e.g. Age UK's exercise timetable) or a PDF listing: download it and read it. A big
+        # sheet is too long to read whole, so give the AI only the rows for this record's town (it then matches the class
+        # by name). A PDF is read whole: its text has no rows to narrow by
         needs_js = False
         url = data_url(src)
         page = fetch(url)
         town = (rec.get("town") or "").strip()
-        if page["ok"] and town:
+        if page["ok"] and town and is_csv(url):
             rows = [l for l in page["text"].split("\n") if town.lower() in l.lower()]
             if rows:
                 key = f"{url}#{town}"
@@ -1357,6 +1466,11 @@ def recipe_rows(rec, res, svc):
             continue
         if quote == "value appears on the page":
             quote = r[1].split(";")[0].strip()
+            quote = phone_on_page(quote, svc["source_url"]) or quote     # as the page prints it, for the monitor
+            if f == "times":
+                quote = times_on_page(r[1], svc["source_url"])            # the page's wording, not the sheet's 10:30-11:30
+                if not quote:
+                    continue
         out.append({"record_id": rid(rec), "name": rec.get("name", ""), "town": rec.get("town", ""), "field": f, "sheet_value": r[1], "result": r[0],
                     "source_url": svc["source_url"], "quote": quote, "checked_on": TODAY.isoformat()})
     return out
@@ -1395,6 +1509,8 @@ def main():
 
     import anthropic
     client = anthropic.Anthropic(max_retries=5)
+    global _client
+    _client = client
     recs = load_csv(a.csv)
     for i, r in enumerate(recs):
         r["_row"] = i + 2
@@ -1459,6 +1575,11 @@ def main():
     with open(stem + "-new.csv", "w", newline="", encoding="utf-8") as f:
         w = csv.DictWriter(f, fieldnames=["name", "provider", "town", "source_url"] + FIELDS); w.writeheader(); w.writerows(new)
 
+    if _images:
+        Path(stem + "-images.md").write_text(
+            "# Timetable images, as the AI read them\n\nCompare each with the picture: the checks trust this reading.\n\n" +
+            "\n\n".join(f"## {u}\n\n```\n{t}\n```" for u, t in _images) + "\n", encoding="utf-8")
+        print(f"Timetable images read by the AI: compare {stem}-images.md with the pictures", file=sys.stderr)
     print(f"\nRead first: {stem}-review.md", file=sys.stderr)
     print(f"{len(rows)} records -> {a.out}, {stem}-fields.csv, {stem}-recipes.csv ({len(recipes)} quotes to watch), "
           f"{stem}-new.csv ({len(new)} possible new services)", file=sys.stderr)

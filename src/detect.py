@@ -31,6 +31,7 @@ from bs4 import BeautifulSoup
 HERE = Path(__file__).resolve().parent
 ROOT = HERE.parent
 sys.path.insert(0, str(ROOT / "build" / "shared"))
+from calendar_feed import ics_text   # a provider's public calendar feed (.ics)
 from records import read_records   # reads the published sheet, or a saved copy
 
 SETTINGS = json.loads((HERE / "watch.json").read_text(encoding="utf-8"))   # shared with check_sources.py and monitor.py
@@ -47,12 +48,56 @@ def load_rules():
     with open(ROOT / SETTINGS["sources_file"], encoding="utf-8-sig") as fh:
         return {x["source_id"].strip(): links(x.get("where_to_look")) for x in csv.DictReader(fh) if (x.get("source_id") or "").strip()}
 
+# words in a sources.csv 'confirms' column -> the record fields they cover. Same as check_sources.CONFIRM_WORDS
+CONFIRM_WORDS = [("day", ["days"]), ("time", ["times"]), ("hour", ["times", "days"]), ("frequen", ["frequency"]),
+                 ("date", ["dates"]), ("venue", ["address", "postcode"]), ("address", ["address", "postcode"]),
+                 ("location", ["address", "postcode"]), ("phone", ["phone"]), ("email", ["email"]),
+                 ("contact", ["phone", "email"]), ("cost", ["cost"]), ("free", ["cost"]), ("who", ["who"]),
+                 ("everyone", ["who"]), ("mode", ["mode"]), ("access", ["access"]), ("referral", ["access"]),
+                 ("registration", ["access"]), ("booking", ["access"])]
+
+def source_scopes():
+    """source_id -> the fields that source is trusted to confirm (src/sources.csv 'confirms'); a source that doesn't
+    say covers every field, so it isn't listed."""
+    with open(ROOT / SETTINGS["sources_file"], encoding="utf-8-sig") as fh:
+        rows = list(csv.DictReader(fh))
+    out = {}
+    for x in rows:
+        c = (x.get("confirms") or "").lower()
+        fields = {f for w, fs in CONFIRM_WORDS if w in c for f in fs}
+        if fields and (x.get("source_id") or "").strip():
+            out[x["source_id"].strip()] = fields
+    return out
+
+def cf_decode(h):
+    """An email address hidden by Cloudflare's email protection (data-cfemail), as check_sources.py decodes it."""
+    try:
+        k = int(h[:2], 16)
+        return "".join(chr(int(h[i:i + 2], 16) ^ k) for i in range(2, len(h), 2))
+    except Exception:
+        return ""
+
+def contact_links(soup):
+    """Email addresses and phone numbers the page gives only as links (mailto:, tel:) or hides from scrapers
+    (Cloudflare shows '[email protected]'). check_sources.py reads these too, so its quotes can be one of them."""
+    out = [cf_decode(e["data-cfemail"]) for e in soup.select("[data-cfemail]")]
+    for a in soup.find_all("a", href=True):
+        h = a["href"].strip()
+        if h.lower().startswith(("mailto:", "tel:")):
+            out.append(h.split(":", 1)[1].split("?")[0])
+    return [x for x in out if x]
+
 def whole_page(html_text):
-    """The old-style fingerprint's text: everything visible, flattened. Kept only to compare against the tidied one."""
+    """Everything visible on the page, flattened, plus the contact links it gives (see contact_links): where the monitor
+    looks for a quote that isn't in the main content ('found, footer')."""
     soup = BeautifulSoup(html_text, "html.parser")
+    for sel in SETTINGS.get("hidden_selectors", []):   # old content kept in the page but never shown to visitors
+        for e in soup.select(sel):
+            e.decompose()
+    extra = contact_links(soup)
     for t in soup(["script", "style", "noscript", "template", "svg", "head"]):
         t.decompose()
-    return re.sub(r"\s+", " ", soup.get_text(" ")).strip().lower()
+    return re.sub(r"\s+", " ", soup.get_text(" ") + " " + " ".join(extra)).strip().lower()
 
 BLOCKS = ["p", "li", "h1", "h2", "h3", "h4", "h5", "h6", "tr", "dt", "dd", "blockquote", "pre", "figcaption", "address",
           "div", "section", "article", "table", "ul", "ol", "dl"]
@@ -61,7 +106,7 @@ def drops_for(url):
     """Parts of the page to ignore: the general list, plus any for this site (site_drop_selectors in watch.json)."""
     h = host(url) if url else ""
     extra = [sel for site, sels in SETTINGS.get("site_drop_selectors", {}).items() if site in h for sel in sels]
-    return SETTINGS["drop_selectors"] + extra
+    return SETTINGS["drop_selectors"] + SETTINGS.get("hidden_selectors", []) + extra
 
 def tidy(html_text, url=""):
     """The page's main content as lines of text, with presentation removed and information kept."""
@@ -100,7 +145,8 @@ def csv_text(raw):
         return " ".join(raw.split())
     lines = []
     for r in rows[rows.index(head) + 1:]:
-        cells = [f"{h.strip()}: {c.strip()}" if h.strip() else c.strip() for h, c in zip(head, r) if c.strip()]
+        # a cell can run over several lines (an address with its postcode below): keep each row on one line
+        cells = [(f"{h.strip()}: {c.strip()}" if h.strip() else c.strip()).replace("\n", " ") for h, c in zip(head, r) if c.strip()]
         if cells:
             lines.append(" · ".join(cells))
     return "\n".join(lines)
@@ -117,6 +163,75 @@ def fetch_csv(url):
     if "html" in r.headers.get("Content-Type", "").lower():        # e.g. the sheet was unpublished: a sign-in page comes back
         return r.status_code, None, "not a spreadsheet any more (unpublished or moved?)"
     return r.status_code, csv_text(r.content.decode("utf-8-sig", errors="replace")), "(spreadsheet)"
+
+def fetch_ics(url):
+    """(status, text or None, note): a provider's public calendar feed, as calendar_feed.ics_text lines."""
+    import requests
+    try:
+        r = requests.get(url, headers={"User-Agent": SETTINGS["user_agent"]}, timeout=SETTINGS["timeout_s"])
+    except Exception as e:
+        return None, None, f"unreachable ({type(e).__name__})"
+    if r.status_code >= 400:
+        return r.status_code, None, f"unreachable ({r.status_code}): the calendar may no longer be public"
+    if "BEGIN:VCALENDAR" not in r.text[:2000]:
+        return r.status_code, None, "not a calendar any more (made private or moved?)"
+    return r.status_code, ics_text(r.text, days_ahead=int(SETTINGS.get("ics_days_ahead") or 90)), "(calendar)"
+
+def is_pdf(url):
+    return (url or "").lower().split("?")[0].endswith(".pdf")
+
+IMAGE_EXT = (".jpg", ".jpeg", ".png", ".webp", ".gif")
+def is_image(url):
+    """A picture of a timetable (e.g. Chard Community Hub's monthly What's On)."""
+    return (url or "").lower().split("?")[0].endswith(IMAGE_EXT)
+
+def image_key(url):
+    """What identifies a timetable image on the page that shows it: its folder when that's a long unique id (as on
+    Squarespace), otherwise its file name. A new timetable is a new image, so this disappears from the page."""
+    from urllib.parse import unquote
+    parts = [x for x in unquote(urlparse(url).path).split("/") if x]
+    if "media" in parts[:-1]:                      # Wix: /media/<file id>/v1/fill/w_846,.../name.png (the size part varies)
+        return parts[parts.index("media") + 1]
+    if len(parts) >= 2 and len(parts[-2]) >= 16:
+        return parts[-2]
+    return parts[-1] if parts else url
+
+def image_page(url):
+    """The web page that shows a timetable image: the other link in the 'where to look' of the source that names
+    the image (src/sources.csv), or '' if none does."""
+    try:
+        with open(ROOT / SETTINGS["sources_file"], encoding="utf-8-sig") as fh:
+            for x in csv.DictReader(fh):
+                ls = links(x.get("where_to_look"))
+                # by the image's own id, not the whole link: a link with commas in it (Wix) is cut short in the text
+                pics = [u for u in ls if image_key(u) == image_key(url)]
+                if pics:
+                    return next((u for u in ls if u not in pics and not is_image(u)), "")
+    except OSError:
+        pass
+    return ""
+
+def image_on_page(url, html_text):
+    """Is this timetable image still the one the page shows?"""
+    from urllib.parse import unquote
+    k = image_key(url)
+    return bool(html_text) and (k in html_text or k in unquote(html_text) or k.replace(" ", "+") in unquote(html_text))
+
+def fetch_pdf(url):
+    """(status, text or None, note): a PDF listing, as text read the same way check_sources.py reads it."""
+    import io, requests
+    try:
+        r = requests.get(url, headers={"User-Agent": SETTINGS["user_agent"]}, timeout=SETTINGS["timeout_s"])
+    except Exception as e:
+        return None, None, f"unreachable ({type(e).__name__})"
+    if r.status_code >= 400:
+        return r.status_code, None, f"unreachable ({r.status_code}): a new version may have replaced it"
+    if "html" in r.headers.get("Content-Type", "").lower():
+        return r.status_code, None, "not a PDF any more (moved or replaced?)"
+    from pypdf import PdfReader
+    import logging; logging.getLogger("pypdf").setLevel(logging.ERROR)   # quiet its "odd-length line" warnings
+    pdf = PdfReader(io.BytesIO(r.content))
+    return r.status_code, " ".join(" ".join((pg.extract_text() or "").split()) for pg in pdf.pages), "(pdf)"
 
 _browser = None
 def render_html(url):
