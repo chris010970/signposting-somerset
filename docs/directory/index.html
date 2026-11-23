@@ -899,11 +899,12 @@ h1 { font-family: var(--serif); color: var(--b900); font-size: 26px; margin: 0; 
 .card.open .desc, .desc.full { -webkit-line-clamp: unset; display: block; }
 .cname .cbtn, .tname .cbtn { font: inherit; color: inherit; background: none; border: 0; padding: 0; margin: 0; text-align: left; cursor: pointer; }   /* the name: a button that opens the card */
 /* An opened card's who-and-how block (factsBlock): small grey labels, plain answers */
-.facts { display: grid; grid-template-columns: max-content minmax(0, 1fr); gap: 5px 14px; font-size: 12.5px; line-height: 1.45; margin: 2px 0 10px; padding-top: 10px; border-top: 1px solid #F5F5F4; }
+.facts { display: grid; grid-template-columns: max-content minmax(0, 1fr); gap: 1px 14px; font-size: 12.5px; line-height: 1.35; margin: 0 0 6px; padding-top: 6px; border-top: 1px solid #F5F5F4; }
 .facts dt { color: #6B645F; font-weight: 600; font-size: 11.5px; }
 .facts dd { margin: 0; color: var(--ink); }
 @media (max-width: 360px) { .facts { grid-template-columns: minmax(0, 1fr); gap: 1px 0; } .facts dd { margin-bottom: 5px; } }
-.foot { font-size: 12px; color: #6B645F; border-top: 1px solid #F5F5F4; padding-top: 8px; display: grid; gap: 3px; }
+.foot { font-size: 12px; color: #6B645F; border-top: 1px solid #F5F5F4; padding-top: 6px; display: grid; gap: 2px; }
+.desc:has(+ .facts) { margin-bottom: 6px; }   /* opened cards: the description sits 6px above the facts' divider */
 .foot a { color: var(--b700); }
 a.copy.dirs { text-decoration: none; }
 .approx { color: #78716C; }
@@ -2376,7 +2377,7 @@ function renderAbout() {
     </section>
     </div></div>
     <p class="small">Service information belongs to the providers listed. Map data © <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap</a> contributors, © <a href="https://carto.com/attributions" target="_blank" rel="noopener">CARTO</a>.</p>
-    <p class="small" id="site-version">Version: directory 2026-11-23 21:51</p>
+    <p class="small" id="site-version">Version: directory 2026-11-23 22:16</p>
   </article>`;
 }
 /* ---------- Places: the town listings, as a tab of the directory ----------

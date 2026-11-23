@@ -28,7 +28,7 @@
 /* ---------- text helpers shared with Assist's relay ---------- */
 // Card wording: the access badges (build/core/data/card-text.json)
 const CARD_TEXT = ({
-  "_about": "Wording on the service cards (In person, Places) and in Copy details. access: the badge for each value of the sheet's access column (class sets its colour). A 'call' service reads 'Call first' for groups and activities, and 'Phone line' for anything else; any other value reads 'Contact provider'. checked: a tick on a card when the sheet's last_checked is within 'days' days. Its hover text is 'label' and how long ago ('today', 'yesterday', 'ago'); Copy details gives 'label' and the date, since notes outlive 'days ago'. notice: a blocker that stops someone joining. When a service's eligibility starts with one of 'starts' (HANDBOOK rule 8: 'Currently full: ...'), that first sentence shows as a small amber notice on folded and opened cards; nothing else from eligibility shows until a card is opened. facts: the labels of the block an opened card shows (who it's for, who can use it: eligibility, how to join: the how_to_join column, cost); a line is left out when it's empty.",
+  "_about": "Wording on the service cards (In person, Places) and in Copy details. access: the badge for each value of the sheet's access column (class sets its colour). A 'call' service reads 'Call first' for groups and activities, and 'Phone line' for anything else; any other value reads 'Contact provider'. checked: a tick on a card when the sheet's last_checked is within 'days' days. Its hover text is 'label' and how long ago ('today', 'yesterday', 'ago'); Copy details gives 'label' and the date, since notes outlive 'days ago'. notice: a blocker that stops someone joining. When a service's how_to_join (or, in an older row, eligibility) starts with one of 'starts' (HANDBOOK rule 8: 'Currently full: ...'), that first sentence shows as a small amber notice on folded and opened cards; nothing else about who and how shows until a card is opened. facts: the labels of the block an opened card shows (who it's for, who can use it: eligibility, how to join: the how_to_join column, cost); a line is left out when it's empty.",
   "access": {
     "drop in": {
       "class": "b-drop",
@@ -270,7 +270,7 @@ function recordsFromCSV(text) {
   }
   return { recs };
 }
-const VERSION = "2026-11-23 21:17";        // set when the worker is built; shown on the Assist tab
+const VERSION = "2026-11-23 22:03";        // set when the worker is built; shown on the Assist tab
 const DEFAULT_MODEL = "claude-sonnet-5-5";
 const MAX_PER_HOUR = 30;               // per visitor (best effort: counts reset when Cloudflare restarts the Worker)
 const RISK = /suicid|kill (my|him|her|them)sel|end (my|his|her|their) life|self[- ]?harm|cutting (my|him|her)|overdos|want(s|ed)? to die|no reason to live|better off dead/i;

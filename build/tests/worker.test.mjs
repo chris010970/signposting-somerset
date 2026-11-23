@@ -102,7 +102,7 @@ test("a plan: chosen only from the services within reach, with the site's schedu
 
 test("bank holidays, as the directory shows them", async () => {
   NOW = Date.parse("2026-12-21T10:30:00Z");   // Monday 21 December
-  sheet = SHEET + "\nTest Friday Group,Test Provider,Peer group,drop in,low mood,in-person,https://example.org/,A made-up service for the tests.,anyone,,Fri,10:00-12:00,,,,Wells,Somerset,BA5 1AA,,,,test,16/11/2026,51.2100,-2.6450";
+  sheet = SHEET + "\nTest Friday Group,Test Provider,Peer group,drop in,low mood,in-person,https://example.org/,A made-up service for the tests.,anyone,,,Fri,10:00-12:00,,,,Wells,Somerset,BA5 1AA,,,,test,16/11/2026,51.2100,-2.6450";
   ai = () => streamed(JSON.stringify({ picks: [] }));
   await ask({ need: "Feeling low, would like a group nearby" });
   assert.match(asked.at(-1).messages[0].content, /\| Test Friday Group \|.*\| Fri,? 25 Dec, 10:00–12:00 \(bank holiday: check it's running\) \|/);

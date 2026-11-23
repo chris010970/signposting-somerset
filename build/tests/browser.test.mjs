@@ -109,7 +109,7 @@ test("In person: a town, distances, the card's details and Copy details", async 
   assert.deepEqual(await cards(p), ["Test Weekly Drop-in", "Test Town Centre Group", "Test Counselling"]);
   const c = await p.$("#c0");
   await p.click("#c0 .cbtn");   // open: its full details
-  assert.match(await c.innerText(), /Just turn up[\s\S]*Test Weekly Drop-in[\s\S]*GROUPS AND COMMUNITY[\s\S]*Low mood, Anxiety[\s\S]*Wed, 18 Nov, 10:00–12:00[\s\S]*For: anyone · Free/);
+  assert.match(await c.innerText(), /Just turn up[\s\S]*Test Weekly Drop-in[\s\S]*GROUPS AND COMMUNITY[\s\S]*Low mood, Anxiety[\s\S]*Wed, 18 Nov, 10:00–12:00[\s\S]*Cost\s*Free/);
   assert.ok(await p.$("#c0 a.dirs"), "directions for a service with a postcode");
   assert.ok(!(await p.$("#c9 a.dirs")), "no directions for a town-centre (approximate) place");
   assert.match(await text(p, "#c9 .foot"), /approx\. location/);
@@ -282,7 +282,7 @@ test("Assist, with a stand-in relay: unlock, a plan from the records, Copy plan,
   assert.match(copied, /Example Befriending[^\n]*\n   By phone\. Mon-Fri\n   Phone line\. Free\n/, "not in person: how to take part first, then when");
   assert.match(copied, /Phone line\. Free\n   Ask your GP surgery to refer you\n/, "the eligibility note is in the plan: it says how to join");
   // The suggestions are the directory's folding cards: closed until the name is clicked (no links inside a <summary> any more)
-  const pick = () => p.$eval("#a-pick-1", c => [c.classList.contains("open"), c.querySelector(".cbtn").getAttribute("aria-expanded"), c.querySelector(".who").offsetParent !== null, c.querySelector(".a-pk-why").offsetParent !== null]);
+  const pick = () => p.$eval("#a-pick-1", c => [c.classList.contains("open"), c.querySelector(".cbtn").getAttribute("aria-expanded"), c.querySelector(".facts").offsetParent !== null, c.querySelector(".a-pk-why").offsetParent !== null]);
   assert.deepEqual(await pick(), [false, "false", false, true], "closed: why it was chosen shows; who it's for waits");
   await p.click("#a-pick-1 .cbtn");
   assert.deepEqual(await pick(), [true, "true", true, true], "opened");
@@ -537,15 +537,15 @@ test("Phone and online lists services with a place too, if they can be phoned or
   await p.done();
 });
 
-test("Folding: a card shows what people choose on until it's opened; restrictions always show; an open card doesn't change the closed ones beside it", async () => {
+test("Folding: a card shows what people choose on until it's opened; a blocker (Currently full) always shows; an open card doesn't change the closed ones beside it", async () => {
   // What shows, closed and open: every tab's cards
-  const shown = (page, c) => page.evaluate(c => Object.fromEntries([".cbtn .chev", ".desc", ".meta", ".who", ".foot", ".restrict"]
+  const shown = (page, c) => page.evaluate(c => Object.fromEntries([".cbtn .chev", ".desc", ".meta", ".facts", ".foot", ".notice"]
     .map(s => [s, [...c.querySelectorAll(s)].some(e => e.offsetParent !== null)])), c);
   for (const [path, sel] of [["/test/directory/?when=any#near", "#list .card"], ["/test/directory/#talk", "#panel-talk .tcard"], ["/test/directory/#course", "#panel-course .tcard"]]) {
     const p = await open(path), c = await p.$(sel);
     const closed = await shown(p, c);
     assert.ok(closed[".cbtn .chev"] && closed[".desc"], `${path}: closed, the name (with its arrow) and the description show`);
-    assert.ok(!closed[".meta"] && !closed[".who"] && !closed[".foot"], `${path}: closed, the provider, For line and contact details are folded away`);
+    assert.ok(!closed[".meta"] && !closed[".facts"] && !closed[".foot"], `${path}: closed, the provider, who-and-how block and contact details are folded away`);
     await p.click(`${sel} .cbtn`);
     const opened = await shown(p, c);
     assert.ok(opened[".foot"] || opened[".meta"], `${path}: opened, the rest shows`);
@@ -553,13 +553,17 @@ test("Folding: a card shows what people choose on until it's opened; restriction
     assert.deepEqual(p.errors, []);
     await p.done();
   }
-  // A restriction shows on a closed card (once open, the For line says it); the plain cards for search engines stay in full
+  // A blocker (how_to_join starting "Currently full") shows on a closed card and stays when opened; the rest of how_to_join only once opened
+  const d = await open("/test/directory/?when=any#near");
+  const b = await d.$("#list .card:has(.notice)");
+  assert.ok(b, "the test sheet has a service that's currently full");
+  assert.deepEqual(Object.values(await shown(d, b)).slice(4), [false, true], "closed: the notice, not the who-and-how block");
+  assert.equal(await b.evaluate(c => c.querySelector(".notice").textContent), "Currently full: join the waiting list");
+  await b.evaluate(c => c.querySelector(".cbtn").click());
+  assert.deepEqual(Object.values(await shown(d, b)).slice(3), [true, true, true], "opened: the who-and-how block, contact details and still the notice");
+  assert.match(await b.evaluate(c => c.querySelector(".facts").innerText), /How to join\s*Book online/);
+  assert.deepEqual(d.errors, []); await d.done();
   const town = await open("/test/directory/places/wells/");
-  const r = await town.$("li[data-i]:not([hidden]) .card:has(.restrict)");
-  assert.ok(r, "Wells has a service with a restriction");
-  assert.deepEqual(Object.values(await town.evaluate(c => [c.querySelector(".restrict").offsetParent !== null, c.querySelector(".who").offsetParent === null], r)), [true, true]);
-  await r.evaluate(c => c.querySelector(".cbtn").click());
-  assert.deepEqual(await town.evaluate(c => [c.querySelector(".restrict").offsetParent === null, /\S/.test(c.querySelector(".who em")?.textContent)], r), [true, true]);
   // Two or three to a row: opening one doesn't change the height of the closed cards beside it
   const row = () => town.$$eval(".blist", ls => { const l = ls.find(l => l.offsetParent && l.querySelectorAll("li:not([hidden])").length >= 2);
     return [...l.querySelectorAll("li:not([hidden]) .card")].slice(0, 2).map(c => Math.round(c.getBoundingClientRect().height)); });
@@ -585,7 +589,7 @@ const TOWN_PAGES = readdirSync(join(DOCS, "test", "directory", "places")).filter
 test("Places: every card is the In person card, and matches the plain card search engines read", async () => {
   const fields = c => ({ badge: c.querySelector(".badge")?.textContent, chips: [...c.querySelectorAll(".chip")].map(x => x.textContent).join("|"),
     name: c.querySelector(".cname")?.textContent, kind: c.querySelector(".kind")?.textContent || "", meta: c.querySelector(".meta")?.textContent,
-    desc: c.querySelector(".desc")?.textContent, who: c.querySelector(".who")?.textContent || "", foot: c.querySelector(".foot")?.innerHTML.replace(/\s+/g, " ") });
+    desc: c.querySelector(".desc")?.textContent, facts: c.querySelector(".facts")?.textContent || "", foot: c.querySelector(".foot")?.innerHTML.replace(/\s+/g, " ") });
   const read = page => page.$$eval("li[data-i] .card", (cs, f) => cs.map(new Function("return " + f)()), fields.toString());
   for (const town of TOWN_PAGES) {
     const plain = await open(`/test/directory/places/${town}/`, { js: false }), live = await open(`/test/directory/places/${town}/`);

@@ -888,11 +888,12 @@ h1 { font-family: var(--serif); color: var(--b900); font-size: 26px; margin: 0; 
 .card.open .desc, .desc.full { -webkit-line-clamp: unset; display: block; }
 .cname .cbtn, .tname .cbtn { font: inherit; color: inherit; background: none; border: 0; padding: 0; margin: 0; text-align: left; cursor: pointer; }   /* the name: a button that opens the card */
 /* An opened card's who-and-how block (factsBlock): small grey labels, plain answers */
-.facts { display: grid; grid-template-columns: max-content minmax(0, 1fr); gap: 5px 14px; font-size: 12.5px; line-height: 1.45; margin: 2px 0 10px; padding-top: 10px; border-top: 1px solid #F5F5F4; }
+.facts { display: grid; grid-template-columns: max-content minmax(0, 1fr); gap: 1px 14px; font-size: 12.5px; line-height: 1.35; margin: 0 0 6px; padding-top: 6px; border-top: 1px solid #F5F5F4; }
 .facts dt { color: #6B645F; font-weight: 600; font-size: 11.5px; }
 .facts dd { margin: 0; color: var(--ink); }
 @media (max-width: 360px) { .facts { grid-template-columns: minmax(0, 1fr); gap: 1px 0; } .facts dd { margin-bottom: 5px; } }
-.foot { font-size: 12px; color: #6B645F; border-top: 1px solid #F5F5F4; padding-top: 8px; display: grid; gap: 3px; }
+.foot { font-size: 12px; color: #6B645F; border-top: 1px solid #F5F5F4; padding-top: 6px; display: grid; gap: 2px; }
+.desc:has(+ .facts) { margin-bottom: 6px; }   /* opened cards: the description sits 6px above the facts' divider */
 .foot a { color: var(--b700); }
 a.copy.dirs { text-decoration: none; }
 .approx { color: #78716C; }
@@ -2033,7 +2034,7 @@ function renderAbout() {
       <li><strong>Data:</strong> ONS boundaries, population (mid-2022) and urban/rural classification; MHCLG Indices of Deprivation 2025; Census 2021; open postcode data (2016). Open Government Licence.</li>
     </ul>
     </div></div>
-    <p class="small" id="site-version">Version: test 2026-11-23 21:51${typeof window.assistRelayVersion === "function" ? window.assistRelayVersion() : ""}</p>
+    <p class="small" id="site-version">Version: test 2026-11-23 22:16${typeof window.assistRelayVersion === "function" ? window.assistRelayVersion() : ""}</p>
   </article>`;
 }
 
@@ -2533,7 +2534,7 @@ async function initAnalytics() {
    this page only remembers it for the current browser session. */
 (() => {
 const WORKER_URL = "https://signposting-assist.c-r-williams0109.workers.dev";
-const PAGE_VERSION = "test 2026-11-23 21:51";
+const PAGE_VERSION = "test 2026-11-23 22:16";
 let relayVersion = "";
 // The version line is at the bottom of the About tab: "Version: test 2026-11-06 11:30 · Assist relay 2026-11-06 11:07"
 window.assistRelayVersion = () => relayVersion ? ` · Assist relay ${relayVersion}` : "";
