@@ -276,7 +276,7 @@ def status_alerts(recipes, pages, records, lines=None):
         for ph in general:                         # general notices: 'walks may be cancelled in bad weather'
             near = near.replace(ph, " ")
         rec = records.get(k, {})
-        known = plain(" ".join(rec.get(f, "") or "" for f in ("name", "description", "eligibility", "access", "dates")))
+        known = plain(" ".join(rec.get(f, "") or "" for f in ("name", "description", "eligibility", "how_to_join", "access", "dates")))
         for w in words:
             if re.search(rf"\b{re.escape(w)}\b", near) and w not in known and w not in ignore.get(k, set()):
                 out[k].add(w)

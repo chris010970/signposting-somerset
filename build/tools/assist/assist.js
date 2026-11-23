@@ -408,7 +408,6 @@ function card(p) {
     ? `<span class="chip dist">${e_(near ? `${p.distance} mi` : s.town || "In person")}</span>`
     : `<span class="chip dist a-m">${mode.includes("phone") ? ICON.phone : ""}${mode.includes("online") ? ICON.online : ""}${e_(mode.replace(/;/g, " / ").replace("phone", "Phone").replace("online", "Online"))}</span>`;
   const contact = [s.phone && telLink(s.phone), s.email && `<a href="mailto:${e_(s.email)}">${e_(s.email)}</a>`, isUrl(s.url) && `<a href="${e_(s.url)}" target="_blank" rel="noopener">Website</a>`].filter(Boolean).join(" · ");
-  const forLine = [s.who ? `For: ${e_(s.who.replace(/;/g, ", "))}` : "", s.cost ? `<span class="cost">${e_(s.cost)}</span>` : "", s.eligibility ? `<em>${e_(s.eligibility)}</em>` : ""].filter(Boolean).join(" · ");
   const types = (s.support_for || "").split(";").filter(Boolean).map(cap).map(e_).join(", ");
   const about = [e_(s.provider), e_(s.type), types].filter(Boolean).join(" · ");
   return `<article class="card fold a-pick${p.web ? " a-webpick" : ""}${foldClass(s)}"${keyAttr(s)} id="a-pick-${p.n}">
@@ -419,8 +418,8 @@ function card(p) {
     <div class="a-pk-acts">${actions(s)}</div>
     ${about ? `<div class="meta">${about}</div>` : ""}
     ${s.description ? `<p class="a-desc">${e_(s.description)}</p>` : ""}
-    ${forLine ? `<div class="who">${forLine}</div>` : ""}
-    ${s.note ? `<div class="who"><em>${e_(s.note)}</em></div>` : ""}
+    ${factsBlock(s)}
+    ${s.note ? `<div class="notice a-note">${NOTICE_ICON}<span>${e_(s.note)}</span></div>` : ""}
     <div class="foot">${inPerson && where ? `<span>${e_(where)}${near ? ` (${p.distance} miles)` : ""}</span>` : ""}${contact ? `<span>${contact}</span>` : ""}
       <span>${p.web ? `Found by an online search (${e_(p.web.source)}). Signposting Somerset hasn't checked it: please confirm the details with the service.` : e_(checkedText(s))}</span></div>
   </article>`;

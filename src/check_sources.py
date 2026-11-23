@@ -888,6 +888,8 @@ def compare(rec, svc, client, model, total):
         sheet = (rec.get(f) or "").strip()
         if f == "who" and (rec.get("eligibility") or "").strip():
             sheet = f"{sheet} (eligibility: {rec['eligibility'].strip()})"   # limits are kept in the eligibility column
+        if f == "who" and (rec.get("how_to_join") or "").strip():
+            sheet = f"{sheet} (how to join: {rec['how_to_join'].strip()})"   # referral routes, registering first, waiting lists
         page = pf.get(f, {}).get("value", "")
         quote = pf.get(f, {}).get("quote", "")
         if not sheet and not page:
@@ -978,11 +980,11 @@ def compare(rec, svc, client, model, total):
     # backstop for the rule above: wording that restricts ("only", "must", "invite") is never just extra detail
     for f, r in list(res.items()):
         if r[0] in ("refine", "match") and f in RESTRICT_FIELDS and RESTRICTS.search(r[3].split("  [")[0] + " " + r[2]) \
-                and not RESTRICTS.search(r[1] + " " + (rec.get("eligibility") or "")):   # already in the record's eligibility (batch25 R1319)
+                and not RESTRICTS.search(r[1] + " " + (rec.get("eligibility") or "") + " " + (rec.get("how_to_join") or "")):   # already in the record's eligibility (batch25 R1319)
             res[f] = ("differs", r[1], r[2], r[3] + "  [flagged by code: the page's wording restricts this service; check it]")
     # the service's own heading can restrict it ("Taunton * Invite only"): that counts as a difference in how to join
     head = (svc.get("name_quote") or "") + " " + (svc.get("name") or "")
-    if RESTRICTS.search(head) and not RESTRICTS.search((rec.get("access") or "") + " " + (rec.get("eligibility") or "")):
+    if RESTRICTS.search(head) and not RESTRICTS.search((rec.get("access") or "") + " " + (rec.get("eligibility") or "") + " " + (rec.get("how_to_join") or "")):
         word = RESTRICTS.search(head).group(0)
         res["access"] = ("differs", rec.get("access", ""), f"see heading ('{word}')",
                          (svc.get("name_quote") or svc.get("name") or "") + "  [flagged by code: the service's heading restricts it]")

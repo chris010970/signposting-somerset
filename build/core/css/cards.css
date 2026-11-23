@@ -57,9 +57,11 @@
 }
 .card.open .desc, .desc.full { -webkit-line-clamp: unset; display: block; }
 .cname .cbtn, .tname .cbtn { font: inherit; color: inherit; background: none; border: 0; padding: 0; margin: 0; text-align: left; cursor: pointer; }   /* the name: a button that opens the card */
-.who { font-size: 12px; color: var(--ink); margin-bottom: 8px; }
-.who em { font-style: normal; color: #92400E; }
-.who .cost { font-weight: 600; }
+/* An opened card's who-and-how block (factsBlock): small grey labels, plain answers */
+.facts { display: grid; grid-template-columns: max-content minmax(0, 1fr); gap: 5px 14px; font-size: 12.5px; line-height: 1.45; margin: 2px 0 10px; padding-top: 10px; border-top: 1px solid #F5F5F4; }
+.facts dt { color: #6B645F; font-weight: 600; font-size: 11.5px; }
+.facts dd { margin: 0; color: var(--ink); }
+@media (max-width: 360px) { .facts { grid-template-columns: minmax(0, 1fr); gap: 1px 0; } .facts dd { margin-bottom: 5px; } }
 .foot { font-size: 12px; color: #6B645F; border-top: 1px solid #F5F5F4; padding-top: 8px; display: grid; gap: 3px; }
 .foot a { color: var(--b700); }
 a.copy.dirs { text-decoration: none; }
@@ -69,13 +71,13 @@ a.copy.dirs { text-decoration: none; }
 .cbtn .nw { white-space: nowrap; }   /* the arrow stays with the name's last word */
 .cbtn .chev { width: 14px; height: 14px; margin-left: 5px; vertical-align: -1px; color: var(--b600); transition: transform .15s; }
 .open .cbtn .chev { transform: rotate(180deg); }
-.fold:not(.open) :is(.meta, .who, .foot) { display: none; }
+.fold:not(.open) :is(.meta, .facts, .foot) { display: none; }
 .fold:not(.open) .desc { margin-bottom: 0; }
 @media (max-width: 899px) { .fold:not(.open) .desc { -webkit-line-clamp: 1; } }   /* phones and narrow windows: one line */
 .fold.open .desc { -webkit-line-clamp: unset; display: block; }
-.restrict { font-size: 12px; font-weight: 600; color: #92400E; }   /* a restriction, on a closed card (once open, the For line says it) */
-.card .restrict { margin-top: 6px; }
-.fold.open .restrict { display: none; }
+/* A blocker ("Currently full: ..."): on folded and opened cards (restrictLine) */
+.notice { display: flex; align-items: flex-start; gap: 6px; font-size: 12px; font-weight: 600; color: #92400E; background: #FFFBEB; border: 1px solid #FDE68A; border-radius: 8px; padding: 6px 8px; margin: 6px 0 8px; }
+.notice svg { width: 14px; height: 14px; flex: none; margin-top: 1px; }
 @media (prefers-reduced-motion: reduce) { .cbtn .chev { transition: none; } }
 .morehint { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 8px 12px; margin: 14px 0 6px; padding: 12px 14px; border: 1px dashed var(--line); border-radius: 12px; background: var(--white); font-size: 14px; color: var(--muted); }
 .morehint b { color: inherit; }

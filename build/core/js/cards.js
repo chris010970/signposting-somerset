@@ -42,7 +42,7 @@ function copyText(s, when) {
   const how = !inPerson && modes.length ? modes.map(m => m === "phone" ? "Phone" : m === "online" ? "Online" : m).join(" or ") : "";
   return [
     s.name + (s.provider && s.provider !== s.name ? ` (${s.provider})` : ""),
-    [when || copyWhen(s), how, ACC, s.cost, s.eligibility].filter(Boolean).join(" · "),
+    [when || copyWhen(s), how, ACC, s.cost, s.eligibility, s.how_to_join].filter(Boolean).join(" · "),
     inPerson ? [s.address, [s.town, s.postcode].filter(Boolean).join(" ")].filter(Boolean).join(", ") : "",
     [s.phone, s.email, s.url].filter(Boolean).join(" · "),
     checkedText(s),
@@ -91,8 +91,30 @@ const OPENED_KEY = "ss-opened";
 const OPENED = new Set((() => { try { return JSON.parse(sessionStorage.getItem(OPENED_KEY)) || []; } catch (e) { return []; } })()), cardKey = s => `${s.name}|${s.postcode || s.town || ""}`;
 const isOpen = s => OPENED.has(cardKey(s));
 const foldClass = s => isOpen(s) ? " open" : "", keyAttr = s => ` data-key="${esc(cardKey(s))}"`;
-// A restriction ("Over 18s only", "Currently full: referrals paused"): shown on a closed card too, so nobody misses it
-const restrictLine = s => s.eligibility ? `<div class="restrict">${esc(s.eligibility)}</div>` : "";
+// A blocker that stops someone joining: the first sentence of how_to_join (or, in an older row, of eligibility) when it starts
+// with one of CARD_TEXT.notice.starts (HANDBOOK rule 8: "Currently full: contact Age UK to join the waiting list").
+// Shown on folded and opened cards alike; everything else about who and how shows only once a card is opened (factsBlock).
+const startsBlocked = t => (CARD_TEXT.notice?.starts || []).some(p => t.toLowerCase().startsWith(p.toLowerCase()));
+function noticeFrom(s) {   // [the field it's in, its first sentence] or []
+  for (const f of ["how_to_join", "eligibility"]) {
+    const t = (s[f] || "").trim();
+    if (startsBlocked(t)) return [f, t.split(/(?<=\.)\s+/)[0].replace(/\.$/, "")];
+  }
+  return [];
+}
+const noticeText = s => noticeFrom(s)[1] || "";
+const NOTICE_ICON = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v6M12 16.5v.5"/></svg>';
+const restrictLine = s => { const n = noticeText(s); return n ? `<div class="notice">${NOTICE_ICON}<span>${esc(n)}</span></div>` : ""; };
+// What an opened card says about who and how: Who it's for (the who tags, "anyone" left out), Who can use it (eligibility,
+// less the notice above it), How to join (how_to_join) and Cost; labels in CARD_TEXT.facts, empty lines left out.
+const whoText = s => { const w = split(s.who).filter(x => x !== "anyone").join(", "); return w && w[0].toUpperCase() + w.slice(1); };
+function factsBlock(s, withCost = true) {
+  const [nf, n] = noticeFrom(s), F = CARD_TEXT.facts;
+  const less = f => { const t = (s[f] || "").trim(); return f === nf ? t.slice(t.indexOf(n) + n.length).replace(/^[.;\s]+/, "") : t; };   // less the notice
+  const rows = [[F.who, whoText(s)], [F.eligibility, less("eligibility")], [F.how, less("how_to_join")], [F.cost, withCost ? s.cost : ""]]
+    .filter(([, v]) => v);
+  return rows.length ? `<dl class="facts">${rows.map(([l, v]) => `<dt>${esc(l)}</dt><dd>${esc(v)}</dd>`).join("")}</dl>` : "";
+}
 // Open or close a service card's full details (a click anywhere on it, or its name button by keyboard), saying so to screen readers
 function toggleCard(card) {
   card.classList.toggle("open");

@@ -26,7 +26,7 @@ Last updated: 15 November 2026.
 | Tools | `src/`: `run_scenarios.py` and the `scenarios-*.json` files, `check_sources.py`, `church_events.py`, `geocode.py`, `services-sheet-tools.gs` (not part of the site build) |
 | Search | Google Search Console (property for signpostingsomerset.org.uk; sitemap submitted) |
 
-## 3. The data: 26 columns
+## 3. The data: 27 columns
 
 One row per service **session pattern**. If a group meets at different times on different days, or at different venues, it gets one row per pattern (for example "Greenlinks gardening (Monksdale, Tuesday)" and "(Monksdale, Thursday)").
 
@@ -44,7 +44,8 @@ Every record has a permanent ID in the first column, `record_id`: `R0001`, `R000
 | `url` | The provider's page for this service. |
 | `description` | Plain English, **under 128 characters**. What happens, for whom. No hype. |
 | `who` | One or more: `anyone`, `adults`, `older people`, `young people`, `carers`, `men`, `women`, `new families`, `LGBTQ+`, `refugees and asylum seekers`, `displaced people`. |
-| `eligibility` | Who can go and what to do first: age, area, "contact first for the venue", "currently full", "faith content". Area limits use the exact phrase `Somerset Council area only` (only when the service really is limited). |
+| `eligibility` | **Who can use it**: age, area, circumstances, "faith content". Area limits use the exact phrase `Somerset Council area only` (only when the service really is limited). How to get in goes in `how_to_join`, not here: so does a full group's `Currently full: ...` (rule 8). |
+| `how_to_join` | **How to get in**, the detail behind `access`: referral routes ("Referral by GP, midwife or health visitor"), registering or booking first, waiting lists, vouchers, "contact first for the venue", "email for the Zoom link". A full or paused group starts with `Currently full: ...` (rule 8): that first sentence shows as an amber notice on the cards. Blank when `access` says it all. Shown on an opened card as "How to join". |
 | `days` | `Mon`, `Tue`, `Wed`, `Thu`, `Fri`, `Sat`, `Sun`. Ranges `Mon-Fri`; lists `Mon;Wed;Fri`. 24/7 lines: `Mon-Sun`. |
 | `times` | `HH:MM-HH:MM` (24-hour), or a start time only `10:00` if no end is published. 24/7: `00:00-23:59`. Never `00:00` as an end time. |
 | `frequency` | Free text. **Leave blank for weekly** (days + times alone mean every week; the word `weekly` stops the site and Assist working out next dates). The site computes dates only from `1st Tue of month`, `last Fri of month`, `1st and 3rd Wed of month` (weekday must match `days`, no extra words). **Term time:** add `term time` (alone for weekly, or after a pattern: `3rd Mon of month, term time`); `term time only` in `eligibility` works too. Sessions in the school holidays of the record's `area` are then left out (`build/core/data/term-dates.json`: add each new school year). Anything else (e.g. `fortnightly`, `monthly (dates vary)`, `see website`) shows as "Check dates" with the wording, which is fine when that's all that's known; for `fortnightly`, list the next few dates in `dates` so the site can show them. |
@@ -70,7 +71,7 @@ These are decisions, not accidents. Keep to them unless deliberately changed (an
 5. **Safety and privacy.** Never publish Crisis Safe Space or similar evening crisis-space addresses (record the town only; venue is given on booking). Leave out personal emails and mobiles of named volunteers; use organisational contacts.
 6. **Toddler and youth groups are in scope.**
 7. **Eligibility by area only when needed.** Mark `Somerset Council area only` (or the B&NES equivalent) only where the provider says so. Assist reads this and leaves out services the person can't use.
-8. **Full or paused groups** stay in, with `Currently full: referrals paused` at the start of `eligibility`.
+8. **Full or paused groups** stay in, with `Currently full: ...` at the start of `how_to_join` (e.g. `Currently full: contact Age UK to join the waiting list`). The cards show that sentence as an amber notice.
 9. **No hard-coded filters in Assist.** Judgements about suitability are left to the AI prompt, not code.
 10. **One record per pattern** (section 3), no catch-all records that duplicate individual groups.
 
@@ -87,7 +88,7 @@ These are decisions, not accidents. Keep to them unless deliberately changed (an
 
 1. **Find candidates** (provider pages, council directories, other plans). Check each against the current sheet first (name, provider, phone/email) to avoid duplicates.
 2. **Verify** each on its own source (rule 1). Note conflicts between sources rather than picking silently; prefer the provider's own page and the most recent date.
-3. **Write rows** with the 26 columns in order (a new record gets the next `record_id`), using only the allowed values in section 3. Check descriptions are under 128 characters.
+3. **Write rows** with the 27 columns in order (a new record gets the next `record_id`), using only the allowed values in section 3. Check descriptions are under 128 characters.
 4. **Collect them in one append CSV** (UTF-8, with header). Paste into the sheet **without the header row** (a pasted header becomes a junk record).
 5. **Geocode** new rows with postcodes (`python src/geocode.py`).
 6. **Spot-check** with Assist or `run_scenarios.py` (section 8).
@@ -151,7 +152,7 @@ python run_scenarios.py --scenarios scenarios-helpline.json --all   # local 24/7
 - **Directions** link only for records with a postcode; Apple Maps on iPhone/iPad, Google Maps elsewhere. Phone numbers are tap-to-call.
 - **Search:** meta description "Discover mental health and wellbeing support across Somerset, North Somerset and B&NES: what's on, when and where. Built for anyone looking for help, activities or community connections."; canonical `/directory/`; test page `noindex`; sitemap lists `/directory/`.
 - **Assist answer limit:** `max_tokens` 8000 (lower values cut long plans off).
-- **Folding cards:** a service card (In person, Places, Phone and online, Courses, and Assist's suggestions, which also show why each was chosen and their contact buttons while closed) shows what people choose on until its name is clicked: the access badge, distance, name (with a small arrow), kind, the Next line and the description (two lines; one on phones). Restrictions (the eligibility column) always show, in amber. Opening adds the provider, the For line and the contact details. Opened cards stay open for the browser session. The plain Places cards for search engines and browsers without JavaScript stay in full.
+- **Folding cards:** a service card (In person, Places, Phone and online, Courses, and Assist's suggestions, which also show why each was chosen and their contact buttons while closed) shows what people choose on until its name is clicked: the access badge, distance, name (with a small arrow), kind, the Next line and the description (two lines; one on phones). A blocker (`how_to_join` starting `Currently full`, or another opening in `build/core/data/card-text.json` notice.starts) shows as a small amber notice, folded or open; nothing else from eligibility shows on a folded card. Opening adds the provider, a block of Who it's for, Who can use it (eligibility), How to join (`how_to_join`) and Cost, each only when there is something to say, and the contact details. Opened cards stay open for the browser session. The plain Places cards for search engines and browsers without JavaScript stay in full.
 - **Phone and online tab:** every service that can be phoned or joined online (`mode` includes `phone` or `online`), including those with a place, which also show on In person. Its cards never show an address.
 - **Details-checked tick:** not shown beside a Next line that says "Check dates" or "Times vary: see website", so it never reads as if the times were confirmed.
 - **Assist wording:** Assist's cards and plan use the directory's wording (the access badge, support types, and Copy details' regular pattern: "Every Wed, 10am–12pm"). A plan runs over a few weeks, so it gives the regular days, times and frequency rather than the next date.

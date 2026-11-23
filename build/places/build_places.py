@@ -116,7 +116,7 @@ def pattern(r):
 # Cards: the build writes a plain version of the directory's In person card (what search engines, and anyone without
 # JavaScript, see); in the browser each is redrawn by the directory's own card code (build/core/js/service-card.js), which
 # adds the kind of service, the next session, Copy details and Directions, from the page's records (PAGE_FIELDS below).
-PAGE_FIELDS = ["name", "provider", "type", "access", "support_for", "mode", "url", "description", "who", "eligibility", "days", "times",
+PAGE_FIELDS = ["name", "provider", "type", "access", "support_for", "mode", "url", "description", "who", "eligibility", "how_to_join", "days", "times",
                "frequency", "dates", "address", "town", "postcode", "phone", "email", "cost", "area", "lat", "lon", "last_checked"]
 
 KIND_LIST = json.loads((CORE_DATA / "kinds.json").read_text(encoding="utf-8"))["kinds"]
@@ -136,6 +136,37 @@ def badge(r):
     """[class, wording] for the access badge, as core/js/service-card.js does."""
     a = CARD_TEXT["access"].get(r.get("access", ""), CARD_TEXT["access_other"])
     return a["class"], (a["label_not_group"] if a.get("label_not_group") and not GROUP_TYPE.search(r.get("type", "")) else a["label"])
+
+NOTICE_ICON = ('<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true">'
+               '<circle cx="12" cy="12" r="9"/><path d="M12 7v6M12 16.5v.5"/></svg>')
+
+def notice_from(r):
+    """(field, first sentence) when how_to_join (or, in an older row, eligibility) starts with one of card-text.json's
+    notice.starts ('Currently full: ...'), as core/js/cards.js noticeFrom; else (None, "")."""
+    for f in ("how_to_join", "eligibility"):
+        t = (r.get(f) or "").strip()
+        if any(t.lower().startswith(p.lower()) for p in CARD_TEXT.get("notice", {}).get("starts", [])):
+            first = re.split(r"(?<=\.)\s+", t)[0]
+            return f, first[:-1] if first.endswith(".") else first
+    return None, ""
+
+def notice_text(r):
+    return notice_from(r)[1]
+
+def notice_line(r):
+    n = notice_text(r)
+    return f'<div class="notice">{NOTICE_ICON}<span>{e(n)}</span></div>' if n else ""
+
+def facts_block(r):
+    """Who it's for, Who can use it, How to join and Cost, as core/js/cards.js factsBlock (empty lines left out)."""
+    F, (nf, n) = CARD_TEXT["facts"], notice_from(r)
+    def less(f):   # the field, less the notice
+        t = (r.get(f) or "").strip()
+        return re.sub(r"^[.;\s]+", "", t[t.find(n) + len(n):]) if f == nf else t
+    who = ", ".join(x for x in split(r.get("who", "")) if x != "anyone")
+    rows = [(F["who"], who[:1].upper() + who[1:]), (F["eligibility"], less("eligibility")), (F["how"], less("how_to_join")), (F["cost"], r.get("cost", ""))]
+    rows = [(l, v) for l, v in rows if v]
+    return '<dl class="facts">' + "".join(f"<dt>{e(l)}</dt><dd>{e(v)}</dd>" for l, v in rows) + "</dl>" if rows else ""
 
 def card(d, r, i):
     """The plain card for record number i on the page, d miles from the town centre: the same markup as the In person card
@@ -157,10 +188,8 @@ def card(d, r, i):
     if r.get("email"): contact.append(f'<a href="mailto:{e(r["email"].split(";")[0].strip())}">{e(r["email"])}</a>')
     place = e(", ".join(x for x in (r.get("address", ""), r.get("town", ""), r.get("postcode", "")) if x))
     if r["_approx"]: place += ' <span class="approx">(approx. location)</span>'
-    # who it's for, what it costs and any restriction, as core/js/service-card.js (so the top row stays one line)
-    for_line = " · ".join(x for x in (f'For: {e(r["who"])}' if r.get("who") else "", f'<span class="cost">{e(r["cost"])}</span>' if r.get("cost") else "",
-                                      f'<em>{e(r["eligibility"])}</em>' if r.get("eligibility") else "") if x)
-    who = f'<div class="who">{for_line}</div>' if for_line else ""
+    # a blocker ("Currently full: ...") and the who-and-how block, as core/js/cards.js (restrictLine, factsBlock)
+    who = notice_line(r) + facts_block(r)
     return (f'<li data-i="{i}" data-d="{d:.1f}"><article class="card" data-id="{i}">'
             f'<div class="row1"><span class="badge {cls}">{label}</span><span class="chipr">{dist}</span></div>'
             f'<h4 class="cname">{e(r["name"])}</h4>{kind_tag}<div class="meta">{e(r.get("provider", ""))} · {e(r.get("type", ""))}{types}</div>'

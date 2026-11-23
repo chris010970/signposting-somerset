@@ -28,17 +28,60 @@
 /* ---------- text helpers shared with Assist's relay ---------- */
 // Card wording: the access badges (build/core/data/card-text.json)
 const CARD_TEXT = ({
- "_about": "Wording on the service cards (In person, Places) and in Copy details. access: the badge for each value of the sheet's access column (class sets its colour). A 'call' service reads 'Call first' for groups and activities, and 'Phone line' for anything else; any other value reads 'Contact provider'. checked: a tick on a card when the sheet's last_checked is within 'days' days. Its hover text is 'label' and how long ago ('today', 'yesterday', 'ago'); Copy details gives 'label' and the date, since notes outlive 'days ago'.",
- "access": {
-  "drop in": {"class": "b-drop", "label": "Just turn up"},
-  "sign up": {"class": "b-sign", "label": "Contact to join"},
-  "book": {"class": "b-book", "label": "Book first"},
-  "referral": {"class": "b-ref", "label": "Needs a referral"},
-  "call": {"class": "b-ref", "label": "Call first", "label_not_group": "Phone line"}
- },
- "access_other": {"class": "b-ref", "label": "Contact provider"},
- "group_types": ["group", "community", "course", "volunteering"],
- "checked": {"days": 90, "label": "Details checked", "today": "today", "yesterday": "yesterday", "ago": "{n} days ago"}
+  "_about": "Wording on the service cards (In person, Places) and in Copy details. access: the badge for each value of the sheet's access column (class sets its colour). A 'call' service reads 'Call first' for groups and activities, and 'Phone line' for anything else; any other value reads 'Contact provider'. checked: a tick on a card when the sheet's last_checked is within 'days' days. Its hover text is 'label' and how long ago ('today', 'yesterday', 'ago'); Copy details gives 'label' and the date, since notes outlive 'days ago'. notice: a blocker that stops someone joining. When a service's eligibility starts with one of 'starts' (HANDBOOK rule 8: 'Currently full: ...'), that first sentence shows as a small amber notice on folded and opened cards; nothing else from eligibility shows until a card is opened. facts: the labels of the block an opened card shows (who it's for, who can use it: eligibility, how to join: the how_to_join column, cost); a line is left out when it's empty.",
+  "access": {
+    "drop in": {
+      "class": "b-drop",
+      "label": "Just turn up"
+    },
+    "sign up": {
+      "class": "b-sign",
+      "label": "Contact to join"
+    },
+    "book": {
+      "class": "b-book",
+      "label": "Book first"
+    },
+    "referral": {
+      "class": "b-ref",
+      "label": "Needs a referral"
+    },
+    "call": {
+      "class": "b-ref",
+      "label": "Call first",
+      "label_not_group": "Phone line"
+    }
+  },
+  "access_other": {
+    "class": "b-ref",
+    "label": "Contact provider"
+  },
+  "group_types": [
+    "group",
+    "community",
+    "course",
+    "volunteering"
+  ],
+  "checked": {
+    "days": 90,
+    "label": "Details checked",
+    "today": "today",
+    "yesterday": "yesterday",
+    "ago": "{n} days ago"
+  },
+  "notice": {
+    "starts": [
+      "Currently full",
+      "Closed to new",
+      "Not taking new"
+    ]
+  },
+  "facts": {
+    "who": "Who it's for",
+    "eligibility": "Who can use it",
+    "how": "How to join",
+    "cost": "Cost"
+  }
 });
 // Groups, activities, courses and volunteering (by type), as opposed to one-to-one services and phone lines
 const isGroupType = s => new RegExp(CARD_TEXT.group_types.join("|"), "i").test(s.type || "");
@@ -227,7 +270,7 @@ function recordsFromCSV(text) {
   }
   return { recs };
 }
-const VERSION = "2026-11-19 20:59";        // set when the worker is built; shown on the Assist tab
+const VERSION = "2026-11-23 21:17";        // set when the worker is built; shown on the Assist tab
 const DEFAULT_MODEL = "claude-sonnet-5-5";
 const MAX_PER_HOUR = 30;               // per visitor (best effort: counts reset when Cloudflare restarts the Worker)
 const RISK = /suicid|kill (my|him|her|them)sel|end (my|his|her|their) life|self[- ]?harm|cutting (my|him|her)|overdos|want(s|ed)? to die|no reason to live|better off dead/i;
@@ -501,7 +544,7 @@ function ukNow(at = new Date()) {
   return new Date(+p.year, +p.month - 1, +p.day, +p.hour, +p.minute);
 }
 const ended = (s, now) => !!s.dates && !!s._dates.last && s._dates.last < iso(now);   // all its dates have passed
-const FIELDS = ["name", "provider", "type", "access", "support_for", "mode", "url", "description", "who", "eligibility",
+const FIELDS = ["name", "provider", "type", "access", "support_for", "mode", "url", "description", "who", "eligibility", "how_to_join",
   "days", "times", "frequency", "dates", "address", "town", "postcode", "phone", "email", "cost", "last_checked"];
 // The council area most of the 7 nearest located records are in ("Somerset", "North Somerset"...); "" if unclear
 function areaOf(recs, centre) {
@@ -549,7 +592,7 @@ function buildPrompt(need, followups, previous, place, cands, now) {
   const line = c => {
     const s = c.s;
     const where = c.d !== null ? (located(s) ? `${s.town} (${c.d.toFixed(1)} mi)` : `${s.town} (venue not listed: contact for details)`) : c.wide ? `across ${s.area === "Somerset" ? "Somerset" : s.area} (venues vary: contact to find the nearest)` : s.mode.replace(/;/g, ", ");
-    return [c.id, s.name, s.provider || "-", s.type, s.access, s.support_for, s.who, when(s, now) || "-", nextText(s, now).txt, where, s.cost || "-", s.description, s.eligibility || "-"].join(" | ");
+    return [c.id, s.name, s.provider || "-", s.type, s.access, s.support_for, s.who, when(s, now) || "-", nextText(s, now).txt, where, s.cost || "-", s.description, s.eligibility || "-", s.how_to_join || "-"].join(" | ");
   };
   const refine = followups.length
     ? `\nFOLLOW-UP from the worker (newest last). Adjust your suggestions to these; they override earlier preferences:\n${followups.map(f => `- """${f}"""`).join("\n")}\n` +
@@ -563,7 +606,7 @@ ${refine}
 WHERE: ${place}.
 
 SERVICES you may recommend. You may ONLY recommend services from this list, using their id. Each line is:
-id | name | provider | type | access (drop in / sign up / book / referral / call) | support for | who it's for | when | next session (worked out for you; trust it) | where (distance) | cost | description | eligibility
+id | name | provider | type | access (drop in / sign up / book / referral / call) | support for | who it's for | when | next session (worked out for you; trust it) | where (distance) | cost | description | eligibility | how to join
 ${cands.map(line).join("\n")}
 
 Think like an experienced social prescriber:
@@ -571,7 +614,7 @@ Think like an experienced social prescriber:
 - The tags connect, be active, keep learning, take notice and giving are the Five Ways to Wellbeing: use them where they fit, but match the effort to the person. For low mood, grief and isolation, connection is often the most helpful step, and a group set up to support mental wellbeing (a held space, volunteer listeners, peer support) is usually a better fit than a general social café. Someone who struggles to get out of bed, has social anxiety or has withdrawn needs a gentle, low-pressure first step before a busy group: a phone call or online option, one-to-one support, a small drop-in, a side-by-side activity such as gardening, crafts or a short walk, or going with their worker. Being active or creative can suit someone who doesn't want a group where you sit and talk.
 - First work out the person's core need or needs: the specific reason they need support (such as stopping gambling, cutting down drinking, bereavement, caring for someone, debt), as distinct from general wellbeing. If anything on the list addresses the core need directly, at least one "First step" must be that service; put gentle wellbeing options around it, not instead of it.
 - When there are several needs (for example risk, a specialist need such as drinking or an eating disorder, and a practical problem such as debt, housing or food), cover each one with its best service first. Wellbeing groups and activities go alongside these, never instead of them.
-- Respect eligibility and 'who it's for' strictly (age, gender, carers, referral needed). Some services say they are only for residents of one area (for example "Somerset Council area only"): if WHERE shows the person is in a different area, leave them out, or include one only if nothing else meets the need and say to check they can use it. Prefer drop-in, free and nearer options when motivation, money or transport sound like barriers. Don't recommend crisis services unless the need suggests risk. A listening line is not only a crisis service when its "support for" also lists anxiety or low mood: if the person is anxious, low, not sleeping or has nobody to talk to, include one such line that covers their area and is open when they are likely to need it, even with no sign of risk. If it does suggest risk and WHERE names the person's area, also include one local crisis-support line from the list (support for includes crisis prevention) that is open any time (24/7), is for that area (by its area or eligibility) and suits the need, if there is one; if none fits, don't add one, because the page already gives Samaritans, NHS 111 option 2 and 999.
+- Respect eligibility and 'who it's for' strictly (age, gender, carers, referral needed). 'How to join' says how to get in (a referral route, registering first, a waiting list): use it in the next step you suggest. Some services say they are only for residents of one area (for example "Somerset Council area only"): if WHERE shows the person is in a different area, leave them out, or include one only if nothing else meets the need and say to check they can use it. Prefer drop-in, free and nearer options when motivation, money or transport sound like barriers. Don't recommend crisis services unless the need suggests risk. A listening line is not only a crisis service when its "support for" also lists anxiety or low mood: if the person is anxious, low, not sleeping or has nobody to talk to, include one such line that covers their area and is open when they are likely to need it, even with no sign of risk. If it does suggest risk and WHERE names the person's area, also include one local crisis-support line from the list (support for includes crisis prevention) that is open any time (24/7), is for that area (by its area or eligibility) and suits the need, if there is one; if none fits, don't add one, because the page already gives Samaritans, NHS 111 option 2 and 999.
 - Choose the best fits, judged in this order: (1) meets the core need directly; (2) the person can use it (age, gender, eligibility, referral); (3) fits their constraints (travel, times, phone or online if leaving the house is hard); (4) matches their readiness (an easy first step before bigger commitments); (5) soonest and nearest when otherwise equal. Avoid duplicates: two services doing the same job count as one.
 - Build a ladder of at most 10 picks, and as few as 2 or 3 if that's all that genuinely fits: "First step" (1-2, the easiest to do this week), "Next step" (1-5), "When ready" (0-3). If leaving the house sounds hard, include a phone or online option as a first step. Never pad the plan: a service for a different problem (for example an alcohol service for a gambling problem) must never be used to fill a gap.
 - When: if the need says when (a day, "tomorrow", mornings, evenings, weekends), only choose services whose next session meets it; phone and online services open then also count. If nothing meets it, say so plainly in "gaps", and add at most one or two of the nearest alternatives as "When ready", saying in "why" which day they run.

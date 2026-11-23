@@ -145,3 +145,33 @@ test("CSV: quoted fields with commas, quotes and line breaks", () => {
   assert.deepEqual(JSON.parse(JSON.stringify(rows)), [["a", "b"], ["x, y", 'say "hi"'], ["two\nlines", "z"]]);
   assert.match(S.recordsFromCSV("name,town\nA,Frome").error, /no type, mode column/);
 });
+
+// ---------- the cards' notice and who-and-how block (core/js/cards.js) ----------
+const cctx = vm.createContext({ console, navigator: { userAgent: "", platform: "", maxTouchPoints: 0 },
+  sessionStorage: { getItem: () => null, setItem() {} }, document: { addEventListener() {} } });   // (cards.js listens for clicks on the page)
+vm.runInContext(["core/js/text.js", "core/js/page-text.js", "core/js/cards.js"].map(stitch).join("\n") +
+  "\nthis.api = { noticeText, restrictLine, factsBlock, whoText };", cctx);
+const C = cctx.api;
+
+test("cards: only a blocker shows as a notice, and the rest of eligibility moves to the opened card", () => {
+  const full = { eligibility: "50+", how_to_join: "Currently full: contact Age UK to join the waiting list", who: "older people", cost: "£6.00 per session" };
+  assert.equal(C.noticeText(full), "Currently full: contact Age UK to join the waiting list");
+  assert.match(C.restrictLine(full), /class="notice"/);
+  assert.match(C.factsBlock(full), /<dt>Who can use it<\/dt><dd>50\+<\/dd>/);
+  assert.doesNotMatch(C.factsBlock(full), /How to join/, "the notice isn't repeated");
+  const old = { eligibility: "Currently full: contact Age UK to join the waiting list. 50+" };   // an older row: still a notice
+  assert.equal(C.noticeText(old), "Currently full: contact Age UK to join the waiting list");
+  assert.match(C.factsBlock(old), /<dt>Who can use it<\/dt><dd>50\+<\/dd>/, "eligibility less the notice");
+  assert.equal(C.restrictLine({ eligibility: "Age 18+" }), "", "an ordinary limit isn't a notice");
+  assert.equal(C.restrictLine({ eligibility: "" }), "");
+});
+
+test("cards: the who-and-how block tidies who, and leaves out empty lines", () => {
+  const s = { who: "new families;women", eligibility: "Registered with a Somerset GP", how_to_join: "Referral by GP, midwife or health visitor", cost: "" };
+  const b = C.factsBlock(s);
+  assert.match(b, /<dt>Who it's for<\/dt><dd>New families, women<\/dd>/);
+  assert.match(b, /<dt>How to join<\/dt><dd>Referral by GP, midwife or health visitor<\/dd>/);
+  assert.doesNotMatch(b, /Cost/);
+  assert.equal(C.whoText({ who: "anyone" }), "", "anyone isn't worth a line");
+  assert.equal(C.factsBlock({ who: "anyone" }), "", "nothing to say: no block");
+});

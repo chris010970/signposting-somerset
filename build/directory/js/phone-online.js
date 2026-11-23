@@ -34,7 +34,7 @@ function talkCard({ s, st }) {
       <div class="tname"><h3>${nameButton(s)}</h3>${checkedTick(s)}</div>
       ${reach ? `<div class="reach${s.phone ? "" : " email"}">${reach}</div>` : ""}
       <p class="desc">${esc(s.description)}</p>${restrictLine(s)}
-      <div class="meta" style="margin:0">${esc(s.provider)} · ${esc(s.type)}${s.who && s.who !== "anyone" ? " · For " + esc(s.who) : ""}${s.eligibility ? " · " + esc(s.eligibility) : ""}</div>
+      <div class="meta" style="margin:0">${esc(s.provider)} · ${esc(s.type)}</div>${factsBlock(s)}
       ${url ? `<div class="foot"><span><a href="${esc(url)}" target="_blank" rel="noopener">Website</a>${s.email && s.phone ? " · " + esc(s.email) : ""}</span></div>` : ""}
     </article>`;
 }

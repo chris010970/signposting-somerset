@@ -23,7 +23,7 @@ function courseCard({ s, ci }) {
       <div class="tname"><h3>${nameButton(s)}</h3>${checkedTick(s)}</div>
       <div class="cwhen">${esc(ci.when)}</div>
       <p class="desc">${esc(s.description)}</p>${restrictLine(s)}
-      <div class="meta" style="margin:0">${esc(s.provider)}${s.cost ? " · " + esc(s.cost) : ""}${s.eligibility ? " · " + esc(s.eligibility) : ""}</div>
+      <div class="meta" style="margin:0">${esc(s.provider)}</div>${factsBlock(s)}
       <div class="foot"><span>${[url ? `<a href="${esc(url)}" target="_blank" rel="noopener">Website</a>` : "", esc(s.phone), esc(s.email)].filter(Boolean).join(" · ")}</span></div>
     </article>`;
 }

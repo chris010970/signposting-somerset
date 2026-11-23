@@ -19,9 +19,6 @@ function serviceCard(r, h = "h2", withId = true) {
     telLink(s.phone),
     s.email ? `<a href="mailto:${esc(s.email.split(";")[0].trim())}">${esc(s.email)}</a>` : ""].filter(Boolean).join(" · ");
   const dist = r.d != null ? `<span class="chip dist">${r.d < .1 ? "&lt;0.1" : r.d.toFixed(1)} mi</span>` : "";   // (an approximate place says so in the footer)
-  // Who it's for, what it costs and any restriction: a line of any length under the description, so the top row stays one line
-  const forLine = [s.who ? `For: ${esc(s.who)}` : "", s.cost ? `<span class="cost">${esc(s.cost)}</span>` : "",
-    s.eligibility ? `<em>${esc(s.eligibility)}</em>` : ""].filter(Boolean).join(" · ");
   const types = s._sf.length ? " · " + s._sf.map(cap).map(esc).join(", ") : "";
   const place = esc([s.address, s.town, s.postcode].filter(Boolean).join(", ")) + (s.approx ? ` <span class="approx">(approx. location)</span>` : "");
   return `<article class="card fold${foldClass(s)}"${keyAttr(s)}${withId ? ` id="c${s.id}"` : ""} data-id="${s.id}">
@@ -30,7 +27,7 @@ function serviceCard(r, h = "h2", withId = true) {
       ${kindTag(s)}<div class="meta">${esc(s.provider)} · ${esc(s.type)}${types}</div>
       <div class="next">${["check", "website"].includes(s._kind) ? "" : checkedTick(s)}<div class="lab">Next</div><div class="val ${r.nx.cls}">${esc(r.nx.txt)}</div></div>
       <p class="desc">${esc(s.description)}</p>${restrictLine(s)}
-      ${forLine ? `<div class="who">${forLine}</div>` : ""}
+      ${factsBlock(s)}
       <div class="foot"><span>${place}</span>${contact ? `<span>${contact}</span>` : ""}</div>
     </article>`;
 }

@@ -85,7 +85,9 @@
 #panel-assist .a-desc { font-size: 14px; color: var(--ink); line-height: 1.5; margin: 10px 0 8px; }
 #panel-assist .fold:not(.open) .a-desc { display: none; }
 #panel-assist .a-pick .meta { margin: 10px 0 0; }
-#panel-assist .a-pick .restrict { margin-top: 8px; }
+#panel-assist .a-pick .notice { margin-top: 8px; }
+#panel-assist .fold:not(.open) :is(.facts, .a-note) { display: none; }
+#panel-assist .a-pick .facts { margin-top: 10px; }
 #panel-assist .a-pk-why { font-size: 14px; color: var(--b900); background: rgba(242,246,244,.8); border: 1px solid var(--b100); border-radius: 10px; padding: 8px 10px; margin-top: 8px; }
 #panel-assist .a-pk-acts { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px; }
 #panel-assist .a-pk-acts:empty { display: none; }
