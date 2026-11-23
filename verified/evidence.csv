@@ -3395,6 +3395,11 @@ R0784,Clevedon District Foodbank: Yatton,Yatton,days,Thu,https://clevedondistric
 R0784,Clevedon District Foodbank: Yatton,Yatton,times,09:30-12:00,https://clevedondistrict.foodbank.org.uk/locations/,Thu 09:30 - 12:00,2026-11-22
 R0784,Clevedon District Foodbank: Yatton,Yatton,phone,07351 898114,https://clevedondistrict.foodbank.org.uk/locations/,Yatton Foodbank 07351898114,2026-11-22
 R0784,Clevedon District Foodbank: Yatton,Yatton,address,"Yatton Youth Club, Rock Road",https://clevedondistrict.foodbank.org.uk/locations/,Yatton Youth Club Rock Road Yatton BS49 4JE,2026-11-22
+R0785,Singing for the Brain (Minehead),Minehead,days,Thu,https://www.livingbetter.org.uk/event-details/singing-for-the-brain,Every other Thursday Morning (10.30 am – 12 pm),2026-11-23
+R0785,Singing for the Brain (Minehead),Minehead,times,10:30-12:00,https://www.livingbetter.org.uk/event-details/singing-for-the-brain,Every other Thursday Morning (10.30 am – 12 pm),2026-11-23
+R0785,Singing for the Brain (Minehead),Minehead,phone,07850 928905,https://www.livingbetter.org.uk/event-details/singing-for-the-brain,For more information call Carol (Alzheimer’s Society) on 07850 928905,2026-11-23
+R0785,Singing for the Brain (Minehead),Minehead,address,"Sacred Heart Catholic Church Hall, Townsend Road",https://www.livingbetter.org.uk/event-details/singing-for-the-brain,Sacred Heart Catholic Church Hall (Next to garage) Minehead Townsend Road TA24 5RG,2026-11-23
+R0785,Singing for the Brain (Minehead),Minehead,mode,in-person,https://www.livingbetter.org.uk/event-details/singing-for-the-brain,"Sacred Heart Catholic Church Hall , Minehead Townsend Road TA24 5RG",2026-11-23
 R0786,Singing for the Brain (Ilminster),Ilminster,days,Thu,https://www.alzheimers.org.uk/support-services/Somerset%20Local%20Services/Singing%20for%20the%20Brain%20-%20Ilminster/local,"Fortnightly on Thursday, 10am–12pm",2026-11-22
 R0786,Singing for the Brain (Ilminster),Ilminster,times,10:00-12:00,https://www.alzheimers.org.uk/support-services/Somerset%20Local%20Services/Singing%20for%20the%20Brain%20-%20Ilminster/local,"Fortnightly on Thursday, 10am–12pm",2026-11-22
 R0786,Singing for the Brain (Ilminster),Ilminster,phone,01458 251541,https://www.alzheimers.org.uk/support-services/Somerset%20Local%20Services/Singing%20for%20the%20Brain%20-%20Ilminster/local,Phone 01458 251541 (Monday to Friday 9am - 5pm),2026-11-22
@@ -4665,12 +4670,18 @@ R1111,Midsomer Norton Social (Sight Support West),Midsomer Norton,times,10:00-12
 R1111,Midsomer Norton Social (Sight Support West),Midsomer Norton,phone,0117 322 4885,https://www.sightsupportwest.org.uk/events/midsomer-norton-social-3-2026-11-27/,0117 322 4885,2026-11-22
 R1111,Midsomer Norton Social (Sight Support West),Midsomer Norton,address,"Midsomer Norton Methodist Church, High Street",https://www.sightsupportwest.org.uk/events/midsomer-norton-social-3-2026-11-27/,"Midsomer Norton Methodist Church, High St, Midsomer Norton, Radstock BA3 2DR",2026-11-22
 R1111,Midsomer Norton Social (Sight Support West),Midsomer Norton,mode,in-person,https://www.sightsupportwest.org.uk/events/midsomer-norton-social-3-2026-11-27/,This social group takes place at Midsomer Norton Methodist Church,2026-11-22
-R1112,Singing for Fun (Midsomer Norton),Midsomer Norton,days,Tue,https://www.ageuk.org.uk/bathandnortheastsomerset/activities-and-events/,Last Tuesday of each month. 2.30-4pm,2026-11-22
-R1112,Singing for Fun (Midsomer Norton),Midsomer Norton,times,14:30-16:00,https://www.ageuk.org.uk/bathandnortheastsomerset/activities-and-events/,2.30-4pm,2026-11-22
-R1112,Singing for Fun (Midsomer Norton),Midsomer Norton,phone,01225 466135,https://www.ageuk.org.uk/bathandnortheastsomerset/activities-and-events/,Contact: 01225 466135,2026-11-22
-R1112,Singing for Fun (Midsomer Norton),Midsomer Norton,email,reception@ageukbanes.co.uk,https://www.ageuk.org.uk/bathandnortheastsomerset/activities-and-events/,reception@ageukbanes.co.uk,2026-11-22
-R1112,Singing for Fun (Midsomer Norton),Midsomer Norton,address,Orchard Hall,https://www.ageuk.org.uk/bathandnortheastsomerset/activities-and-events/,"Where? Orchard Hall, Midsomer Norton.",2026-11-22
-R1112,Singing for Fun (Midsomer Norton),Midsomer Norton,mode,in-person,https://www.ageuk.org.uk/bathandnortheastsomerset/activities-and-events/,"Where? Orchard Hall, Midsomer Norton.",2026-11-22
+R1112,Singing for Fun (Midsomer Norton),Midsomer Norton,days,Tue,https://www.ageuk.org.uk/bathandnortheastsomerset/activities-and-events/singing-for-fun/,Every last tuesday of the month - Starting Tuesday 28th September,2026-11-23
+R1112,Singing for Fun (Midsomer Norton),Midsomer Norton,times,14:30-16:00,https://www.ageuk.org.uk/bathandnortheastsomerset/activities-and-events/singing-for-fun/,Time: 2.30 - 4pm.,2026-11-23
+R1112,Singing for Fun (Midsomer Norton),Midsomer Norton,phone,01225 466135,https://www.ageuk.org.uk/bathandnortheastsomerset/activities-and-events/singing-for-fun/,CALL: 01225 466135,2026-11-23
+R1112,Singing for Fun (Midsomer Norton),Midsomer Norton,email,reception@ageukbanes.co.uk,https://www.ageuk.org.uk/bathandnortheastsomerset/activities-and-events/singing-for-fun/,EMAIL: reception@ageukbanes.co.uk,2026-11-23
+R1112,Singing for Fun (Midsomer Norton),Midsomer Norton,mode,in-person,https://www.ageuk.org.uk/bathandnortheastsomerset/activities-and-events/singing-for-fun/,"Join lively singing teacher, Kath, and a group of like-minded people each month at Orchard Hall in Midsomer Norton",2026-11-23
+R1112,Singing for Fun (Midsomer Norton),Midsomer Norton,cost,£3 donation per session,https://www.ageuk.org.uk/bathandnortheastsomerset/activities-and-events/singing-for-fun/,We ask for a very small donation of £3 per session.,2026-11-23
+R1112,Singing for Fun (Midsomer Norton),Midsomer Norton,address,Orchard Community Hall,https://www.ageuk.org.uk/bathandnortheastsomerset/activities-and-events/singing-for-fun/,"Where: Orchard Community Hall, Midsomer Norton.",2026-11-23
+R1113,Cook & Eat (Midsomer Norton),Midsomer Norton,days,Tue,https://www.ageuk.org.uk/bathandnortheastsomerset/activities-and-events/,When? Every 1st & 3rd Tuesday. 11.30am - 2pm,2026-11-23
+R1113,Cook & Eat (Midsomer Norton),Midsomer Norton,times,11:30-14:00,https://www.ageuk.org.uk/bathandnortheastsomerset/activities-and-events/,When? Every 1st & 3rd Tuesday. 11.30am - 2pm,2026-11-23
+R1113,Cook & Eat (Midsomer Norton),Midsomer Norton,frequency,1st and 3rd Tue of month,https://www.ageuk.org.uk/bathandnortheastsomerset/activities-and-events/,When? Every 1st & 3rd Tuesday. 11.30am - 2pm,2026-11-23
+R1113,Cook & Eat (Midsomer Norton),Midsomer Norton,address,Orchard Vale Hall,https://www.ageuk.org.uk/bathandnortheastsomerset/activities-and-events/,"Where? Orchard Vale Hall, Midsomer Norton",2026-11-23
+R1113,Cook & Eat (Midsomer Norton),Midsomer Norton,phone,07713 595001,https://www.ageuk.org.uk/bathandnortheastsomerset/activities-and-events/,Contact: Sarah King 07713595001,2026-11-23
 R1114,Friendship Fridays (Midsomer Norton Library),Midsomer Norton,days,Fri,https://baneslibraries.co.uk/events/category/midsomer-norton-library/,Fri 27 Friendship Fridays at Midsomer Norton Library,2026-11-22
 R1114,Friendship Fridays (Midsomer Norton Library),Midsomer Norton,times,14:00-15:00,https://baneslibraries.co.uk/events/category/midsomer-norton-library/,"27 November , 2:00 pm – 3:00 pm",2026-11-22
 R1114,Friendship Fridays (Midsomer Norton Library),Midsomer Norton,address,"Midsomer Norton Library, The Hollies, High Street",https://baneslibraries.co.uk/events/category/midsomer-norton-library/,"Library & Information Service High Street, Midsomer Norton, BA3 2DP",2026-11-22
@@ -4679,6 +4690,10 @@ R1116,Carers' Wellbeing Café (Radstock Museum),Radstock,days,Mon,https://www.mn
 R1116,Carers' Wellbeing Café (Radstock Museum),Radstock,times,14:00-15:30,https://www.mnrjournal.co.uk/news/residents-encouraged-to-attend-free-community-cafes-at-radstock-museum-570494,will take place on the 4th Monday of each month from 2pm- 3:30pm,2026-11-22
 R1116,Carers' Wellbeing Café (Radstock Museum),Radstock,mode,in-person,https://www.mnrjournal.co.uk/news/residents-encouraged-to-attend-free-community-cafes-at-radstock-museum-570494,Free Community Cafés at Radstock Museum,2026-11-22
 R1116,Carers' Wellbeing Café (Radstock Museum),Radstock,cost,Free,https://www.mnrjournal.co.uk/news/residents-encouraged-to-attend-free-community-cafes-at-radstock-museum-570494,Free Community Cafés at Radstock Museum,2026-11-22
+R1118,Sing to Remember (Writhlington),Radstock,frequency,fortnightly,https://www.ageuk.org.uk/bathandnortheastsomerset/activities-and-events/,Sessions are held every other Thursday in Writhlington.,2026-11-23
+R1118,Sing to Remember (Writhlington),Radstock,days,Thu,https://www.ageuk.org.uk/bathandnortheastsomerset/activities-and-events/,Sessions are held every other Thursday in Writhlington.,2026-11-23
+R1118,Sing to Remember (Writhlington),Radstock,phone,01225 476425,https://www.ageuk.org.uk/bathandnortheastsomerset/activities-and-events/,Tel: 01225 476425,2026-11-23
+R1118,Sing to Remember (Writhlington),Radstock,email,info@reminduk.org,https://www.ageuk.org.uk/bathandnortheastsomerset/activities-and-events/,Email: info@reminduk.org,2026-11-23
 R1119,Burnham & Highbridge Men's Shed (mornings),Highbridge,days,Tue;Thu,https://www.burnham-on-sea.com/news/photos-burnham-highbridge-mens-shed-opened-its-doors-to-the-community-on-open-day/,The Men’s Shed is open Tuesdays and Thursdays from 9.45am–12.45pm and 1.45pm–4.45pm.,2026-11-22
 R1119,Burnham & Highbridge Men's Shed (mornings),Highbridge,times,09:45-12:45,https://www.burnham-on-sea.com/news/photos-burnham-highbridge-mens-shed-opened-its-doors-to-the-community-on-open-day/,The Men’s Shed is open Tuesdays and Thursdays from 9.45am–12.45pm and 1.45pm–4.45pm.,2026-11-22
 R1119,Burnham & Highbridge Men's Shed (mornings),Highbridge,phone,07852 506641,https://www.burnham-on-sea.com/news/photos-burnham-highbridge-mens-shed-opened-its-doors-to-the-community-on-open-day/,"For more information, contact the Men’s Shed on 07852 506641",2026-11-22
@@ -4838,23 +4853,24 @@ R1156,Board Games Group for autistic adults (Bridgwater),Bridgwater,address,Glan
 R1156,Board Games Group for autistic adults (Bridgwater),Bridgwater,mode,in-person,https://www.somersetft.nhs.uk/somerset-autism-spectrum-service/somerset-autism-spectrum-service/post-diagnostic-support-information/,A member of the SASS team will be present at the group,2026-11-22
 R1156,Board Games Group for autistic adults (Bridgwater),Bridgwater,access,referral,https://www.somersetft.nhs.uk/somerset-autism-spectrum-service/somerset-autism-spectrum-service/post-diagnostic-support-information/,To access this support we do require that you be referred by your GP or another healthcare professional.,2026-11-22
 R1167,Roots to Work (Bath City Farm),Bath,times,10:00-15:00,https://www.bathcityfarm.org.uk/for-adults/,Once a week for up to 6 months 10am -3pm,2026-11-22
-R1167,Roots to Work (Bath City Farm),Bath,phone,01225 481269,https://www.bathcityfarm.org.uk/for-adults/,01225 481269,2026-11-22
 R1167,Roots to Work (Bath City Farm),Bath,address,"Kelston View, Whiteway",https://www.bathcityfarm.org.uk/for-adults/,"Address Kelston View, Whiteway, Bath BA2 1NW",2026-11-22
 R1167,Roots to Work (Bath City Farm),Bath,mode,in-person,https://www.bathcityfarm.org.uk/for-adults/,Trainees work alongside staff once a week for up to 6 months,2026-11-22
 R1167,Roots to Work (Bath City Farm),Bath,cost,Free,https://www.bathcityfarm.org.uk/for-adults/,Free to access,2026-11-22
+R1167,Roots to Work (Bath City Farm),Bath,phone,01225 481269,https://www.twertonandwhiteway.org/whats_on/roots-to-work/,Get in touch with Amy on 01225 481269 or amy@bathcityfarm.org.uk,2026-11-23
+R1167,Roots to Work (Bath City Farm),Bath,email,amy@bathcityfarm.org.uk,https://www.twertonandwhiteway.org/whats_on/roots-to-work/,Get in touch with Amy on 01225 481269 or amy@bathcityfarm.org.uk,2026-11-23
 R1168,Nature Conservation with the National Trust (Bath City Farm),Bath,days,Tue,https://www.bathcityfarm.org.uk/for-adults/,Tuesdays 10am – 3pm once a month,2026-11-22
 R1168,Nature Conservation with the National Trust (Bath City Farm),Bath,times,10:00-15:00,https://www.bathcityfarm.org.uk/for-adults/,Tuesdays 10am – 3pm once a month,2026-11-22
 R1168,Nature Conservation with the National Trust (Bath City Farm),Bath,email,amy@bathcityfarm.org.uk,https://www.bathcityfarm.org.uk/for-adults/,If you are interested in joining this group please email amy@bathcityfarm.org.uk .,2026-11-22
 R1168,Nature Conservation with the National Trust (Bath City Farm),Bath,address,"Kelston View, Whiteway",https://www.bathcityfarm.org.uk/for-adults/,"Address Kelston View, Whiteway, Bath BA2 1NW",2026-11-22
 R1168,Nature Conservation with the National Trust (Bath City Farm),Bath,mode,in-person,https://www.bathcityfarm.org.uk/for-adults/,Participants will need to be prepared to work in all weathers and gradients,2026-11-22
 R1168,Nature Conservation with the National Trust (Bath City Farm),Bath,cost,Free,https://www.bathcityfarm.org.uk/for-adults/,Free In partnership with The National Trust,2026-11-22
-R1169,The Bath Shed (Bath City Farm),Bath,days,Wed,https://www.bathcityfarm.org.uk/for-adults/,Wednesdays 10am – 3pm Membership Fee,2026-11-22
-R1169,The Bath Shed (Bath City Farm),Bath,times,10:00-15:00,https://www.bathcityfarm.org.uk/for-adults/,Wednesdays 10am – 3pm Membership Fee,2026-11-22
-R1169,The Bath Shed (Bath City Farm),Bath,phone,07973 492766,https://www.bathcityfarm.org.uk/for-adults/,call 07973 492766,2026-11-22
-R1169,The Bath Shed (Bath City Farm),Bath,email,bathshed@outlook.com,https://www.bathcityfarm.org.uk/for-adults/,email bathshed@outlook.com,2026-11-22
-R1169,The Bath Shed (Bath City Farm),Bath,address,"Kelston View, Whiteway",https://www.bathcityfarm.org.uk/for-adults/,"Address Kelston View, Whiteway, Bath BA2 1NW",2026-11-22
-R1169,The Bath Shed (Bath City Farm),Bath,mode,in-person,https://www.bathcityfarm.org.uk/for-adults/,either pop in if we're open,2026-11-22
 R1169,The Bath Shed (Bath City Farm),Bath,cost,Membership fee,https://www.bathcityfarm.org.uk/for-adults/,Wednesdays 10am – 3pm Membership Fee,2026-11-22
+R1169,The Bath Shed (Bath City Farm),Bath,phone,07973 492766,https://e-voice.org.uk/bathshed/,"either pop in if we're open, email bathshed@outlook.com or call 07973 492766",2026-11-23
+R1169,The Bath Shed (Bath City Farm),Bath,email,bathshed@outlook.com,https://e-voice.org.uk/bathshed/,email bathshed@outlook.com or call 07973 492766,2026-11-23
+R1169,The Bath Shed (Bath City Farm),Bath,address,"Kelston View, Whiteway",https://e-voice.org.uk/bathshed/,"Bath Shed Bath City Farm Kelston View, Whiteway Bath Banes BA2 1NW",2026-11-23
+R1169,The Bath Shed (Bath City Farm),Bath,mode,in-person,https://e-voice.org.uk/bathshed/,Shed sessions on Wednesdays and Fridays,2026-11-23
+R1169,The Bath Shed (Bath City Farm),Bath,days,Wed;Fri,https://e-voice.org.uk/bathshed/,We currently run Shed sessions on Wednesdays and Fridays between 1030am and 330pm.,2026-11-23
+R1169,The Bath Shed (Bath City Farm),Bath,times,10:30-15:30,https://e-voice.org.uk/bathshed/,We currently run Shed sessions on Wednesdays and Fridays between 1030am and 330pm.,2026-11-23
 R1171,Coproduction Group for autistic adults (SASS),,mode,online,https://www.somersetft.nhs.uk/somerset-autism-spectrum-service/somerset-autism-spectrum-service/post-diagnostic-support-information/,held online via Microsoft Teams once a month,2026-11-22
 R1173,"Coffee morning (The Good Heart, Frome)",Frome,days,Fri,https://openmentalhealth.org.uk/finding-community-over-a-cuppa/,on the second and fourth Fridays of the month,2026-11-22
 R1173,"Coffee morning (The Good Heart, Frome)",Frome,times,10:00-11:30,https://openmentalhealth.org.uk/finding-community-over-a-cuppa/,from 10:00 am to 11:30 am,2026-11-22
@@ -5176,6 +5192,29 @@ R1298,Citizens Advice drop-in (Keynsham),Keynsham,phone,0808 278 7897,https://ww
 R1298,Citizens Advice drop-in (Keynsham),Keynsham,address,"Keynsham Library & Information Service, Civic Centre, Market Walk",https://www.citizensadvice.org.uk/about-us/contact-us/local-citizens-advice/0014K000009EMNPQA4/,Keynsham Library & Information Service,2026-11-23
 R1298,Citizens Advice drop-in (Keynsham),Keynsham,days,Mon,https://www.citizensadvice.org.uk/about-us/contact-us/local-citizens-advice/0014K000009EMNPQA4/,provides a drop-in service on Monday in the One Stop Shop in Keynsham,2026-11-23
 R1298,Citizens Advice drop-in (Keynsham),Keynsham,times,09:30-14:00,https://www.citizensadvice.org.uk/about-us/contact-us/local-citizens-advice/0014K000009EMNPQA4/,9.30am to 2pm,2026-11-23
+R1301,"Connection Café (digital help, Minehead)",Minehead,days,Thu,https://www.livingbetter.org.uk/event-details/connection-cafe,Every Thursday 1pm - 3pm,2026-11-23
+R1301,"Connection Café (digital help, Minehead)",Minehead,times,13:00-15:00,https://www.livingbetter.org.uk/event-details/connection-cafe,Every Thursday 1pm - 3pm,2026-11-23
+R1301,"Connection Café (digital help, Minehead)",Minehead,address,"Minehead EYE, 1 Mart Road",https://www.livingbetter.org.uk/event-details/connection-cafe,"Minehead EYE, 1 Mart Rd, Minehead TA24 5BJ, UK",2026-11-23
+R1301,"Connection Café (digital help, Minehead)",Minehead,mode,in-person,https://www.livingbetter.org.uk/event-details/connection-cafe,"Come along to our digital cafe for advice about your laptop, smart phone or tablet",2026-11-23
+R1302,Alcombe Friendship Group,Minehead,days,Wed,https://www.livingbetter.org.uk/event-details/alcombe-friendship-group,"Open every other Wednesday, 11am - 2pm",2026-11-23
+R1302,Alcombe Friendship Group,Minehead,times,11:00-14:00,https://www.livingbetter.org.uk/event-details/alcombe-friendship-group,"Open every other Wednesday, 11am - 2pm",2026-11-23
+R1302,Alcombe Friendship Group,Minehead,phone,07594 293199,https://www.livingbetter.org.uk/event-details/alcombe-friendship-group,Contact Penny Williams on 07594293199,2026-11-23
+R1302,Alcombe Friendship Group,Minehead,email,pennywilliamsmc@gmail.com,https://www.livingbetter.org.uk/event-details/alcombe-friendship-group,email pennywilliamsmc@gmail.com,2026-11-23
+R1302,Alcombe Friendship Group,Minehead,address,Alcombe Methodist Church Hall,https://www.livingbetter.org.uk/event-details/alcombe-friendship-group,"Open every other Wednesday, 11am - 2pm at Alcombe Methodist Church Hall",2026-11-23
+R1302,Alcombe Friendship Group,Minehead,mode,in-person,https://www.livingbetter.org.uk/event-details/alcombe-friendship-group,Alcombe Friendship Centre is open!,2026-11-23
+R1302,Alcombe Friendship Group,Minehead,cost,£5 voluntary contribution (food and activity),https://www.livingbetter.org.uk/event-details/alcombe-friendship-group,Voluntary contribution of £5 for food and activity costs.,2026-11-23
+R1303,PALS water exercise group (St Audries),West Quantoxhead,days,Mon-Fri,https://www.livingbetter.org.uk/event-details/pro-active-lifestyle-water-activities-group,"PALS meets at St Audries Holiday Club pool on Monday, Tuesday, Wednesday, Thursday and Friday mornings from 11.30am-12.30pm.",2026-11-23
+R1303,PALS water exercise group (St Audries),West Quantoxhead,times,11:30-12:30,https://www.livingbetter.org.uk/event-details/pro-active-lifestyle-water-activities-group,"PALS meets at St Audries Holiday Club pool on Monday, Tuesday, Wednesday, Thursday and Friday mornings from 11.30am-12.30pm.",2026-11-23
+R1303,PALS water exercise group (St Audries),West Quantoxhead,phone,01643 708356; 07836 717889,https://www.livingbetter.org.uk/event-details/pro-active-lifestyle-water-activities-group,Kathy Stroud Tel: 01643 708356 Peter Wellstood Tel: 07836 717889,2026-11-23
+R1303,PALS water exercise group (St Audries),West Quantoxhead,address,St Audries Holiday Club pool,https://www.livingbetter.org.uk/event-details/pro-active-lifestyle-water-activities-group,"PALS meets at St Audries Holiday Club pool on Monday, Tuesday, Wednesday, Thursday and Friday mornings from 11.30am-12.30pm.",2026-11-23
+R1303,PALS water exercise group (St Audries),West Quantoxhead,mode,in-person,https://www.livingbetter.org.uk/event-details/pro-active-lifestyle-water-activities-group,meet weekly to have fun and enjoy the benefits of water-based exercises in a warm pool at St Audries Holiday Club.,2026-11-23
+R1303,PALS water exercise group (St Audries),West Quantoxhead,cost,£5 per session (membership £20 per year),https://www.livingbetter.org.uk/event-details/pro-active-lifestyle-water-activities-group,Membership of PALS is £20 per year. You must be a member to benefit from the aqua-aerobic sessions. The sessions cost £5.,2026-11-23
+R1304,Jolly Codgers (Minehead),Minehead,days,Mon,https://www.livingbetter.org.uk/event-details/jolly-codgers,"Every Monday, except bank holidays",2026-11-23
+R1304,Jolly Codgers (Minehead),Minehead,times,10:00-15:00,https://www.livingbetter.org.uk/event-details/jolly-codgers,"Every Monday, except bank holidays - 10am - 3pm",2026-11-23
+R1304,Jolly Codgers (Minehead),Minehead,phone,07595 071680,https://www.livingbetter.org.uk/event-details/jolly-codgers,Call 07595071680 to book.,2026-11-23
+R1304,Jolly Codgers (Minehead),Minehead,address,"Lawns Community Halls, Townsend Road",https://www.livingbetter.org.uk/event-details/jolly-codgers,"Lawns Community Halls, Townsend Rd, Minehead TA24 5RQ, UK",2026-11-23
+R1304,Jolly Codgers (Minehead),Minehead,mode,in-person,https://www.livingbetter.org.uk/event-details/jolly-codgers,"Lawns Community Halls, Townsend Rd, Minehead TA24 5RQ, UK",2026-11-23
+R1304,Jolly Codgers (Minehead),Minehead,cost,£15 including lunch and refreshments,https://www.livingbetter.org.uk/event-details/jolly-codgers,£15 including lunch and refreshments,2026-11-23
 R1305,Wild Roots Growing for Wellbeing (Baltonsborough),Baltonsborough,days,Mon,https://wilderwoods.org/projects/,Growing for Wellbeing Group Mondays 10.30-1pm,2026-11-23
 R1305,Wild Roots Growing for Wellbeing (Baltonsborough),Baltonsborough,times,10:30-13:00,https://wilderwoods.org/projects/,Mondays 10.30-1pm,2026-11-23
 R1305,Wild Roots Growing for Wellbeing (Baltonsborough),Baltonsborough,email,ursula@wilderwoods.org,https://wilderwoods.org/projects/,For more information contact Ursula Casey at ursula@wilderwoods.org,2026-11-23
@@ -5208,6 +5247,8 @@ R1311,Active Living Exercise Class (Frome),Frome,times,13:55-15:00,https://healt
 R1311,Active Living Exercise Class (Frome),Frome,phone,07967 023406,https://healthconnectionsmendip.org/active-living-exercise-class/,Jo Fordham 07967 023406,2026-11-23
 R1311,Active Living Exercise Class (Frome),Frome,address,"Christchurch Hall, Park Road",https://healthconnectionsmendip.org/active-living-exercise-class/,"Where: Christchurch Hall, Park Road, Frome BA11 1EU",2026-11-23
 R1311,Active Living Exercise Class (Frome),Frome,mode,in-person,https://healthconnectionsmendip.org/active-living-exercise-class/,"Where: Christchurch Hall, Park Road, Frome BA11 1EU",2026-11-23
+R1312,Baby Connections (Frome),Frome,email,babyconnectionsfrome@gmail.com,https://www.fromebabyconnections.com/contact,babyconnectionsfrome@gmail.com,2026-11-23
+R1312,Baby Connections (Frome),Frome,address,"Key Centre, Feltham Lane",https://www.fromebabyconnections.com/contact,"The Key Centre, Feltham Lane, Frome, BA11 5AJ",2026-11-23
 R1314,Better Nature Ecotherapy monthly session (Frome),Frome,days,Fri,https://www.betternature.org.uk/drop-in-sessions,First Friday of each month in 2025,2026-11-23
 R1314,Better Nature Ecotherapy monthly session (Frome),Frome,times,10:00-12:00,https://www.betternature.org.uk/drop-in-sessions,Time: 10am - 12pm,2026-11-23
 R1314,Better Nature Ecotherapy monthly session (Frome),Frome,phone,07716 351171,https://www.betternature.org.uk/drop-in-sessions,Call Barbara: 07716351171 Tom: 07812668172,2026-11-23
@@ -5215,6 +5256,11 @@ R1314,Better Nature Ecotherapy monthly session (Frome),Frome,email,betternaturec
 R1314,Better Nature Ecotherapy monthly session (Frome),Frome,address,Rodden Manor Nature Project,https://www.betternature.org.uk/drop-in-sessions,"Location: Rodden Manor Nature Project, Frome",2026-11-23
 R1314,Better Nature Ecotherapy monthly session (Frome),Frome,mode,in-person,https://www.betternature.org.uk/drop-in-sessions,"Location: Rodden Manor Nature Project, Frome",2026-11-23
 R1314,Better Nature Ecotherapy monthly session (Frome),Frome,cost,Sliding scale £1-£10,https://www.betternature.org.uk/drop-in-sessions,Cost: Sliding scale from £1 - £10,2026-11-23
+R1315,COPD Support Group (Frome),Frome,days,Thu,https://healthconnectionsmendip.org/copd-peer-support-group/,"Second Thursday of every month, 10.30am – 12 noon",2026-11-23
+R1315,COPD Support Group (Frome),Frome,times,10:30-12:00,https://healthconnectionsmendip.org/copd-peer-support-group/,"Second Thursday of every month, 10.30am – 12 noon",2026-11-23
+R1315,COPD Support Group (Frome),Frome,phone,01373 468368,https://healthconnectionsmendip.org/copd-peer-support-group/,01373 468368,2026-11-23
+R1315,COPD Support Group (Frome),Frome,email,mendip.healthconnections@nhs.net,https://healthconnectionsmendip.org/copd-peer-support-group/,mendip.healthconnections@nhs.net,2026-11-23
+R1315,COPD Support Group (Frome),Frome,address,"Cordero Lounge, Westway Shopping Centre, 5 Westway",https://healthconnectionsmendip.org/copd-peer-support-group/,"Cordero Lounge, Westway Shopping Centre, 5 Westway",2026-11-23
 R1317,"Children's clothing exchange (Wesley Church, Frome)",Frome,days,Mon,https://healthconnectionsmendip.org/childrens-clothing-exchange-frome/,Every 3rd monday of the month 9.30-11am,2026-11-23
 R1317,"Children's clothing exchange (Wesley Church, Frome)",Frome,times,09:30-11:00,https://healthconnectionsmendip.org/childrens-clothing-exchange-frome/,Every 3rd monday of the month 9.30-11am,2026-11-23
 R1317,"Children's clothing exchange (Wesley Church, Frome)",Frome,phone,01373 452383,https://healthconnectionsmendip.org/childrens-clothing-exchange-frome/,01373 452383,2026-11-23
@@ -5224,6 +5270,11 @@ R1317,"Children's clothing exchange (Wesley Church, Frome)",Frome,mode,in-person
 R1317,"Children's clothing exchange (Wesley Church, Frome)",Frome,cost,Free,https://healthconnectionsmendip.org/childrens-clothing-exchange-frome/,Cost: Free,2026-11-23
 R1318,"Digital Café (Cheese and Grain, Frome)",Frome,days,Thu,https://www.fromemedicalpractice.co.uk/digital-health-support,"Digital Cafe Every Thursday 10am to 11:30am, in the cafe at the Cheese and Grain",2026-11-23
 R1318,"Digital Café (Cheese and Grain, Frome)",Frome,times,10:00-11:30,https://www.fromemedicalpractice.co.uk/digital-health-support,"Digital Cafe Every Thursday 10am to 11:30am, in the cafe at the Cheese and Grain",2026-11-23
+R1319,"NHS App help drop-in (Frome Medical Practice, Tuesday)",Frome,days,Tue,https://www.fromemedicalpractice.co.uk/digital-health-support,Digital Health Desk Tuesday 10am to midday in the Live Well room (main reception area) at the practice,2026-11-23
+R1319,"NHS App help drop-in (Frome Medical Practice, Tuesday)",Frome,times,10:00-12:00,https://www.fromemedicalpractice.co.uk/digital-health-support,Digital Health Desk Tuesday 10am to midday in the Live Well room (main reception area) at the practice,2026-11-23
+R1319,"NHS App help drop-in (Frome Medical Practice, Tuesday)",Frome,phone,01373 301301,https://www.fromemedicalpractice.co.uk/digital-health-support,Telephone: 01373 301301,2026-11-23
+R1319,"NHS App help drop-in (Frome Medical Practice, Tuesday)",Frome,address,"Live Well room, Frome Medical Practice, Enos Way",https://www.fromemedicalpractice.co.uk/digital-health-support,"Frome Medical Centre Enos Way, Frome Somerset BA11 2FH",2026-11-23
+R1319,"NHS App help drop-in (Frome Medical Practice, Tuesday)",Frome,mode,in-person,https://www.fromemedicalpractice.co.uk/digital-health-support,You can also meet them in person for help at one of our digital health drop-ins.,2026-11-23
 R1320,"NHS App help drop-in (Frome Medical Practice, Thursday)",Frome,days,Thu,https://www.fromemedicalpractice.co.uk/digital-health-support,Thursday 4pm to 8pm in the Live Well room (main reception area) at the practice,2026-11-23
 R1320,"NHS App help drop-in (Frome Medical Practice, Thursday)",Frome,times,16:00-20:00,https://www.fromemedicalpractice.co.uk/digital-health-support,Thursday 4pm to 8pm in the Live Well room (main reception area) at the practice,2026-11-23
 R1320,"NHS App help drop-in (Frome Medical Practice, Thursday)",Frome,address,"Live Well room, Frome Medical Practice, Enos Way",https://www.fromemedicalpractice.co.uk/digital-health-support,"Frome Medical Centre Enos Way, Frome",2026-11-23
@@ -5239,6 +5290,15 @@ R1323,NHS App pop-up help (Fair Frome),Frome,times,10:00-12:00,https://www.frome
 R1323,NHS App pop-up help (Fair Frome),Frome,address,"Fair Frome Centre, Unit 7 Longacre, Marston Trading Estate",https://www.fromemedicalpractice.co.uk/digital-health-support,"3rd Friday of the month at Fair Frome, Marston Trading Estate from 10am to midday",2026-11-23
 R1323,NHS App pop-up help (Fair Frome),Frome,mode,in-person,https://www.fromemedicalpractice.co.uk/digital-health-support,"3rd Friday of the month at Fair Frome, Marston Trading Estate from 10am to midday",2026-11-23
 R1323,NHS App pop-up help (Fair Frome),Frome,frequency,3rd Fri of month,https://www.fromemedicalpractice.co.uk/digital-health-support,"3rd Friday of the month at Fair Frome, Marston Trading Estate",2026-11-23
+R1325,Energy advice drop-in (Frome Medical Practice),Frome,phone,01373 480391,https://www.frometowncouncil.gov.uk/our-community/our-sustainability-work/healthy-homes/energy-advice/,by calling 01373 480391,2026-11-23
+R1325,Energy advice drop-in (Frome Medical Practice),Frome,email,EnergyAdvice@frometowncouncil.gov.uk,https://www.frometowncouncil.gov.uk/our-community/our-sustainability-work/healthy-homes/energy-advice/,EnergyAdvice@frometowncouncil.gov.uk,2026-11-23
+R1325,Energy advice drop-in (Frome Medical Practice),Frome,mode,in-person,https://www.frometowncouncil.gov.uk/our-community/our-sustainability-work/healthy-homes/energy-advice/,Stop by for a one-on-one discussion,2026-11-23
+R1326,FLOC SEND parent carer group (Frome),Frome,days,Wed,https://www.somerset.gov.uk/events/floc-frome-community-meet-up/,Fourth Wednesday of the month,2026-11-23
+R1326,FLOC SEND parent carer group (Frome),Frome,times,19:30-20:30,https://www.somerset.gov.uk/events/floc-frome-community-meet-up/,from 7:30pm to 8:30pm,2026-11-23
+R1326,FLOC SEND parent carer group (Frome),Frome,email,flocforsend@gmail.com,https://www.somerset.gov.uk/events/floc-frome-community-meet-up/,Email: flocforsend@gmail.com,2026-11-23
+R1326,FLOC SEND parent carer group (Frome),Frome,address,"The Good Heart Café, 7 Palmer Street",https://www.somerset.gov.uk/events/floc-frome-community-meet-up/,"Address: The Good Heart,7 Palmer Street,Frome,BA11 1DS",2026-11-23
+R1326,FLOC SEND parent carer group (Frome),Frome,mode,in-person,https://www.somerset.gov.uk/events/floc-frome-community-meet-up/,"Address: The Good Heart,7 Palmer Street,Frome,BA11 1DS",2026-11-23
+R1326,FLOC SEND parent carer group (Frome),Frome,cost,£5 suggested donation (no one turned away),https://www.somerset.gov.uk/events/floc-frome-community-meet-up/,Cost of event: £5 suggested donation (no one turned away),2026-11-23
 R1328,Inclusion Health drop-in (Fair Frome),Frome,days,Mon,https://fairfrome.org/other-projects/,Inclusion Health Drop-in: First Monday of the month 1-3pm,2026-11-23
 R1328,Inclusion Health drop-in (Fair Frome),Frome,times,13:00-15:00,https://fairfrome.org/other-projects/,Inclusion Health Drop-in: First Monday of the month 1-3pm,2026-11-23
 R1328,Inclusion Health drop-in (Fair Frome),Frome,phone,01373 488578,https://fairfrome.org/other-projects/,Main: 01373 488578 Mobile: 07714 587129,2026-11-23
@@ -5461,6 +5521,11 @@ R1381,Brighter Days Ahead (Pilton),Pilton,days,Thu,https://healthconnectionsmend
 R1381,Brighter Days Ahead (Pilton),Pilton,times,10:00-15:00,https://healthconnectionsmendip.org/brighter-days-ahead-glastonbury/,every Thursday (10am to 3pm),2026-11-23
 R1381,Brighter Days Ahead (Pilton),Pilton,address,Pilton Village Hall,https://healthconnectionsmendip.org/brighter-days-ahead-glastonbury/,Join us at The Hazel Hub every Thursday,2026-11-23
 R1381,Brighter Days Ahead (Pilton),Pilton,mode,in-person,https://healthconnectionsmendip.org/brighter-days-ahead-glastonbury/,Based in Pilton Village Hall.,2026-11-23
+R1382,Chair Yoga (Glastonbury Library),Glastonbury,days,Fri,https://www.somerset.gov.uk/events/chair-yoga-glastonbury-library/,Weekly on a Friday,2026-11-23
+R1382,Chair Yoga (Glastonbury Library),Glastonbury,times,14:00-15:00,https://www.somerset.gov.uk/events/chair-yoga-glastonbury-library/,from 2pm to 3pm,2026-11-23
+R1382,Chair Yoga (Glastonbury Library),Glastonbury,email,glalib@somerset.gov.uk,https://www.somerset.gov.uk/events/chair-yoga-glastonbury-library/,Email: glalib@somerset.gov.uk,2026-11-23
+R1382,Chair Yoga (Glastonbury Library),Glastonbury,address,"Glastonbury Library, 1 Orchard Court, The Archers Way",https://www.somerset.gov.uk/events/chair-yoga-glastonbury-library/,"Address: 1 The Library,Orchard Court,Glastonbury,BA6 9JB",2026-11-23
+R1382,Chair Yoga (Glastonbury Library),Glastonbury,cost,Donations welcome,https://www.somerset.gov.uk/events/chair-yoga-glastonbury-library/,Cost of event: By donation,2026-11-23
 R1383,Cosy Crime Book Club (Glastonbury),Glastonbury,days,Mon,https://healthconnectionsmendip.org/cosy-crime-book-club-glastonbury/,Book Club is the last Monday of each month at 7pm,2026-11-23
 R1383,Cosy Crime Book Club (Glastonbury),Glastonbury,times,19:00,https://healthconnectionsmendip.org/cosy-crime-book-club-glastonbury/,Book Club is the last Monday of each month at 7pm,2026-11-23
 R1383,Cosy Crime Book Club (Glastonbury),Glastonbury,phone,01458 831023,https://healthconnectionsmendip.org/cosy-crime-book-club-glastonbury/,01458 831023,2026-11-23
@@ -5471,6 +5536,10 @@ R1384,Fisher's Hill Community Garden (Glastonbury),Glastonbury,times,11:30-14:00
 R1384,Fisher's Hill Community Garden (Glastonbury),Glastonbury,email,info@somersetcommunityfood.org,https://www.somersetcommunityfood.org.uk/projects/fishers-hill-community-garden,"Contact links on page: samanthajane_james@yahoo.co.uk, info@somersetcommunityfood.org",2026-11-23
 R1384,Fisher's Hill Community Garden (Glastonbury),Glastonbury,address,"Bere Lane Recreation Ground, Bere Lane",https://www.somersetcommunityfood.org.uk/projects/fishers-hill-community-garden,Bere Lane Recreation Ground Bere Lane Glastonbury BA6 8BA,2026-11-23
 R1384,Fisher's Hill Community Garden (Glastonbury),Glastonbury,mode,in-person,https://www.somersetcommunityfood.org.uk/projects/fishers-hill-community-garden,Fisher’s Hill Community Garden is an open green space where local people get together,2026-11-23
+R1386,Grove Wellbeing: Celtic Wheel Poetry group,Glastonbury,days,Mon,https://www.grovewellbeing.co.uk/bardic,The Bardic Poetry group is held every Monday at 10am,2026-11-23
+R1386,Grove Wellbeing: Celtic Wheel Poetry group,Glastonbury,times,10:00,https://www.grovewellbeing.co.uk/bardic,The Bardic Poetry group is held every Monday at 10am,2026-11-23
+R1386,Grove Wellbeing: Celtic Wheel Poetry group,Glastonbury,mode,in-person,https://www.grovewellbeing.co.uk/bardic,held every Monday at 10am inside Glastonbury's St Johns Church Wellbeing Cafe,2026-11-23
+R1386,Grove Wellbeing: Celtic Wheel Poetry group,Glastonbury,cost,Free if you live in Glastonbury and earn under £25k; otherwise £10 per workshop,https://www.grovewellbeing.co.uk/bardic,"or £10 per workshop, for those who earn over £25k a year",2026-11-23
 R1387,Grove Wellbeing: Art as Therapy (Monday),Glastonbury,days,Mon,https://www.grovewellbeing.co.uk/art,This group meets every Monday afternoon at 12.30,2026-11-23
 R1387,Grove Wellbeing: Art as Therapy (Monday),Glastonbury,times,12:30-14:00,https://www.grovewellbeing.co.uk/art,This group meets every Monday afternoon at 12.30,2026-11-23
 R1387,Grove Wellbeing: Art as Therapy (Monday),Glastonbury,cost,Free if you live in Glastonbury and earn under £25k; otherwise £10 per workshop,https://www.grovewellbeing.co.uk/art,This support group is free if you live in Glastonbury and earn under £25k or £10 per workshop for those who earn over £25k a year,2026-11-23
@@ -5488,10 +5557,19 @@ R1390,Grove Wellbeing: Flower Tea & Folklore meditation,Glastonbury,email,Info@g
 R1390,Grove Wellbeing: Flower Tea & Folklore meditation,Glastonbury,address,"Avalon Community Centre, King Street",https://healthconnectionsmendip.org/grove-wellbeing-glastonbury/,"Wednesday – Flower Tea & Folklore mindfulness meditation group, 11am-1pm at The Avalon Community Centre, King Street BA6 9JY",2026-11-23
 R1390,Grove Wellbeing: Flower Tea & Folklore meditation,Glastonbury,mode,in-person,https://healthconnectionsmendip.org/grove-wellbeing-glastonbury/,"Wednesday – Flower Tea & Folklore mindfulness meditation group, 11am-1pm at The Avalon Community Centre, King Street BA6 9JY",2026-11-23
 R1390,Grove Wellbeing: Flower Tea & Folklore meditation,Glastonbury,cost,"Free, limited spaces",https://healthconnectionsmendip.org/grove-wellbeing-glastonbury/,Groups are free but with limited spaces.,2026-11-23
+R1391,Grove Wellbeing: community allotment,Glastonbury,days,Thu,https://www.grovewellbeing.co.uk/garden,This group is held every Thursday 11am-1pm in Glastonbury,2026-11-23
+R1391,Grove Wellbeing: community allotment,Glastonbury,times,11:00-13:00,https://www.grovewellbeing.co.uk/garden,This group is held every Thursday 11am-1pm in Glastonbury,2026-11-23
+R1391,Grove Wellbeing: community allotment,Glastonbury,mode,in-person,https://www.grovewellbeing.co.uk/garden,In our shared allotment,2026-11-23
+R1391,Grove Wellbeing: community allotment,Glastonbury,cost,Free if you live in Glastonbury and earn under £25k; otherwise £10 per workshop,https://www.grovewellbeing.co.uk/garden,"This support group is free if you live in Glastonbury and earn under £25k or £10 per workshop, for those who earn over £25k a year",2026-11-23
 R1392,Manor House Road Community Garden (Glastonbury),Glastonbury,days,Thu,https://www.somersetcommunityfood.org.uk/projects/manor-house-road-community-garden,We meet on Thursday mornings which are our gardening times,2026-11-23
 R1392,Manor House Road Community Garden (Glastonbury),Glastonbury,email,info@somersetcommunityfood.org,https://www.somersetcommunityfood.org.uk/projects/manor-house-road-community-garden,Contact links on page: info@somersetcommunityfood.org,2026-11-23
 R1392,Manor House Road Community Garden (Glastonbury),Glastonbury,address,Manor House Road,https://www.somersetcommunityfood.org.uk/projects/manor-house-road-community-garden,"Location: behind the top end of Manor House Road on the odd side, Glastonbury",2026-11-23
 R1392,Manor House Road Community Garden (Glastonbury),Glastonbury,mode,in-person,https://www.somersetcommunityfood.org.uk/projects/manor-house-road-community-garden,We have a community garden which we manage with several aims in mind,2026-11-23
+R1393,Paddington Farm volunteering (Glastonbury),Glastonbury,days,Wed,https://paddingtonfarm.co.uk/our-work/volunteering-2/,We have a regular volunteer session every Wednesday from 9.30-1.00pm.,2026-11-23
+R1393,Paddington Farm volunteering (Glastonbury),Glastonbury,times,09:30-13:00,https://paddingtonfarm.co.uk/our-work/volunteering-2/,We have a regular volunteer session every Wednesday from 9.30-1.00pm.,2026-11-23
+R1393,Paddington Farm volunteering (Glastonbury),Glastonbury,phone,01458 832752,https://paddingtonfarm.co.uk/our-work/volunteering-2/,01458 832 752 info@paddingtonfarm.co.uk,2026-11-23
+R1393,Paddington Farm volunteering (Glastonbury),Glastonbury,email,info@paddingtonfarm.co.uk,https://paddingtonfarm.co.uk/our-work/volunteering-2/,01458 832 752 info@paddingtonfarm.co.uk,2026-11-23
+R1393,Paddington Farm volunteering (Glastonbury),Glastonbury,mode,in-person,https://paddingtonfarm.co.uk/our-work/volunteering-2/,help with a range of seasonal tasks in our organic vegetable garden or out on the wider farm,2026-11-23
 R1394,Poetry Group (Glastonbury Library),Glastonbury,days,Sat,https://www.somerset.gov.uk/events/poetry-group-glastonbury-library/,First Saturday of the month,2026-11-23
 R1394,Poetry Group (Glastonbury Library),Glastonbury,times,10:30-12:30,https://www.somerset.gov.uk/events/poetry-group-glastonbury-library/,1st Saturday of the Month at 10:30am-12:30pm,2026-11-23
 R1394,Poetry Group (Glastonbury Library),Glastonbury,email,glalib@somerset.gov.uk,https://www.somerset.gov.uk/events/poetry-group-glastonbury-library/,Email: glalib@somerset.gov.uk,2026-11-23
@@ -5655,6 +5733,7 @@ R1429,Seed of Hope therapeutic gardening (Street),Street,email,hi@seedofhope.org
 R1429,Seed of Hope therapeutic gardening (Street),Street,address,"Three Acre Wood, edge of Street",https://seedofhope.org.uk/therapeutic-groups/,"Three Acre Wood, Community Food Forest. A developing food forest on the edge of Street.",2026-11-23
 R1429,Seed of Hope therapeutic gardening (Street),Street,mode,in-person,https://seedofhope.org.uk/therapeutic-groups/,"Three Acre Wood, Community Food Forest.",2026-11-23
 R1429,Seed of Hope therapeutic gardening (Street),Street,access,sign up,https://seedofhope.org.uk/therapeutic-groups/,If you would like to attend a group contact us or message us on Whatsapp,2026-11-23
+R1429,Seed of Hope therapeutic gardening (Street),Street,times,10:00-15:00,https://seedofhope.org.uk/therapeutic-groups/,Each group meets at 10am (ish) starting with a cup of tea and catch up... ending around 3pm,2026-11-23
 R1430,Street Men! male voice choir,Street,days,Thu,https://healthconnectionsmendip.org/street-men-male-voice-choir-street/,Thursdays 8.30pm to 9.30pm,2026-11-23
 R1430,Street Men! male voice choir,Street,times,20:30-21:30,https://healthconnectionsmendip.org/street-men-male-voice-choir-street/,Thursdays 8.30pm to 9.30pm,2026-11-23
 R1430,Street Men! male voice choir,Street,phone,01749 671347,https://healthconnectionsmendip.org/street-men-male-voice-choir-street/,01749 671347,2026-11-23
@@ -5669,6 +5748,13 @@ R1432,Connect-ed inclusive games group (Wells),Wells,email,vaughan_spruce@hotmai
 R1432,Connect-ed inclusive games group (Wells),Wells,address,"The Lawrence Centre, 37 Chamberlain Street",https://healthconnectionsmendip.org/connect-ed-wells/,"Where: The Lawrence Centre, 37 Chamberlain Street, Wells BA5 2PQ",2026-11-23
 R1432,Connect-ed inclusive games group (Wells),Wells,mode,in-person,https://healthconnectionsmendip.org/connect-ed-wells/,"Face-to-face peer support in a friendly, relaxed environment.",2026-11-23
 R1432,Connect-ed inclusive games group (Wells),Wells,cost,Free,https://healthconnectionsmendip.org/connect-ed-wells/,What: Free games and social group for adults. All welcome.,2026-11-23
+R1433,"Dance 4 Parkinson's (Henton, Wells)",Wells,days,Thu,https://healthconnectionsmendip.org/dance-4-parkinsons-wells/,"Thursday during term time, 11am – 1.30pm",2026-11-23
+R1433,"Dance 4 Parkinson's (Henton, Wells)",Wells,times,11:00-13:30,https://healthconnectionsmendip.org/dance-4-parkinsons-wells/,"Thursday during term time, 11am – 1.30pm",2026-11-23
+R1433,"Dance 4 Parkinson's (Henton, Wells)",Wells,phone,01749 870457,https://healthconnectionsmendip.org/dance-4-parkinsons-wells/,01749 870457,2026-11-23
+R1433,"Dance 4 Parkinson's (Henton, Wells)",Wells,email,sueisherwood9@gmail.com,https://healthconnectionsmendip.org/dance-4-parkinsons-wells/,sueisherwood9@gmail.com,2026-11-23
+R1433,"Dance 4 Parkinson's (Henton, Wells)",Wells,address,"Henton Hall, Henton",https://healthconnectionsmendip.org/dance-4-parkinsons-wells/,"Henton Hall, Henton, Wells BA5 1PD",2026-11-23
+R1433,"Dance 4 Parkinson's (Henton, Wells)",Wells,mode,in-person,https://healthconnectionsmendip.org/dance-4-parkinsons-wells/,"Where: Henton Hall, Henton, Wells BA5 1PD",2026-11-23
+R1433,"Dance 4 Parkinson's (Henton, Wells)",Wells,cost,£7 per person (first session free),https://healthconnectionsmendip.org/dance-4-parkinsons-wells/,£7 per person (first session is free),2026-11-23
 R1434,Ladies Walking Group (Wells),Wells,days,Wed,https://healthconnectionsmendip.org/ladies-walking-group-wells/,When: Wednesdays at 6.15pm,2026-11-23
 R1434,Ladies Walking Group (Wells),Wells,times,18:15,https://healthconnectionsmendip.org/ladies-walking-group-wells/,Wednesdays at 6.15pm,2026-11-23
 R1434,Ladies Walking Group (Wells),Wells,address,"Benches outside The Crown, Market Place",https://healthconnectionsmendip.org/ladies-walking-group-wells/,"Benches outside The Crown Pub, Market Place, Wells BA5 2RP",2026-11-23
@@ -5690,11 +5776,12 @@ R1437,Repair Café (Wells),Wells,times,10:00-12:30,https://healthconnectionsmend
 R1437,Repair Café (Wells),Wells,email,repaircafe.wells@gmail.com,https://healthconnectionsmendip.org/repair-cafe-and-community-freecycle-wells/,repaircafe.wells@gmail.com,2026-11-23
 R1437,Repair Café (Wells),Wells,address,St Thomas' Church Hall or Wells Library,https://healthconnectionsmendip.org/repair-cafe-and-community-freecycle-wells/,"At St Thomas' Church Hall – 25th January, 29th March, 31st May",2026-11-23
 R1437,Repair Café (Wells),Wells,mode,in-person,https://healthconnectionsmendip.org/repair-cafe-and-community-freecycle-wells/,Bring your broken items to this friendly community group.,2026-11-23
-R1438,Sing2breathe (Wells Health Centre),Wells,days,Thu,https://sing2breathe.org/index.php/attend-a-class/,"Wells – Thursday afternoons 2.15-3.30pm Priory Medical Park, Wells",2026-11-23
-R1438,Sing2breathe (Wells Health Centre),Wells,times,14:15-15:30,https://sing2breathe.org/index.php/attend-a-class/,"Wells – Thursday afternoons 2.15-3.30pm Priory Medical Park, Wells",2026-11-23
-R1438,Sing2breathe (Wells Health Centre),Wells,email,hello@sing2breathe.org,https://sing2breathe.org/index.php/attend-a-class/,Participant Enquiries: hello@sing2breathe.org,2026-11-23
 R1438,Sing2breathe (Wells Health Centre),Wells,address,"Wells Health Centre, Priory Health Park, Glastonbury Road",https://sing2breathe.org/index.php/attend-a-class/,"Wells – Thursday afternoons 2.15-3.30pm Priory Medical Park, Wells",2026-11-23
+R1438,Sing2breathe (Wells Health Centre),Wells,days,Thu,https://sing2breathe.org/index.php/attend-a-class/,Wells – Thursday afternoons 2.15-3.30pm,2026-11-23
+R1438,Sing2breathe (Wells Health Centre),Wells,times,14:15-15:30,https://sing2breathe.org/index.php/attend-a-class/,Wells – Thursday afternoons 2.15-3.30pm,2026-11-23
+R1438,Sing2breathe (Wells Health Centre),Wells,email,hello@sing2breathe.org,https://sing2breathe.org/index.php/attend-a-class/,Please contact us at hello@sing2breathe.org to find out more or to be added to our waiting list.,2026-11-23
 R1438,Sing2breathe (Wells Health Centre),Wells,mode,in-person,https://sing2breathe.org/index.php/attend-a-class/,Our groups meet either weekly or fortnightly at:,2026-11-23
+R1438,Sing2breathe (Wells Health Centre),Wells,access,sign up,https://sing2breathe.org/index.php/attend-a-class/,Please contact us at hello@sing2breathe.org to find out more or to be added to our waiting list.,2026-11-23
 R1440,Wells u3a coffee morning,Wells,days,Thu,https://wells.u3asite.uk/drop-in-coffee-mornings/,Thursdays from 10.30–11.30,2026-11-23
 R1440,Wells u3a coffee morning,Wells,times,10:30-11:30,https://wells.u3asite.uk/drop-in-coffee-mornings/,Thursdays from 10.30–11.30,2026-11-23
 R1440,Wells u3a coffee morning,Wells,address,"Chamberlain Hall, Portway Annexe",https://wells.u3asite.uk/drop-in-coffee-mornings/,"Chamberlain Hall at the Portway Annexe, Wells BA5 2QF",2026-11-23
@@ -5734,6 +5821,11 @@ R1448,Mind in Somerset online peer support group,,phone,0800 138 1692,https://ww
 R1448,Mind in Somerset online peer support group,,email,info@mindinsomerset.org.uk,https://www.mindinsomerset.org.uk/our-services/peer-support/wellbeing-friends-online-group/,Contact info@mindinsomerset.org.uk for information on how to join.,2026-11-23
 R1448,Mind in Somerset online peer support group,,mode,online,https://www.mindinsomerset.org.uk/our-services/peer-support/wellbeing-friends-online-group/,Wellbeing Friends Online Group,2026-11-23
 R1448,Mind in Somerset online peer support group,,access,sign up,https://www.mindinsomerset.org.uk/our-services/peer-support/wellbeing-friends-online-group/,Contact info@mindinsomerset.org.uk for information on how to join.,2026-11-23
+R1450,Mojo Moves seated exercise (online),,days,Wed,https://www.mojomoves.co.uk/booking-calendar/wednesday-11am-free-seated-workout,WEDNESDAY 11AM FREE SEATED WORKOUT,2026-11-23
+R1450,Mojo Moves seated exercise (online),,times,11:00,https://www.mojomoves.co.uk/booking-calendar/wednesday-11am-free-seated-workout,WEDNESDAY 11AM FREE SEATED WORKOUT,2026-11-23
+R1450,Mojo Moves seated exercise (online),,email,cheryl@mojomoves.co.uk,https://www.mojomoves.co.uk/booking-calendar/wednesday-11am-free-seated-workout,value appears on the page,2026-11-23
+R1450,Mojo Moves seated exercise (online),,mode,online,https://www.mojomoves.co.uk/booking-calendar/wednesday-11am-free-seated-workout,ONLINE seated session,2026-11-23
+R1450,Mojo Moves seated exercise (online),,cost,Free,https://www.mojomoves.co.uk/booking-calendar/wednesday-11am-free-seated-workout,WEDNESDAY 11AM FREE SEATED WORKOUT,2026-11-23
 R1451,"Mojo Moves dance exercise (Colliers Court, Frome)",Frome,days,Mon,https://www.mojomoves.co.uk/book-online,"MONDAY 1.30pm COLLIERS COURT, FROME Face to face session 30 min",2026-11-23
 R1451,"Mojo Moves dance exercise (Colliers Court, Frome)",Frome,address,Colliers Court,https://www.mojomoves.co.uk/book-online,"MONDAY 1.30pm COLLIERS COURT, FROME",2026-11-23
 R1451,"Mojo Moves dance exercise (Colliers Court, Frome)",Frome,mode,in-person,https://www.mojomoves.co.uk/book-online,Face to face session 30 min,2026-11-23
@@ -5837,6 +5929,12 @@ R1470,Intercom Trust LGBT+ helpline,,phone,0800 612 3010,https://www.intercomtru
 R1470,Intercom Trust LGBT+ helpline,,email,helpline@intercomtrust.org.uk,https://www.intercomtrust.org.uk/helpline/,helpline@intercomtrust.org.uk,2026-11-23
 R1470,Intercom Trust LGBT+ helpline,,mode,phone,https://www.intercomtrust.org.uk/helpline/,Confidential Helpline 0800 612 3010,2026-11-23
 R1470,Intercom Trust LGBT+ helpline,,cost,Free,https://www.intercomtrust.org.uk/helpline/,Our free and confidential helpline,2026-11-23
+R1471,Macular Society advice line,,days,Mon-Fri,https://www.macularsociety.org/support/one-to-one/helpline/,Lines are open 9am - 5pm Monday to Friday.,2026-11-23
+R1471,Macular Society advice line,,times,09:00-17:00,https://www.macularsociety.org/support/one-to-one/helpline/,Lines are open 9am - 5pm Monday to Friday.,2026-11-23
+R1471,Macular Society advice line,,phone,0300 3030 111,https://www.macularsociety.org/support/one-to-one/helpline/,Call our helpline on 0300 3030 111,2026-11-23
+R1471,Macular Society advice line,,email,help@macularsociety.org,https://www.macularsociety.org/support/one-to-one/helpline/,Or email help@macularsociety.org to find out how we can help.,2026-11-23
+R1471,Macular Society advice line,,mode,phone,https://www.macularsociety.org/support/one-to-one/helpline/,Call our helpline on 0300 3030 111,2026-11-23
+R1471,Macular Society advice line,,cost,Free,https://www.macularsociety.org/support/one-to-one/helpline/,Free confidential advice and support,2026-11-23
 R1472,Miscarriage UK support line (Tue and Thu),,times,09:00-16:00,https://www.miscarriageuk.org/our-support-services/,fri 9am - 4pm,2026-11-23
 R1472,Miscarriage UK support line (Tue and Thu),,phone,0303 003 6464,https://www.miscarriageuk.org/our-support-services/,Let's Talk +44 303 003 6464,2026-11-23
 R1472,Miscarriage UK support line (Tue and Thu),,mode,phone,https://www.miscarriageuk.org/our-support-services/,Let's Talk +44 303 003 6464,2026-11-23
@@ -5860,6 +5958,17 @@ R1476,National Sleep Helpline (evenings),,mode,phone,https://thesleepcharity.org
 R1476,National Sleep Helpline (evenings),,cost,Free,https://thesleepcharity.org.uk/national-sleep-helpline/,"provides free, confidential advice and support",2026-11-23
 R1477,RNIB Sight Loss Advice line (weekdays),,phone,0303 123 9999,https://www.rnib.org.uk/living-with-sight-loss/community-connection-and-wellbeing/rnib-helpline/,You can call us on 0303 123 9999,2026-11-23
 R1477,RNIB Sight Loss Advice line (weekdays),,email,helpline@rnib.org.uk,https://www.rnib.org.uk/living-with-sight-loss/community-connection-and-wellbeing/rnib-helpline/,helpline@rnib.org.uk,2026-11-23
+R1478,RNIB Sight Loss Advice line (Saturday),,days,Sat,https://www.rnib.org.uk/nations/scotland/rnib-scotland-how-we-can-help/,We’re available from 8am to 8pm weekdays and Saturday from 9am to 1pm.,2026-11-23
+R1478,RNIB Sight Loss Advice line (Saturday),,times,09:00-13:00,https://www.rnib.org.uk/nations/scotland/rnib-scotland-how-we-can-help/,We’re available from 8am to 8pm weekdays and Saturday from 9am to 1pm.,2026-11-23
+R1478,RNIB Sight Loss Advice line (Saturday),,phone,0303 123 9999,https://www.rnib.org.uk/nations/scotland/rnib-scotland-how-we-can-help/,Call us on 0303 123 9999,2026-11-23
+R1478,RNIB Sight Loss Advice line (Saturday),,email,helpline@rnib.org.uk,https://www.rnib.org.uk/nations/scotland/rnib-scotland-how-we-can-help/,helpline@rnib.org.uk,2026-11-23
+R1478,RNIB Sight Loss Advice line (Saturday),,mode,phone,https://www.rnib.org.uk/nations/scotland/rnib-scotland-how-we-can-help/,Call us on 0303 123 9999,2026-11-23
+R1480,Sands helpline (weekdays),,days,Mon-Fri,https://www.sands.org.uk/support-you/how-we-offer-support/helpline,10am to 3pm Monday to Friday,2026-11-23
+R1480,Sands helpline (weekdays),,times,10:00-15:00,https://www.sands.org.uk/support-you/how-we-offer-support/helpline,10am to 3pm Monday to Friday,2026-11-23
+R1480,Sands helpline (weekdays),,phone,0808 164 3332,https://www.sands.org.uk/support-you/how-we-offer-support/helpline,The telephone helpline is free to call from landlines and mobiles on 0808 164 3332,2026-11-23
+R1480,Sands helpline (weekdays),,email,helpline@sands.org.uk,https://www.sands.org.uk/support-you/how-we-offer-support/helpline,You can also email the team at helpline@sands.org.uk,2026-11-23
+R1480,Sands helpline (weekdays),,mode,phone,https://www.sands.org.uk/support-you/how-we-offer-support/helpline,The telephone helpline is free to call from landlines and mobiles,2026-11-23
+R1480,Sands helpline (weekdays),,cost,Free,https://www.sands.org.uk/support-you/how-we-offer-support/helpline,The telephone helpline is free to call from landlines and mobiles,2026-11-23
 R1481,Sands helpline (evenings),,days,Tue-Thu,https://www.sands.org.uk/support-you/how-we-offer-support/helpline,"6pm to 9pm Tuesday, Wednesday and Thursday evenings",2026-11-23
 R1481,Sands helpline (evenings),,times,18:00-21:00,https://www.sands.org.uk/support-you/how-we-offer-support/helpline,"6pm to 9pm Tuesday, Wednesday and Thursday evenings",2026-11-23
 R1481,Sands helpline (evenings),,phone,0808 164 3332,https://www.sands.org.uk/support-you/how-we-offer-support/helpline,Call our Helpline on 0808 164 3332,2026-11-23
@@ -5878,6 +5987,16 @@ R1483,SARSAS helpline (Tue and Thu evenings),,phone,0808 801 0456,http://www.sar
 R1483,SARSAS helpline (Tue and Thu evenings),,email,support@sarsas.org.uk,http://www.sarsas.org.uk,support@sarsas.org.uk,2026-11-23
 R1483,SARSAS helpline (Tue and Thu evenings),,mode,phone,http://www.sarsas.org.uk,Helpline 0808 801 0456,2026-11-23
 R1483,SARSAS helpline (Tue and Thu evenings),,cost,Free,http://www.sarsas.org.uk,Our helpline and online (email and live chat) support services are open to all.,2026-11-23
+R1484,SSAFA Forcesline (Mon to Thu),,days,Mon-Thu,https://www.ssafa.org.uk/get-help/forcesline/,"We are open 09:00 - 17:00, Monday to Thursday",2026-11-23
+R1484,SSAFA Forcesline (Mon to Thu),,times,09:00-17:00,https://www.ssafa.org.uk/get-help/forcesline/,"We are open 09:00 - 17:00, Monday to Thursday",2026-11-23
+R1484,SSAFA Forcesline (Mon to Thu),,phone,0800 260 6780,https://www.ssafa.org.uk/get-help/forcesline/,0800 260 6780,2026-11-23
+R1484,SSAFA Forcesline (Mon to Thu),,cost,Free,https://www.ssafa.org.uk/get-help/forcesline/,a free and confidential telephone helpline,2026-11-23
+R1484,SSAFA Forcesline (Mon to Thu),,mode,phone;online,https://www.ssafa.org.uk/get-help/forcesline/,You can now talk to our Forcesline advisors online with our live chat service.,2026-11-23
+R1485,SSAFA Forcesline (Friday),,days,Fri,https://www.ssafa.org.uk/get-help/forcesline/,09:00 - 16:00 on Friday,2026-11-23
+R1485,SSAFA Forcesline (Friday),,times,09:00-16:00,https://www.ssafa.org.uk/get-help/forcesline/,09:00 - 16:00 on Friday,2026-11-23
+R1485,SSAFA Forcesline (Friday),,phone,0800 260 6780,https://www.ssafa.org.uk/get-help/forcesline/,0800 260 6780,2026-11-23
+R1485,SSAFA Forcesline (Friday),,cost,Free,https://www.ssafa.org.uk/get-help/forcesline/,a free and confidential telephone helpline and email service,2026-11-23
+R1485,SSAFA Forcesline (Friday),,mode,phone;online,https://www.ssafa.org.uk/get-help/forcesline/,You can now talk to our Forcesline advisors online with our live chat service.,2026-11-23
 R1486,Terrence Higgins Trust support line,,days,Mon-Fri,https://tht.org.uk/get-help/services/tht-direct-helpline,"We're open: 10am to 6pm , Monday to Friday*",2026-11-23
 R1486,Terrence Higgins Trust support line,,times,10:00-18:00,https://tht.org.uk/get-help/services/tht-direct-helpline,"We're open: 10am to 6pm , Monday to Friday*",2026-11-23
 R1486,Terrence Higgins Trust support line,,phone,0808 802 1221,https://tht.org.uk/get-help/services/tht-direct-helpline,"Call THT Direct on 0808 802 1221 for support, advice and information",2026-11-23
@@ -5970,6 +6089,9 @@ R1522,Citizens Advice MS advice line,Taunton,mode,phone,https://citizensadviceso
 R1522,Citizens Advice MS advice line,Taunton,cost,Free,https://citizensadvicesomerset.org.uk/how-can-we-help/targeted-advice/multiple-sclerosis-access-to-advice/,"We can give free, confidential, impartial, and independent advice",2026-11-23
 R1523,Route 1 Advocacy,Shepton Mallet,phone,01749 822801,https://www.somerset.gov.uk/children-families-and-education/route-one-advocacy/contact-route-one/,Phone: 01749 822801,2026-11-23
 R1523,Route 1 Advocacy,Shepton Mallet,email,Route1businesssupportadmin@somerset.gov.uk,https://www.somerset.gov.uk/children-families-and-education/route-one-advocacy/contact-route-one/,Email: Route1businesssupportadmin@somerset.gov.uk,2026-11-23
+R1524,YMCA Shepton Mallet Youth Club,Shepton Mallet,days,Wed,https://ymca-bg.org/what-we-do/youth-work/mendip-youth-clubs/,"Shepton Mallet Youth Club Wednesdays, 6.00pm – 8.00pm The Scout Hall West Shepton Playing Fields, Old Wells Rd, Shepton Mallet BA4 5XN",2026-11-23
+R1524,YMCA Shepton Mallet Youth Club,Shepton Mallet,times,18:00-20:00,https://ymca-bg.org/what-we-do/youth-work/mendip-youth-clubs/,"Shepton Mallet Youth Club Wednesdays, 6.00pm – 8.00pm The Scout Hall West Shepton Playing Fields, Old Wells Rd, Shepton Mallet BA4 5XN",2026-11-23
+R1524,YMCA Shepton Mallet Youth Club,Shepton Mallet,address,"The Scout Hall, West Shepton Playing Fields, Old Wells Road",https://ymca-bg.org/what-we-do/youth-work/mendip-youth-clubs/,"Shepton Mallet Youth Club Wednesdays, 6.00pm – 8.00pm The Scout Hall West Shepton Playing Fields, Old Wells Rd, Shepton Mallet BA4 5XN",2026-11-23
 R1526,Pilton Walks,Pilton,email,piltonwalks@gmail.com,https://healthconnectionsmendip.org/pilton-walks-walking-group/,piltonwalks@gmail.com,2026-11-23
 R1526,Pilton Walks,Pilton,mode,in-person,https://healthconnectionsmendip.org/pilton-walks-walking-group/,across the surrounding fields and lanes of Pilton,2026-11-23
 R1526,Pilton Walks,Pilton,cost,Free,https://healthconnectionsmendip.org/pilton-walks-walking-group/,"The walks are free of charge, having been sponsored by Pilton Parish Council.",2026-11-23
@@ -5978,6 +6100,8 @@ R1527,Shepton Walks,Shepton Mallet,mode,in-person,https://www.sheptonwalks.org/,
 R1529,Rights of Way volunteering (Somerset),Taunton,phone,01823 358250,https://assemblevolunteers.somerset.gov.uk/opportunities/48355-adopt-a-path-2023-05-30,on 01823 358250 / ROWvolunteers@somerset.gov.uk,2026-11-23
 R1529,Rights of Way volunteering (Somerset),Taunton,email,rowvolunteers@somerset.gov.uk,https://assemblevolunteers.somerset.gov.uk/opportunities/48355-adopt-a-path-2023-05-30,on 01823 358250 / ROWvolunteers@somerset.gov.uk,2026-11-23
 R1529,Rights of Way volunteering (Somerset),Taunton,access,sign up,https://assemblevolunteers.somerset.gov.uk/opportunities/48355-adopt-a-path-2023-05-30,When you sign up to volunteer with Rights of Way you will receive a digital map of the paths that you can adopt.,2026-11-23
+R1530,Bipolar UK peer support line,,email,info@bipolaruk.org,https://www.bipolaruk.org/get-support/peer-support-line/,info@bipolaruk.org,2026-11-23
+R1530,Bipolar UK peer support line,,eligibility,Peer support line: age 18+,https://www.bipolaruk.org/get-support/peer-support-line/,Anyone over the age of 18,2026-11-23
 R1532,Get Active Together (SASP),Taunton,email,nsnow@sasp.co.uk,https://www.sasp.co.uk/get-active-together,NSnow@sasp.co.uk,2026-11-23
 R1533,Got Your Six UK (Wincanton hub),Wincanton,phone,01963 202156,https://gotyoursix.uk/contact,01963 202 156,2026-11-23
 R1533,Got Your Six UK (Wincanton hub),Wincanton,email,gotyoursixuk@outlook.com,https://gotyoursix.uk/contact,GOTYOURSIXUK@OUTLOOK.COM,2026-11-23
@@ -5989,12 +6113,19 @@ R1535,Home Library Service (Somerset),,phone,07814 079831,https://www.somerset.g
 R1535,Home Library Service (Somerset),,email,lauren.davis@somerset.gov.uk,https://www.somerset.gov.uk/libraries-leisure-and-communities/libraries/libraries-services/home-library-service,contact Lauren Davis – email lauren.davis@somerset.gov.uk or phone 07814079831,2026-11-23
 R1535,Home Library Service (Somerset),,mode,in-person,https://www.somerset.gov.uk/libraries-leisure-and-communities/libraries/libraries-services/home-library-service,we will arrange an initial visit with you,2026-11-23
 R1535,Home Library Service (Somerset),,access,sign up,https://www.somerset.gov.uk/libraries-leisure-and-communities/libraries/libraries-services/home-library-service,"To make a referral to the Home Library Service for yourself or someone you, know please fill in this form.",2026-11-23
+R1536,Josephine’s Star (Somerset),,eligibility,Currently full: referrals paused until January 2027,https://www.josephinesstar.org.uk/services-9,"Our waiting list is currently FULL. We are sorry, but are unable to accept new referrals until January 2027.",2026-11-23
+R1537,SWISH sexual health service (Somerset),,days,Mon-Fri,https://www.swishservices.co.uk/contact-us,"Call our booking line on 0300 1245 010 , Monday to Friday (9:00am–4:45pm)",2026-11-23
+R1537,SWISH sexual health service (Somerset),,times,09:00-16:45,https://www.swishservices.co.uk/contact-us,Monday to Friday (9:00am–4:45pm),2026-11-23
+R1537,SWISH sexual health service (Somerset),,phone,0300 124 5010,https://www.swishservices.co.uk/contact-us,Have a Question? Call us 0300 1245010,2026-11-23
 R1538,Smokefree Somerset,,phone,01823 356222,https://smokefreesomerset.org.uk/contact-us/,Phone: 01823 356222.,2026-11-23
 R1538,Smokefree Somerset,,email,smokefree@somerset.gov.uk,https://smokefreesomerset.org.uk/contact-us/,Email: smokefree@somerset.gov.uk,2026-11-23
 R1538,Smokefree Somerset,,access,book,https://smokefreesomerset.org.uk/contact-us/,"If you want to book an appointment, please use our booking form.",2026-11-23
 R1539,Somerset Chronic Fatigue Syndrome/ME Service,,phone,01749 836703,https://healthconnectionsmendip.org/somerset-chronic-fatigue-syndromeme-service/,01749 836703,2026-11-23
 R1539,Somerset Chronic Fatigue Syndrome/ME Service,,mode,in-person,https://healthconnectionsmendip.org/somerset-chronic-fatigue-syndromeme-service/,contact the Somerset team on the number below,2026-11-23
 R1539,Somerset Chronic Fatigue Syndrome/ME Service,,access,sign up,https://healthconnectionsmendip.org/somerset-chronic-fatigue-syndromeme-service/,contact the Somerset team on the number below,2026-11-23
+R1540,Somerset Community Pain Service,Cotford St Luke,phone,01823 343151,https://www.somersetpain.co.uk/About-the-pain-service/How-to-find-us-and-meet-our-team,or call: 01823 343151,2026-11-23
+R1540,Somerset Community Pain Service,Cotford St Luke,email,painservice@somersetft.nhs.uk,https://www.somersetpain.co.uk/About-the-pain-service/How-to-find-us-and-meet-our-team,For appointment enquires please please email painservice@somersetft.nhs.uk,2026-11-23
+R1540,Somerset Community Pain Service,Cotford St Luke,address,"Dene Barton Community Hospital, Dene Road",https://www.somersetpain.co.uk/About-the-pain-service/How-to-find-us-and-meet-our-team,"Dene Barton Community Hospital Dene Rd, Cotford St Luke, Taunton Somerset TA4 1DD",2026-11-23
 R1541,Somerset Sight volunteer visiting,Taunton,phone,01823 333818,https://www.somersetsight.org.uk/support/volunteer-visiting,please contact us on 01823 333818,2026-11-23
 R1541,Somerset Sight volunteer visiting,Taunton,email,admin@somersetsight.org.uk,https://www.somersetsight.org.uk/support/volunteer-visiting,email [email protected],2026-11-23
 R1541,Somerset Sight volunteer visiting,Taunton,address,"Northfield House, 51 Staplegrove Road",https://www.somersetsight.org.uk/support/volunteer-visiting,"Northfield House, 51 Staplegrove Road, Taunton, Somerset, TA1 1DG",2026-11-23
@@ -6009,6 +6140,10 @@ R1545,Stoma Heroes support group (Street),Street,email,shane@stomaheroes.com,htt
 R1545,Stoma Heroes support group (Street),Street,address,Crispin Centre,https://healthconnectionsmendip.org/stoma-support-group/,"Where: Crispin Centre, 85 High St, Street BA16 0EZ",2026-11-23
 R1545,Stoma Heroes support group (Street),Street,mode,in-person,https://healthconnectionsmendip.org/stoma-support-group/,meets every month at the Crispin Centre in Street,2026-11-23
 R1545,Stoma Heroes support group (Street),Street,access,sign up,https://healthconnectionsmendip.org/stoma-support-group/,Please contact Shane Green via the details below,2026-11-23
+R1546,Crops Not Shops volunteering (Street and Glastonbury),Glastonbury,days,Mon-Fri,https://www.cropsnotshops.co.uk/volunteer,Volunteers take part in 4 hours of hands-on land energy exchange Monday to Friday,2026-11-23
+R1546,Crops Not Shops volunteering (Street and Glastonbury),Glastonbury,mode,in-person,https://www.cropsnotshops.co.uk/volunteer,hands-on land energy exchange,2026-11-23
+R1548,Bereavement office (Musgrove Park and Yeovil hospitals),Taunton,phone,01823 343753; 01935 384746,https://www.somersetft.nhs.uk/bereavement-and-medical-examiner-service/,Musgrove Park Hospital 01823 343753,2026-11-23
+R1548,Bereavement office (Musgrove Park and Yeovil hospitals),Taunton,mode,phone,https://www.somersetft.nhs.uk/bereavement-and-medical-examiner-service/,Musgrove Park Hospital 01823 343753,2026-11-23
 R1549,Orchard Vale Trust community gardening (Wells),Wells,phone,01749 671706,https://healthconnectionsmendip.org/the-community-gardening-project/,01749 671706,2026-11-23
 R1549,Orchard Vale Trust community gardening (Wells),Wells,email,info@orchardvaletrust.org.uk,https://healthconnectionsmendip.org/the-community-gardening-project/,info@orchardvaletrust.org.uk,2026-11-23
 R1549,Orchard Vale Trust community gardening (Wells),Wells,access,sign up,https://healthconnectionsmendip.org/the-community-gardening-project/,"Call the number below, leave your contact name and number and the jobs you would like done and the gardening team will call you back.",2026-11-23
@@ -6017,7 +6152,137 @@ R1550,Society for Disabled Artists (Wells group),Wells,email,gillkellywells@gmai
 R1550,Society for Disabled Artists (Wells group),Wells,address,"Somerset Skills and Learning Centre, The Portway Building, Portway Avenue",https://somersetartworks.org.uk/artists/soda/,Somerset Skills and Learning Centre The Portway Building Portway Avenue Wells BA5 2QF,2026-11-23
 R1550,Society for Disabled Artists (Wells group),Wells,mode,in-person,https://somersetartworks.org.uk/artists/soda/,regular workshops by visiting tutors,2026-11-23
 R1550,Society for Disabled Artists (Wells group),Wells,access,sign up,https://somersetartworks.org.uk/artists/soda/,New members welcome.,2026-11-23
+R1551,Dementia Care Link Worker (West Mendip),Wells,phone,01458 553025,https://healthconnectionsmendip.org/pcn-dementia-care-co-ordinator-west-mendip/,01458 553025,2026-11-23
 R1552,WaitingWell (neurodiversity waiting lists),,email,nicola@theowltherapycentre.co.uk,https://www.waitingwell.co.uk/contact/,nicola@theowltherapycentre.co.uk,2026-11-23
+R1553,The Pod JAMM parent carer meet-up (Frome),Frome,days,Thu,https://thepodcharity.org.uk/parents-and-carers/,every Thursday morning from 10-11.30am,2026-11-23
+R1553,The Pod JAMM parent carer meet-up (Frome),Frome,times,10:00-11:30,https://thepodcharity.org.uk/parents-and-carers/,every Thursday morning from 10-11.30am,2026-11-23
+R1553,The Pod JAMM parent carer meet-up (Frome),Frome,address,"The Key Centre, Feltham Lane",https://thepodcharity.org.uk/parents-and-carers/,"Find us at The Key Centre, Feltham Lane, BA11 5AJ",2026-11-23
+R1553,The Pod JAMM parent carer meet-up (Frome),Frome,mode,in-person,https://thepodcharity.org.uk/parents-and-carers/,"Find us at The Key Centre, Feltham Lane, BA11 5AJ",2026-11-23
+R1555,Woodland Wellbeing (Neroche Woodlanders),Taunton,email,jenny@nerochewoodlanders.org,https://wellbeingsedgemoor.org/category/mental-health/,emailing jenny@nerochewoodlanders.org,2026-11-23
+R1555,Woodland Wellbeing (Neroche Woodlanders),Taunton,mode,in-person,https://wellbeingsedgemoor.org/category/mental-health/,sessions at Young Wood on the Blackdown Hills,2026-11-23
+R1555,Woodland Wellbeing (Neroche Woodlanders),Taunton,phone,07541 080397,https://wellbeingsedgemoor.org/category/mental-health/,get in touch with Jenny by calling 07541 080397,2026-11-23
+R1555,Woodland Wellbeing (Neroche Woodlanders),Taunton,access,sign up,https://wellbeingsedgemoor.org/category/mental-health/,get in touch with Jenny by calling 07541 080397 or emailing jenny@nerochewoodlanders.org,2026-11-23
+R1558,Mind in Somerset Recovery and Wellbeing Workers,,phone,0800 138 1692,https://www.mindinsomerset.org.uk/our-services/adult-one-to-one-support/recovery-and-wellbeing-workers/,value appears on the page,2026-11-23
+R1559,Royal Navy Family and People Support,,days,Mon-Fri,https://forum.royalnavy.mod.uk/contact,Working Hours: Monday to Thursday - 0800 to 1600 Friday - 0800 to 1530,2026-11-23
+R1559,Royal Navy Family and People Support,,phone,0800 145 6088,https://forum.royalnavy.mod.uk/contact,Telephone: 0800 145 6088,2026-11-23
+R1559,Royal Navy Family and People Support,,mode,phone;online,https://forum.royalnavy.mod.uk/contact,Telephone: 0800 145 6088,2026-11-23
+R1560,Young Dementia Network (online),,email,youngdementianetwork@dementiauk.org,https://www.youngdementianetwork.org/,Email: youngdementianetwork@dementiauk.org,2026-11-23
+R1560,Young Dementia Network (online),,mode,online,https://www.youngdementianetwork.org/,"The online community for everyone living with, working with or interested in young onset dementia",2026-11-23
+R1562,Early Intervention in Psychosis (STEP),,phone,01823 368555,https://www.somersetft.nhs.uk/early-intervention-in-psychosis/,STEP Hub Tel: 01823 368555,2026-11-23
+R1562,Early Intervention in Psychosis (STEP),,email,STEPReferrals@SomersetFT.NHS.UK,https://www.somersetft.nhs.uk/early-intervention-in-psychosis/,Or email,2026-11-23
+R1564,Carers UK Helpline,,days,Mon-Fri,https://www.carersuk.org/help-and-advice/helpline-and-other-support/,"from Monday to Friday, 9am – 6pm (including Bank Holidays)",2026-11-23
+R1564,Carers UK Helpline,,times,09:00-18:00,https://www.carersuk.org/help-and-advice/helpline-and-other-support/,"from Monday to Friday, 9am – 6pm",2026-11-23
+R1564,Carers UK Helpline,,phone,0808 808 7777,https://www.carersuk.org/help-and-advice/helpline-and-other-support/,our telephone Helpline is available on 0808 808 7777,2026-11-23
+R1564,Carers UK Helpline,,email,advice@carersuk.org,https://www.carersuk.org/help-and-advice/helpline-and-other-support/,value appears on the page,2026-11-23
+R1564,Carers UK Helpline,,mode,phone,https://www.carersuk.org/help-and-advice/helpline-and-other-support/,our telephone Helpline is available on 0808 808 7777,2026-11-23
+R1567,Al-Anon helpline,,days,Mon-Sun,https://al-anonuk.org.uk/,Talk to a member in confidence 7 days a week,2026-11-23
+R1567,Al-Anon helpline,,phone,0800 0086 811,https://al-anonuk.org.uk/,Free phone 0800 0086 811 (UK) 01 873 2699 (Eire),2026-11-23
+R1567,Al-Anon helpline,,mode,phone,https://al-anonuk.org.uk/,Talk to a member in confidence 7 days a week,2026-11-23
+R1567,Al-Anon helpline,,cost,Free,https://al-anonuk.org.uk/,Free phone 0800 0086 811 (UK),2026-11-23
+R1570,Nether Stowey Wednesday Club,Nether Stowey,days,Wed,https://netherstowey-pc.gov.uk/nether-stowey-wednesday-club/,Every Wednesday at St Mary’s Church Centre,2026-11-23
+R1570,Nether Stowey Wednesday Club,Nether Stowey,times,10:00-14:00,https://netherstowey-pc.gov.uk/nether-stowey-wednesday-club/,Every Wednesday at St Mary’s Church Centre 10am-2pm,2026-11-23
+R1570,Nether Stowey Wednesday Club,Nether Stowey,phone,01278 732532; 01278 732412,https://netherstowey-pc.gov.uk/nether-stowey-wednesday-club/,Contact Maggie (01278 732532) or Barbara (01278 732412),2026-11-23
+R1570,Nether Stowey Wednesday Club,Nether Stowey,address,St Mary's Church Centre,https://netherstowey-pc.gov.uk/nether-stowey-wednesday-club/,Every Wednesday at St Mary’s Church Centre,2026-11-23
+R1570,Nether Stowey Wednesday Club,Nether Stowey,mode,in-person,https://netherstowey-pc.gov.uk/nether-stowey-wednesday-club/,Pop in for a friendly chat to meet members,2026-11-23
+R1572,"Junior Youth Group (Victoria Park, Bridgwater)",Bridgwater,days,Thu,https://wellbeingsedgemoor.org/?category_name=befriending-isolation,meets every Thursday during Term Time from 4.30pm – 6pm,2026-11-23
+R1572,"Junior Youth Group (Victoria Park, Bridgwater)",Bridgwater,times,16:30-18:00,https://wellbeingsedgemoor.org/?category_name=befriending-isolation,meets every Thursday during Term Time from 4.30pm – 6pm,2026-11-23
+R1572,"Junior Youth Group (Victoria Park, Bridgwater)",Bridgwater,phone,01278 422255,https://wellbeingsedgemoor.org/?category_name=befriending-isolation,info@vpcc.co.uk 01278 422255,2026-11-23
+R1572,"Junior Youth Group (Victoria Park, Bridgwater)",Bridgwater,email,info@vpcc.co.uk,https://wellbeingsedgemoor.org/?category_name=befriending-isolation,info@vpcc.co.uk 01278 422255,2026-11-23
+R1572,"Junior Youth Group (Victoria Park, Bridgwater)",Bridgwater,address,Victoria Park Community Centre,https://wellbeingsedgemoor.org/?category_name=befriending-isolation,The Victoria Park Community Centre hosts a Junior Youth Group,2026-11-23
+R1572,"Junior Youth Group (Victoria Park, Bridgwater)",Bridgwater,mode,in-person,https://wellbeingsedgemoor.org/?category_name=befriending-isolation,"young people are given the opportunity to take part in activities, games, and arts and crafts",2026-11-23
+R1573,Joyful Voices (Cheddar),Cheddar,days,Tue,https://wellbeingsedgemoor.org/?category_name=befriending-isolation,The group meets on Tuesdays at the Cheddar Catholic Community Hall,2026-11-23
+R1573,Joyful Voices (Cheddar),Cheddar,times,13:30-15:00,https://wellbeingsedgemoor.org/?category_name=befriending-isolation,from 1.30pm – 3pm,2026-11-23
+R1573,Joyful Voices (Cheddar),Cheddar,email,joyfulvoicesafternoon@gmail.com,https://wellbeingsedgemoor.org/?category_name=befriending-isolation,joyfulvoicesafternoon@gmail.com,2026-11-23
+R1573,Joyful Voices (Cheddar),Cheddar,address,Cheddar Catholic Community Hall,https://wellbeingsedgemoor.org/?category_name=befriending-isolation,The group meets on Tuesdays at the Cheddar Catholic Community Hall from 1.30pm – 3pm,2026-11-23
+R1573,Joyful Voices (Cheddar),Cheddar,mode,in-person,https://wellbeingsedgemoor.org/?category_name=befriending-isolation,Pop along and enjoy some singing in the afternoon!,2026-11-23
+R1573,Joyful Voices (Cheddar),Cheddar,cost,£6 per session,https://wellbeingsedgemoor.org/?category_name=befriending-isolation,There is a £6 fee per session.,2026-11-23
+R1574,Cheddar Valley Singers,Cheddar,days,Mon,https://www.cheddarvalleysingers.co.uk/,We rehearse every Monday evening at 7.00 - 8.30pm,2026-11-23
+R1574,Cheddar Valley Singers,Cheddar,times,19:00-20:30,https://www.cheddarvalleysingers.co.uk/,We rehearse every Monday evening at 7.00 - 8.30pm,2026-11-23
+R1574,Cheddar Valley Singers,Cheddar,email,cheddarvalleysingers@gmail.com,https://www.cheddarvalleysingers.co.uk/,Email cheddarvalleysingers@gmail.com,2026-11-23
+R1574,Cheddar Valley Singers,Cheddar,address,"Cheddar Catholic Community Hall, Upper North Street",https://www.cheddarvalleysingers.co.uk/,"at Cheddar Catholic Community Hall, Upper North Street, Cheddar. BS27 3HU",2026-11-23
+R1574,Cheddar Valley Singers,Cheddar,mode,in-person,https://www.cheddarvalleysingers.co.uk/,"at Cheddar Catholic Community Hall, Upper North Street, Cheddar.",2026-11-23
+R1575,Headway outreach unit (Bridgwater),Bridgwater,days,Mon,https://wellbeingsedgemoor.org/outreach-brain-injury-unit-headway-somerset/,"The Outreach Unit visits the Victoria Park Community Centre, Bridgwater, on Mondays from 10.30am – 2.30pm.",2026-11-23
+R1575,Headway outreach unit (Bridgwater),Bridgwater,times,10:30-14:30,https://wellbeingsedgemoor.org/outreach-brain-injury-unit-headway-somerset/,on Mondays from 10.30am – 2.30pm.,2026-11-23
+R1575,Headway outreach unit (Bridgwater),Bridgwater,phone,01278 427635,https://wellbeingsedgemoor.org/outreach-brain-injury-unit-headway-somerset/,01278 427635,2026-11-23
+R1575,Headway outreach unit (Bridgwater),Bridgwater,email,info@headwaysomerset.org.uk,https://wellbeingsedgemoor.org/outreach-brain-injury-unit-headway-somerset/,info@headwaysomerset.org.uk,2026-11-23
+R1575,Headway outreach unit (Bridgwater),Bridgwater,address,Victoria Park Community Centre,https://wellbeingsedgemoor.org/outreach-brain-injury-unit-headway-somerset/,"The Outreach Unit visits the Victoria Park Community Centre, Bridgwater, on Mondays from 10.30am – 2.30pm.",2026-11-23
+R1575,Headway outreach unit (Bridgwater),Bridgwater,mode,in-person,https://wellbeingsedgemoor.org/outreach-brain-injury-unit-headway-somerset/,"The Outreach Unit visits the Victoria Park Community Centre, Bridgwater, on Mondays from 10.30am – 2.30pm.",2026-11-23
+R1576,Petals dementia coffee morning (Bridgwater),Bridgwater,days,Tue,https://wellbeingsedgemoor.org/?category_name=dementia-2,1st Tuesday of every month 10.30 – 11.30am,2026-11-23
+R1576,Petals dementia coffee morning (Bridgwater),Bridgwater,times,10:30-11:30,https://wellbeingsedgemoor.org/?category_name=dementia-2,1st Tuesday of every month 10.30 – 11.30am,2026-11-23
+R1576,Petals dementia coffee morning (Bridgwater),Bridgwater,phone,01278 451125,https://wellbeingsedgemoor.org/?category_name=dementia-2,"For more information, call: 01278 451 125",2026-11-23
+R1576,Petals dementia coffee morning (Bridgwater),Bridgwater,address,"Oak Trees, Rhode Lane",https://wellbeingsedgemoor.org/?category_name=dementia-2,"at Oak Trees, Rhode Lane, Bridgwater, TA6 6JF",2026-11-23
+R1576,Petals dementia coffee morning (Bridgwater),Bridgwater,mode,in-person,https://wellbeingsedgemoor.org/?category_name=dementia-2,Come along to our coffee morning and meet new people,2026-11-23
+R1577,Walking Football (Bridgwater United Community Trust),Bridgwater,days,Sat,https://wellbeingsedgemoor.org/walking-football-bridgwater-united-community-trust/,take place at Bridgwater and Taunton College Sports Hall (TA6 4PZ) on Saturdays between 9-10am,2026-11-23
+R1577,Walking Football (Bridgwater United Community Trust),Bridgwater,times,09:00-10:00,https://wellbeingsedgemoor.org/walking-football-bridgwater-united-community-trust/,on Saturdays between 9-10am,2026-11-23
+R1577,Walking Football (Bridgwater United Community Trust),Bridgwater,phone,01278 446899,https://wellbeingsedgemoor.org/walking-football-bridgwater-united-community-trust/,01278 446899,2026-11-23
+R1577,Walking Football (Bridgwater United Community Trust),Bridgwater,email,community@bridgwaterunitedfc.com,https://wellbeingsedgemoor.org/walking-football-bridgwater-united-community-trust/,please email community@bridgwaterunitedfc.com if you are interested,2026-11-23
+R1577,Walking Football (Bridgwater United Community Trust),Bridgwater,address,Bridgwater and Taunton College Sports Hall,https://wellbeingsedgemoor.org/walking-football-bridgwater-united-community-trust/,take place at Bridgwater and Taunton College Sports Hall (TA6 4PZ),2026-11-23
+R1577,Walking Football (Bridgwater United Community Trust),Bridgwater,mode,in-person,https://wellbeingsedgemoor.org/walking-football-bridgwater-united-community-trust/,take place at Bridgwater and Taunton College Sports Hall,2026-11-23
+R1577,Walking Football (Bridgwater United Community Trust),Bridgwater,cost,£3 per session,https://wellbeingsedgemoor.org/walking-football-bridgwater-united-community-trust/,cost £3 per session,2026-11-23
+R1583,Purple Pain fibromyalgia and ME group (Burnham-on-Sea),Burnham-on-Sea,days,Mon,https://wellbeingsedgemoor.org/purple-pain-fibromyalgia/,"The group meets on the 1st Monday of every month, except bank holidays",2026-11-23
+R1583,Purple Pain fibromyalgia and ME group (Burnham-on-Sea),Burnham-on-Sea,times,12:30-15:00,https://wellbeingsedgemoor.org/purple-pain-fibromyalgia/,between 12.30pm – 3pm,2026-11-23
+R1583,Purple Pain fibromyalgia and ME group (Burnham-on-Sea),Burnham-on-Sea,phone,08448 872598,https://wellbeingsedgemoor.org/purple-pain-fibromyalgia/,08448 872598,2026-11-23
+R1583,Purple Pain fibromyalgia and ME group (Burnham-on-Sea),Burnham-on-Sea,email,fibroheart@outlook.com,https://wellbeingsedgemoor.org/purple-pain-fibromyalgia/,fibroheart@outlook.com,2026-11-23
+R1583,Purple Pain fibromyalgia and ME group (Burnham-on-Sea),Burnham-on-Sea,address,"The Baptist Church, College Street",https://wellbeingsedgemoor.org/purple-pain-fibromyalgia/,"The Baptist Church, College Street, Burnham On Sea, TA8 1AR",2026-11-23
+R1583,Purple Pain fibromyalgia and ME group (Burnham-on-Sea),Burnham-on-Sea,mode,in-person,https://wellbeingsedgemoor.org/purple-pain-fibromyalgia/,"The group meets on the 1st Monday of every month, except bank holidays, at The Baptist Church",2026-11-23
+R1584,Digital Café (The Hub @ Bridgwater),Bridgwater,days,Thu,https://wellbeingsedgemoor.org/digital-cafe-the-hub-bridgwater/,The Digital Cafe runs every Thursday between 1pm – 3pm,2026-11-23
+R1584,Digital Café (The Hub @ Bridgwater),Bridgwater,times,13:00-15:00,https://wellbeingsedgemoor.org/digital-cafe-the-hub-bridgwater/,The Digital Cafe runs every Thursday between 1pm – 3pm,2026-11-23
+R1584,Digital Café (The Hub @ Bridgwater),Bridgwater,phone,07757 730514,https://wellbeingsedgemoor.org/digital-cafe-the-hub-bridgwater/,07757730514,2026-11-23
+R1584,Digital Café (The Hub @ Bridgwater),Bridgwater,email,thehubbridgwater@gmail.com,https://wellbeingsedgemoor.org/digital-cafe-the-hub-bridgwater/,thehubbridgwater@gmail.com,2026-11-23
+R1584,Digital Café (The Hub @ Bridgwater),Bridgwater,address,"The Hub, upper floor, Angel Place Shopping Centre",https://wellbeingsedgemoor.org/digital-cafe-the-hub-bridgwater/,at The Hub on the upper floor of the Angel Place Shopping Centre,2026-11-23
+R1584,Digital Café (The Hub @ Bridgwater),Bridgwater,mode,in-person,https://wellbeingsedgemoor.org/digital-cafe-the-hub-bridgwater/,at The Hub on the upper floor of the Angel Place Shopping Centre,2026-11-23
+R1584,Digital Café (The Hub @ Bridgwater),Bridgwater,cost,Free,https://wellbeingsedgemoor.org/digital-cafe-the-hub-bridgwater/,is free to attend,2026-11-23
+R1590,"Sing2breathe (Victoria Park, Bridgwater)",Bridgwater,days,Thu,https://www.asthmaandlung.org.uk/help/support-network/bridgwater-singing-lung-health-sing2breathe,"Thursdays, fortnightly",2026-11-23
+R1590,"Sing2breathe (Victoria Park, Bridgwater)",Bridgwater,phone,07595 745884,https://www.asthmaandlung.org.uk/help/support-network/bridgwater-singing-lung-health-sing2breathe,Kate on 07595 745884,2026-11-23
+R1590,"Sing2breathe (Victoria Park, Bridgwater)",Bridgwater,email,hello@sing2breathe.org,https://www.asthmaandlung.org.uk/help/support-network/bridgwater-singing-lung-health-sing2breathe,hello@sing2breathe.org,2026-11-23
+R1590,"Sing2breathe (Victoria Park, Bridgwater)",Bridgwater,address,Victoria Park Community Centre,https://www.asthmaandlung.org.uk/help/support-network/bridgwater-singing-lung-health-sing2breathe,"Victoria Park Community Centre, Bridgwater, TA6 7AS",2026-11-23
+R1590,"Sing2breathe (Victoria Park, Bridgwater)",Bridgwater,mode,in-person,https://www.asthmaandlung.org.uk/help/support-network/bridgwater-singing-lung-health-sing2breathe,"Victoria Park Community Centre, Bridgwater, TA6 7AS",2026-11-23
+R1590,"Sing2breathe (Victoria Park, Bridgwater)",Bridgwater,cost,Voluntary donation £5,https://www.asthmaandlung.org.uk/help/support-network/bridgwater-singing-lung-health-sing2breathe,Voluntary donation £5,2026-11-23
+R1590,"Sing2breathe (Victoria Park, Bridgwater)",Bridgwater,times,10:45-12:00,https://sing2breathe.org/index.php/attend-a-class/,Bridgwater – Thursday mornings 10.45-12pm Victoria Park Community Centre,2026-11-23
+R1592,Sea Cadets Bridgwater,Bridgwater,days,Tue;Thu,https://www.sea-cadets.org/bridgwater/get-in-touch,"Tuesdays and Thursdays, 7pm - 9.15pm",2026-11-23
+R1592,Sea Cadets Bridgwater,Bridgwater,times,19:00-21:15,https://www.sea-cadets.org/bridgwater/get-in-touch,"Tuesdays and Thursdays, 7pm - 9.15pm",2026-11-23
+R1592,Sea Cadets Bridgwater,Bridgwater,email,recruitment@bridgwaterscc.org.uk,https://www.sea-cadets.org/bridgwater/get-in-touch,Email: recruitment@bridgwaterscc.org.uk Send Us a Message,2026-11-23
+R1592,Sea Cadets Bridgwater,Bridgwater,address,"SCC Unit, Bridgwater Docks, Seaward Drive",https://www.sea-cadets.org/bridgwater/get-in-touch,"Address: Sea Cadets Bridgwater Seaward Drive, The Docks, Bridgwater, TA6 3FJ",2026-11-23
+R1592,Sea Cadets Bridgwater,Bridgwater,mode,in-person,https://www.sea-cadets.org/bridgwater/get-in-touch,We meet at:,2026-11-23
+R1593,Sporting Memories (Bridgwater Cricket Club),Bridgwater,days,Wed,https://somersetcricketfoundation.org/community-programmes/sporting-memories/,Wednesday 10am – 12pm,2026-11-23
+R1593,Sporting Memories (Bridgwater Cricket Club),Bridgwater,times,10:00-12:00,https://somersetcricketfoundation.org/community-programmes/sporting-memories/,Wednesday 10am – 12pm,2026-11-23
+R1593,Sporting Memories (Bridgwater Cricket Club),Bridgwater,phone,01823 352266,https://somersetcricketfoundation.org/community-programmes/sporting-memories/,or call 01823 352 266,2026-11-23
+R1593,Sporting Memories (Bridgwater Cricket Club),Bridgwater,email,steve.gass@somersetcricketfoundation.org,https://somersetcricketfoundation.org/community-programmes/sporting-memories/,please email Steve.gass@somersetcricketfoundation.org,2026-11-23
+R1593,Sporting Memories (Bridgwater Cricket Club),Bridgwater,address,"Bridgwater Cricket Club, The Parks, Durleigh Road",https://somersetcricketfoundation.org/community-programmes/sporting-memories/,"Bridgwater Cricket Club, The Parks, Durleigh Road, Bridgwater, TA6 7HR",2026-11-23
+R1593,Sporting Memories (Bridgwater Cricket Club),Bridgwater,mode,in-person,https://somersetcricketfoundation.org/community-programmes/sporting-memories/,Location Day Time Uphill Castle Cricket Club,2026-11-23
+R1594,Seed of Hope therapeutic gardening (Bridgwater),Bridgwater,days,Wed,https://seedofhope.org.uk/therapeutic-groups/,Bridgwater (Wednesday) Victoria Park Community Centre,2026-11-23
+R1594,Seed of Hope therapeutic gardening (Bridgwater),Bridgwater,times,10:00-15:00,https://seedofhope.org.uk/therapeutic-groups/,Each group meets at 10am (ish) starting with a cup of tea and catch up... ending around 3pm,2026-11-23
+R1594,Seed of Hope therapeutic gardening (Bridgwater),Bridgwater,address,Victoria Park Community Centre,https://seedofhope.org.uk/therapeutic-groups/,Bridgwater (Wednesday) Victoria Park Community Centre,2026-11-23
+R1594,Seed of Hope therapeutic gardening (Bridgwater),Bridgwater,phone,0330 117 0443,https://seedofhope.org.uk/therapeutic-groups/,Tel: 03301170443,2026-11-23
+R1594,Seed of Hope therapeutic gardening (Bridgwater),Bridgwater,email,hi@seedofhope.org.uk,https://seedofhope.org.uk/therapeutic-groups/,Email: hi@seedofhope.org.uk,2026-11-23
+R1594,Seed of Hope therapeutic gardening (Bridgwater),Bridgwater,access,sign up,https://seedofhope.org.uk/therapeutic-groups/,If you would like to attend a group contact us or message us on Whatsapp,2026-11-23
+R1595,Mind in Somerset Sedgemoor drop-in (Mon and Fri),Bridgwater,days,Mon;Fri,https://wellbeingsedgemoor.org/sedgemoor-community-support-project/,Monday and Friday mornings 9am – 1pm,2026-11-23
+R1595,Mind in Somerset Sedgemoor drop-in (Mon and Fri),Bridgwater,times,09:00-13:00,https://wellbeingsedgemoor.org/sedgemoor-community-support-project/,Monday and Friday mornings 9am – 1pm,2026-11-23
+R1595,Mind in Somerset Sedgemoor drop-in (Mon and Fri),Bridgwater,phone,07521 497108,https://wellbeingsedgemoor.org/sedgemoor-community-support-project/,07521 497108,2026-11-23
+R1595,Mind in Somerset Sedgemoor drop-in (Mon and Fri),Bridgwater,email,sedgemoorsupport@mindinsomerset.org.uk,https://wellbeingsedgemoor.org/sedgemoor-community-support-project/,sedgemoorsupport@mindinsomerset.org.uk,2026-11-23
+R1595,Mind in Somerset Sedgemoor drop-in (Mon and Fri),Bridgwater,address,"Bridgwater Town Hall, High Street",https://wellbeingsedgemoor.org/sedgemoor-community-support-project/,"Our “drop-in” sessions are available at: Mind In Somerset, Bridgwater Town Hall, High St, Bridgwater, TA6 3AS.",2026-11-23
+R1595,Mind in Somerset Sedgemoor drop-in (Mon and Fri),Bridgwater,mode,in-person,https://wellbeingsedgemoor.org/sedgemoor-community-support-project/,We offer a 1:1 “drop – in” support service in our Bridgwater office,2026-11-23
+R1596,Mind in Somerset Sedgemoor drop-in (Wednesday),Bridgwater,days,Wed,https://burnham-highbridge-tc.gov.uk/news/health-and-social/mind-in-somerset-sedgemoor-community-support-project,Wednesday afternoon 2 – 5pm.,2026-11-23
+R1596,Mind in Somerset Sedgemoor drop-in (Wednesday),Bridgwater,times,14:00-17:00,https://burnham-highbridge-tc.gov.uk/news/health-and-social/mind-in-somerset-sedgemoor-community-support-project,Wednesday afternoon 2 – 5pm.,2026-11-23
+R1596,Mind in Somerset Sedgemoor drop-in (Wednesday),Bridgwater,phone,07521 497108,https://burnham-highbridge-tc.gov.uk/news/health-and-social/mind-in-somerset-sedgemoor-community-support-project,Or telephone : 07521 497108,2026-11-23
+R1596,Mind in Somerset Sedgemoor drop-in (Wednesday),Bridgwater,email,sedgemoorsupport@mindinsomerset.org.uk,https://burnham-highbridge-tc.gov.uk/news/health-and-social/mind-in-somerset-sedgemoor-community-support-project,For further information email : sedgemoorsupport@mindinsomerset.org.uk,2026-11-23
+R1596,Mind in Somerset Sedgemoor drop-in (Wednesday),Bridgwater,address,"Bridgwater Town Hall, High Street",https://burnham-highbridge-tc.gov.uk/news/health-and-social/mind-in-somerset-sedgemoor-community-support-project,"Our “drop-in” sessions are available : Mind In Somerset, Bridgwater Town Hall, High St, Bridgwater, TA6 3AS.",2026-11-23
+R1596,Mind in Somerset Sedgemoor drop-in (Wednesday),Bridgwater,mode,in-person,https://burnham-highbridge-tc.gov.uk/news/health-and-social/mind-in-somerset-sedgemoor-community-support-project,We offer a 1:1 “drop – in” support service in our Bridgwater office,2026-11-23
+R1597,Somerset Lesbian Network,,mode,in-person,https://somersetlesbiannetwork.com/,Out4Lunch is held in Taunton,2026-11-23
+R1597,Somerset Lesbian Network,,email,slnetwork@hotmail.com,https://somersetlesbiannetwork.com/,please e mail us at:  slnetwork@hotmail.com,2026-11-23
+R1599,Brainwave (Bridgwater),Bridgwater,phone,01278 429089,https://www.somerset.gov.uk/send/brainwave/,Phone: 01278 429089,2026-11-23
+R1599,Brainwave (Bridgwater),Bridgwater,email,enquiries@brainwave.org.uk,https://www.somerset.gov.uk/send/brainwave/,Email: enquiries@brainwave.org.uk,2026-11-23
+R1599,Brainwave (Bridgwater),Bridgwater,address,"The Brainwave Centre, Marsh Lane",https://www.somerset.gov.uk/send/brainwave/,"Address: The Brainwave Centre Ltd, Marsh Lane, Bridgwater, Somerset, TA6 6LQ",2026-11-23
+R1603,The Space youth club (Cheddar),Cheddar,days,Mon,https://thespacesomerset.org.uk/youth-club/,Mondays 6.30-8.30,2026-11-23
+R1603,The Space youth club (Cheddar),Cheddar,phone,07940 177399,https://thespacesomerset.org.uk/youth-club/,07940 177 399,2026-11-23
+R1603,The Space youth club (Cheddar),Cheddar,email,info@thespacesomerset.org.uk,https://thespacesomerset.org.uk/youth-club/,info@thespacesomerset.org.uk,2026-11-23
+R1603,The Space youth club (Cheddar),Cheddar,address,"Cheddar First School, The Hayes",https://thespacesomerset.org.uk/youth-club/,"Cheddar First School, The Hayes, Cheddar, BS27 3HN",2026-11-23
+R1603,The Space youth club (Cheddar),Cheddar,cost,£2.50 per session,https://thespacesomerset.org.uk/youth-club/,Sessions are just £2.50 each and booked online.,2026-11-23
+R1603,The Space youth club (Cheddar),Cheddar,times,18:30-20:30,https://thespacesomerset.org.uk/youth-club/,Mondays 6.30-8.30,2026-11-23
+R1603,The Space youth club (Cheddar),Cheddar,access,book,https://thespacesomerset.org.uk/youth-club/,Sessions are just £2.50 each and booked online.,2026-11-23
+R1603,The Space youth club (Cheddar),Cheddar,eligibility,"Age 8-15, live or go to school in the Cheddar Valley",https://thespacesomerset.org.uk/youth-club/,open to children and young people ages 8-15 years old who live or attend in the Cheddar Valley.,2026-11-23
+R1604,Westcountry Savings and Loans credit union,,phone,0800 304 7041,https://wellbeingsedgemoor.org/category/poverty-finance/,0800 304 7041 03300 563994,2026-11-23
+R1604,Westcountry Savings and Loans credit union,,email,mail@westcountry.org.uk,https://wellbeingsedgemoor.org/category/poverty-finance/,mail@westcountry.org.uk,2026-11-23
 R1608,"Community Employment Hub (The Beach Hotel, Minehead)",Minehead,days,Tue,https://www.somerset.gov.uk/community-employment-hubs/,every second and fourth Tuesday of the month,2026-11-23
 R1608,"Community Employment Hub (The Beach Hotel, Minehead)",Minehead,times,10:00-12:00,https://www.somerset.gov.uk/community-employment-hubs/,Open 10am to 12pm (every second and fourth Tuesday of the month),2026-11-23
 R1608,"Community Employment Hub (The Beach Hotel, Minehead)",Minehead,email,employmentsupport@somerset.gov.uk,https://www.somerset.gov.uk/community-employment-hubs/,employmentsupport@somerset.gov.uk,2026-11-23
@@ -6063,3 +6328,62 @@ R1618,Low impact movement sessions (Yeovil Library),Yeovil,days,Mon,https://www.
 R1618,Low impact movement sessions (Yeovil Library),Yeovil,times,13:00-14:00,https://www.somerset.gov.uk/libraries/free-low-impact-activity-and-movement-sessions/,Every Monday 1pm to 2pm.,2026-11-23
 R1618,Low impact movement sessions (Yeovil Library),Yeovil,email,librariesmail@somerset.gov.uk,https://www.somerset.gov.uk/libraries/free-low-impact-activity-and-movement-sessions/,email librariesmail@somerset.gov.uk,2026-11-23
 R1618,Low impact movement sessions (Yeovil Library),Yeovil,address,"Yeovil Library, King George Street",https://www.somerset.gov.uk/libraries/free-low-impact-activity-and-movement-sessions/,Yeovil Library,2026-11-23
+R1619,Seed of Hope therapeutic gardening (Watchet),Watchet,days,Wed,https://seedofhope.org.uk/therapeutic-groups/,"Watchet Group (Wednesday) – Memorial ground community garden, Watchet, TA23 0ER",2026-11-23
+R1619,Seed of Hope therapeutic gardening (Watchet),Watchet,times,10:00-15:00,https://seedofhope.org.uk/therapeutic-groups/,Each group meets at 10am (ish) starting with a cup of tea and catch up... ending around 3pm,2026-11-23
+R1619,Seed of Hope therapeutic gardening (Watchet),Watchet,address,Memorial ground community garden,https://seedofhope.org.uk/therapeutic-groups/,"Watchet Group (Wednesday) – Memorial ground community garden, Watchet, TA23 0ER",2026-11-23
+R1619,Seed of Hope therapeutic gardening (Watchet),Watchet,phone,0330 117 0443,https://seedofhope.org.uk/therapeutic-groups/,Tel: 03301170443,2026-11-23
+R1619,Seed of Hope therapeutic gardening (Watchet),Watchet,email,hi@seedofhope.org.uk,https://seedofhope.org.uk/therapeutic-groups/,Email: hi@seedofhope.org.uk,2026-11-23
+R1619,Seed of Hope therapeutic gardening (Watchet),Watchet,access,sign up,https://seedofhope.org.uk/therapeutic-groups/,If you would like to attend a group contact us or message us on Whatsapp,2026-11-23
+R1620,Seed of Hope therapeutic gardening (Chilton Polden),Chilton Polden,days,Thu,https://seedofhope.org.uk/therapeutic-groups/,"Chilton Polden (Thursday) Avalon Priory, Priory Road, Chilton Polden, TA7 9DH",2026-11-23
+R1620,Seed of Hope therapeutic gardening (Chilton Polden),Chilton Polden,times,10:00-15:00,https://seedofhope.org.uk/therapeutic-groups/,Each group meets at 10am (ish) starting with a cup of tea and catch up... ending around 3pm,2026-11-23
+R1620,Seed of Hope therapeutic gardening (Chilton Polden),Chilton Polden,address,"Avalon Priory, Priory Road",https://seedofhope.org.uk/therapeutic-groups/,"Chilton Polden (Thursday) Avalon Priory, Priory Road, Chilton Polden, TA7 9DH",2026-11-23
+R1620,Seed of Hope therapeutic gardening (Chilton Polden),Chilton Polden,phone,0330 117 0443,https://seedofhope.org.uk/therapeutic-groups/,Tel: 03301170443,2026-11-23
+R1620,Seed of Hope therapeutic gardening (Chilton Polden),Chilton Polden,email,hi@seedofhope.org.uk,https://seedofhope.org.uk/therapeutic-groups/,Email: hi@seedofhope.org.uk,2026-11-23
+R1620,Seed of Hope therapeutic gardening (Chilton Polden),Chilton Polden,access,sign up,https://seedofhope.org.uk/therapeutic-groups/,If you would like to attend a group contact us or message us on Whatsapp,2026-11-23
+R1621,"Out4Lunch (Somerset Lesbian Network, Taunton)",Taunton,days,Sun,https://somersetlesbiannetwork.com/,Out4Lunch is held in Taunton on the last Sunday of each month,2026-11-23
+R1621,"Out4Lunch (Somerset Lesbian Network, Taunton)",Taunton,frequency,last Sun of month,https://somersetlesbiannetwork.com/,Out4Lunch is held in Taunton on the last Sunday of each month,2026-11-23
+R1621,"Out4Lunch (Somerset Lesbian Network, Taunton)",Taunton,email,slnetwork@hotmail.com,https://somersetlesbiannetwork.com/,please e mail us at:  slnetwork@hotmail.com,2026-11-23
+R1621,"Out4Lunch (Somerset Lesbian Network, Taunton)",Taunton,access,sign up,https://somersetlesbiannetwork.com/,"for information about how to become a member, please e mail us at",2026-11-23
+R1622,Shared Reading (Taunton Library),Taunton,days,Mon,https://wellbeingsedgemoor.org/category/befriending-isolation/,"The Taunton Shared Reading group takes place weekly on Mondays from 2pm – 3.30pm at Taunton Library, Paul Street, Taunton, TA1 3XZ.",2026-11-23
+R1622,Shared Reading (Taunton Library),Taunton,times,14:00-15:30,https://wellbeingsedgemoor.org/category/befriending-isolation/,"The Taunton Shared Reading group takes place weekly on Mondays from 2pm – 3.30pm at Taunton Library, Paul Street, Taunton, TA1 3XZ.",2026-11-23
+R1622,Shared Reading (Taunton Library),Taunton,address,"Taunton Library, Paul Street",https://wellbeingsedgemoor.org/category/befriending-isolation/,"The Taunton Shared Reading group takes place weekly on Mondays from 2pm – 3.30pm at Taunton Library, Paul Street, Taunton, TA1 3XZ.",2026-11-23
+R1622,Shared Reading (Taunton Library),Taunton,cost,Free,https://wellbeingsedgemoor.org/category/befriending-isolation/,The Reader offer Shared Reading groups that are open to all and free to attend.,2026-11-23
+R1622,Shared Reading (Taunton Library),Taunton,email,southwest@thereader.org.uk,https://wellbeingsedgemoor.org/category/befriending-isolation/,southwest@thereader.org.uk,2026-11-23
+R1623,Age UK Telephone Friendship,,phone,0800 434 6105,https://www.ageuk.org.uk/services/befriending-services/sign-up-for-telephone-befriending/,0800 434 6105,2026-11-23
+R1623,Age UK Telephone Friendship,,cost,Free,https://www.ageuk.org.uk/services/befriending-services/sign-up-for-telephone-befriending/,a free weekly friendship call,2026-11-23
+R1623,Age UK Telephone Friendship,,eligibility,Age 60+; own phone; able to commit to a weekly call,https://www.ageuk.org.uk/services/befriending-services/sign-up-for-telephone-befriending/,We match over-60s with a friendly volunteer for a weekly chat.,2026-11-23
+R1624,Royal British Legion Admiral Nurses,,phone,0808 802 8080,https://www.britishlegion.org.uk/get-support/care/admiral-nurses/,0808 802 8080,2026-11-23
+R1624,Royal British Legion Admiral Nurses,,eligibility,Serving and ex-serving Armed Forces personnel and their families,https://www.britishlegion.org.uk/get-support/care/admiral-nurses/,Our Admiral Nurses support serving and ex-serving personnel and their families.,2026-11-23
+R1625,SWAN Advocacy (Somerset),,phone,03333 447928,https://www.somerset.gov.uk/send/south-west-advocacy-network-swan-advocacy,03333 447928,2026-11-23
+R1625,SWAN Advocacy (Somerset),,email,somerset@swanadvocacy.org.uk,https://www.somerset.gov.uk/send/south-west-advocacy-network-swan-advocacy,somerset@swanadvocacy.org.uk,2026-11-23
+R1625,SWAN Advocacy (Somerset),,access,referral,https://www.somerset.gov.uk/send/south-west-advocacy-network-swan-advocacy,"Targeted - Extra help for some people, usually after someone has made a referral",2026-11-23
+R1626,YMCA Street Youth Club,Street,days,Mon;Fri,https://ymca-bg.org/what-we-do/youth-work/mendip-youth-clubs/,"Street Youth Club Monday’s & Friday’s 7:00pm – 9:00pm Street Young People’s Centre, Strode Road, Street, BA16 0AS",2026-11-23
+R1626,YMCA Street Youth Club,Street,times,19:00-21:00,https://ymca-bg.org/what-we-do/youth-work/mendip-youth-clubs/,"Street Youth Club Monday’s & Friday’s 7:00pm – 9:00pm Street Young People’s Centre, Strode Road, Street, BA16 0AS",2026-11-23
+R1626,YMCA Street Youth Club,Street,address,"Street Young People's Centre, Strode Road",https://ymca-bg.org/what-we-do/youth-work/mendip-youth-clubs/,"Street Youth Club Monday’s & Friday’s 7:00pm – 9:00pm Street Young People’s Centre, Strode Road, Street, BA16 0AS",2026-11-23
+R1627,YMCA Windmill Hill Youth Club (Glastonbury),Glastonbury,days,Mon,https://ymca-bg.org/what-we-do/youth-work/mendip-youth-clubs/,"Glastonbury Windmill Hill Youth Club Monday’s 7:00pm-9:00pm Windmill Hill Youth Club, St Edmund’s Hall, BA6 8EG",2026-11-23
+R1627,YMCA Windmill Hill Youth Club (Glastonbury),Glastonbury,times,19:00-21:00,https://ymca-bg.org/what-we-do/youth-work/mendip-youth-clubs/,"Glastonbury Windmill Hill Youth Club Monday’s 7:00pm-9:00pm Windmill Hill Youth Club, St Edmund’s Hall, BA6 8EG",2026-11-23
+R1627,YMCA Windmill Hill Youth Club (Glastonbury),Glastonbury,address,"St Edmund's Hall, Windmill Hill",https://ymca-bg.org/what-we-do/youth-work/mendip-youth-clubs/,"Glastonbury Windmill Hill Youth Club Monday’s 7:00pm-9:00pm Windmill Hill Youth Club, St Edmund’s Hall, BA6 8EG",2026-11-23
+R1628,YMCA St Dunstan's Youth Club (Glastonbury),Glastonbury,days,Wed,https://ymca-bg.org/what-we-do/youth-work/mendip-youth-clubs/,"St. Dunstans Youth Club Wednesdays 6.00pm – 8.00pm St. Dunstans House (Town Hall), Magdalene St, Glastonbury BA6 9EL",2026-11-23
+R1628,YMCA St Dunstan's Youth Club (Glastonbury),Glastonbury,times,18:00-20:00,https://ymca-bg.org/what-we-do/youth-work/mendip-youth-clubs/,"St. Dunstans Youth Club Wednesdays 6.00pm – 8.00pm St. Dunstans House (Town Hall), Magdalene St, Glastonbury BA6 9EL",2026-11-23
+R1628,YMCA St Dunstan's Youth Club (Glastonbury),Glastonbury,address,"St Dunstan's House (Town Hall), Magdalene Street",https://ymca-bg.org/what-we-do/youth-work/mendip-youth-clubs/,"St. Dunstans Youth Club Wednesdays 6.00pm – 8.00pm St. Dunstans House (Town Hall), Magdalene St, Glastonbury BA6 9EL",2026-11-23
+R1629,YMCA Frome Youth Club,Frome,days,Mon;Wed,https://ymca-bg.org/what-we-do/youth-work/mendip-youth-clubs/,"Frome Youth Club Monday’s & Wednesday’s 7:00pm-9:00pm Frome Youth & Community Centre (FYCC) Vallis Road, Frome BA11 3EF",2026-11-23
+R1629,YMCA Frome Youth Club,Frome,times,19:00-21:00,https://ymca-bg.org/what-we-do/youth-work/mendip-youth-clubs/,"Frome Youth Club Monday’s & Wednesday’s 7:00pm-9:00pm Frome Youth & Community Centre (FYCC) Vallis Road, Frome BA11 3EF",2026-11-23
+R1629,YMCA Frome Youth Club,Frome,address,"Frome Youth and Community Centre, Vallis Road",https://ymca-bg.org/what-we-do/youth-work/mendip-youth-clubs/,"Frome Youth Club Monday’s & Wednesday’s 7:00pm-9:00pm Frome Youth & Community Centre (FYCC) Vallis Road, Frome BA11 3EF",2026-11-23
+R1630,YMCA Coleford Youth Club,Coleford,days,Thu,https://ymca-bg.org/what-we-do/youth-work/mendip-youth-clubs/,"Coleford Youth Club Thursdays 6.30pm-8:30pm Church Street, Coleford, BA3 5NQ",2026-11-23
+R1630,YMCA Coleford Youth Club,Coleford,times,18:30-20:30,https://ymca-bg.org/what-we-do/youth-work/mendip-youth-clubs/,"Coleford Youth Club Thursdays 6.30pm-8:30pm Church Street, Coleford, BA3 5NQ",2026-11-23
+R1630,YMCA Coleford Youth Club,Coleford,address,Church Street,https://ymca-bg.org/what-we-do/youth-work/mendip-youth-clubs/,"Coleford Youth Club Thursdays 6.30pm-8:30pm Church Street, Coleford, BA3 5NQ",2026-11-23
+R1631,YMCA Wells Youth Club,Wells,days,Mon,https://ymca-bg.org/what-we-do/youth-work/mendip-youth-clubs/,"Wells Youth Club Mondays 6:00–8:00pm Connect Centre, Portway, Wells BA5 2BE",2026-11-23
+R1631,YMCA Wells Youth Club,Wells,times,18:00-20:00,https://ymca-bg.org/what-we-do/youth-work/mendip-youth-clubs/,"Wells Youth Club Mondays 6:00–8:00pm Connect Centre, Portway, Wells BA5 2BE",2026-11-23
+R1631,YMCA Wells Youth Club,Wells,address,"Connect Centre, Portway",https://ymca-bg.org/what-we-do/youth-work/mendip-youth-clubs/,"Wells Youth Club Mondays 6:00–8:00pm Connect Centre, Portway, Wells BA5 2BE",2026-11-23
+R1632,Sing2breathe (Cheddar),Cheddar,days,Wed,https://sing2breathe.org/index.php/attend-a-class/,Cheddar – Wednesday afternoons 1.45-3.00pm Cheddar Catholic community Hall,2026-11-23
+R1632,Sing2breathe (Cheddar),Cheddar,times,13:45-15:00,https://sing2breathe.org/index.php/attend-a-class/,Cheddar – Wednesday afternoons 1.45-3.00pm Cheddar Catholic community Hall,2026-11-23
+R1632,Sing2breathe (Cheddar),Cheddar,address,"Cheddar Catholic Community Hall, Upper North Street",https://sing2breathe.org/index.php/attend-a-class/,Cheddar – Wednesday afternoons 1.45-3.00pm Cheddar Catholic community Hall,2026-11-23
+R1632,Sing2breathe (Cheddar),Cheddar,email,hello@sing2breathe.org,https://sing2breathe.org/index.php/attend-a-class/,Please contact us at hello@sing2breathe.org to find out more or to be added to our waiting list.,2026-11-23
+R1632,Sing2breathe (Cheddar),Cheddar,access,sign up,https://sing2breathe.org/index.php/attend-a-class/,Please contact us at hello@sing2breathe.org to find out more or to be added to our waiting list.,2026-11-23
+R1632,Sing2breathe (Cheddar),Cheddar,mode,in-person,https://sing2breathe.org/index.php/attend-a-class/,Our groups meet either weekly or fortnightly at:,2026-11-23
+R1633,Sing2breathe (Yeovil),Yeovil,days,Thu,https://sing2breathe.org/index.php/attend-a-class/,Yeovil – Thursday afternoons 1.45 – 3.00pm Westland Entertainment Venue,2026-11-23
+R1633,Sing2breathe (Yeovil),Yeovil,times,13:45-15:00,https://sing2breathe.org/index.php/attend-a-class/,Yeovil – Thursday afternoons 1.45 – 3.00pm Westland Entertainment Venue,2026-11-23
+R1633,Sing2breathe (Yeovil),Yeovil,address,Westlands Entertainment Venue,https://sing2breathe.org/index.php/attend-a-class/,Yeovil – Thursday afternoons 1.45 – 3.00pm Westland Entertainment Venue,2026-11-23
+R1633,Sing2breathe (Yeovil),Yeovil,email,hello@sing2breathe.org,https://sing2breathe.org/index.php/attend-a-class/,Please contact us at hello@sing2breathe.org to find out more or to be added to our waiting list.,2026-11-23
+R1633,Sing2breathe (Yeovil),Yeovil,access,sign up,https://sing2breathe.org/index.php/attend-a-class/,Please contact us at hello@sing2breathe.org to find out more or to be added to our waiting list.,2026-11-23
+R1633,Sing2breathe (Yeovil),Yeovil,mode,in-person,https://sing2breathe.org/index.php/attend-a-class/,Our groups meet either weekly or fortnightly at:,2026-11-23

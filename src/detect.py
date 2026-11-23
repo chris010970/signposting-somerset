@@ -87,6 +87,13 @@ def contact_links(soup):
             out.append(h.split(":", 1)[1].split("?")[0])
     return [x for x in out if x]
 
+def uncloak(soup):
+    """Cloudflare-hidden email addresses back in the text where the page shows them, as a visitor's browser does:
+    the checker reads pages with the address in place, so its quotes carry it (batch19 R1438 'Participant Enquiries: ...')."""
+    for e in soup.select("[data-cfemail]"):
+        e.replace_with(cf_decode(e["data-cfemail"]))
+    return soup
+
 def whole_page(html_text):
     """Everything visible on the page, flattened, plus the contact links it gives (see contact_links): where the monitor
     looks for a quote that isn't in the main content ('found, footer')."""
@@ -95,6 +102,7 @@ def whole_page(html_text):
         for e in soup.select(sel):
             e.decompose()
     extra = contact_links(soup)
+    uncloak(soup)
     for t in soup(["script", "style", "noscript", "template", "svg", "head"]):
         t.decompose()
     return re.sub(r"\s+", " ", soup.get_text(" ") + " " + " ".join(extra)).strip().lower()
@@ -110,7 +118,7 @@ def drops_for(url):
 
 def tidy(html_text, url=""):
     """The page's main content as lines of text, with presentation removed and information kept."""
-    soup = BeautifulSoup(html_text, "html.parser")
+    soup = uncloak(BeautifulSoup(html_text, "html.parser"))
     for t in soup.select(", ".join(drops_for(url))):
         t.decompose()
     main = None

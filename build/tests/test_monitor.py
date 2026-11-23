@@ -294,11 +294,49 @@ class ToolAnswersAsText(unittest.TestCase):
         self.assertEqual(self.cs.as_service({"name": "x"}), {"name": "x"})
         self.assertEqual(self.cs.as_service("not json"), "not json")
 
+    def test_json_text_with_trailing_markup_is_read(self):
+        """batch19r R1319/R1478: JSON text followed by stray characters."""
+        got = self.cs.as_service('{"name": "Digital Health Desk", "fields": {"days": {"value": "Tue"}}}\n</parameter>')
+        self.assertEqual(got["fields"]["days"]["value"], "Tue")
+        self.assertEqual(self.cs.as_service('{"name": "cut off'), '{"name": "cut off')
+
     def test_unstring_tool_input(self):
         got = self.cs.unstring({"found": True, "service": '{"name": "x"}', "services": '[{"name": "y"}]', "notes": "fine"})
         self.assertEqual(got["service"], {"name": "x"})
         self.assertEqual(got["services"], [{"name": "y"}])
         self.assertEqual(got["notes"], "fine")
+
+    def test_service_as_markup_is_asked_for_again(self):
+        """batch23 R1595: the service came back as '<parameter name="name">...' text. The checker asks once more."""
+        from types import SimpleNamespace as NS
+        cs = self.cs
+        url = "https://example.org/group"
+        cs._pages[url] = {"ok": True, "status": 200, "final_url": url, "text": "Drop-in on Wednesdays 2 - 5pm", "links": []}
+        def tool(i, inp): return NS(type="tool_use", name="submit_service", id=f"t{i}", input=inp)
+        answers = [[tool(1, {"found": True, "source_url": url, "service": '\n<parameter name="name">Drop-in'})],
+                   [tool(2, {"found": True, "source_url": url, "service": {"name": "Drop-in", "fields": {}}})]]
+        sent = []
+        class Stream:
+            def __init__(self, kw): self.kw = kw
+            def __enter__(self): return self
+            def __exit__(self, *a): return False
+            def get_final_message(self):
+                sent.append([dict(m) for m in self.kw["messages"]])
+                return NS(content=answers[len(sent) - 1], stop_reason="tool_use", usage=NS())
+        client = NS(messages=NS(stream=lambda **kw: Stream(kw)))
+        total = {k: 0 for k in ("input_tokens", "output_tokens", "cache_read_input_tokens", "cache_creation_input_tokens", "web_searches")}
+        log, got = [], []
+        orig = cs.verify
+        cs.verify = lambda service, src, *a, **k: got.append(service) or service
+        try:
+            cs.find_service(client, "m", {"name": "Drop-in"}, url, False, False, total, log)
+        finally:
+            cs.verify = orig
+        self.assertEqual(len(sent), 2)
+        self.assertTrue(any("asked again" in x for x in log))
+        self.assertEqual(got[0]["name"], "Drop-in")
+        last = sent[1][-1]["content"][0]
+        self.assertTrue(last["is_error"])
 
 if __name__ == "__main__":
     unittest.main()
@@ -447,3 +485,32 @@ class HiddenOldContent(unittest.TestCase):
         text, _ = check_sources.parse_html(self.HTML, URL)
         self.assertNotIn("Friday", text)
         self.assertIn("Monday and Thursday", text)
+
+
+class MonitorStandInQuotes(unittest.TestCase):
+    """First full run (23/11/2026): quotes that are the checker's notes, not words from the page, came up as missing."""
+    def setUp(self):
+        import monitor
+        self.m = monitor
+
+    def test_value_appears_looks_for_the_value(self):
+        main = "call our helpline. email advice@carersuk.org"
+        self.assertEqual(self.m.classify("value appears on the page", main, main, "email", "advice@carersuk.org"), "found")
+        self.assertEqual(self.m.classify("value appears on the page", "nothing here", "nothing here", "email", "advice@carersuk.org"), "missing")
+
+    def test_phone_by_digits(self):
+        main = "freephone 0800 1381692 (mon-fri)"
+        self.assertEqual(self.m.classify("value appears on the page", main, main, "phone", "0800 138 1692"), "found")
+
+    def test_contact_links_list_checks_the_value(self):
+        whole = "garden page samanthajane_james@yahoo.co.uk info@somersetcommunityfood.org"
+        q = "Contact links on page: samanthajane_james@yahoo.co.uk, info@somersetcommunityfood.org"
+        self.assertEqual(self.m.classify(q, "garden page", whole, "email", "info@somersetcommunityfood.org"), "found, footer")
+
+    def test_cloudflare_email_is_put_back_in_the_text(self):
+        import detect
+        k = 0x42
+        enc = "%02x" % k + "".join("%02x" % (ord(c) ^ k) for c in "hello@sing2breathe.org")
+        html = f'<html><body><main><p>Participant Enquiries: <a class="__cf_email__" data-cfemail="{enc}">[email&#160;protected]</a></p></main></body></html>'
+        self.assertIn("Participant Enquiries: hello@sing2breathe.org", detect.tidy(html))
+        self.assertIn("participant enquiries: hello@sing2breathe.org", detect.whole_page(html))

@@ -778,7 +778,7 @@ R0781,Clevedon District Foodbank: Clevedon,Clevedon,Clevedon District Foodbank,p
 R0782,Clevedon District Foodbank: Portishead,Portishead,Clevedon District Foodbank,partly verified,2026-11-22,https://clevedondistrict.foodbank.org.uk/locations/,"not on the page: cost, who"
 R0783,Clevedon District Foodbank: Nailsea,Nailsea,Clevedon District Foodbank,partly verified,2026-11-22,https://clevedondistrict.foodbank.org.uk/locations/,"not on the page: cost, who, mode"
 R0784,Clevedon District Foodbank: Yatton,Yatton,Clevedon District Foodbank,partly verified,2026-11-22,https://clevedondistrict.foodbank.org.uk/locations/,"not on the page: cost, who, mode"
-R0785,Singing for the Brain (Minehead),Minehead,Alzheimer's Society,not checked yet,2026-11-23,https://www.livingbetter.org.uk/event-details/singing-for-the-brain,restored from Living Better's event page: check
+R0785,Singing for the Brain (Minehead),Minehead,Alzheimer's Society,verified,2026-11-23,https://www.livingbetter.org.uk/event-details/singing-for-the-brain,
 R0786,Singing for the Brain (Ilminster),Ilminster,Alzheimer's Society,verified,2026-11-22,https://www.alzheimers.org.uk/support-services/Somerset%20Local%20Services/Singing%20for%20the%20Brain%20-%20Ilminster/local,
 R0787,Singing for the Brain (Taunton),Taunton,Alzheimer's Society,verified,2026-11-22,https://www.alzheimers.org.uk/support-services/Somerset%20Local%20Services/Singing%20for%20the%20Brain%20Taunton/local,
 R0788,Memory Connections (Chard),Chard,Age UK Somerset,partly verified,2026-11-21,https://www.ageuk.org.uk/somerset/our-services/dementia-services/memory-connections-dementia-mcst/,"page gives this group's day, time and venue; the £15 cost and how to join are stated once for all groups"
@@ -1098,13 +1098,13 @@ R1108,Somerdale Shed: Gardening and Woodworking (Keynsham),Keynsham,Somerdale Sh
 R1109,Somerdale Shed: Saturday open session (Keynsham),Keynsham,Somerdale Shed and Community Garden,corrected,2026-11-22,https://www.somerdaleshed.org/contact/,updated from the provider's page
 R1110,Saltford Warm Space,Saltford,Saltford Warm Space,partly verified,2026-11-22,https://livewell.bathnes.gov.uk/cost-living-crisis/warm-places-list/saltford-sports-club,not on the page: who
 R1111,Midsomer Norton Social (Sight Support West),Midsomer Norton,Sight Support West of England,partly verified,2026-11-22,https://www.sightsupportwest.org.uk,not on the page: access
-R1112,Singing for Fun (Midsomer Norton),Midsomer Norton,Age UK Bath & North East Somerset,partly verified,2026-11-22,https://www.ageuk.org.uk/bathandnortheastsomerset/activities-and-events/,not on the page: who
-R1113,Cook & Eat (Midsomer Norton),Midsomer Norton,Cook & Eat (supported by Age UK Bath & North East Somerset),removed,2026-11-22,https://www.ageuk.org.uk/bathandnortheastsomerset/activities-and-events/,"Age UK page: ""This is no longer an Age UK B&NES run service"" (Chris)"
+R1112,Singing for Fun (Midsomer Norton),Midsomer Norton,Age UK Bath & North East Somerset,corrected,2026-11-23,https://www.ageuk.org.uk/bathandnortheastsomerset/activities-and-events/singing-for-fun/,"changed from the provider page: cost, address"
+R1113,Cook & Eat (Midsomer Norton),Midsomer Norton,Cook & Eat,verified,2026-11-23,https://www.ageuk.org.uk/bathandnortheastsomerset/activities-and-events/,"reinstated (Chris, 23/11): Age UK page lists it with a contact"
 R1114,Friendship Fridays (Midsomer Norton Library),Midsomer Norton,Bath and North East Somerset Libraries,corrected,2026-11-22,https://baneslibraries.co.uk/events/category/midsomer-norton-library/,updated from the provider's page
 R1115,Memory Club (Radstock Museum),Radstock,Radstock Museum,removed,2026-11-22,https://radstockmuseum.co.uk/our-events-programme,Radstock Museum events page returns 404; not found elsewhere (Chris)
 R1116,Carers' Wellbeing Café (Radstock Museum),Radstock,Radstock Museum,partly verified,2026-11-22,https://radstockmuseum.co.uk/our-events-programme,judgement call: news article gives a contact mobile 07741 577055 and says call first
 R1117,Local History Club (Radstock Museum),Radstock,Radstock Museum,removed,2026-11-22,https://radstockmuseum.co.uk/our-events-programme,Radstock Museum events page returns 404; not found elsewhere (Chris)
-R1118,Sing to Remember (Writhlington),Radstock,Age UK Bath & North East Somerset,removed,2026-11-22,https://www.ageuk.org.uk/bathandnortheastsomerset/activities-and-events/,days not set (Days TBC)
+R1118,Sing to Remember (Writhlington),Radstock,Remind UK,partly verified,2026-11-23,https://www.ageuk.org.uk/bathandnortheastsomerset/activities-and-events/,"reinstated (Chris, 23/11): days now on the Age UK page"
 R1119,Burnham & Highbridge Men's Shed (mornings),Highbridge,Burnham & Highbridge Men's Shed,partly verified,2026-11-22,https://www.burnham-on-sea.com/news/photos-burnham-highbridge-mens-shed-opened-its-doors-to-the-community-on-open-day/,how to join not stated on the page; kept as drop in (Chris)
 R1120,Burnham & Highbridge Men's Shed (afternoons),Highbridge,Burnham & Highbridge Men's Shed,partly verified,2026-11-22,https://www.burnham-on-sea.com/news/photos-burnham-highbridge-mens-shed-opened-its-doors-to-the-community-on-open-day/,how to join not stated on the page; kept as drop in (Chris)
 R1121,"Ladies Shed (Highbridge, Monday)",Highbridge,Burnham & Highbridge Men's Shed,verified,2026-11-22,https://www.burnham-on-sea.com/news/photos-burnham-highbridge-mens-shed-opened-its-doors-to-the-community-on-open-day/,
@@ -1142,9 +1142,9 @@ R1153,"Free lunch, St Andrew's Community Church (Bath)",Bath,St Andrew's Communi
 R1154,"Click Café (Age UK, Bath)",Bath,Age UK Bath & North East Somerset,partly verified,2026-11-22,https://www.ageuk.org.uk/bathandnortheastsomerset/activities-and-events/,"not on the page: access, who"
 R1155,Bath Foodbank (The Gateway Centre),Bath,"Bath, Keynsham & Somer Valley Foodbank (Genesis Trust)",verified,2026-11-22,https://bksv.foodbank.org.uk/locations/,
 R1156,Board Games Group for autistic adults (Bridgwater),Bridgwater,Somerset Autism Spectrum Service (SASS),corrected,2026-11-22,https://www.somersetft.nhs.uk/somerset-autism-spectrum-service/somerset-autism-spectrum-service/post-diagnostic-support-information/,access is referral (stated once for all SASS groups)
-R1167,Roots to Work (Bath City Farm),Bath,Bath City Farm,partly verified,2026-11-22,https://www.bathcityfarm.org.uk/for-adults/,not on the page: access
+R1167,Roots to Work (Bath City Farm),Bath,Bath City Farm,partly verified,2026-11-23,https://www.bathcityfarm.org.uk/for-adults/,Bath City Farm's site not loading (23/11); email from twertonandwhiteway.org
 R1168,Nature Conservation with the National Trust (Bath City Farm),Bath,Bath City Farm,partly verified,2026-11-22,https://www.bathcityfarm.org.uk/for-adults/,page says both once a month and fortnightly: frequency kept as see website
-R1169,The Bath Shed (Bath City Farm),Bath,The Bath Shed,partly verified,2026-11-22,https://www.bathcityfarm.org.uk/for-adults/,"page: visit when the Shed is open, or email/call; kept as drop in"
+R1169,The Bath Shed (Bath City Farm),Bath,The Bath Shed,corrected,2026-11-23,https://e-voice.org.uk/bathshed/,"changed from its own site: days, times"
 R1171,Coproduction Group for autistic adults (SASS),,Somerset Autism Spectrum Service (SASS),partly verified,2026-11-22,https://www.somersetft.nhs.uk/somerset-autism-spectrum-service/somerset-autism-spectrum-service/post-diagnostic-support-information/,not on the page: phone
 R1173,"Coffee morning (The Good Heart, Frome)",Frome,The Good Heart,partly verified,2026-11-22,https://openmentalhealth.org.uk/finding-community-over-a-cuppa/,"not on the page: access, who"
 R1174,"Genesis Trust Lifeline (Bath, Tue/Wed/Fri mornings)",Bath,Genesis Trust,partly verified,2026-11-22,https://genesistrust.org.uk/help-homeless/,checker matched the one-to-one times; Tue/Wed/Fri mornings are on the page: days not quoted
@@ -1235,10 +1235,10 @@ R1297,Citizens Advice North Somerset (Weston-super-Mare),Weston-super-Mare,Citiz
 R1298,Citizens Advice drop-in (Keynsham),Keynsham,Citizens Advice Bath and North East Somerset,verified,2026-11-23,https://www.citizensadvice.org.uk/about-us/contact-us/local-citizens-advice/0014K000009EMNPQA4/,Mon 9:30am-2pm and Keynsham Library address confirmed on the Citizens Advice page 23/11/2026
 R1299,Crispin Warm Space (Mon and Tue afternoons),Street,Crispin Community Centre,verified,2026-11-23,https://www.facebook.com/crispincommunitycentre,checked by hand against Crispin's timetable picture for the week of 23 November 2026 (sent by Chris); Facebook can't be watched; afternoon sessions split from R0064
 R1300,Crispin Warm Space (Wed to Fri afternoons),Street,Crispin Community Centre,verified,2026-11-23,https://www.facebook.com/crispincommunitycentre,checked by hand against Crispin's timetable picture for the week of 23 November 2026 (sent by Chris); Facebook can't be watched; afternoon sessions split from R0064
-R1301,"Connection Café (digital help, Minehead)",Minehead,Connection Café Minehead,not checked yet,,https://www.livingbetter.org.uk/event-details/connection-cafe,new: Living Better event page (Chris)
-R1302,Alcombe Friendship Group,Minehead,Alcombe Friendship Centre,not checked yet,,https://www.livingbetter.org.uk/event-details/alcombe-friendship-group,new: Living Better event page (Chris)
-R1303,PALS water exercise group (St Audries),West Quantoxhead,Pro-Active Lifestyle (PALS),not checked yet,,https://www.livingbetter.org.uk/event-details/pro-active-lifestyle-water-activities-group,new: Living Better event page (Chris)
-R1304,Jolly Codgers (Minehead),Minehead,Positive AIMS,not checked yet,,https://www.livingbetter.org.uk/event-details/jolly-codgers,new: Living Better event page (Chris)
+R1301,"Connection Café (digital help, Minehead)",Minehead,Connection Café Minehead,verified,2026-11-23,https://www.livingbetter.org.uk/event-details/connection-cafe,
+R1302,Alcombe Friendship Group,Minehead,Alcombe Friendship Centre,verified,2026-11-23,https://www.livingbetter.org.uk/event-details/alcombe-friendship-group,
+R1303,PALS water exercise group (St Audries),West Quantoxhead,Pro-Active Lifestyle (PALS),corrected,2026-11-23,https://www.livingbetter.org.uk/event-details/pro-active-lifestyle-water-activities-group,"changed from the provider page: phone, cost"
+R1304,Jolly Codgers (Minehead),Minehead,Positive AIMS,verified,2026-11-23,https://www.livingbetter.org.uk/event-details/jolly-codgers,
 R1305,Wild Roots Growing for Wellbeing (Baltonsborough),Baltonsborough,Wilder Woods,verified,2026-11-23,https://wilderwoods.org/projects/,
 R1306,Wild Roots autism-friendly growing group (Baltonsborough),Baltonsborough,Wilder Woods,partly verified,2026-11-23,https://wilderwoods.org/projects/,"checker suggestions not taken (another session on the same page, or wording only)"
 R1307,Plotgate Community Farm volunteering (Barton St David),Barton St David,Plotgate Community Farm,partly verified,2026-11-23,https://www.plotgatecommunityfarm.org/,details from the Health Connections Mendip directory; provider page didn't confirm them
@@ -1246,21 +1246,21 @@ R1308,Walking Tennis (Beckington),Beckington,Beckington Tennis Association,verif
 R1309,Coleford Shedders,Coleford,Coleford Shedders,verified,2026-11-23,https://healthconnectionsmendip.org/coleford-shedders/,
 R1310,Evercreech Friendship Club,Evercreech,Evercreech Friendship Club,verified,2026-11-23,https://healthconnectionsmendip.org/evercreech-lunch-club/,
 R1311,Active Living Exercise Class (Frome),Frome,Active Living,verified,2026-11-23,https://healthconnectionsmendip.org/active-living-exercise-class/,
-R1312,Baby Connections (Frome),Frome,Baby Connections Frome,partly verified,2026-11-23,https://www.fromebabyconnections.com/,details from the Health Connections Mendip directory; provider page didn't confirm them
+R1312,Baby Connections (Frome),Frome,Baby Connections Frome,partly verified,2026-11-23,https://www.fromebabyconnections.com/contact,"days, times and phone not on the contact page"
 R1313,"Back to Nature volunteering (Vallis Veg, Frome)",Frome,Back to Nature CIC,partly verified,2026-11-23,https://backtonaturecic.co.uk,details from the Health Connections Mendip directory; provider page didn't confirm them
 R1314,Better Nature Ecotherapy monthly session (Frome),Frome,Better Nature Ecotherapy CIC,corrected,2026-11-23,https://www.betternature.org.uk/drop-in-sessions,"changed from the provider page: address, cost"
-R1315,COPD Support Group (Frome),Frome,Health Connections Mendip,partly verified,2026-11-23,http://healthconnectionsmendip.org/,details from the Health Connections Mendip directory; provider page didn't confirm them
+R1315,COPD Support Group (Frome),Frome,Health Connections Mendip,verified,2026-11-23,https://healthconnectionsmendip.org/copd-peer-support-group/,
 R1316,"Chatty Café (Cordero Lounge, Frome)",Frome,The Chatty Café Scheme,partly verified,2026-11-23,https://thechattycafescheme.co.uk/,details from the Health Connections Mendip directory; provider page didn't confirm them
 R1317,"Children's clothing exchange (Wesley Church, Frome)",Frome,Wesley Methodist Church Frome,corrected,2026-11-23,https://healthconnectionsmendip.org/childrens-clothing-exchange-frome/,changed from the provider page: eligibility
 R1318,"Digital Café (Cheese and Grain, Frome)",Frome,Frome Medical Practice,verified,2026-11-23,https://www.fromemedicalpractice.co.uk/digital-health-support,
-R1319,"NHS App help drop-in (Frome Medical Practice, Tuesday)",Frome,Frome Medical Practice,corrected,2026-11-23,https://www.fromemedicalpractice.co.uk/digital-health-support,changed from the provider page: eligibility
+R1319,"NHS App help drop-in (Frome Medical Practice, Tuesday)",Frome,Frome Medical Practice,corrected,2026-11-23,https://www.fromemedicalpractice.co.uk/digital-health-support,changed from the provider page: phone
 R1320,"NHS App help drop-in (Frome Medical Practice, Thursday)",Frome,Frome Medical Practice,corrected,2026-11-23,https://www.fromemedicalpractice.co.uk/digital-health-support,changed from the provider page: eligibility
 R1321,"NHS App pop-up help (Sainsbury's, Frome)",Frome,Frome Medical Practice,verified,2026-11-23,https://www.fromemedicalpractice.co.uk/digital-health-support,
 R1322,"NHS App pop-up help (Holy Trinity Church Hall, Frome)",Frome,Frome Medical Practice,partly verified,2026-11-23,https://www.fromemedicalpractice.co.uk/digital-health-support,"checker suggestions not taken (another session on the same page, or wording only)"
 R1323,NHS App pop-up help (Fair Frome),Frome,Frome Medical Practice,corrected,2026-11-23,https://www.fromemedicalpractice.co.uk/digital-health-support,"changed from the provider page: days, frequency"
 R1324,"NHS App pop-up help (Standerwick Market, Frome)",Frome,Frome Medical Practice,removed,2026-11-23,https://www.fromemedicalpractice.co.uk/digital-health-support,Standerwick pop-up no longer on Frome Medical Practice's page
-R1325,Energy advice drop-in (Frome Medical Practice),Frome,Frome Town Council Healthy Homes,partly verified,2026-11-23,https://www.frometowncouncil.gov.uk/our-community/our-sustainability-work/green-and-healthy-frome/healthy-homes/energy-advice-sessions-home-visits/,details from the Health Connections Mendip directory; provider page didn't confirm them
-R1326,FLOC SEND parent carer group (Frome),Frome,FLOC,partly verified,2026-11-23,https://www.somerset.gov.uk/events/floc-frome-community-meet-up/,details from the Health Connections Mendip directory; provider page didn't confirm them
+R1325,Energy advice drop-in (Frome Medical Practice),Frome,Frome Town Council Healthy Homes,partly verified,2026-11-23,https://www.frometowncouncil.gov.uk/our-community/our-sustainability-work/healthy-homes/energy-advice/,"days, times and venue not on the page"
+R1326,FLOC SEND parent carer group (Frome),Frome,FLOC,corrected,2026-11-23,https://www.somerset.gov.uk/events/floc-frome-community-meet-up/,"changed from the provider page: cost, times"
 R1327,Citizens Advice at Fair Frome,Frome,Fair Frome,partly verified,2026-11-23,https://fairfrome.org/,details from the Health Connections Mendip directory; provider page didn't confirm them
 R1328,Inclusion Health drop-in (Fair Frome),Frome,Fair Frome,partly verified,2026-11-23,https://fairfrome.org/other-projects/,"checker suggestions not taken (another session on the same page, or wording only)"
 R1329,Housing advice (Fair Frome),Frome,Fair Frome,corrected,2026-11-23,https://fairfrome.org/other-projects/,"changed from the provider page: cost, days, frequency, times"
@@ -1300,7 +1300,7 @@ R1362,Mindful Pregnancy Relaxation (Frome),Frome,The Body Doula,corrected,2026-1
 R1363,"The Music Man Project (Jackdaws, Great Elm)",Frome,Jackdaws,verified,2026-11-23,https://www.jackdaws.org.uk/community/the-music-man-project-jackdaws/,
 R1364,Neurodivergent Sidequest (Frome),Frome,Neurodivergent Sidequest,verified,2026-11-23,https://healthconnectionsmendip.org/neurodivergent-sidequest/,
 R1365,OpenStoryTellers (Frome),Frome,OpenStoryTellers,corrected,2026-11-23,https://openstorytellers.org.uk/take-part/,"changed from the provider page: access, days, times"
-R1366,Shared Earth: Growing Wellbeing Outdoors (Frome),Frome,Shared Earth Learning,corrected,2026-11-23,http://www.sharedearthlearning.org,changed from the provider page: access
+R1366,Shared Earth: Growing Wellbeing Outdoors (Frome),Frome,Shared Earth Learning,removed,2026-11-23,http://www.sharedearthlearning.org,"Not found on the provider site under this name; removed (Chris, 23/11)"
 R1367,Shared Earth Volunteer Saturdays (Frome),Frome,Shared Earth Learning,verified,2026-11-23,https://www.sharedearthlearning.org/volunteer-with-us,
 R1368,Squiggly Minds ADHD parent and carer group (Frome),Frome,Squiggly Minds,corrected,2026-11-23,https://thegoodheart.uk/squigglyminds/,"changed from the provider page: access, cost"
 R1369,Stoma Support Group (Frome Medical Practice),Frome,RUH Stoma Care,partly verified,2026-11-23,https://www.ruh.nhs.uk/patients/services/clinical_depts/stomatherapy/clinics_and_support.asp?menu_id=5,"not on the page: days, address, frequency"
@@ -1316,18 +1316,18 @@ R1378,Wild Bunch wildlife gardening group (Frome),Frome,Frome Town Council,verif
 R1379,Farmers Market Health Hub (Frome Livestock Market),Frome,Farming Community Network and NHS Somerset,verified,2026-11-23,https://www.fromelivestock.com/,
 R1380,Lipreading and communication skills groups (DeafPLUS),Frome,DeafPLUS,corrected,2026-11-23,http://www.deafplus.org,"changed from the provider page: access, cost"
 R1381,Brighter Days Ahead (Pilton),Pilton,The Hazel Hub,corrected,2026-11-23,https://healthconnectionsmendip.org/brighter-days-ahead-glastonbury/,changed from the provider page: access
-R1382,Chair Yoga (Glastonbury Library),Glastonbury,Somerset Libraries,partly verified,2026-11-23,https://www.somerset.gov.uk/libraries/,details from the Health Connections Mendip directory; provider page didn't confirm them
+R1382,Chair Yoga (Glastonbury Library),Glastonbury,Somerset Libraries,verified,2026-11-23,https://www.somerset.gov.uk/events/chair-yoga-glastonbury-library/,
 R1383,Cosy Crime Book Club (Glastonbury),Glastonbury,Cosy Crime Book Club,verified,2026-11-23,https://healthconnectionsmendip.org/cosy-crime-book-club-glastonbury/,
 R1384,Fisher's Hill Community Garden (Glastonbury),Glastonbury,Fisher's Hill Community Garden,corrected,2026-11-23,https://www.somersetcommunityfood.org.uk/projects/fishers-hill-community-garden,changed from the provider page: email
-R1385,Gentle Yoga (Glastonbury Library),Glastonbury,Somerset Libraries,partly verified,2026-11-23,https://www.somerset.gov.uk/locations/glastonbury-library/,details from the Health Connections Mendip directory; provider page didn't confirm them
-R1386,Grove Wellbeing: Celtic Wheel Poetry group,Glastonbury,Grove Wellbeing,partly verified,2026-11-23,https://www.grovewellbeing.co.uk/,details from the Health Connections Mendip directory; provider page didn't confirm them
+R1385,Gentle Yoga (Glastonbury Library),Glastonbury,Somerset Libraries,partly verified,2026-11-23,https://www.somerset.gov.uk/locations/glastonbury-library/,only the library's opening hours found
+R1386,Grove Wellbeing: Celtic Wheel Poetry group,Glastonbury,Grove Wellbeing,corrected,2026-11-23,https://www.grovewellbeing.co.uk/bardic,changed from the provider page: cost
 R1387,Grove Wellbeing: Art as Therapy (Monday),Glastonbury,Grove Wellbeing,corrected,2026-11-23,https://www.grovewellbeing.co.uk/art,changed from the provider page: cost
 R1388,Grove Wellbeing: Ogham Tree eco therapy,Glastonbury,Grove Wellbeing,verified,2026-11-23,https://www.grovewellbeing.co.uk/trees,
 R1389,Grove Wellbeing: Art as Therapy (Tuesday evening),Glastonbury,Grove Wellbeing,corrected,2026-11-23,https://www.grovewellbeing.co.uk/art,changed from the provider page: cost
 R1390,Grove Wellbeing: Flower Tea & Folklore meditation,Glastonbury,Grove Wellbeing,verified,2026-11-23,https://www.grovewellbeing.co.uk/,
-R1391,Grove Wellbeing: community allotment,Glastonbury,Grove Wellbeing,partly verified,2026-11-23,https://www.grovewellbeing.co.uk/,details from the Health Connections Mendip directory; provider page didn't confirm them
+R1391,Grove Wellbeing: community allotment,Glastonbury,Grove Wellbeing,corrected,2026-11-23,https://www.grovewellbeing.co.uk/garden,"changed from the provider page: cost, days, times"
 R1392,Manor House Road Community Garden (Glastonbury),Glastonbury,Somerset Community Food,corrected,2026-11-23,https://www.somersetcommunityfood.org.uk/projects/manor-house-road-community-garden,changed from the provider page: email
-R1393,Paddington Farm volunteering (Glastonbury),Glastonbury,Paddington Farm Trust,partly verified,2026-11-23,https://paddingtonfarm.co.uk/,details from the Health Connections Mendip directory; provider page didn't confirm them
+R1393,Paddington Farm volunteering (Glastonbury),Glastonbury,Paddington Farm Trust,verified,2026-11-23,https://paddingtonfarm.co.uk/our-work/volunteering-2/,
 R1394,Poetry Group (Glastonbury Library),Glastonbury,Somerset Libraries,corrected,2026-11-23,https://www.somerset.gov.uk/events/poetry-group-glastonbury-library/,"changed from the provider page: access, cost, times"
 R1395,"Poetry Night (Heart of the Tribe, Glastonbury)",Glastonbury,Heart of the Tribe Gallery,removed,2026-11-23,https://www.heartofthetribe.com/,Poetry Night: last listed date June 2026
 R1396,Red Brick Community Garden volunteer morning (Glastonbury),Glastonbury,Red Brick Building,corrected,2026-11-23,https://redbrickbuilding.co.uk/at-the-rbb/community-garden/,changed from the provider page: email
@@ -1367,12 +1367,12 @@ R1429,Seed of Hope therapeutic gardening (Street),Street,Seed of Hope,corrected,
 R1430,Street Men! male voice choir,Street,Street Men!,verified,2026-11-23,https://healthconnectionsmendip.org/street-men-male-voice-choir-street/,
 R1431,Bishop's Palace community garden session (Wells),Wells,The Bishop's Palace,removed,2026-11-23,https://healthconnectionsmendip.org/gardening-at-the-bishops-palace-volunteering-in-wells/,Page gone (HTTP 404): Bishop's Palace community garden page
 R1432,Connect-ed inclusive games group (Wells),Wells,Connect-ed,verified,2026-11-23,https://healthconnectionsmendip.org/connect-ed-wells/,
-R1433,"Dance 4 Parkinson's (Henton, Wells)",Wells,Dance 4 Parkinson's,partly verified,2026-11-23,https://healthconnectionsmendip.org/dance-4-parkinsons-wells/,details from the Health Connections Mendip directory; provider page didn't confirm them
+R1433,"Dance 4 Parkinson's (Henton, Wells)",Wells,Dance 4 Parkinson's,corrected,2026-11-23,https://healthconnectionsmendip.org/dance-4-parkinsons-wells/,changed from the provider page: cost
 R1434,Ladies Walking Group (Wells),Wells,Ladies Walking Group Wells,corrected,2026-11-23,https://healthconnectionsmendip.org/ladies-walking-group-wells/,changed from the provider page: access
 R1435,MS Pub Club (Wells),Wells,MS Society,corrected,2026-11-23,https://www.mssociety.org.uk/,changed from the provider page: access
 R1436,Make and Mend (Wells),Wells,Sustainable Wells,partly verified,2026-11-23,https://sustainablewells.org.uk/make-and-mend,"checker suggestions not taken (another session on the same page, or wording only)"
 R1437,Repair Café (Wells),Wells,Wells Repair Café,verified,2026-11-23,https://healthconnectionsmendip.org/repair-cafe-and-community-freecycle-wells/,
-R1438,Sing2breathe (Wells Health Centre),Wells,Sing2breathe,corrected,2026-11-23,https://sing2breathe.org/index.php/attend-a-class/,changed from the provider page: times
+R1438,Sing2breathe (Wells Health Centre),Wells,Sing2breathe,corrected,2026-11-23,https://sing2breathe.org/index.php/attend-a-class/,changed from the provider page: access (waiting list)
 R1439,Walking Netball (Wells),Wells,England Netball,partly verified,2026-11-23,https://www.englandnetball.co.uk/walking-netball/,checked 23/11; waiting on Chris: HTTP 429
 R1440,Wells u3a coffee morning,Wells,Wells u3a,verified,2026-11-23,https://wells.u3asite.uk/drop-in-coffee-mornings/,
 R1441,Mendip Community Credit Union drop-in (Wells Library),Wells,Mendip Community Credit Union,partly verified,2026-11-23,http://www.mendipcommunitycu.org.uk,"checker suggestions not taken (another session on the same page, or wording only)"
@@ -1381,10 +1381,10 @@ R1443,Mendip Community Credit Union drop-in (Glastonbury Library),Glastonbury,Me
 R1444,Tai Chi for Wellbeing (online),Wells,Tai Chi for Health,corrected,2026-11-23,https://www.healthtaichi.co.uk/,"changed from the provider page: access, times"
 R1445,Tai Chi for Wellbeing (Henton Village Hall),Wells,Tai Chi for Health,corrected,2026-11-23,https://www.healthtaichi.co.uk/,changed from the provider page: days
 R1446,"Tai Chi for Wellbeing (Bishop's Palace, Wells)",Wells,Tai Chi for Health,partly verified,2026-11-23,https://www.healthtaichi.co.uk/,details from the Health Connections Mendip directory; provider page didn't confirm them
-R1447,Tai Chi taster (Wells Library),Wells,Tai Chi for Health,partly verified,2026-11-23,https://www.healthtaichi.co.uk/,details from the Health Connections Mendip directory; provider page didn't confirm them
+R1447,Tai Chi taster (Wells Library),Wells,Tai Chi for Health,removed,2026-11-23,https://www.healthtaichi.co.uk/,"Library taster not on the provider page (only weekly classes at Lawrence Day Centre); removed (Chris, 23/11)"
 R1448,Mind in Somerset online peer support group,,Mind in Somerset,corrected,2026-11-23,https://www.mindinsomerset.org.uk/our-services/peer-support/recovery-and-wellbeing-groups/,changed from the provider page: access
 R1449,Somerset Art Works online art group,,Somerset Art Works,removed,2026-11-23,https://quietplacesathome.online/,Online art group: no new workshop content after August 2026
-R1450,Mojo Moves seated exercise (online),,Mojo Moves,partly verified,2026-11-23,https://www.mojomoves.co.uk/,details from the Health Connections Mendip directory; provider page didn't confirm them
+R1450,Mojo Moves seated exercise (online),,Mojo Moves,verified,2026-11-23,https://www.mojomoves.co.uk/,
 R1451,"Mojo Moves dance exercise (Colliers Court, Frome)",Frome,Mojo Moves,partly verified,2026-11-23,https://www.mojomoves.co.uk/,"not on the page: times, cost"
 R1452,"Mojo Moves dance exercise (YMCA hub, Street)",Street,Mojo Moves,verified,2026-11-23,https://www.mojomoves.co.uk/,
 R1453,"parkrun (Frome, The Old Showfield)",Frome,parkrun,verified,2026-11-23,https://www.parkrun.org.uk/theoldshowfield/,
@@ -1405,21 +1405,21 @@ R1467,Diabetes UK helpline,,Diabetes UK,verified,2026-11-23,https://www.diabetes
 R1468,ERIC bowel and bladder helpline,,ERIC,partly verified,2026-11-23,https://www.eric.org.uk,checked 23/11; waiting on Chris: HTTP 403
 R1469,Hourglass elder abuse helpline,,Hourglass,corrected,2026-11-23,https://www.wearehourglass.org/,updated to page hours Mon-Fri 9-5 (Chris)
 R1470,Intercom Trust LGBT+ helpline,,Intercom Trust,verified,2026-11-23,https://www.intercomtrust.org.uk/helpline/,
-R1471,Macular Society advice line,,Macular Society,partly verified,2026-11-23,https://www.macularsociety.org/,details from the Health Connections Mendip directory; provider page didn't confirm them
+R1471,Macular Society advice line,,Macular Society,corrected,2026-11-23,https://www.macularsociety.org/support/one-to-one/helpline/,changed from the provider page: email
 R1472,Miscarriage UK support line (Tue and Thu),,Miscarriage UK,corrected,2026-11-23,https://www.miscarriageuk.org/our-support-services/,"updated to Miscarriage UK page (Chris): 9am-8pm Mon, Wed, Fri; 9am-4pm on the other weekdays"
 R1473,"Miscarriage UK support line (Mon, Wed, Fri)",,Miscarriage UK,corrected,2026-11-23,https://www.miscarriageuk.org/our-support-services/,"updated to Miscarriage UK page (Chris): 9am-8pm Mon, Wed, Fri; 9am-4pm on the other weekdays"
 R1474,MoneyHelper,,MoneyHelper,partly verified,2026-11-23,https://www.moneyhelper.org.uk/en,checked 23/11; waiting on Chris: HTTP 403
 R1475,National Sleep Helpline (mornings),,The Sleep Charity,corrected,2026-11-23,https://thesleepcharity.org.uk/national-sleep-helpline/,changed from the provider page: days
 R1476,National Sleep Helpline (evenings),,The Sleep Charity,corrected,2026-11-23,https://thesleepcharity.org.uk/national-sleep-helpline/,changed from the provider page: days
 R1477,RNIB Sight Loss Advice line (weekdays),,RNIB,partly verified,2026-11-23,https://www.rnib.org.uk/living-with-sight-loss/community-connection-and-wellbeing/rnib-helpline/,"not on the page: days, times, cost, access, mode"
-R1478,RNIB Sight Loss Advice line (Saturday),,RNIB,partly verified,2026-11-23,http://www.rnib.org.uk/,details from the Health Connections Mendip directory; provider page didn't confirm them
+R1478,RNIB Sight Loss Advice line (Saturday),,RNIB,verified,2026-11-23,http://www.rnib.org.uk/,
 R1479,Rosie Crane Trust helpline,,Rosie Crane Trust,removed,2026-11-23,http://www.rosiecranetrust.org/,Rosie Crane Trust is closing on 30 November 2026
-R1480,Sands helpline (weekdays),,Sands,partly verified,2026-11-23,https://www.sands.org.uk,details from the Health Connections Mendip directory; provider page didn't confirm them
+R1480,Sands helpline (weekdays),,Sands,verified,2026-11-23,https://www.sands.org.uk,
 R1481,Sands helpline (evenings),,Sands,verified,2026-11-23,https://www.sands.org.uk/support-you/how-we-offer-support/helpline,
 R1482,SARSAS helpline (Mon and Fri),,SARSAS,corrected,2026-11-23,http://www.sarsas.org.uk,changed from the provider page: eligibility
 R1483,SARSAS helpline (Tue and Thu evenings),,SARSAS,corrected,2026-11-23,http://www.sarsas.org.uk,changed from the provider page: eligibility
-R1484,SSAFA Forcesline (Mon to Thu),,SSAFA,partly verified,2026-11-23,https://www.ssafa.org.uk/,details from the Health Connections Mendip directory; provider page didn't confirm them
-R1485,SSAFA Forcesline (Friday),,SSAFA,partly verified,2026-11-23,https://www.ssafa.org.uk/,details from the Health Connections Mendip directory; provider page didn't confirm them
+R1484,SSAFA Forcesline (Mon to Thu),,SSAFA,corrected,2026-11-23,https://www.ssafa.org.uk/get-help/forcesline/,changed from the provider page: mode
+R1485,SSAFA Forcesline (Friday),,SSAFA,corrected,2026-11-23,https://www.ssafa.org.uk/get-help/forcesline/,changed from the provider page: mode
 R1486,Terrence Higgins Trust support line,,Terrence Higgins Trust,verified,2026-11-23,https://tht.org.uk/get-help/services/tht-direct-helpline,
 R1487,Arthritis UK helpline,,Arthritis UK,corrected,2026-11-23,https://www.arthritis-uk.org/information-and-support/support-and-resources/arthritis-uk-helpline/,renamed: Versus Arthritis is now Arthritis UK
 R1488,Winston’s Wish support line,,Winston’s Wish,removed,2026-11-23,http://www.winstonswish.org,Winston's Wish has merged into Child Bereavement UK (already listed)
@@ -1451,97 +1451,97 @@ R1513,Glastonbury Support Network,Glastonbury,Glastonbury Support Network,correc
 R1514,"Step, Ride, Thrive (bus to Avalon Marshes)",Glastonbury,"Step, Ride, Thrive",removed,2026-11-23,https://stepridethrive.wordpress.com/,668 bus trial extension ended March 2026
 R1515,Glastonbury (Wyrral Park) Bowls Club,Glastonbury,Glastonbury Wyrral Park Bowls Club,corrected,2026-11-23,https://www.glastonburywyrralparkbc.co.uk/,"changed from the provider page: access, days, times"
 R1516,Community Connector training (Mendip),Frome,Health Connections Mendip,corrected,2026-11-23,http://healthconnectionsmendip.org/lets-connect/training/community-connectors/,changed from the provider page: access
-R1517,Health Connectors (Mendip GP practices),Frome,Health Connections Mendip,corrected,2026-11-23,http://healthconnectionsmendip.org/,changed from the provider page: access
+R1517,Health Connectors (Mendip GP practices),Frome,Health Connections Mendip,partly verified,2026-11-23,http://healthconnectionsmendip.org/,page gives a Tuesday drop-in at Frome Medical Practice (already R1377)
 R1518,Healthy Little Ones (Mendip),Frome,Somerset Health Visiting,partly verified,2026-11-23,https://healthconnectionsmendip.org/healthy-little-ones-mendip-areas/,"checker suggestions not taken (another session on the same page, or wording only)"
 R1519,MHA Communities Mendip,Wells,MHA,corrected,2026-11-23,https://mha.org.uk/care-support/community-groups-activities/find-community-group/mha-communities-mendip-district,"changed from the provider page: access, address, postcode"
 R1520,Macmillan Link Service (Mendip),Frome,Citizens Advice B&NES,corrected,2026-11-23,https://livewell.bathnes.gov.uk/supporting-adults-live-independent-lives/health-and-wellbeing/cancer-care/macmillan-link-service-citizens-advice-banes,changed from the provider page: access
 R1521,Mendip Community Transport (Slinky),Shepton Mallet,Mendip Community Transport,corrected,2026-11-23,https://www.mendipcommunitytransport.co.uk/slinky,"changed from the provider page: access, address, cost, email, postcode"
 R1522,Citizens Advice MS advice line,Taunton,Citizens Advice Somerset,partly verified,2026-11-23,https://citizensadvicesomerset.org.uk/how-can-we-help/targeted-advice/multiple-sclerosis-access-to-advice/,not on the page: email
 R1523,Route 1 Advocacy,Shepton Mallet,Somerset Council,corrected,2026-11-23,https://www.somerset.gov.uk/children-families-and-education/route-one-advocacy/contact-route-one/,changed from the provider page: access
-R1524,YMCA youth clubs (Mendip),Shepton Mallet,YMCA Brunel Group,partly verified,2026-11-23,https://ymca-bg.org/what-we-do/youth-work/mendip-youth-clubs/,details from the Health Connections Mendip directory; provider page didn't confirm them
-R1525,YWAF Youth With A Future,Wells,YWAF,corrected,2026-11-23,http://www.ywaf.org.uk,changed from the provider page: access
+R1524,YMCA Shepton Mallet Youth Club,Shepton Mallet,YMCA Brunel Group,corrected,2026-11-23,https://ymca-bg.org/what-we-do/youth-work/mendip-youth-clubs/,split per club from the provider page
+R1525,YWAF Youth With A Future,Wells,YWAF,partly verified,2026-11-23,http://www.ywaf.org.uk,page gives only the registered office
 R1526,Pilton Walks,Pilton,Pilton Walks,corrected,2026-11-23,https://healthconnectionsmendip.org/pilton-walks-walking-group/,changed from the provider page: access
 R1527,Shepton Walks,Shepton Mallet,Shepton Walks,partly verified,2026-11-23,https://sheptonwalks.org/,not on the page: cost
 R1528,YMCA East Somerset housing and youth support,Wells,YMCA Brunel Group,corrected,2026-11-23,http://www.mendipymca.org.uk,changed from the provider page: access
 R1529,Rights of Way volunteering (Somerset),Taunton,Somerset Council,corrected,2026-11-23,https://assemblevolunteers.somerset.gov.uk/opportunities/48355-adopt-a-path-2023-05-30,"changed from the provider page: access, phone"
-R1530,Bipolar UK peer support line,,Bipolar UK,partly verified,2026-11-23,https://www.bipolaruk.org/,details from the Health Connections Mendip directory; provider page didn't confirm them
+R1530,Bipolar UK peer support line,,Bipolar UK,corrected,2026-11-23,https://www.bipolaruk.org/,changed from the provider page: eligibility
 R1531,Cygnet autism parenting programme (Barnardo’s),,Barnardo’s,corrected,2026-11-23,https://barnardos-parenting.org.uk/cygnet-programme/,changed from the provider page: access
 R1532,Get Active Together (SASP),Taunton,SASP,corrected,2026-11-23,https://www.sasp.co.uk/get-active-together,changed from the provider page: access
 R1533,Got Your Six UK (Wincanton hub),Wincanton,Got Your Six UK,corrected,2026-11-23,https://gotyoursix.uk/contact,"changed from the provider page: access, address, postcode"
 R1534,Harry's Hydro hydrotherapy pool (Frome),Frome,Harry's Hydro,corrected,2026-11-23,https://www.harrys-hydro.org/individual,changed from the provider page: access
 R1535,Home Library Service (Somerset),,Somerset Libraries,corrected,2026-11-23,https://www.somerset.gov.uk/libraries-leisure-and-communities/libraries/libraries-services/home-library-service,changed from the provider page: access
-R1536,Josephine’s Star (Somerset),,Josephine’s Star,partly verified,2026-11-23,http://www.josephinesstar.org.uk/,details from the Health Connections Mendip directory; provider page didn't confirm them
-R1537,SWISH sexual health service (Somerset),,SWISH,corrected,2026-11-23,https://swishservices.co.uk/,changed from the provider page: access
+R1536,Josephine’s Star (Somerset),,Josephine’s Star,corrected,2026-11-23,https://www.josephinesstar.org.uk/services-9,changed from the provider page: eligibility
+R1537,SWISH sexual health service (Somerset),,SWISH,corrected,2026-11-23,https://www.swishservices.co.uk/contact-us,"changed from the provider page: days, times"
 R1538,Smokefree Somerset,,Somerset Council,corrected,2026-11-23,https://smokefreesomerset.org.uk/contact-us/,changed from the provider page: access
 R1539,Somerset Chronic Fatigue Syndrome/ME Service,,Somerset NHS Foundation Trust,corrected,2026-11-23,https://healthconnectionsmendip.org/somerset-chronic-fatigue-syndromeme-service/,changed from the provider page: access
-R1540,Somerset Community Pain Service,,Somerset NHS Foundation Trust,partly verified,2026-11-23,http://www.somersetpain.co.uk,details from the Health Connections Mendip directory; provider page didn't confirm them
+R1540,Somerset Community Pain Service,,Somerset NHS Foundation Trust,corrected,2026-11-23,https://www.somersetpain.co.uk/About-the-pain-service/How-to-find-us-and-meet-our-team,"changed from the provider page: address, postcode, town"
 R1541,Somerset Sight volunteer visiting,Taunton,Somerset Sight,corrected,2026-11-23,https://www.somersetsight.org.uk/support/volunteer-visiting,"changed from the provider page: access, address, cost, postcode"
 R1542,St Margaret's Hospice,Taunton,St Margaret's Hospice,corrected,2026-11-23,https://www.st-margarets-hospice.org.uk/home-page,"changed from the provider page: access, address, email, postcode"
 R1543,"Shared Reading volunteer (The Reader, Somerset)",,The Reader,corrected,2026-11-23,https://www.thereader.org.uk/get-involved/volunteer/,changed from the provider page: access
 R1544,WI Somerset Federation,,WI Somerset Federation,partly verified,2026-11-23,https://somerset.thewi.org.uk/,checked 23/11; waiting on Chris: HTTP 403
 R1545,Stoma Heroes support group (Street),Street,Stoma Heroes,corrected,2026-11-23,https://www.stomaheroes.com,changed from the provider page: access
-R1546,Crops Not Shops volunteering (Street and Glastonbury),Glastonbury,Crops Not Shops,corrected,2026-11-23,https://www.cropsnotshops.co.uk/,changed from the provider page: access
-R1547,NRAS online rheumatoid arthritis community,,National Rheumatoid Arthritis Society,partly verified,2026-11-23,https://healthunlocked.com/nras,details from the Health Connections Mendip directory; provider page didn't confirm them
-R1548,Bereavement office (Musgrove Park and Yeovil hospitals),Taunton,Somerset NHS Foundation Trust,partly verified,2026-11-23,https://healthconnectionsmendip.org/musgrove-park-bereavement-support-service/,details from the Health Connections Mendip directory; provider page didn't confirm them
+R1546,Crops Not Shops volunteering (Street and Glastonbury),Glastonbury,Crops Not Shops,corrected,2026-11-23,https://www.cropsnotshops.co.uk/volunteer,changed from the provider page: days
+R1547,NRAS online rheumatoid arthritis community,,National Rheumatoid Arthritis Society,partly verified,2026-11-23,https://healthunlocked.com/nras,details not on the HealthUnlocked page
+R1548,Bereavement office (Musgrove Park and Yeovil hospitals),Taunton,Somerset NHS Foundation Trust,partly verified,2026-11-23,https://www.somersetft.nhs.uk/bereavement-and-medical-examiner-service/,cost not on the page
 R1549,Orchard Vale Trust community gardening (Wells),Wells,Orchard Vale Trust,corrected,2026-11-23,https://www.orchardvaletrust.org.uk,changed from the provider page: access
 R1550,Society for Disabled Artists (Wells group),Wells,Society for Disabled Artists,corrected,2026-11-23,https://somersetartworks.org.uk/artists/soda/,"changed from the provider page: access, address, postcode"
-R1551,Dementia Care Link Worker (West Mendip),Wells,West Mendip PCN,corrected,2026-11-23,https://healthconnectionsmendip.org/pcn-dementia-care-co-ordinator-west-mendip/,changed from the provider page: access
+R1551,Dementia Care Link Worker (West Mendip),Wells,West Mendip PCN,partly verified,2026-11-23,https://healthconnectionsmendip.org/pcn-dementia-care-co-ordinator-west-mendip/,cost and mode not on the page
 R1552,WaitingWell (neurodiversity waiting lists),,WaitingWell,corrected,2026-11-23,https://www.waitingwell.co.uk/contact/,changed from the provider page: access
-R1553,The Pod JAMM parent carer meet-up (Frome),Frome,The Pod,not checked yet,,https://thepodcharity.org.uk/contact-us/,"new: Open Mental Health caregivers directory, April 2025 (Chris)"
-R1554,"The Pod Workshop (Colliers Court, Frome)",Frome,The Pod,not checked yet,,https://thepodcharity.org.uk/,"new: Open Mental Health caregivers directory, April 2025 (Chris)"
-R1555,Woodland Wellbeing (Neroche Woodlanders),Taunton,Neroche Woodlanders,not checked yet,,http://www.nerochewoodlanders.org/woodland-wellbeing.html,"new: Open Mental Health caregivers directory, April 2025 (Chris)"
-R1556,"Thrive meeting space (Diversity Voice, Taunton)",Taunton,Diversity Voice,not checked yet,,https://diversityvoice.org.uk/,"new: Open Mental Health caregivers directory, April 2025 (Chris)"
-R1557,Farmerados pop-up farmhouse kitchens,,Farmerados,not checked yet,,https://farmerados.org/,"new: Open Mental Health caregivers directory, April 2025 (Chris)"
-R1558,Mind in Somerset Recovery and Wellbeing Workers,,Mind in Somerset,not checked yet,,https://www.mindinsomerset.org.uk/our-services/adult-one-to-one-support/recovery-and-wellbeing-workers/,"new: Open Mental Health caregivers directory, April 2025 (Chris)"
-R1559,Royal Navy Family and People Support,,Royal Navy,not checked yet,,https://forum.royalnavy.mod.uk/,"new: Open Mental Health caregivers directory, April 2025 (Chris)"
-R1560,Young Dementia Network (online),,Dementia UK,not checked yet,,https://www.youngdementianetwork.org,"new: Open Mental Health caregivers directory, April 2025 (Chris)"
-R1561,Rethink Carers Hub (online),,Rethink Mental Illness,not checked yet,,https://www.rethink.org/advice-and-information/carers-hub/,"new: Open Mental Health caregivers directory, April 2025 (Chris)"
-R1562,Early Intervention in Psychosis (STEP),,Somerset NHS Foundation Trust,not checked yet,,https://www.somersetft.nhs.uk/early-intervention-in-psychosis/,"new: Open Mental Health caregivers directory, April 2025 (Chris)"
-R1563,Personality Disorder Service (Somerset),,Somerset NHS Foundation Trust,not checked yet,,https://www.somersetft.nhs.uk/personality-disorder-service/,"new: Open Mental Health caregivers directory, April 2025 (Chris)"
-R1564,Carers UK Helpline,,Carers UK,not checked yet,,https://www.carersuk.org/help-and-advice/,"new: Open Mental Health caregivers directory, April 2025 (Chris)"
-R1565,DrugFAM helpline,,DrugFAM,not checked yet,,https://drugfam.co.uk/,"new: Open Mental Health caregivers directory, April 2025 (Chris)"
-R1566,Papyrus HOPELINE247,,Papyrus,not checked yet,,https://www.papyrus-uk.org/,"new: Open Mental Health caregivers directory, April 2025 (Chris)"
-R1567,Al-Anon helpline,,Al-Anon,not checked yet,,https://al-anonuk.org.uk/,"new: Open Mental Health caregivers directory, April 2025 (Chris)"
-R1568,Reprovide men's group (Taunton),Taunton,Barnardo's,not checked yet,,https://www.barnardos.org.uk/what-we-do/services/somerset-reprovide-programme,new: Wellbeing Sedgemoor directory (Chris)
-R1569,Reprovide men's group (near Shepton Mallet),Shepton Mallet,Barnardo's,not checked yet,,https://www.barnardos.org.uk/what-we-do/services/somerset-reprovide-programme,new: Wellbeing Sedgemoor directory (Chris)
-R1570,Nether Stowey Wednesday Club,Nether Stowey,Nether Stowey Wednesday Club,not checked yet,,https://netherstowey-pc.gov.uk/nether-stowey-wednesday-club/,new: Wellbeing Sedgemoor directory (Chris)
-R1571,Burnham Bereavement Café,Burnham-on-Sea,St Andrew's Church Burnham-on-Sea,not checked yet,,http://www.standrewsbos.co.uk/life/bereavement.html,new: Wellbeing Sedgemoor directory (Chris)
-R1572,"Junior Youth Group (Victoria Park, Bridgwater)",Bridgwater,Victoria Park Community Centre,not checked yet,,https://wellbeingsedgemoor.org/?category_name=befriending-isolation,new: Wellbeing Sedgemoor directory (Chris)
-R1573,Joyful Voices (Cheddar),Cheddar,Joyful Voices,not checked yet,,https://wellbeingsedgemoor.org/?category_name=befriending-isolation,new: Wellbeing Sedgemoor directory (Chris)
-R1574,Cheddar Valley Singers,Cheddar,Cheddar Valley Singers,not checked yet,,https://www.cheddarvalleysingers.co.uk/,new: Wellbeing Sedgemoor directory (Chris)
-R1575,Headway outreach unit (Bridgwater),Bridgwater,Headway Somerset,not checked yet,,https://www.headwaysomerset.org.uk/our-services/,new: Wellbeing Sedgemoor directory (Chris)
-R1576,Petals dementia coffee morning (Bridgwater),Bridgwater,Petals Dementia Service,not checked yet,,https://wellbeingsedgemoor.org/?category_name=dementia-2,new: Wellbeing Sedgemoor directory (Chris)
-R1577,Walking Football (Bridgwater United Community Trust),Bridgwater,Bridgwater United Community Sports Trust,not checked yet,,https://www.bridgwaterunitedcst.com/walking-football/,new: Wellbeing Sedgemoor directory (Chris)
-R1578,Citizens Advice access point (Berrow Village Hall),Berrow,Citizens Advice Sedgemoor,not checked yet,,https://citizensadvicesedgemoor.org.uk/,new: Wellbeing Sedgemoor directory (Chris)
-R1579,Citizens Advice access point (Brean Village Hall),Brean,Citizens Advice Sedgemoor,not checked yet,,https://citizensadvicesedgemoor.org.uk/,new: Wellbeing Sedgemoor directory (Chris)
-R1580,"Citizens Advice access point (Victoria Park, Bridgwater)",Bridgwater,Citizens Advice Sedgemoor,not checked yet,,https://citizensadvicesedgemoor.org.uk/,new: Wellbeing Sedgemoor directory (Chris)
-R1581,"Citizens Advice access point (Purple Spoon Café, Highbridge)",Highbridge,Citizens Advice Sedgemoor,not checked yet,,https://citizensadvicesedgemoor.org.uk/,new: Wellbeing Sedgemoor directory (Chris)
-R1582,Nourish breastfeeding drop-in (Cannington),Cannington,"Nourish Bumps, Babies and Breastfeeding",not checked yet,,http://www.nourishbbb.org.uk/,new: Wellbeing Sedgemoor directory (Chris)
-R1583,Purple Pain fibromyalgia and ME group (Burnham-on-Sea),Burnham-on-Sea,Purple Pain Fibromyalgia & ME Support Group,not checked yet,,https://www.facebook.com/fibromyalgiaheartofsomersetgroup/,new: Wellbeing Sedgemoor directory (Chris)
-R1584,Digital Café (The Hub @ Bridgwater),Bridgwater,The Hub @ Bridgwater,not checked yet,,https://www.thehubatbridgwater.org/,new: Wellbeing Sedgemoor directory (Chris)
-R1585,"Safe and Warm energy drop-in (Mount Street, Bridgwater)",Bridgwater,Centre for Sustainable Energy,not checked yet,,https://www.cse.org.uk/my-home/advice-projects/safe-and-warm-somerset/,new: Wellbeing Sedgemoor directory (Chris)
-R1586,Safe and Warm energy drop-in (Bridgwater Town Hall),Bridgwater,Centre for Sustainable Energy,not checked yet,,https://www.cse.org.uk/my-home/advice-projects/safe-and-warm-somerset/,new: Wellbeing Sedgemoor directory (Chris)
-R1587,"Safe and Warm energy drop-in (Victoria Park, Bridgwater)",Bridgwater,Centre for Sustainable Energy,not checked yet,,https://www.cse.org.uk/my-home/advice-projects/safe-and-warm-somerset/,new: Wellbeing Sedgemoor directory (Chris)
-R1588,Safe and Warm energy drop-in (Burnham-on-Sea Methodist Church),Burnham-on-Sea,Centre for Sustainable Energy,not checked yet,,https://www.cse.org.uk/my-home/advice-projects/safe-and-warm-somerset/,new: Wellbeing Sedgemoor directory (Chris)
-R1589,"Safe and Warm energy drop-in (Hope Baptist Church, Highbridge)",Highbridge,Centre for Sustainable Energy,not checked yet,,https://www.cse.org.uk/my-home/advice-projects/safe-and-warm-somerset/,new: Wellbeing Sedgemoor directory (Chris)
-R1590,"Sing2breathe (Victoria Park, Bridgwater)",Bridgwater,Sing2breathe,not checked yet,,https://www.asthmaandlung.org.uk/,new: Wellbeing Sedgemoor directory (Chris)
-R1591,Cheddar Youth Club,Cheddar,The Space,not checked yet,,https://www.thespacesomerset.org.uk/our-services/youth-activities/,new: Wellbeing Sedgemoor directory (Chris)
-R1592,Sea Cadets Bridgwater,Bridgwater,Sea Cadets,not checked yet,,https://www.sea-cadets.org//bridgwater,new: Wellbeing Sedgemoor directory (Chris)
-R1593,Sporting Memories (Bridgwater Cricket Club),Bridgwater,Somerset Cricket Foundation,not checked yet,,https://somersetcricketfoundation.org/community-programmes/sporting-memories/,new: Wellbeing Sedgemoor directory (Chris)
-R1594,Seed of Hope therapeutic gardening (Bridgwater and Watchet),Bridgwater,Seed of Hope,not checked yet,,https://seedofhope.org.uk/,new: Wellbeing Sedgemoor directory (Chris)
-R1595,Mind in Somerset Sedgemoor drop-in (Mon and Fri),Bridgwater,Mind in Somerset,not checked yet,,http://www.mindinsomerset.org.uk/,new: Wellbeing Sedgemoor directory (Chris)
-R1596,Mind in Somerset Sedgemoor drop-in (Wednesday),Bridgwater,Mind in Somerset,not checked yet,,http://www.mindinsomerset.org.uk/,new: Wellbeing Sedgemoor directory (Chris)
-R1597,Somerset Lesbian Network,,Somerset Lesbian Network,not checked yet,,https://somersetlesbiannetwork.com/,new: Wellbeing Sedgemoor directory (Chris)
-R1598,Stepladder men’s wellbeing project,,Second Step,not checked yet,,https://www.second-step.co.uk/our-services/community-and-wellbeing/open-mental-health/stepladder/,new: Wellbeing Sedgemoor directory (Chris)
-R1599,Brainwave (Bridgwater),Bridgwater,Brainwave,not checked yet,,https://brainwave.org.uk/,new: Wellbeing Sedgemoor directory (Chris)
-R1600,Somerset Prostate Support Association,,Somerset Prostate Support Association,not checked yet,,http://www.spsa.uk/,new: Wellbeing Sedgemoor directory (Chris)
-R1601,Somerset Counselling Centre (Taunton),Taunton,Somerset Counselling Centre,not checked yet,,https://scctaunton.org.uk/,new: Wellbeing Sedgemoor directory (Chris)
-R1602,Rethink Reconnect floating support (Somerset),,Rethink Mental Illness,not checked yet,,https://www.rethink.org/help-in-your-area/services/housing/reconnect-floating-support-service-somerset/,new: Wellbeing Sedgemoor directory (Chris)
-R1603,The Space (Cheddar Valley),Cheddar,The Space,not checked yet,,https://www.thespacesomerset.org.uk/,new: Wellbeing Sedgemoor directory (Chris)
-R1604,Westcountry Savings and Loans credit union,,Westcountry Savings and Loans,not checked yet,,https://wellbeingsedgemoor.org/?category_name=poverty-finance,new: Wellbeing Sedgemoor directory (Chris)
-R1605,Navigate the Money Maze workshops,,Navigate,not checked yet,,https://www.navigatecharity.org.uk/navigate-the-money-maze-courses-workshops/,new: Wellbeing Sedgemoor directory (Chris)
-R1606,Cheddar Valley u3a,Cheddar,Cheddar Valley u3a,not checked yet,,https://u3asites.org.uk/cheddar-valley/groups,new: Wellbeing Sedgemoor directory (Chris)
-R1607,Somerset Nature Connections wellbeing courses,,Somerset Wildlife Trust,not checked yet,,https://www.somersetwildlife.org/wildlife/nature-wellbeing/somerset-nature-connections,new: Wellbeing Sedgemoor directory (Chris)
+R1553,The Pod JAMM parent carer meet-up (Frome),Frome,The Pod,corrected,2026-11-23,https://thepodcharity.org.uk/parents-and-carers/,"changed from the provider page: address, days, frequency, postcode, times"
+R1554,"The Pod Workshop (Colliers Court, Frome)",Frome,The Pod,removed,2026-11-23,https://thepodcharity.org.uk/,"Only page is a 2023 post (""currently running on Monday 3rd and 17th July""); treated as ended"
+R1555,Woodland Wellbeing (Neroche Woodlanders),Taunton,Neroche Woodlanders,corrected,2026-11-23,http://www.nerochewoodlanders.org/woodland-wellbeing.html,"changed from the provider page: access, email, phone"
+R1556,"Thrive meeting space (Diversity Voice, Taunton)",Taunton,Diversity Voice,partly verified,2026-11-23,https://diversityvoice.org.uk/,details from the Open Mental Health directory; provider page didn't confirm them
+R1557,Farmerados pop-up farmhouse kitchens,,Farmerados,removed,2026-11-23,https://farmerados.org/,Farmerados mothballed
+R1558,Mind in Somerset Recovery and Wellbeing Workers,,Mind in Somerset,partly verified,2026-11-23,https://www.mindinsomerset.org.uk/our-services/adult-one-to-one-support/recovery-and-wellbeing-workers/,"not on the page: cost, mode"
+R1559,Royal Navy Family and People Support,,Royal Navy,partly verified,2026-11-23,https://forum.royalnavy.mod.uk/contact,times differ Mon-Thu and Fri: not set
+R1560,Young Dementia Network (online),,Dementia UK,partly verified,2026-11-23,https://www.youngdementianetwork.org,not on the page: cost
+R1561,Rethink Carers Hub (online),,Rethink Mental Illness,partly verified,2026-11-23,https://www.rethink.org/advice-and-information/carers-hub/,details from the Open Mental Health directory; provider page didn't confirm them
+R1562,Early Intervention in Psychosis (STEP),,Somerset NHS Foundation Trust,corrected,2026-11-23,https://www.somersetft.nhs.uk/early-intervention-in-psychosis/,"changed from the provider page: email, phone"
+R1563,Personality Disorder Service (Somerset),,Somerset NHS Foundation Trust,removed,2026-11-23,https://www.somersetft.nhs.uk/personality-disorder-service/,Page gone (HTTP 410); removed under Chris's dead-link rule
+R1564,Carers UK Helpline,,Carers UK,verified,2026-11-23,https://www.carersuk.org/help-and-advice/helpline-and-other-support/,
+R1565,DrugFAM helpline,,DrugFAM,removed,2026-11-23,https://drugfam.co.uk/,drugfam.co.uk now redirects to Addiction Family Support; no DrugFAM helpline found
+R1566,Papyrus HOPELINE247,,Papyrus,removed,2026-11-23,https://www.papyrus-uk.org/,HOPELINE247 no longer operating: Papyrus went into administration in September 2026
+R1567,Al-Anon helpline,,Al-Anon,partly verified,2026-11-23,https://al-anonuk.org.uk/,not on the page: times
+R1568,Reprovide men's group (Taunton),Taunton,Barnardo's,partly verified,2026-11-23,https://www.barnardos.org.uk/what-we-do/services/somerset-reprovide-programme,details from the Wellbeing Sedgemoor directory; provider page didn't confirm them
+R1569,Reprovide men's group (near Shepton Mallet),Shepton Mallet,Barnardo's,partly verified,2026-11-23,https://www.barnardos.org.uk/what-we-do/services/somerset-reprovide-programme,details from the Wellbeing Sedgemoor directory; provider page didn't confirm them
+R1570,Nether Stowey Wednesday Club,Nether Stowey,Nether Stowey Wednesday Club,corrected,2026-11-23,https://netherstowey-pc.gov.uk/nether-stowey-wednesday-club/,"changed from the provider page: eligibility, phone"
+R1571,Burnham Bereavement Café,Burnham-on-Sea,St Andrew's Church Burnham-on-Sea,removed,2026-11-23,http://www.standrewsbos.co.uk/life/bereavement.html,"Provider site blocks checks (HTTP 403) and the event isn't on the church's A Church Near You calendar; removed (Chris, 23/11)"
+R1572,"Junior Youth Group (Victoria Park, Bridgwater)",Bridgwater,Victoria Park Community Centre,verified,2026-11-23,https://wellbeingsedgemoor.org/?category_name=befriending-isolation,
+R1573,Joyful Voices (Cheddar),Cheddar,Joyful Voices,verified,2026-11-23,https://wellbeingsedgemoor.org/?category_name=befriending-isolation,
+R1574,Cheddar Valley Singers,Cheddar,Cheddar Valley Singers,corrected,2026-11-23,https://www.cheddarvalleysingers.co.uk/,"who: women removed (Chris, 23/11)"
+R1575,Headway outreach unit (Bridgwater),Bridgwater,Headway Somerset,verified,2026-11-23,https://wellbeingsedgemoor.org/outreach-brain-injury-unit-headway-somerset/,
+R1576,Petals dementia coffee morning (Bridgwater),Bridgwater,Petals Dementia Service,verified,2026-11-23,https://wellbeingsedgemoor.org/?category_name=dementia-2,
+R1577,Walking Football (Bridgwater United Community Trust),Bridgwater,Bridgwater United Community Sports Trust,verified,2026-11-23,https://wellbeingsedgemoor.org/walking-football-bridgwater-united-community-trust/,
+R1578,Citizens Advice access point (Berrow Village Hall),Berrow,Citizens Advice Sedgemoor,partly verified,2026-11-23,https://citizensadvicesedgemoor.org.uk/,details from the Wellbeing Sedgemoor directory; provider page didn't confirm them
+R1579,Citizens Advice access point (Brean Village Hall),Brean,Citizens Advice Sedgemoor,partly verified,2026-11-23,https://citizensadvicesedgemoor.org.uk/,details from the Wellbeing Sedgemoor directory; provider page didn't confirm them
+R1580,"Citizens Advice access point (Victoria Park, Bridgwater)",Bridgwater,Citizens Advice Sedgemoor,partly verified,2026-11-23,https://citizensadvicesedgemoor.org.uk/,details from the Wellbeing Sedgemoor directory; provider page didn't confirm them
+R1581,"Citizens Advice access point (Purple Spoon Café, Highbridge)",Highbridge,Citizens Advice Sedgemoor,partly verified,2026-11-23,https://citizensadvicesedgemoor.org.uk/,details from the Wellbeing Sedgemoor directory; provider page didn't confirm them
+R1582,Nourish breastfeeding drop-in (Cannington),Cannington,"Nourish Bumps, Babies and Breastfeeding",partly verified,2026-11-23,http://www.nourishbbb.org.uk/,checked 23/11; waiting on Chris: ok (js)
+R1583,Purple Pain fibromyalgia and ME group (Burnham-on-Sea),Burnham-on-Sea,Purple Pain Fibromyalgia & ME Support Group,verified,2026-11-23,https://wellbeingsedgemoor.org/purple-pain-fibromyalgia/,
+R1584,Digital Café (The Hub @ Bridgwater),Bridgwater,The Hub @ Bridgwater,verified,2026-11-23,https://wellbeingsedgemoor.org/digital-cafe-the-hub-bridgwater/,
+R1585,"Safe and Warm energy drop-in (Mount Street, Bridgwater)",Bridgwater,Centre for Sustainable Energy,partly verified,2026-11-23,https://www.cse.org.uk/my-home/advice-projects/safe-and-warm-somerset/,details from the Wellbeing Sedgemoor directory; provider page didn't confirm them
+R1586,Safe and Warm energy drop-in (Bridgwater Town Hall),Bridgwater,Centre for Sustainable Energy,partly verified,2026-11-23,https://www.cse.org.uk/my-home/advice-projects/safe-and-warm-somerset/,details from the Wellbeing Sedgemoor directory; provider page didn't confirm them
+R1587,"Safe and Warm energy drop-in (Victoria Park, Bridgwater)",Bridgwater,Centre for Sustainable Energy,partly verified,2026-11-23,https://www.cse.org.uk/my-home/advice-projects/safe-and-warm-somerset/,details from the Wellbeing Sedgemoor directory; provider page didn't confirm them
+R1588,Safe and Warm energy drop-in (Burnham-on-Sea Methodist Church),Burnham-on-Sea,Centre for Sustainable Energy,partly verified,2026-11-23,https://www.cse.org.uk/my-home/advice-projects/safe-and-warm-somerset/,details from the Wellbeing Sedgemoor directory; provider page didn't confirm them
+R1589,"Safe and Warm energy drop-in (Hope Baptist Church, Highbridge)",Highbridge,Centre for Sustainable Energy,partly verified,2026-11-23,https://www.cse.org.uk/my-home/advice-projects/safe-and-warm-somerset/,details from the Wellbeing Sedgemoor directory; provider page didn't confirm them
+R1590,"Sing2breathe (Victoria Park, Bridgwater)",Bridgwater,Sing2breathe,corrected,2026-11-23,https://www.asthmaandlung.org.uk/help/support-network/bridgwater-singing-lung-health-sing2breathe,"times from the provider page (Sing2breathe), 23/11"
+R1591,Cheddar Youth Club,Cheddar,The Space,removed,2026-11-23,https://www.thespacesomerset.org.uk/our-services/youth-activities/,Page gone (HTTP 404); removed under Chris's dead-link rule
+R1592,Sea Cadets Bridgwater,Bridgwater,Sea Cadets,verified,2026-11-23,https://www.sea-cadets.org/bridgwater/get-in-touch,
+R1593,Sporting Memories (Bridgwater Cricket Club),Bridgwater,Somerset Cricket Foundation,corrected,2026-11-23,https://somersetcricketfoundation.org/community-programmes/sporting-memories/,"changed from the provider page: days, times"
+R1594,Seed of Hope therapeutic gardening (Bridgwater),Bridgwater,Seed of Hope,corrected,2026-11-23,https://seedofhope.org.uk/therapeutic-groups/,"split per site from the provider page (Chris, 23/11)"
+R1595,Mind in Somerset Sedgemoor drop-in (Mon and Fri),Bridgwater,Mind in Somerset,verified,2026-11-23,https://wellbeingsedgemoor.org/sedgemoor-community-support-project/,
+R1596,Mind in Somerset Sedgemoor drop-in (Wednesday),Bridgwater,Mind in Somerset,verified,2026-11-23,https://burnham-highbridge-tc.gov.uk/news/health-and-social/mind-in-somerset-sedgemoor-community-support-project,
+R1597,Somerset Lesbian Network,,Somerset Lesbian Network,partly verified,2026-11-23,https://somersetlesbiannetwork.com/,checked 23/11; waiting on Chris: ok
+R1598,Stepladder men’s wellbeing project,,Second Step,removed,2026-11-23,https://www.second-step.co.uk/our-services/community-and-wellbeing/open-mental-health/stepladder/,Stepladder ended in March 2025
+R1599,Brainwave (Bridgwater),Bridgwater,Brainwave,corrected,2026-11-23,https://www.somerset.gov.uk/send/brainwave/,"changed from the provider page: address, postcode"
+R1600,Somerset Prostate Support Association,,Somerset Prostate Support Association,partly verified,2026-11-23,http://www.spsa.uk/,"provider page is about PSA testing events, not the group; phone and email not on it"
+R1601,Somerset Counselling Centre (Taunton),Taunton,Somerset Counselling Centre,removed,2026-11-23,https://scctaunton.org.uk/contact/,"Paid counselling (standard fee £60 a session); removed under the no-paid-services rule (Chris, 23/11)"
+R1602,Rethink Reconnect floating support (Somerset),,Rethink Mental Illness,removed,2026-11-23,https://www.rethink.org/help-in-your-area/services/housing/reconnect-floating-support-service-somerset/,Page gone (HTTP 404); removed under Chris's dead-link rule
+R1603,The Space youth club (Cheddar),Cheddar,The Space,corrected,2026-11-23,https://thespacesomerset.org.uk/youth-club/,"now the Monday youth club, from the provider page"
+R1604,Westcountry Savings and Loans credit union,,Westcountry Savings and Loans,partly verified,2026-11-23,https://wellbeingsedgemoor.org/?category_name=poverty-finance,"not on the page: access, who, mode"
+R1605,Navigate the Money Maze workshops,,Navigate,removed,2026-11-23,https://www.navigatecharity.org.uk/navigate-the-money-maze-courses-workshops/,Page gone (HTTP 404); removed under Chris's dead-link rule
+R1606,Cheddar Valley u3a,Cheddar,Cheddar Valley u3a,partly verified,2026-11-23,https://cheddar-valley.u3asite.uk/groups/,"not on the page: email, who, mode"
+R1607,Somerset Nature Connections wellbeing courses,,Somerset Wildlife Trust,removed,2026-11-23,https://www.somersetwildlife.org/wildlife/nature-wellbeing/somerset-nature-connections,"Project appears to have ended: provider page is written in the past tense (""The Somerset Nature Connections project aimed..."")"
 R1608,"Community Employment Hub (The Beach Hotel, Minehead)",Minehead,Somerset Council,verified,2026-11-23,https://www.somerset.gov.uk/community-employment-hubs/,
 R1609,Community Employment Hub (Williton Library),Williton,Somerset Council,verified,2026-11-23,https://www.somerset.gov.uk/community-employment-hubs/,
 R1610,"Community Employment Hub (CHARIS Centre, Taunton)",Taunton,Somerset Council,verified,2026-11-23,https://www.somerset.gov.uk/community-employment-hubs/,
@@ -1553,3 +1553,18 @@ R1615,"Community Employment Hub (Balsam Centre, Wincanton)",Wincanton,Somerset C
 R1616,Low impact movement sessions (Bridgwater Library),Bridgwater,Somerset Libraries,verified,2026-11-23,https://www.somerset.gov.uk/libraries/free-low-impact-activity-and-movement-sessions/,
 R1617,Low impact movement sessions (Taunton Library),Taunton,Somerset Libraries,corrected,2026-11-23,https://www.somerset.gov.uk/libraries/free-low-impact-activity-and-movement-sessions/,times added from the page
 R1618,Low impact movement sessions (Yeovil Library),Yeovil,Somerset Libraries,verified,2026-11-23,https://www.somerset.gov.uk/libraries/free-low-impact-activity-and-movement-sessions/,
+R1619,Seed of Hope therapeutic gardening (Watchet),Watchet,Seed of Hope,verified,2026-11-23,https://seedofhope.org.uk/therapeutic-groups/,new: provider page
+R1620,Seed of Hope therapeutic gardening (Chilton Polden),Chilton Polden,Seed of Hope,verified,2026-11-23,https://seedofhope.org.uk/therapeutic-groups/,new: provider page
+R1621,"Out4Lunch (Somerset Lesbian Network, Taunton)",Taunton,Somerset Lesbian Network,verified,2026-11-23,https://somersetlesbiannetwork.com/,new: provider page
+R1622,Shared Reading (Taunton Library),Taunton,The Reader,partly verified,2026-11-23,https://www.thereader.org.uk/get-involved/find-a-group/taunton-library-feel-better-with-a-book/,new: Wellbeing Sedgemoor directory; The Reader page not read
+R1623,Age UK Telephone Friendship,,Age UK,verified,2026-11-23,https://www.ageuk.org.uk/services/befriending-services/sign-up-for-telephone-befriending/,new: provider page
+R1624,Royal British Legion Admiral Nurses,,The Royal British Legion,partly verified,2026-11-23,https://www.britishlegion.org.uk/get-support/care/admiral-nurses/,new: provider page; cost not stated
+R1625,SWAN Advocacy (Somerset),,SWAN Advocacy,partly verified,2026-11-23,https://www.somerset.gov.uk/send/south-west-advocacy-network-swan-advocacy,new: council directory; cost and hours not stated
+R1626,YMCA Street Youth Club,Street,YMCA Brunel Group,verified,2026-11-23,https://ymca-bg.org/what-we-do/youth-work/mendip-youth-clubs/,new: provider page
+R1627,YMCA Windmill Hill Youth Club (Glastonbury),Glastonbury,YMCA Brunel Group,verified,2026-11-23,https://ymca-bg.org/what-we-do/youth-work/mendip-youth-clubs/,new: provider page
+R1628,YMCA St Dunstan's Youth Club (Glastonbury),Glastonbury,YMCA Brunel Group,verified,2026-11-23,https://ymca-bg.org/what-we-do/youth-work/mendip-youth-clubs/,new: provider page
+R1629,YMCA Frome Youth Club,Frome,YMCA Brunel Group,verified,2026-11-23,https://ymca-bg.org/what-we-do/youth-work/mendip-youth-clubs/,new: provider page
+R1630,YMCA Coleford Youth Club,Coleford,YMCA Brunel Group,verified,2026-11-23,https://ymca-bg.org/what-we-do/youth-work/mendip-youth-clubs/,new: provider page
+R1631,YMCA Wells Youth Club,Wells,YMCA Brunel Group,verified,2026-11-23,https://ymca-bg.org/what-we-do/youth-work/mendip-youth-clubs/,new: provider page
+R1632,Sing2breathe (Cheddar),Cheddar,Sing2breathe,verified,2026-11-23,https://sing2breathe.org/index.php/attend-a-class/,new: provider page
+R1633,Sing2breathe (Yeovil),Yeovil,Sing2breathe,verified,2026-11-23,https://sing2breathe.org/index.php/attend-a-class/,new: provider page

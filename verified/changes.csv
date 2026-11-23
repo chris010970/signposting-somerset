@@ -3103,3 +3103,177 @@ R1618,Low impact movement sessions (Yeovil Library),Yeovil,record,,new,"council 
 R1453,"parkrun (Frome, The Old Showfield)",Frome,url,http://www.parkrun.org.uk,https://www.parkrun.org.uk/theoldshowfield/,event page found by the check
 R1453,"parkrun (Frome, The Old Showfield)",Frome,source,https://healthconnectionsmendip.org/shepton-mallet-park-run/,https://www.parkrun.org.uk/theoldshowfield/,event page found by the check
 R1617,Low impact movement sessions (Taunton Library),Taunton,times,,14:00-15:00,"council page: ""Every Wednesday, 2m to 3pm."" (2pm, typo on the page)"
+R1553,The Pod JAMM parent carer meet-up (Frome),Frome,days,Mon,Thu,"page: ""every Thursday morning from 10-11.30am"""
+R1553,The Pod JAMM parent carer meet-up (Frome),Frome,times,10:00-12:00,10:00-11:30,"page: ""every Thursday morning from 10-11.30am"""
+R1553,The Pod JAMM parent carer meet-up (Frome),Frome,frequency,monthly (dates vary),,"page: ""every Thursday morning from 10-11.30am"""
+R1553,The Pod JAMM parent carer meet-up (Frome),Frome,address,"Gorehedge Community Room, Wesley Slope","The Key Centre, Feltham Lane","page: ""Find us at The Key Centre, Feltham Lane, BA11 5AJ"""
+R1553,The Pod JAMM parent carer meet-up (Frome),Frome,postcode,BA11 1HA,BA11 5AJ,with the address on the provider page
+R1555,Woodland Wellbeing (Neroche Woodlanders),Taunton,email,,jenny@nerochewoodlanders.org,"page: ""emailing jenny@nerochewoodlanders.org"""
+R1555,Woodland Wellbeing (Neroche Woodlanders),Taunton,phone,,07541 080397,"page: ""get in touch with Jenny by calling 07541 080397"" (published by the provider: Chris's rule)"
+R1555,Woodland Wellbeing (Neroche Woodlanders),Taunton,access,book,sign up,"page: ""get in touch with Jenny by calling 07541 080397 or emailing jenny@nerochewoodlanders.org"""
+R1562,Early Intervention in Psychosis (STEP),,phone,,01823 368555,"page: ""STEP Hub Tel: 01823 368555"""
+R1562,Early Intervention in Psychosis (STEP),,email,,STEPReferrals@SomersetFT.NHS.UK,"page: ""Or email"""
+R1570,Nether Stowey Wednesday Club,Nether Stowey,phone,01278 732532; 01278 732382,01278 732532; 01278 732412,"page: ""Contact Maggie (01278 732532) or Barbara (01278 732412)"""
+R1570,Nether Stowey Wednesday Club,Nether Stowey,eligibility,"Age 50+, Nether Stowey and nearby villages","Age 60+, Nether Stowey and Over Stowey area","page: ""All ages 60+ from Nether Stowey and Over Stowey area"""
+R1574,Cheddar Valley Singers,Cheddar,times,19:00-20:15,19:00-20:30,"page: ""We rehearse every Monday evening at 7.00 - 8.30pm"""
+R1574,Cheddar Valley Singers,Cheddar,address,Cheddar Catholic Community Hall,"Cheddar Catholic Community Hall, Upper North Street","page: ""at Cheddar Catholic Community Hall, Upper North Street, Cheddar. BS27 3HU"""
+R1574,Cheddar Valley Singers,Cheddar,postcode,,BS27 3HU,with the address on the provider page
+R1590,"Sing2breathe (Victoria Park, Bridgwater)",Bridgwater,email,sing2breathe2@gmail.com,hello@sing2breathe.org,"page: ""hello@sing2breathe.org"""
+R1590,"Sing2breathe (Victoria Park, Bridgwater)",Bridgwater,cost,Free,Voluntary donation £5,"page: ""Voluntary donation £5"""
+R1593,Sporting Memories (Bridgwater Cricket Club),Bridgwater,days,,Wed,"page: ""Wednesday 10am – 12pm"""
+R1593,Sporting Memories (Bridgwater Cricket Club),Bridgwater,times,,10:00-12:00,"page: ""Wednesday 10am – 12pm"""
+R1599,Brainwave (Bridgwater),Bridgwater,address,,"The Brainwave Centre, Marsh Lane","page: ""Address: The Brainwave Centre Ltd, Marsh Lane, Bridgwater, Somerset, TA6 6LQ"""
+R1599,Brainwave (Bridgwater),Bridgwater,postcode,,TA6 6LQ,with the address on the provider page
+R1601,Somerset Counselling Centre (Taunton),Taunton,days,,Mon-Fri,"page: ""Monday to Friday – 9am to 5pm"""
+R1601,Somerset Counselling Centre (Taunton),Taunton,times,,09:00-17:00,"page: ""Monday to Friday – 9am to 5pm"""
+R1601,Somerset Counselling Centre (Taunton),Taunton,address,,"Apsley House, Tower Street","page: ""SOMERSET COUNSELLING CENTRE ADDRESS: Apsley House, Tower Street, Taunton TA1 4BH"""
+R1601,Somerset Counselling Centre (Taunton),Taunton,postcode,,TA1 4BH,with the address on the provider page
+R1553,The Pod JAMM parent carer meet-up (Frome),Frome,url,https://thepodcharity.org.uk/contact-us/,https://thepodcharity.org.uk/parents-and-carers/,better link found by the check
+R1553,The Pod JAMM parent carer meet-up (Frome),Frome,source,https://thepodcharity.org.uk/contact-us/,https://thepodcharity.org.uk/parents-and-carers/,better link found by the check
+R1564,Carers UK Helpline,,url,https://www.carersuk.org/help-and-advice/,https://www.carersuk.org/help-and-advice/helpline-and-other-support/,better link found by the check
+R1564,Carers UK Helpline,,source,https://www.carersuk.org/help-and-advice/,https://www.carersuk.org/help-and-advice/helpline-and-other-support/,better link found by the check
+R1575,Headway outreach unit (Bridgwater),Bridgwater,url,https://www.headwaysomerset.org.uk/our-services/,https://wellbeingsedgemoor.org/outreach-brain-injury-unit-headway-somerset/,better link found by the check
+R1575,Headway outreach unit (Bridgwater),Bridgwater,source,https://www.headwaysomerset.org.uk/our-services/,https://wellbeingsedgemoor.org/outreach-brain-injury-unit-headway-somerset/,better link found by the check
+R1577,Walking Football (Bridgwater United Community Trust),Bridgwater,url,https://www.bridgwaterunitedcst.com/walking-football/,https://wellbeingsedgemoor.org/walking-football-bridgwater-united-community-trust/,better link found by the check
+R1577,Walking Football (Bridgwater United Community Trust),Bridgwater,source,https://www.bridgwaterunitedcst.com/walking-football/,https://wellbeingsedgemoor.org/walking-football-bridgwater-united-community-trust/,better link found by the check
+R1584,Digital Café (The Hub @ Bridgwater),Bridgwater,url,https://www.thehubatbridgwater.org/,https://wellbeingsedgemoor.org/digital-cafe-the-hub-bridgwater/,better link found by the check
+R1584,Digital Café (The Hub @ Bridgwater),Bridgwater,source,https://www.thehubatbridgwater.org/,https://wellbeingsedgemoor.org/digital-cafe-the-hub-bridgwater/,better link found by the check
+R1590,"Sing2breathe (Victoria Park, Bridgwater)",Bridgwater,url,https://www.asthmaandlung.org.uk/,https://www.asthmaandlung.org.uk/help/support-network/bridgwater-singing-lung-health-sing2breathe,better link found by the check
+R1590,"Sing2breathe (Victoria Park, Bridgwater)",Bridgwater,source,https://www.asthmaandlung.org.uk/,https://www.asthmaandlung.org.uk/help/support-network/bridgwater-singing-lung-health-sing2breathe,better link found by the check
+R1592,Sea Cadets Bridgwater,Bridgwater,url,https://www.sea-cadets.org//bridgwater,https://www.sea-cadets.org/bridgwater/get-in-touch,better link found by the check
+R1592,Sea Cadets Bridgwater,Bridgwater,source,https://www.sea-cadets.org//bridgwater,https://www.sea-cadets.org/bridgwater/get-in-touch,better link found by the check
+R1599,Brainwave (Bridgwater),Bridgwater,url,https://brainwave.org.uk/,https://www.somerset.gov.uk/send/brainwave/,better link found by the check
+R1599,Brainwave (Bridgwater),Bridgwater,source,https://brainwave.org.uk/,https://www.somerset.gov.uk/send/brainwave/,better link found by the check
+R1601,Somerset Counselling Centre (Taunton),Taunton,url,https://scctaunton.org.uk/,https://scctaunton.org.uk/contact/,better link found by the check
+R1601,Somerset Counselling Centre (Taunton),Taunton,source,https://scctaunton.org.uk/,https://scctaunton.org.uk/contact/,better link found by the check
+R1606,Cheddar Valley u3a,Cheddar,url,https://u3asites.org.uk/cheddar-valley/groups,https://cheddar-valley.u3asite.uk/groups/,better link found by the check
+R1606,Cheddar Valley u3a,Cheddar,source,https://u3asites.org.uk/cheddar-valley/groups,https://cheddar-valley.u3asite.uk/groups/,better link found by the check
+R1566,Papyrus HOPELINE247,,(record),in sheet,removed,HOPELINE247 no longer operating: Papyrus went into administration in September 2026
+R1557,Farmerados pop-up farmhouse kitchens,,(record),in sheet,removed,Farmerados mothballed
+R1598,Stepladder men’s wellbeing project,,(record),in sheet,removed,Stepladder ended in March 2025
+R1563,Personality Disorder Service (Somerset),,(record),in sheet,removed,Page gone (HTTP 410); removed under Chris's dead-link rule
+R1591,Cheddar Youth Club,Cheddar,(record),in sheet,removed,Page gone (HTTP 404); removed under Chris's dead-link rule
+R1602,Rethink Reconnect floating support (Somerset),,(record),in sheet,removed,Page gone (HTTP 404); removed under Chris's dead-link rule
+R1605,Navigate the Money Maze workshops,,(record),in sheet,removed,Page gone (HTTP 404); removed under Chris's dead-link rule
+R1607,Somerset Nature Connections wellbeing courses,,(record),in sheet,removed,"Project appears to have ended: provider page is written in the past tense (""The Somerset Nature Connections project aimed..."")"
+R1554,"The Pod Workshop (Colliers Court, Frome)",Frome,(record),in sheet,removed,"Only page is a 2023 post (""currently running on Monday 3rd and 17th July""); treated as ended"
+R1565,DrugFAM helpline,,(record),in sheet,removed,drugfam.co.uk now redirects to Addiction Family Support; no DrugFAM helpline found
+R1574,Cheddar Valley Singers,Cheddar,who,women,anyone,"page: ""Community Singing Group""; nothing says women only (Chris, 23/11)"
+R1594,Seed of Hope therapeutic gardening (Bridgwater and Watchet),Bridgwater,name,Seed of Hope therapeutic gardening (Bridgwater and Watchet),Seed of Hope therapeutic gardening (Bridgwater),"provider page, split per site (Chris, 23/11): ""Bridgwater (Wednesday) Victoria Park Community Centre"""
+R1594,Seed of Hope therapeutic gardening (Bridgwater),Bridgwater,days,,Wed,"provider page, split per site (Chris, 23/11): ""Bridgwater (Wednesday) Victoria Park Community Centre"""
+R1594,Seed of Hope therapeutic gardening (Bridgwater),Bridgwater,times,,10:00-15:00,"provider page, split per site (Chris, 23/11): ""Bridgwater (Wednesday) Victoria Park Community Centre"""
+R1594,Seed of Hope therapeutic gardening (Bridgwater),Bridgwater,address,,Victoria Park Community Centre,"provider page, split per site (Chris, 23/11): ""Bridgwater (Wednesday) Victoria Park Community Centre"""
+R1594,Seed of Hope therapeutic gardening (Bridgwater),Bridgwater,postcode,,TA6 7AS,"provider page, split per site (Chris, 23/11): ""Bridgwater (Wednesday) Victoria Park Community Centre"""
+R1594,Seed of Hope therapeutic gardening (Bridgwater),Bridgwater,url,https://seedofhope.org.uk/,https://seedofhope.org.uk/therapeutic-groups/,"provider page, split per site (Chris, 23/11): ""Bridgwater (Wednesday) Victoria Park Community Centre"""
+R1594,Seed of Hope therapeutic gardening (Bridgwater),Bridgwater,source,https://seedofhope.org.uk/,https://seedofhope.org.uk/therapeutic-groups/,"provider page, split per site (Chris, 23/11): ""Bridgwater (Wednesday) Victoria Park Community Centre"""
+R1594,Seed of Hope therapeutic gardening (Bridgwater),Bridgwater,description,"Six-hour therapeutic horticulture days with gentle yoga and a recovery group, for people with mental health problems.","Recovery-based therapeutic gardening day with lunch and a recovery session, for people with mental health problems.","provider page, split per site (Chris, 23/11): ""Bridgwater (Wednesday) Victoria Park Community Centre"""
+R1619,Seed of Hope therapeutic gardening (Watchet),Watchet,record,,new,"provider page; split from R1594 (Chris, 23/11)"
+R1620,Seed of Hope therapeutic gardening (Chilton Polden),Chilton Polden,record,,new,"provider page lists a fourth group, not in the sheet"
+R1621,"Out4Lunch (Somerset Lesbian Network, Taunton)",Taunton,record,,new,"provider page (Chris, 23/11)"
+R1622,Shared Reading (Taunton Library),Taunton,record,,new,"Wellbeing Sedgemoor directory (Chris, 23/11)"
+R1623,Age UK Telephone Friendship,,record,,new,"Age UK page (Chris, 23/11)"
+R1624,Royal British Legion Admiral Nurses,,record,,new,"Royal British Legion page (Chris, 23/11)"
+R1625,SWAN Advocacy (Somerset),,record,,new,"Somerset Council directory (Chris, 23/11)"
+R1559,Royal Navy Family and People Support,,days,,Mon-Fri,"page: ""Working Hours: Monday to Thursday - 0800 to 1600 Friday - 0800 to 1530"""
+R1603,The Space (Cheddar Valley),Cheddar,name,The Space (Cheddar Valley),The Space youth club (Cheddar),"page: ""Youth Club"""
+R1603,The Space youth club (Cheddar),Cheddar,days,,Mon,"page: ""Mondays 6.30-8.30"""
+R1603,The Space youth club (Cheddar),Cheddar,times,,18:30-20:30,"page: ""Mondays 6.30-8.30"" (an evening club)"
+R1603,The Space youth club (Cheddar),Cheddar,address,,"Cheddar First School, The Hayes","page: ""Cheddar First School, The Hayes, Cheddar, BS27 3HN"""
+R1603,The Space youth club (Cheddar),Cheddar,postcode,,BS27 3HN,with the address on the provider page
+R1603,The Space youth club (Cheddar),Cheddar,cost,Free,£2.50 per session,"page: ""Sessions are just £2.50 each and booked online."""
+R1603,The Space youth club (Cheddar),Cheddar,access,sign up,book,"page: ""Sessions are just £2.50 each and booked online."""
+R1603,The Space youth club (Cheddar),Cheddar,eligibility,"Live or study in the Cheddar Valley, age 4-17","Age 8-15, live or go to school in the Cheddar Valley","page: ""open to children and young people ages 8-15 years old who live or attend in the Cheddar Valley"""
+R1603,The Space youth club (Cheddar),Cheddar,description,"Free play therapy and counselling for 4 to 17 year olds, plus a wellbeing allotment and holiday activities.","Weekly evening youth club for 8-15s in the Cheddar Valley: games, activities and friends. Book online.",page: youth club for ages 8-15
+R1559,Royal Navy Family and People Support,,url,https://forum.royalnavy.mod.uk/,https://forum.royalnavy.mod.uk/contact,better link found by the check
+R1559,Royal Navy Family and People Support,,source,https://forum.royalnavy.mod.uk/,https://forum.royalnavy.mod.uk/contact,better link found by the check
+R1583,Purple Pain fibromyalgia and ME group (Burnham-on-Sea),Burnham-on-Sea,url,https://www.facebook.com/fibromyalgiaheartofsomersetgroup/,https://wellbeingsedgemoor.org/purple-pain-fibromyalgia/,better link found by the check
+R1583,Purple Pain fibromyalgia and ME group (Burnham-on-Sea),Burnham-on-Sea,source,https://www.facebook.com/fibromyalgiaheartofsomersetgroup/,https://wellbeingsedgemoor.org/purple-pain-fibromyalgia/,better link found by the check
+R1596,Mind in Somerset Sedgemoor drop-in (Wednesday),Bridgwater,url,http://www.mindinsomerset.org.uk/,https://burnham-highbridge-tc.gov.uk/news/health-and-social/mind-in-somerset-sedgemoor-community-support-project,better link found by the check
+R1596,Mind in Somerset Sedgemoor drop-in (Wednesday),Bridgwater,source,http://www.mindinsomerset.org.uk/,https://burnham-highbridge-tc.gov.uk/news/health-and-social/mind-in-somerset-sedgemoor-community-support-project,better link found by the check
+R1603,The Space youth club (Cheddar),Cheddar,url,https://www.thespacesomerset.org.uk/,https://thespacesomerset.org.uk/youth-club/,better link found by the check
+R1603,The Space youth club (Cheddar),Cheddar,source,https://www.thespacesomerset.org.uk/,https://thespacesomerset.org.uk/youth-club/,better link found by the check
+R1571,Burnham Bereavement Café,Burnham-on-Sea,(record),in sheet,removed,"Provider site blocks checks (HTTP 403) and the event isn't on the church's A Church Near You calendar; removed (Chris, 23/11)"
+R1303,PALS water exercise group (St Audries),West Quantoxhead,phone,,01643 708356; 07836 717889,"page: ""Kathy Stroud Tel: 01643 708356 Peter Wellstood Tel: 07836 717889"" (published by the provider: Chris's rule)"
+R1303,PALS water exercise group (St Audries),West Quantoxhead,cost,,£5 per session (membership £20 per year),"page: ""Membership of PALS is £20 per year... The sessions cost £5."""
+R1595,Mind in Somerset Sedgemoor drop-in (Mon and Fri),Bridgwater,url,http://www.mindinsomerset.org.uk/,https://wellbeingsedgemoor.org/sedgemoor-community-support-project/,better link found by the check
+R1595,Mind in Somerset Sedgemoor drop-in (Mon and Fri),Bridgwater,source,http://www.mindinsomerset.org.uk/,https://wellbeingsedgemoor.org/sedgemoor-community-support-project/,better link found by the check
+R1326,FLOC SEND parent carer group (Frome),Frome,times,19:45-20:45,19:30-20:30,"page: ""from 7:30pm to 8:30pm"""
+R1326,FLOC SEND parent carer group (Frome),Frome,cost,,£5 suggested donation (no one turned away),"page: ""Cost of event: £5 suggested donation (no one turned away)"""
+R1386,Grove Wellbeing: Celtic Wheel Poetry group,Glastonbury,cost,"Free, limited spaces",Free if you live in Glastonbury and earn under £25k; otherwise £10 per workshop,"page: ""free if you live in Glastonbury and earn under £25k or £10 per workshop, for those who earn over £25k a year"""
+R1391,Grove Wellbeing: community allotment,Glastonbury,days,Wed,Thu,"page: ""This group is held every Thursday 11am-1pm in Glastonbury"""
+R1391,Grove Wellbeing: community allotment,Glastonbury,times,15:00,11:00-13:00,"page: ""This group is held every Thursday 11am-1pm in Glastonbury"""
+R1391,Grove Wellbeing: community allotment,Glastonbury,cost,"Free, limited spaces",Free if you live in Glastonbury and earn under £25k; otherwise £10 per workshop,"page: ""This support group is free if you live in Glastonbury and earn under £25k or £10 per workshop, for those who earn over £25k a year"""
+R1433,"Dance 4 Parkinson's (Henton, Wells)",Wells,cost,£7 (help available if cost is a problem),£7 per person (first session free),"page: ""£7 per person (first session is free)"""
+R1471,Macular Society advice line,,email,,help@macularsociety.org,"page: ""Or email help@macularsociety.org to find out how we can help."""
+R1484,SSAFA Forcesline (Mon to Thu),,mode,phone,phone;online,"page: ""You can now talk to our Forcesline advisors online with our live chat service."""
+R1485,SSAFA Forcesline (Friday),,mode,phone,phone;online,"page: ""You can now talk to our Forcesline advisors online with our live chat service."""
+R1530,Bipolar UK peer support line,,eligibility,,Peer support line: age 18+,"page: ""Anyone over the age of 18"""
+R1536,Josephine’s Star (Somerset),,eligibility,,Currently full: referrals paused until January 2027,"page: ""Our waiting list is currently FULL. We are sorry, but are unable to accept new referrals until January 2027."""
+R1537,SWISH sexual health service (Somerset),,days,,Mon-Fri,"page: ""Call our booking line on 0300 1245 010 , Monday to Friday (9:00am–4:45pm)"""
+R1537,SWISH sexual health service (Somerset),,times,,09:00-16:45,"page: ""Monday to Friday (9:00am–4:45pm)"""
+R1540,Somerset Community Pain Service,,address,,"Dene Barton Community Hospital, Dene Road","page: ""Dene Barton Community Hospital Dene Rd, Cotford St Luke, Taunton Somerset TA4 1DD"""
+R1540,Somerset Community Pain Service,,town,,Cotford St Luke,with the address on the provider page
+R1540,Somerset Community Pain Service,Cotford St Luke,postcode,,TA4 1DD,with the address on the provider page
+R1546,Crops Not Shops volunteering (Street and Glastonbury),Glastonbury,days,,Mon-Fri,"page: ""Volunteers take part in 4 hours of hands-on land energy exchange Monday to Friday"""
+R1312,Baby Connections (Frome),Frome,url,https://www.fromebabyconnections.com/,https://www.fromebabyconnections.com/contact,better link found by the check
+R1312,Baby Connections (Frome),Frome,source,https://healthconnectionsmendip.org/baby-connections-frome/,https://www.fromebabyconnections.com/contact,better link found by the check
+R1315,COPD Support Group (Frome),Frome,url,http://healthconnectionsmendip.org/,https://healthconnectionsmendip.org/copd-peer-support-group/,better link found by the check
+R1325,Energy advice drop-in (Frome Medical Practice),Frome,url,https://www.frometowncouncil.gov.uk/our-community/our-sustainability-work/green-and-healthy-frome/healthy-homes/energy-advice-sessions-home-visits/,https://www.frometowncouncil.gov.uk/our-community/our-sustainability-work/healthy-homes/energy-advice/,better link found by the check
+R1325,Energy advice drop-in (Frome Medical Practice),Frome,source,https://healthconnectionsmendip.org/energy-advice-sessions-home-visits-green-and-health-frome/,https://www.frometowncouncil.gov.uk/our-community/our-sustainability-work/healthy-homes/energy-advice/,better link found by the check
+R1326,FLOC SEND parent carer group (Frome),Frome,source,https://healthconnectionsmendip.org/floc-send-parent-carer-support-group-frome/,https://www.somerset.gov.uk/events/floc-frome-community-meet-up/,better link found by the check
+R1382,Chair Yoga (Glastonbury Library),Glastonbury,url,https://www.somerset.gov.uk/libraries/,https://www.somerset.gov.uk/events/chair-yoga-glastonbury-library/,better link found by the check
+R1382,Chair Yoga (Glastonbury Library),Glastonbury,source,https://healthconnectionsmendip.org/chair-yoga-glastonbury/,https://www.somerset.gov.uk/events/chair-yoga-glastonbury-library/,better link found by the check
+R1386,Grove Wellbeing: Celtic Wheel Poetry group,Glastonbury,url,https://www.grovewellbeing.co.uk/,https://www.grovewellbeing.co.uk/bardic,better link found by the check
+R1386,Grove Wellbeing: Celtic Wheel Poetry group,Glastonbury,source,https://healthconnectionsmendip.org/grove-wellbeing-glastonbury/,https://www.grovewellbeing.co.uk/bardic,better link found by the check
+R1391,Grove Wellbeing: community allotment,Glastonbury,url,https://www.grovewellbeing.co.uk/,https://www.grovewellbeing.co.uk/garden,better link found by the check
+R1391,Grove Wellbeing: community allotment,Glastonbury,source,https://healthconnectionsmendip.org/grove-wellbeing-glastonbury/,https://www.grovewellbeing.co.uk/garden,better link found by the check
+R1393,Paddington Farm volunteering (Glastonbury),Glastonbury,url,https://paddingtonfarm.co.uk/,https://paddingtonfarm.co.uk/our-work/volunteering-2/,better link found by the check
+R1393,Paddington Farm volunteering (Glastonbury),Glastonbury,source,https://healthconnectionsmendip.org/paddington-farm-trust-farm-volunteering/,https://paddingtonfarm.co.uk/our-work/volunteering-2/,better link found by the check
+R1471,Macular Society advice line,,url,https://www.macularsociety.org/,https://www.macularsociety.org/support/one-to-one/helpline/,better link found by the check
+R1471,Macular Society advice line,,source,https://healthconnectionsmendip.org/macular-society-telephone-befriending/,https://www.macularsociety.org/support/one-to-one/helpline/,better link found by the check
+R1484,SSAFA Forcesline (Mon to Thu),,url,https://www.ssafa.org.uk/,https://www.ssafa.org.uk/get-help/forcesline/,better link found by the check
+R1484,SSAFA Forcesline (Mon to Thu),,source,https://healthconnectionsmendip.org/ssafa-2/,https://www.ssafa.org.uk/get-help/forcesline/,better link found by the check
+R1485,SSAFA Forcesline (Friday),,url,https://www.ssafa.org.uk/,https://www.ssafa.org.uk/get-help/forcesline/,better link found by the check
+R1485,SSAFA Forcesline (Friday),,source,https://healthconnectionsmendip.org/ssafa-2/,https://www.ssafa.org.uk/get-help/forcesline/,better link found by the check
+R1536,Josephine’s Star (Somerset),,url,http://www.josephinesstar.org.uk/,https://www.josephinesstar.org.uk/services-9,better link found by the check
+R1536,Josephine’s Star (Somerset),,source,https://healthconnectionsmendip.org/josephines-star-somerset/,https://www.josephinesstar.org.uk/services-9,better link found by the check
+R1537,SWISH sexual health service (Somerset),,url,https://swishservices.co.uk/,https://www.swishservices.co.uk/contact-us,better link found by the check
+R1537,SWISH sexual health service (Somerset),,source,https://healthconnectionsmendip.org/contraception-sexual-health-services/,https://www.swishservices.co.uk/contact-us,better link found by the check
+R1540,Somerset Community Pain Service,Cotford St Luke,url,http://www.somersetpain.co.uk,https://www.somersetpain.co.uk/About-the-pain-service/How-to-find-us-and-meet-our-team,better link found by the check
+R1540,Somerset Community Pain Service,Cotford St Luke,source,https://healthconnectionsmendip.org/somerset-community-pain-service/,https://www.somersetpain.co.uk/About-the-pain-service/How-to-find-us-and-meet-our-team,better link found by the check
+R1546,Crops Not Shops volunteering (Street and Glastonbury),Glastonbury,url,https://www.cropsnotshops.co.uk/,https://www.cropsnotshops.co.uk/volunteer,better link found by the check
+R1546,Crops Not Shops volunteering (Street and Glastonbury),Glastonbury,source,https://healthconnectionsmendip.org/crops-not-shops-street-glastonbury/,https://www.cropsnotshops.co.uk/volunteer,better link found by the check
+R1524,YMCA youth clubs (Mendip),Shepton Mallet,name,YMCA youth clubs (Mendip),YMCA Shepton Mallet Youth Club,"provider page, one record per club (one record per session pattern)"
+R1524,YMCA Shepton Mallet Youth Club,Shepton Mallet,days,,Wed,"provider page, one record per club (one record per session pattern)"
+R1524,YMCA Shepton Mallet Youth Club,Shepton Mallet,times,,18:00-20:00,"provider page, one record per club (one record per session pattern)"
+R1524,YMCA Shepton Mallet Youth Club,Shepton Mallet,frequency,see website,,"provider page, one record per club (one record per session pattern)"
+R1524,YMCA Shepton Mallet Youth Club,Shepton Mallet,address,,"The Scout Hall, West Shepton Playing Fields, Old Wells Road","provider page, one record per club (one record per session pattern)"
+R1524,YMCA Shepton Mallet Youth Club,Shepton Mallet,postcode,,BA4 5XN,"provider page, one record per club (one record per session pattern)"
+R1524,YMCA Shepton Mallet Youth Club,Shepton Mallet,description,"Drop-in youth clubs for 10 to 19 year olds in Coleford, Frome, Glastonbury, Shepton Mallet, Street and Wells.","YMCA youth club for 10 to 19 year olds in Shepton Mallet: activities, games and a place to meet friends.","provider page, one record per club (one record per session pattern)"
+R1626,YMCA Street Youth Club,Street,record,,new,split from R1524: provider page lists each club
+R1627,YMCA Windmill Hill Youth Club (Glastonbury),Glastonbury,record,,new,split from R1524: provider page lists each club
+R1628,YMCA St Dunstan's Youth Club (Glastonbury),Glastonbury,record,,new,split from R1524: provider page lists each club
+R1629,YMCA Frome Youth Club,Frome,record,,new,split from R1524: provider page lists each club
+R1630,YMCA Coleford Youth Club,Coleford,record,,new,split from R1524: provider page lists each club
+R1631,YMCA Wells Youth Club,Wells,record,,new,split from R1524: provider page lists each club
+R1447,Tai Chi taster (Wells Library),Wells,(record),in sheet,removed,"Library taster not on the provider page (only weekly classes at Lawrence Day Centre); removed (Chris, 23/11)"
+R1366,Shared Earth: Growing Wellbeing Outdoors (Frome),Frome,(record),in sheet,removed,"Not found on the provider site under this name; removed (Chris, 23/11)"
+R1319,"NHS App help drop-in (Frome Medical Practice, Tuesday)",Frome,phone,,01373 301301,"page: ""Telephone: 01373 301301"""
+R1548,Bereavement office (Musgrove Park and Yeovil hospitals),Taunton,url,https://healthconnectionsmendip.org/musgrove-park-bereavement-support-service/,https://www.somersetft.nhs.uk/bereavement-and-medical-examiner-service/,better link found by the check (provider page)
+R1548,Bereavement office (Musgrove Park and Yeovil hospitals),Taunton,source,https://healthconnectionsmendip.org/musgrove-park-bereavement-support-service/,https://www.somersetft.nhs.uk/bereavement-and-medical-examiner-service/,better link found by the check (provider page)
+R1112,Singing for Fun (Midsomer Norton),Midsomer Norton,url,https://www.ageuk.org.uk/bathandnortheastsomerset/activities-and-events/,https://www.ageuk.org.uk/bathandnortheastsomerset/activities-and-events/singing-for-fun/,better link found by the check
+R1112,Singing for Fun (Midsomer Norton),Midsomer Norton,source,https://www.ageuk.org.uk/bathandnortheastsomerset/activities-and-events/ ; https://www.ageuk.org.uk/bathandnortheastsomerset/about-us/news/articles/singinggroupsradstockmsn/ (18 September 2025),https://www.ageuk.org.uk/bathandnortheastsomerset/activities-and-events/singing-for-fun/,better link found by the check
+R1112,Singing for Fun (Midsomer Norton),Midsomer Norton,cost,,£3 donation per session,"page: ""We ask for a very small donation of £3 per session."""
+R1112,Singing for Fun (Midsomer Norton),Midsomer Norton,address,Orchard Hall,Orchard Community Hall,"page: ""Where: Orchard Community Hall, Midsomer Norton."""
+R1169,The Bath Shed (Bath City Farm),Bath,url,https://www.bathcityfarm.org.uk/for-adults/,https://e-voice.org.uk/bathshed/,the Shed's own site (Bath City Farm's site not loading)
+R1169,The Bath Shed (Bath City Farm),Bath,source,https://www.bathcityfarm.org.uk/for-adults/,https://e-voice.org.uk/bathshed/,the Shed's own site
+R1169,The Bath Shed (Bath City Farm),Bath,days,Wed,Wed;Fri,"page: ""We currently run Shed sessions on Wednesdays and Fridays between 1030am and 330pm."""
+R1169,The Bath Shed (Bath City Farm),Bath,times,10:00-15:00,10:30-15:30,"page: ""between 1030am and 330pm"""
+R1167,Roots to Work (Bath City Farm),Bath,email,,amy@bathcityfarm.org.uk,"page (twertonandwhiteway.org): ""Get in touch with Amy on 01225 481269 or amy@bathcityfarm.org.uk"""
+R1438,Sing2breathe (Wells Health Centre),Wells,access,drop in,sign up,"page: ""Please contact us at hello@sing2breathe.org to find out more or to be added to our waiting list."""
+R1601,Somerset Counselling Centre (Taunton),Taunton,(record),in sheet,removed,"Paid counselling (standard fee £60 a session); removed under the no-paid-services rule (Chris, 23/11)"
+R1632,Sing2breathe (Cheddar),Cheddar,record,,new,"provider page (Chris, 23/11)"
+R1633,Sing2breathe (Yeovil),Yeovil,record,,new,"provider page (Chris, 23/11)"
+R1113,Cook & Eat (Midsomer Norton),Midsomer Norton,(record),removed,reinstated,"reinstated (Chris, 23/11): Age UK page lists it with a contact"
+R1118,Sing to Remember (Writhlington),Radstock,(record),removed,reinstated,"reinstated (Chris, 23/11): days now on the Age UK page"
+R1590,"Sing2breathe (Victoria Park, Bridgwater)",Bridgwater,times,11:00-12:00,10:45-12:00,"provider page: ""Bridgwater – Thursday mornings 10.45-12pm Victoria Park Community Centre"" (Chris, 23/11)"

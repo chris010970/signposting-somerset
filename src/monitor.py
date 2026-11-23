@@ -99,7 +99,19 @@ def _near_anchor(rx, text, q):
     return False
 
 MARKER = re.compile(r"^\[?contact links on page:\s*|\]$")
+STAND_IN = re.compile(r"^\[?(value appears on the page|contact links on page)")
 def classify(quote, main, whole, field=None, value=None):
+    if STAND_IN.match(plain(quote).strip()) and value:
+        # not words from the page but the checker's note that the record's own value is there (in the text, or as a
+        # mailto:/tel: link): look for that value, each one of a list ('01458 441669; 07795 123456'); phone numbers by digits
+        vals = [v.strip() for v in re.split(r";", value) if v.strip()]
+        def one(v):
+            if field == "phone":
+                d = re.sub(r"\D", "", v)
+                return "found" if d and d in re.sub(r"\D", "", main) else "found, footer" if d and d in re.sub(r"\D", "", whole) else "missing"
+            return classify(v, main, whole)
+        got = [one(v) for v in vals]
+        return "missing" if "missing" in got else "found" if all(g == "found" for g in got) else "found, footer"
     q = MARKER.sub("", plain(quote)).strip()      # the checker's '[Contact links on page: x]' means x, given as a link
     if not q:
         return "no quote"
@@ -169,13 +181,14 @@ def main():
     unreadable = {x.lower().removeprefix("www.") for x in SETTINGS.get("unwatchable_hosts") or []}
     urls = sorted({r["source_url"] for r in recipes})
     print(f"{len(recipes)} quotes for {len({(key(r), r['name']) for r in recipes})} records, on {len(urls)} pages.")
-    for u in urls:
+    for n, u in enumerate(urls, 1):
         h = host(u)
+        at = f"[{n}/{len(urls)}]"                     # progress, as check_sources shows it
         if h in last_host:
             time.sleep(max(0, SETTINGS["delay_s"] - (time.time() - last_host[h])))
         if h in unreadable:                        # e.g. Facebook: shows a log-in wall, not the page
             pages[u], lines[u] = ("", "", "unreadable"), []
-            print(f"  skip   {u} (in watch.json's unwatchable_hosts)")
+            print(f"  {at} skip   {u} (in watch.json's unwatchable_hosts)")
             continue
         if is_image(u):                            # a timetable image: is the page still showing this one?
             pg = image_page(u)
@@ -199,7 +212,7 @@ def main():
             pages[u] = (plain(tidy(html_text, u)), plain(whole_page(html_text)), "") if html_text is not None else ("", "", note or f"status {status}")
             lines[u] = [plain(l) for l in tidy(html_text, u).split("\n") if l.strip()] if html_text is not None else []
         last_host[h] = time.time()
-        print(f"  {'ok    ' if html_text is not None else 'FAILED'} {u} {note}")
+        print(f"  {at} {'ok    ' if html_text is not None else 'FAILED'} {u} {note}")
 
     out = []
     for r in recipes:

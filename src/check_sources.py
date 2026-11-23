@@ -669,8 +669,12 @@ def as_service(x):
             t = t.strip("`").removeprefix("json").strip()
         try:
             y = json.loads(t)
-        except ValueError:
-            return x
+        except ValueError:                         # e.g. batch19r: valid JSON followed by stray text or markup
+            i = t.find("{")
+            try:
+                y = json.JSONDecoder().raw_decode(t[i:])[0] if i >= 0 else None
+            except ValueError:
+                return x
         return y if isinstance(y, dict) else x
     return x
 
@@ -695,6 +699,7 @@ def find_service(client, model, rec, start_url, allow_search, use_js, total, log
                      else f"\nThe directory's link for it ({start_url}) didn't work: {start['status'] if start else 'no link'}.")
     messages = [{"role": "user", "content": first}]
     fetches = 0
+    asked_again = False                            # one second chance when the details come back as text, not an object
     for _ in range(MAX_TURNS):
         resp = ask(client, model=model, max_tokens=8000, system=system, tools=tools, messages=messages)
         usage_add(total, resp)
@@ -709,7 +714,15 @@ def find_service(client, model, rec, start_url, allow_search, use_js, total, log
                 out = unstring(b.input)
                 out["service"] = as_service(out.get("service"))   # sometimes sent as JSON text, not an object
                 if out.get("found") and out.get("service") and not isinstance(out.get("service"), dict):
-                    log.append("find: the answer had no service details")
+                    sv = out.get("service")   # what came back instead, so the cause can be seen in notes
+                    if not asked_again:       # e.g. batch23 R1595: tool-call markup ('<parameter name="name">...') as text
+                        asked_again = True
+                        log.append(f"find: service details came back as {type(sv).__name__}, not an object: asked again")
+                        results.append({"type": "tool_result", "tool_use_id": b.id, "is_error": True,
+                                        "content": "The service field must be a JSON object with the fields in the schema, "
+                                                   "not text or markup. Call submit_service again with service as an object."})
+                        continue
+                    log.append(f"find: the answer had no service details (got {type(sv).__name__}: {json.dumps(sv, ensure_ascii=False)[:300]})")
                     return None
                 if out.get("found") and out.get("service"):
                     src = str(out.get("source_url", "")).strip()
@@ -726,7 +739,7 @@ def find_service(client, model, rec, start_url, allow_search, use_js, total, log
                             log.append(f"find: source '{src or 'blank'}' wasn't read by the checker - rejected")
                             return None
                     if not isinstance(out.get("service"), dict):
-                        log.append("find: the answer had no service details")
+                        log.append(f"find: the answer had no service details (got {type(out.get('service')).__name__})")
                         return None
                     return verify(out["service"], src)
                 log.append("find: not found. " + str(out.get("notes", ""))[:200])
@@ -965,7 +978,7 @@ def compare(rec, svc, client, model, total):
     # backstop for the rule above: wording that restricts ("only", "must", "invite") is never just extra detail
     for f, r in list(res.items()):
         if r[0] in ("refine", "match") and f in RESTRICT_FIELDS and RESTRICTS.search(r[3].split("  [")[0] + " " + r[2]) \
-                and not RESTRICTS.search(r[1]):
+                and not RESTRICTS.search(r[1] + " " + (rec.get("eligibility") or "")):   # already in the record's eligibility (batch25 R1319)
             res[f] = ("differs", r[1], r[2], r[3] + "  [flagged by code: the page's wording restricts this service; check it]")
     # the service's own heading can restrict it ("Taunton * Invite only"): that counts as a difference in how to join
     head = (svc.get("name_quote") or "") + " " + (svc.get("name") or "")
