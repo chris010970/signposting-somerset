@@ -30,3 +30,74 @@
   .masthead .sitetabs button { padding: 7px 10px; }
   .masthead .sitetabs #tab-about { padding-left: 10px; }
 }
+
+/* ---------- Colours: light cream page and header, darker cream cards with a warm outline ---------- */
+:root { --cream: #FFFCF7; --card: #F4EEE4; --edge: #CFC3B1; --line: #E6DED2; }
+header.top { background: var(--cream); border-bottom: 0; }
+/* The filter boxes keep their green tint against the cream (a touch stronger than on white, which made them look grey) */
+.q, .toggle { background: #E7F0EA; }
+@media (min-width: 900px) { .qs .sort { background: #E7F0EA; } }
+.q.on { background: #FFFFFF; }
+#mapwrap { margin: 14px 0 16px; border: 1px solid var(--edge); border-radius: 16px; overflow: hidden; }
+#map { background: #F3EFE6; }
+
+/* ---------- The ticket card ---------- */
+.card.tk { display: flex; padding: 0; background: var(--card); border: 1px solid var(--edge); box-shadow: 0 1px 2px rgba(0,0,0,.05); }
+.card.tk:hover, .card.tk.hot { border-color: #B8A98F; box-shadow: 0 4px 10px rgba(0,0,0,.07); }
+.card.tk.flash { border-color: var(--b500); }
+.tk .stub { flex: 0 0 80px; box-sizing: border-box; border-radius: 15px 0 0 15px; padding: 12px 8px 12px 12px; display: flex; flex-direction: column; align-items: flex-start;
+  background: color-mix(in srgb, var(--k) 28%, #fff); color: color-mix(in srgb, var(--k) 62%, #000); }
+.tk .stub .live { font-size: 10.5px; font-weight: 700; color: #fff; background: #047857; border-radius: 999px; padding: 2px 8px; margin-bottom: 6px; }
+.tk .stub .wd { font-size: 13px; font-weight: 700; color: var(--b900); margin-bottom: 1px; }
+.tk .stub .big { font-family: var(--serif); font-size: 30px; line-height: 1; font-weight: 600; color: var(--b900); }
+.tk .stub .big.w { font-size: 22px; line-height: 1.1; }
+.tk .stub .sm { font-size: 12px; font-weight: 600; margin-top: 3px; }
+.tk .stub .rule { width: 24px; height: 1.5px; background: currentColor; opacity: .35; margin: 8px 0 6px; }
+.tk .stub .tm { font-size: 13.5px; font-weight: 700; color: var(--b900); font-variant-numeric: tabular-nums; }
+.tk .stub .words { font-size: 14px; font-weight: 700; color: var(--b900); line-height: 1.2; }
+.tk .stub .note { margin-top: 6px; font-size: 11px; font-weight: 600; color: var(--b900); background: rgba(255,255,255,.65); border-radius: 999px; padding: 2px 7px; }
+.tk .perf { position: relative; flex: 0 0 0; border-left: 1.5px dashed var(--edge); }
+.tk .perf::before, .tk .perf::after { content: ""; position: absolute; left: -9px; width: 16px; height: 16px; border-radius: 50%; background: var(--cream); border: 1px solid var(--edge); }
+.tk .perf::before { top: -9px; clip-path: inset(50% 0 0 0); }
+.tk .perf::after { bottom: -9px; clip-path: inset(0 0 50% 0); }
+.tk .tbody { flex: 1; min-width: 0; padding: 12px 14px 14px 16px; }
+.tk .row1 { align-items: center; flex-wrap: nowrap; gap: 10px; margin-bottom: 5px; }
+.tk .row1 .sp { flex: 1; }
+.tk .tdist { display: inline-flex; align-items: center; gap: 3px; font-size: 12px; color: var(--muted); white-space: nowrap; }
+.tk .tdist svg { width: 13px; height: 13px; }
+/* Details checked: a small green tick in a circle (hover or focus: how long ago) */
+.tk .checked { width: 17px; height: 17px; background: none; border: 1.5px solid #3D8B5F; color: #3D8B5F; }
+.tk .checked svg { width: 10px; height: 10px; }
+.tk .cname { font-size: 17.5px; }
+.tk .cname .full { display: inline-block; vertical-align: 2px; margin-left: 6px; font: 700 12px/16px var(--sans); color: #9A3412; background: #FCEBE4; border: 1px solid #F5C4AE; border-radius: 999px; padding: 2px 9px; white-space: nowrap; }
+.tk .desc { color: #44403C; font-size: 13.5px; line-height: 1.45; }
+.tk .notice { color: #9A3412; background: #FCEBE4; border: 0; border-left: 3px solid #C2410C; border-radius: 8px; padding: 6px 9px; margin: 8px 0 0; }
+.tk .more { margin-top: 10px; padding-top: 10px; border-top: 1px solid #D8CDBD; }
+.fold:not(.open) .more { display: none; }
+.tk .prov { font-size: 12.5px; color: var(--muted); margin-bottom: 4px; }
+.tk .chkd { display: flex; align-items: center; gap: 6px; font-size: 12px; color: #3D6B53; margin-bottom: 8px; }
+.tk .chkd svg { width: 15px; height: 15px; color: #3D8B5F; }
+.tk .facts { border-top: 0; padding-top: 0; margin-bottom: 8px; }
+.tk .where { display: flex; align-items: flex-start; gap: 6px; font-size: 12.5px; color: #44403C; margin-bottom: 10px; }
+.tk .where svg { width: 14px; height: 14px; flex: none; margin-top: 2px; }
+.tk .phones { font-size: 12.5px; color: #44403C; margin: -4px 0 8px; }
+.tk .acts { display: flex; flex-wrap: nowrap; gap: 6px; align-items: center; }
+.tbtn { position: relative; display: inline-flex; align-items: center; justify-content: center; gap: 6px; height: 36px; box-sizing: border-box; border-radius: 9px;
+  border: 1px solid #CFDCD4; background: var(--cream); color: var(--b700); font: 600 13px var(--sans); text-decoration: none; white-space: nowrap; }
+.tbtn svg { width: 16px; height: 16px; flex: none; }
+.tbtn.pri { background: var(--b700); border-color: var(--b700); color: #fff; padding: 0 12px; }
+.tbtn.pri .num { font-weight: 500; }
+.tbtn.ic { width: 40px; }
+.tbtn:hover, .tbtn:focus-visible { border-color: var(--b500); }
+.tbtn.ic::after { content: attr(data-tip); position: absolute; left: 50%; bottom: calc(100% + 6px); transform: translateX(-50%); z-index: 5; background: var(--ink); color: #fff; font: 600 12px var(--sans);
+  padding: 4px 8px; border-radius: 6px; white-space: nowrap; opacity: 0; pointer-events: none; transition: opacity .1s; }
+@media (hover: hover) { .tbtn.ic:hover::after { opacity: 1; } }
+.tbtn.ic:focus-visible::after { opacity: 1; }
+.fold.tk:not(.open) .desc { margin-bottom: 0; -webkit-line-clamp: 2; }
+@media (max-width: 760px) {
+  .tk .stub { flex-basis: 64px; padding: 10px 7px; }
+  .tk .stub .big { font-size: 26px; } .tk .stub .big.w { font-size: 19px; } .tk .stub .wd, .tk .stub .tm { font-size: 12px; }
+  .tk .tbody { padding: 10px 10px 12px 12px; }
+  .tk .cname .full { display: table; margin: 4px 0 0; }
+}
+@media (max-width: 360px) { .tbtn.pri .num { display: none; } .tk .row1 .copy { display: none; } }
