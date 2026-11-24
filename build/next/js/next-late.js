@@ -65,7 +65,7 @@ function talkCard({ s, st }) {
 /* ---------- Phone and online: the kinds row (as on In person) with "Open now only" at its end, and headings that say what's
    chosen ("Bereavement · 12 services"). Replaces renderTalk in phone-online.js ---------- */
 // (kept on window, so renderTalk can run before this line has: the page may draw this tab while it is still starting)
-const talkOff = () => (window.TALK_KINDS_OFF ||= new Set());
+function talkOff() { return (window.TALK_KINDS_OFF ||= new Set()); }
 $("kindrow-talk").addEventListener("click", e => {
   const b = e.target.closest("button[data-k]"); if (!b) return;
   const k = +b.dataset.k, off = talkOff(); off.has(k) ? off.delete(k) : off.add(k);
@@ -122,12 +122,16 @@ $("talk-list").addEventListener("click", e => { if (e.target.closest("#talk-show
    one: that need (the dropdown is set to it, so links work as before); several: services for any of them. For several, each
    record that fits gets a hidden tag ("__multi_near", "__multi_talk") and the dropdown is set to that tag, so the tabs' own
    filtering (s._sf.includes(sup)) works unchanged. Courses keeps its dropdown. */
-const NEEDS_UI = { near: { sel: () => fs, list: () => S, box: "q-support", redraw: () => refit() },
-                   talk: { sel: () => $("t-support"), list: () => T, box: "q-tsupport", redraw: () => renderTalk() } };
-const needsOf = tab => (window.NEEDS ||= { near: new Set(), talk: new Set() })[tab];
-function applyNeeds(tab) { setNeedsSel(tab); NEEDS_UI[tab].redraw(); }
+// (Functions, not constants: the shared code can call pickOpt, and so these, while the page is still starting, before
+// the lines of this file have run)
+function needsUI(tab) {
+  return { near: { sel: () => fs, list: () => S, box: "q-support", redraw: () => refit() },
+           talk: { sel: () => $("t-support"), list: () => T, box: "q-tsupport", redraw: () => renderTalk() } }[tab];
+}
+function needsOf(tab) { return (window.NEEDS ||= { near: new Set(), talk: new Set() })[tab]; }
+function applyNeeds(tab) { setNeedsSel(tab); needsUI(tab).redraw(); }
 function setNeedsSel(tab) {   // the dropdown (and the hidden tags) to match the ticked needs
-  const u = NEEDS_UI[tab], sel = u.sel(), set = needsOf(tab), tag = "__multi_" + tab;
+  const u = needsUI(tab), sel = u.sel(), set = needsOf(tab), tag = "__multi_" + tab;
   ALL.forEach(s => { s._sf = s._sf.filter(v => v !== tag); });
   if (set.size > 1) {
     ALL.forEach(s => { if (s._sf.some(v => set.has(v))) s._sf.push(tag); });
@@ -139,7 +143,7 @@ function setNeedsSel(tab) {   // the dropdown (and the hidden tags) to match the
 }
 function needsLabel(tab) {   // the button's text: Anything; one need's name; on a computer as many names as fit, then "and 3 others";
                              // on a phone, "3 needs chosen"
-  const u = NEEDS_UI[tab], b = $(u.box).querySelector(".msel span"), set = needsOf(tab), sel = u.sel();
+  const u = needsUI(tab), b = $(u.box).querySelector(".msel span"), set = needsOf(tab), sel = u.sel();
   if (!set.size && sel.value && !sel.value.startsWith("__multi")) set.add(sel.value);   // a link or saved choice set the dropdown
   if (!b) return;
   const order = GROUPS.flatMap(([, v]) => v), names = [...set].sort((x, y) => order.indexOf(x) - order.indexOf(y)).map(cap);
@@ -152,7 +156,7 @@ function needsLabel(tab) {   // the button's text: Anything; one need's name; on
   }
 }
 function needsPanel(tab) {
-  const u = NEEDS_UI[tab], set = needsOf(tab), list = u.list();
+  const u = needsUI(tab), set = needsOf(tab), list = u.list();
   const groups = GROUPS.map(([g, vals]) => [g, vals.filter(v => list.some(s => s._sf.includes(v)))]).filter(([, v]) => v.length);
   return `<div class="mgroups">${groups.map(([g, vals]) => `<fieldset><legend>${esc(g)}</legend>` +
     vals.map(v => `<label><input type="checkbox" value="${esc(v)}"${set.has(v) ? " checked" : ""}> ${esc(cap(v))}</label>`).join("") + `</fieldset>`).join("")}</div>` +
@@ -161,7 +165,7 @@ function needsPanel(tab) {
 (() => {
   const CHEV = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>';
   for (const tab of ["near", "talk"]) {
-    const u = NEEDS_UI[tab], box = $(u.box), sel = u.sel();
+    const u = needsUI(tab), box = $(u.box), sel = u.sel();
     sel.hidden = true; sel.setAttribute("aria-hidden", "true"); sel.tabIndex = -1;
     box.querySelector("label").removeAttribute("for");
     box.insertAdjacentHTML("beforeend", `<button type="button" class="msel" aria-haspopup="true" aria-expanded="false"><span>Anything</span>${CHEV}</button><div class="mpanel" hidden></div>`);
@@ -223,8 +227,8 @@ function pickOpt(sel, v) {   // (replaces links.js's: the same, and for Support 
 }
 // The records arriving again (the sheet's refresh) rebuild the dropdowns: put the ticked needs back
 for (const tab of ["near", "talk"]) new MutationObserver(() => {
-  if (needsOf(tab).size > 1 && !NEEDS_UI[tab].sel().value.startsWith("__multi")) { setNeedsSel(tab); NEEDS_UI[tab].redraw(); }
-}).observe(NEEDS_UI[tab].sel(), { childList: true });
+  if (needsOf(tab).size > 1 && !needsUI(tab).sel().value.startsWith("__multi")) { setNeedsSel(tab); needsUI(tab).redraw(); }
+}).observe(needsUI(tab).sel(), { childList: true });
 
 /* Phone and online, 3. When?: open now, open 24/7, open in the evening (after 5pm) or at the weekend in the next 7 days.
    Services with no set hours show only under "Any time" (we can't say when they're open) */
