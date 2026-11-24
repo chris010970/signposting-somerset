@@ -12,3 +12,12 @@ function drawLegend() {
       `<i>${on ? KEY_TICK : ""}</i><span class="lt">${esc(k[0])}</span><span class="st" aria-hidden="true">${esc(KIND_SHORT[k[0]] || k[0])}</span></button>`; }).join("");
 }
 (() => { const d = $("kindrow"); d.addEventListener("click", e => keyClick(e, d)); drawLegend(); })();
+
+/* The count, on the map: "Showing 245 services" in a pill at the top left (the map's key used to sit there). It copies the
+   number from the screen readers' summary line (in-person.js), so the two always agree */
+(() => {
+  const pill = document.createElement("div"); pill.className = "mapcount"; pill.setAttribute("aria-hidden", "true");
+  $("mapwrap").appendChild(pill);
+  const show = () => { const n = $("summary").querySelector("b")?.textContent; pill.hidden = !n; if (n) pill.textContent = `Showing ${n} ${n === "1" ? "service" : "services"}`; };
+  new MutationObserver(show).observe($("summary"), { childList: true, subtree: true, characterData: true }); show();
+})();

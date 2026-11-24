@@ -179,3 +179,8 @@ header.top { background: var(--cream); border-bottom: 0; }
   #list { padding-top: 1px; margin-top: 1px; }
   #mapwrap { margin-top: 2px; }
 }
+
+/* The count on the map (next-late.js): a white pill at the top left, like the map's own controls */
+#mapwrap { position: relative; }
+.mapcount { position: absolute; top: 12px; left: 12px; z-index: 800; background: #fff; color: var(--b900); font: 600 13px var(--sans);
+  padding: 6px 12px; border-radius: 999px; box-shadow: 0 1px 4px rgba(0,0,0,.18); pointer-events: none; }
