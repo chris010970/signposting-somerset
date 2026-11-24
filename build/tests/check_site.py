@@ -14,6 +14,7 @@ ROOT = Path(__file__).resolve().parent.parent.parent
 DOCS = ROOT / "docs"
 BASE = json.loads((ROOT / "build" / "site.json").read_text(encoding="utf-8")).get("base_path", "").rstrip("/")
 START = ["/", "/main/", "/directory/", "/directory/places/", "/tools/", "/test/", "/test/directory/", "/test/directory/places/", "/test/tools/"]
+if (DOCS / "next" / "directory" / "index.html").is_file(): START.append("/next/directory/")   # the next design's preview, once copied
 SKIP = ("http:", "https:", "mailto:", "tel:", "data:", "#", "javascript:", "//")
 LINK = re.compile(r'(?:href|src)="([^"]+)"|value="(/[^"]*)"')
 

@@ -21,6 +21,7 @@ steps = [
     ("Assist relay tests", ["node", "--test", "--test-reporter=spec", str(HERE / "worker.test.mjs")] if shutil.which("node") else None),
     ("Directory builds", [sys.executable, str(BUILD / "directory" / "build.py")]),
     ("Tools page builds", [sys.executable, str(BUILD / "tools" / "build_tools.py")]),
+    ("Next design builds", [sys.executable, str(BUILD / "next" / "build.py")]),
     ("Site check", [sys.executable, str(HERE / "check_site.py")]),
     ("Browser tests", ["node", "--test", "--test-reporter=spec", str(HERE / "browser.test.mjs")]
         if shutil.which("node") and (HERE / "node_modules" / "playwright").is_dir() else None),

@@ -1,0 +1,3 @@
+/* The next design (build/next/): its own styles, added after the directory's, so anything here overrides them on
+   /next/directory/ only. The live and test directories never load this file. When the new design is approved it moves
+   into build/core/css/ and build/directory/, and build/next/ is deleted. */

@@ -4,6 +4,7 @@
 build/directory/github/
 build/tools/out/
 build/places/out/
+build/next/github/
 
 # Python
 __pycache__/
