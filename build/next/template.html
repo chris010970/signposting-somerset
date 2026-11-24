@@ -49,10 +49,17 @@
     </div>
     <!-- The filter boxes (selects) have autocomplete="off": on Back, the browser mustn't put old values back in them (the page keeps
          its own choices: js/links.js) -->
-    <div id="hdr-talk" class="tq">
-      <div class="q" id="q-tsupport"><label for="t-support">1. Support for</label><select autocomplete="off" id="t-support"></select></div>
-      <div class="q" id="q-tarea"><label for="t-area">2. Coverage</label><select autocomplete="off" id="t-area"><option value="">Local and UK-wide</option><option value="local">Local only</option><option value="national">UK-wide only</option></select></div>
-      <label class="toggle" id="q-open"><input type="checkbox" id="t-open"> Open now only</label>
+    <div id="hdr-talk">
+      <div class="tq">
+        <div class="q" id="q-tsupport"><label for="t-support">1. Support for</label><select autocomplete="off" id="t-support"></select></div>
+        <div class="q" id="q-tarea"><label for="t-area">2. Coverage</label><select autocomplete="off" id="t-area"><option value="">Local and UK-wide</option><option value="local">Local only</option><option value="national">UK-wide only</option></select></div>
+        <div class="q" id="q-twhen"><label for="t-when">3. When?</label><select autocomplete="off" id="t-when"><option value="">Any time</option><option value="now">Open now</option><option value="247">Open 24/7</option><option value="evening">Evenings (after 5pm)</option><option value="weekend">Weekends</option></select></div>
+      </div>
+      <div class="krow">
+        <div class="kindrow" id="kindrow-talk" role="group" aria-label="Show these kinds of support"></div>
+      </div>
+      <!-- The old "Open now only" tick box, kept hidden: the directory's shared code (links.js) still reads and saves it -->
+      <label id="q-open" hidden><input type="checkbox" id="t-open"></label>
     </div>
     <div id="hdr-course" class="tq" hidden>
       <div class="q" id="q-csupport"><label for="c-support">1. Support for</label><select autocomplete="off" id="c-support"></select></div>

@@ -42,8 +42,8 @@ header.top { background: var(--cream); border-bottom: 0; }
 
 /* ---------- The ticket card ---------- */
 /* Every stub the same width: wide enough for the widest label ("Tomorrow", "No upcoming dates"); longer words wrap */
-.card.tk { --stubw: 92px; }
-@media (max-width: 760px) { .card.tk { --stubw: 84px; } }
+.tk { --stubw: 92px; }
+@media (max-width: 760px) { .tk { --stubw: 84px; } }
 .card.tk { display: flex; padding: 0; background: var(--card); border: 1px solid var(--edge); box-shadow: 0 1px 2px rgba(0,0,0,.05); }
 .card.tk:hover, .card.tk.hot { border-color: #B8A98F; box-shadow: 0 4px 10px rgba(0,0,0,.07); }
 .card.tk.flash { border-color: var(--b500); }
@@ -184,3 +184,51 @@ header.top { background: var(--cream); border-bottom: 0; }
 #mapwrap { position: relative; }
 .mapcount { position: absolute; top: 12px; left: 12px; z-index: 800; background: #fff; color: var(--b900); font: 600 13px var(--sans);
   padding: 6px 12px; border-radius: 999px; box-shadow: 0 1px 4px rgba(0,0,0,.18); pointer-events: none; }
+/* Phone and online: the same ticket card in its grid (next-late.js talkCard) */
+.tcard.tk { display: flex; padding: 0; gap: 0; background: var(--card); border: 1px solid var(--edge); border-radius: 16px; }
+.tcard.tk:hover { border-color: #B8A98F; box-shadow: 0 4px 10px rgba(0,0,0,.07); }
+.tcard.tk .row1 { display: flex; gap: 6px; }
+.tcard.tk .cname { font-family: var(--serif); color: var(--b900); font-size: 17px; margin: 0 0 2px; }
+.tcard.tk .reach { margin-bottom: 4px; }
+.tk .mline { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 10.5px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; color: #6B645F; }
+.tcard.tk .row1 .checked { margin-left: 2px; }
+.fold.tcard:not(.open) .desc { -webkit-line-clamp: 2; }
+
+/* Phone and online, Courses: the three filter boxes the same width, with the same gaps as In person */
+@media (min-width: 900px) {
+  .tq { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; }
+  .tq[hidden] { display: none; }
+}
+
+/* Phone and online: "Open now only" at the end of the kinds row, looking like Sort's switch */
+.opentog { display: inline-flex; align-items: center; gap: 8px; align-self: flex-start; height: 32px; box-sizing: border-box; padding: 0 12px 0 10px;
+  border-radius: 10px; background: #E7E5E4; font: 600 13px var(--sans); color: #57534E; cursor: pointer; white-space: nowrap; }
+.opentog input { width: 15px; height: 15px; margin: 0; accent-color: #047857; }
+.opentog.on { background: #D1FAE5; color: #064E3B; }
+.gh small { font-family: var(--sans); }
+@media (min-width: 900px) { .krow .opentog { align-self: center; } }
+
+/* Phone and online, Courses: the first heading 12px under the kinds row, as In person's list and map */
+@media (min-width: 900px) { #talk-list, #courses { padding-top: 2px; } }
+.empty .showall { margin-top: 12px; height: 36px; padding: 0 16px; border-radius: 9px; border: 0; background: var(--b700); color: #fff; font: 600 13px var(--sans); cursor: pointer; }
+.empty .showall:hover, .empty .showall:focus-visible { background: var(--b900); }
+
+/* Support for, with tick boxes (next-late.js): a button like the dropdown, and a panel under it */
+#q-support, #q-tsupport { position: relative; }
+.msel { display: flex; align-items: center; justify-content: space-between; gap: 8px; width: 100%; border: 0; background: transparent; padding: 2px 0 2px 4px;
+  font-family: var(--sans); font-weight: 600; font-size: 14px; color: var(--ink); cursor: pointer; text-align: left; }
+.msel span { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.msel svg { width: 14px; height: 14px; flex: none; margin-right: 6px; }
+.mpanel { position: fixed; z-index: 1200; width: min(760px, calc(100vw - 32px)); box-sizing: border-box; background: #fff;
+  border: 1px solid var(--edge); border-radius: 14px; box-shadow: 0 10px 30px rgba(0,0,0,.14); padding: 14px 16px 12px; }
+.mgroups { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 6px 20px; max-height: min(var(--room, 60vh), 460px); overflow-y: auto; }
+.mgroups fieldset { border: 0; margin: 0; padding: 0; min-width: 0; }
+.mgroups legend { font-size: 10px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: var(--b700); padding: 0; margin-bottom: 6px; }
+.mgroups label { display: flex !important; align-items: center; gap: 9px; padding: 5px 4px; border-radius: 6px; font: 500 14px var(--sans) !important;
+  letter-spacing: 0 !important; text-transform: none !important; color: var(--ink) !important; cursor: pointer; margin: 0 !important; }
+.mgroups label:hover { background: var(--b50); }
+.mgroups input { width: 16px; height: 16px; margin: 0; accent-color: var(--b700); flex: none; }
+.mfoot { display: flex; justify-content: space-between; align-items: center; margin-top: 10px; padding-top: 10px; border-top: 1px solid var(--line); }
+.mclear { border: 0; background: none; color: var(--b700); font: 600 13px var(--sans); text-decoration: underline; cursor: pointer; padding: 0; }
+.mdone { height: 34px; padding: 0 18px; border-radius: 9px; border: 0; background: var(--b700); color: #fff; font: 600 13px var(--sans); cursor: pointer; }
+@media (max-width: 760px) { .mgroups { grid-template-columns: 1fr; } .mpanel { width: calc(100vw - 32px); } }
