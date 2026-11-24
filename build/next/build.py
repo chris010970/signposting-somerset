@@ -41,7 +41,6 @@ page = put(page, "/*FEEDBACK_FORM_URL*/", SETTINGS.get("feedback_form_url", ""))
 page = document(page)
 
 page = put(page, "/*SITE_VERSION*/", f"next {STAMP}")
-page = put(page, 'href="/tools/"', 'href="/test/tools/"')
 page = put(page, "/*TOOLS_URL*/", BASE + "/test/tools/")
 page = put(page, "<title>Signposting Somerset</title>", "<title>Signposting Somerset (next design)</title>")
 page = put(page, "<!--ROBOTS-->", NOINDEX)

@@ -1101,6 +1101,35 @@ html.short #mapwrap { height: 100vh; }
    /next/directory/ only. The live and test directories never load this file. When the new design is approved it moves
    into build/core/css/ and build/directory/, and build/next/ is deleted. */
 
+/* ---------- Header (option 4): no logo, the subtitle on the name's line, the tabs under it, the watercolour at full height ---------- */
+.masthead { padding-top: 2px; }
+.masthead .hero { padding-block: 6px 0; max-width: none; }
+.masthead .brand { display: flex; align-items: baseline; flex-wrap: wrap; gap: 2px 14px; }
+.masthead .brand .sub { font-family: var(--sans); font-size: 13.5px; font-weight: 500; color: #6B645F; }
+/* The tabs: pills, the chosen one filled; About after a thin divider. No line under the row */
+.masthead .sitetabs { border-bottom: 0; margin: 10px 0 12px; gap: 6px; align-items: center; }
+.masthead .sitetabs .tgrp { align-items: center; gap: 6px; }
+.masthead .sitetabs button { padding: 8px 14px; border: 0; border-radius: 999px; margin: 0; color: var(--b700); font-weight: 600; }
+.masthead .sitetabs button:hover { background: var(--b50); }
+.masthead .sitetabs button[aria-current="page"] { background: var(--b700); color: #fff; }
+.masthead .sitetabs #tab-about { margin-left: 4px; padding-left: 16px; border-radius: 0 999px 999px 0; }
+.masthead .sitetabs #tab-about::before { top: 8px; bottom: 8px; }
+/* The watercolour fades in from the left, so the name and tabs keep the attention */
+.masthead .illus { -webkit-mask-image: linear-gradient(to right, transparent 0, transparent 40%, #000 62%); mask-image: linear-gradient(to right, transparent 0, transparent 40%, #000 62%); }
+@media (min-width: 1432px) {
+  .masthead .illus { -webkit-mask-image: linear-gradient(to right, transparent 0, transparent 40%, #000 62%, #000 calc(100% - 24px), transparent 100%);
+    mask-image: linear-gradient(to right, transparent 0, transparent 40%, #000 62%, #000 calc(100% - 24px), transparent 100%); }
+}
+@media (max-width: 760px) {
+  .masthead .brand { font-size: 21px; }
+  .masthead .brand .sub { flex-basis: 100%; font-size: 12.5px; }
+  .masthead .sitetabs { margin-top: 8px; }
+}
+@media (max-width: 420px) {
+  .masthead .sitetabs button { padding: 7px 10px; }
+  .masthead .sitetabs #tab-about { padding-left: 12px; }
+}
+
 </style>
 </head>
 <body>
@@ -1117,18 +1146,18 @@ html.short #mapwrap { height: 100vh; }
   <div class="inner">
     <div class="masthead">
       <div class="illus" role="img" aria-label="Watercolour illustration: a path with map pins winding through Somerset fields towards Glastonbury Tor, people meeting and walking together, and a signpost to drop-ins, peer support, advice and community"></div>
-    <div class="hero">
-      <h1 class="brand"><img class="logo" src="/assets/logo-signpost.webp" alt="" width="31" height="34">Signposting Somerset</h1>
-      <p class="lede" id="lede"><span class="lg">Connecting people with local mental health and wellbeing support.</span><span class="sh">Local mental health and wellbeing support.</span></p>
+      <div class="hero">
+        <h1 class="brand">Signposting Somerset <span class="sub">Local mental health and wellbeing support</span></h1>
+      </div>
       <p class="datasrc" id="datasrc" hidden></p>
       <span id="copy-live" role="status" aria-live="polite" style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)"></span>
-    </div>
-    <nav class="sitetabs" aria-label="Site">
+      <nav class="sitetabs" aria-label="Site">
       <span class="tgrp"><button type="button" id="tab-near" aria-controls="panel-near">In person</button>
       <button type="button" id="tab-talk" aria-controls="panel-talk"><span class="lg">Phone and online</span><span class="sh">Phone &amp; online</span></button>
       <button type="button" id="tab-course" aria-controls="panel-course">Courses</button><button type="button" id="tab-places" aria-controls="panel-places">Places</button></span>
       <button type="button" id="tab-about" aria-controls="panel-about">About</button>
-      <a class="tolink" href="/test/tools/">Tools →</a>    </nav>
+      </nav>
+    </div>
     </div>
     <!-- The filter boxes (selects) have autocomplete="off": on Back, the browser mustn't put old values back in them (the page keeps
          its own choices: js/links.js) -->
@@ -2380,7 +2409,7 @@ function renderAbout() {
     </section>
     </div></div>
     <p class="small">Service information belongs to the providers listed. Map data © <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap</a> contributors, © <a href="https://carto.com/attributions" target="_blank" rel="noopener">CARTO</a>.</p>
-    <p class="small" id="site-version">Version: next 2026-11-24 11:48</p>
+    <p class="small" id="site-version">Version: next 2026-11-24 11:59</p>
   </article>`;
 }
 /* ---------- Places: the town listings, as a tab of the directory ----------
