@@ -219,16 +219,17 @@ header.top { background: var(--cream); border-bottom: 0; }
   font-family: var(--sans); font-weight: 600; font-size: 14px; color: var(--ink); cursor: pointer; text-align: left; }
 .msel span { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .msel svg { width: 14px; height: 14px; flex: none; margin-right: 6px; }
-.mpanel { position: fixed; z-index: 1200; width: min(760px, calc(100vw - 32px)); box-sizing: border-box; background: #fff;
+.mpanel { position: fixed; z-index: 1200; width: max-content; max-width: calc(100vw - 32px); box-sizing: border-box; background: #fff;
   border: 1px solid var(--edge); border-radius: 14px; box-shadow: 0 10px 30px rgba(0,0,0,.14); padding: 14px 16px 12px; }
-.mgroups { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 6px 20px; max-height: min(var(--room, 60vh), 460px); overflow-y: auto; }
+.mgroups { display: grid; grid-template-columns: repeat(3, max-content); gap: 6px 36px; max-height: min(var(--room, 60vh), 460px); overflow-y: auto; }
 .mgroups fieldset { border: 0; margin: 0; padding: 0; min-width: 0; }
 .mgroups legend { font-size: 10px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: var(--b700); padding: 0; margin-bottom: 6px; }
 .mgroups label { display: flex !important; align-items: center; gap: 9px; padding: 5px 4px; border-radius: 6px; font: 500 14px var(--sans) !important;
-  letter-spacing: 0 !important; text-transform: none !important; color: var(--ink) !important; cursor: pointer; margin: 0 !important; }
+  letter-spacing: 0 !important; text-transform: none !important; color: var(--ink) !important; cursor: pointer; margin: 0 !important; white-space: nowrap; }
 .mgroups label:hover { background: var(--b50); }
 .mgroups input { width: 16px; height: 16px; margin: 0; accent-color: var(--b700); flex: none; }
 .mfoot { display: flex; justify-content: space-between; align-items: center; margin-top: 10px; padding-top: 10px; border-top: 1px solid var(--line); }
 .mclear { border: 0; background: none; color: var(--b700); font: 600 13px var(--sans); text-decoration: underline; cursor: pointer; padding: 0; }
 .mdone { height: 34px; padding: 0 18px; border-radius: 9px; border: 0; background: var(--b700); color: #fff; font: 600 13px var(--sans); cursor: pointer; }
-@media (max-width: 760px) { .mgroups { grid-template-columns: 1fr; } .mpanel { width: calc(100vw - 32px); } }
+@media (max-width: 760px) { .mgroups { grid-template-columns: 1fr; } .mpanel { width: calc(100vw - 32px); } .mgroups label { white-space: normal; } }
+@media (max-width: 760px) { .mpanel .paren, .msel .paren { display: none; } }   /* phones: "Addiction", "Abuse" */

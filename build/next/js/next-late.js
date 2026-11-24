@@ -147,7 +147,7 @@ function needsLabel(tab) {   // the button's text: Anything; one need's name; on
   if (!set.size && sel.value && !sel.value.startsWith("__multi")) set.add(sel.value);   // a link or saved choice set the dropdown
   if (!b) return;
   const order = GROUPS.flatMap(([, v]) => v), names = [...set].sort((x, y) => order.indexOf(x) - order.indexOf(y)).map(cap);
-  if (names.length < 2) { b.textContent = names[0] || "Anything"; return; }
+  if (names.length < 2) { b.innerHTML = names[0] ? paren(names[0]) : "Anything"; return; }
   if (matchMedia("(max-width: 760px)").matches) { b.textContent = `${names.length} needs chosen`; return; }
   for (let k = names.length; k >= 1; k--) {   // the most names that fit
     const rest = names.length - k;
@@ -155,11 +155,13 @@ function needsLabel(tab) {   // the button's text: Anything; one need's name; on
     if (b.scrollWidth <= b.clientWidth || k === 1) return;
   }
 }
+// A label's part in brackets, e.g. "Addiction (alcohol, drugs, gambling)", is left off on phones (class "paren")
+function paren(t) { const i = t.indexOf(" ("); return i < 0 ? esc(t) : `${esc(t.slice(0, i))}<span class="paren">${esc(t.slice(i))}</span>`; }
 function needsPanel(tab) {
   const u = needsUI(tab), set = needsOf(tab), list = u.list();
   const groups = GROUPS.map(([g, vals]) => [g, vals.filter(v => list.some(s => s._sf.includes(v)))]).filter(([, v]) => v.length);
   return `<div class="mgroups">${groups.map(([g, vals]) => `<fieldset><legend>${esc(g)}</legend>` +
-    vals.map(v => `<label><input type="checkbox" value="${esc(v)}"${set.has(v) ? " checked" : ""}> ${esc(cap(v))}</label>`).join("") + `</fieldset>`).join("")}</div>` +
+    vals.map(v => `<label><input type="checkbox" value="${esc(v)}"${set.has(v) ? " checked" : ""}> ${paren(cap(v))}</label>`).join("") + `</fieldset>`).join("")}</div>` +
     `<div class="mfoot"><button type="button" class="mclear">Clear</button><button type="button" class="mdone">Done</button></div>`;
 }
 (() => {
@@ -172,13 +174,13 @@ function needsPanel(tab) {
     const btn = box.querySelector(".msel"), panel = box.querySelector(".mpanel");
     const close = () => { panel.hidden = true; btn.setAttribute("aria-expanded", "false"); };
     // Fixed to the window, under the box (the header would otherwise cut it off), and no taller than the space below it
-    const place = () => { const r = box.getBoundingClientRect(); panel.style.left = Math.max(16, Math.min(r.left, innerWidth - 16 - Math.min(760, innerWidth - 32))) + "px";
+    const place = () => { const r = box.getBoundingClientRect(); panel.style.left = Math.max(16, Math.min(r.left, innerWidth - 16 - panel.offsetWidth)) + "px";
       panel.style.top = r.bottom + 6 + "px"; panel.style.setProperty("--room", Math.max(200, innerHeight - r.bottom - 90) + "px"); };
     addEventListener("resize", () => { if (!panel.hidden) place(); needsLabel(tab); });
     document.addEventListener("scroll", () => { if (!panel.hidden) place(); }, true);
     btn.addEventListener("click", () => {
       if (!panel.hidden) return close();
-      needsLabel(tab); panel.innerHTML = needsPanel(tab); place(); panel.hidden = false; btn.setAttribute("aria-expanded", "true");
+      needsLabel(tab); panel.innerHTML = needsPanel(tab); panel.hidden = false; place(); btn.setAttribute("aria-expanded", "true");
       panel.querySelector("input")?.focus({ preventScroll: true });
     });
     panel.addEventListener("change", e => {
@@ -216,6 +218,9 @@ function pickOpt(sel, v) {   // (replaces links.js's: the same, and for Support 
   const tab = sel === fs ? "near" : sel.id === "t-support" ? "talk" : "";
   const ok = x => [...sel.options].find(o => !o.hidden && o.value.toLowerCase() === x);
   if (tab) {
+    // Needs come only from the address: opening the page without "support=" starts with nothing ticked (not this visit's
+    // earlier choices)
+    if (!START_ADDRESS.has("support")) return false;
     const vals = String(v).split(",").map(x => x.trim().toLowerCase()).filter(ok);
     if (!vals.length) return false;
     const set = needsOf(tab); set.clear(); vals.forEach(x => set.add(ok(x).value)); setNeedsSel(tab);

@@ -2,6 +2,9 @@
    The ticket card: the day and time in a stub on the left, tinted with the kind's colour (the same as its map pin); everything
    else on the right. Uses the shared helpers in core/js/cards.js, schedule.js, kinds.js and page-text.js unchanged. */
 
+// The address the page was opened with (before the page rewrites it to follow the filters): Support for comes only from here
+const START_ADDRESS = new URLSearchParams(location.search);
+
 // The map: CARTO's Voyager style first (clearer roads and place names, warmer colours), Positron as the fallback
 TILE_URLS.reverse();
 

@@ -1318,19 +1318,20 @@ header.top { background: var(--cream); border-bottom: 0; }
   font-family: var(--sans); font-weight: 600; font-size: 14px; color: var(--ink); cursor: pointer; text-align: left; }
 .msel span { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .msel svg { width: 14px; height: 14px; flex: none; margin-right: 6px; }
-.mpanel { position: fixed; z-index: 1200; width: min(760px, calc(100vw - 32px)); box-sizing: border-box; background: #fff;
+.mpanel { position: fixed; z-index: 1200; width: max-content; max-width: calc(100vw - 32px); box-sizing: border-box; background: #fff;
   border: 1px solid var(--edge); border-radius: 14px; box-shadow: 0 10px 30px rgba(0,0,0,.14); padding: 14px 16px 12px; }
-.mgroups { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 6px 20px; max-height: min(var(--room, 60vh), 460px); overflow-y: auto; }
+.mgroups { display: grid; grid-template-columns: repeat(3, max-content); gap: 6px 36px; max-height: min(var(--room, 60vh), 460px); overflow-y: auto; }
 .mgroups fieldset { border: 0; margin: 0; padding: 0; min-width: 0; }
 .mgroups legend { font-size: 10px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: var(--b700); padding: 0; margin-bottom: 6px; }
 .mgroups label { display: flex !important; align-items: center; gap: 9px; padding: 5px 4px; border-radius: 6px; font: 500 14px var(--sans) !important;
-  letter-spacing: 0 !important; text-transform: none !important; color: var(--ink) !important; cursor: pointer; margin: 0 !important; }
+  letter-spacing: 0 !important; text-transform: none !important; color: var(--ink) !important; cursor: pointer; margin: 0 !important; white-space: nowrap; }
 .mgroups label:hover { background: var(--b50); }
 .mgroups input { width: 16px; height: 16px; margin: 0; accent-color: var(--b700); flex: none; }
 .mfoot { display: flex; justify-content: space-between; align-items: center; margin-top: 10px; padding-top: 10px; border-top: 1px solid var(--line); }
 .mclear { border: 0; background: none; color: var(--b700); font: 600 13px var(--sans); text-decoration: underline; cursor: pointer; padding: 0; }
 .mdone { height: 34px; padding: 0 18px; border-radius: 9px; border: 0; background: var(--b700); color: #fff; font: 600 13px var(--sans); cursor: pointer; }
-@media (max-width: 760px) { .mgroups { grid-template-columns: 1fr; } .mpanel { width: calc(100vw - 32px); } }
+@media (max-width: 760px) { .mgroups { grid-template-columns: 1fr; } .mpanel { width: calc(100vw - 32px); } .mgroups label { white-space: normal; } }
+@media (max-width: 760px) { .mpanel .paren, .msel .paren { display: none; } }   /* phones: "Addiction", "Abuse" */
 
 </style>
 </head>
@@ -1934,6 +1935,9 @@ function serviceCard(r, h = "h2", withId = true) {
 /* ---------- The next design's code (build/next/): loaded after build/core/js/service-card.js, so it replaces serviceCard ----------
    The ticket card: the day and time in a stub on the left, tinted with the kind's colour (the same as its map pin); everything
    else on the right. Uses the shared helpers in core/js/cards.js, schedule.js, kinds.js and page-text.js unchanged. */
+
+// The address the page was opened with (before the page rewrites it to follow the filters): Support for comes only from here
+const START_ADDRESS = new URLSearchParams(location.search);
 
 // The map: CARTO's Voyager style first (clearer roads and place names, warmer colours), Positron as the fallback
 TILE_URLS.reverse();
@@ -2733,7 +2737,7 @@ function renderAbout() {
     </section>
     </div></div>
     <p class="small">Service information belongs to the providers listed. Map data © <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap</a> contributors, © <a href="https://carto.com/attributions" target="_blank" rel="noopener">CARTO</a>.</p>
-    <p class="small" id="site-version">Version: next 2026-11-24 19:36</p>
+    <p class="small" id="site-version">Version: next 2026-11-24 19:46</p>
   </article>`;
 }
 /* ---------- Places: the town listings, as a tab of the directory ----------
@@ -3134,7 +3138,7 @@ function needsLabel(tab) {   // the button's text: Anything; one need's name; on
   if (!set.size && sel.value && !sel.value.startsWith("__multi")) set.add(sel.value);   // a link or saved choice set the dropdown
   if (!b) return;
   const order = GROUPS.flatMap(([, v]) => v), names = [...set].sort((x, y) => order.indexOf(x) - order.indexOf(y)).map(cap);
-  if (names.length < 2) { b.textContent = names[0] || "Anything"; return; }
+  if (names.length < 2) { b.innerHTML = names[0] ? paren(names[0]) : "Anything"; return; }
   if (matchMedia("(max-width: 760px)").matches) { b.textContent = `${names.length} needs chosen`; return; }
   for (let k = names.length; k >= 1; k--) {   // the most names that fit
     const rest = names.length - k;
@@ -3142,11 +3146,13 @@ function needsLabel(tab) {   // the button's text: Anything; one need's name; on
     if (b.scrollWidth <= b.clientWidth || k === 1) return;
   }
 }
+// A label's part in brackets, e.g. "Addiction (alcohol, drugs, gambling)", is left off on phones (class "paren")
+function paren(t) { const i = t.indexOf(" ("); return i < 0 ? esc(t) : `${esc(t.slice(0, i))}<span class="paren">${esc(t.slice(i))}</span>`; }
 function needsPanel(tab) {
   const u = needsUI(tab), set = needsOf(tab), list = u.list();
   const groups = GROUPS.map(([g, vals]) => [g, vals.filter(v => list.some(s => s._sf.includes(v)))]).filter(([, v]) => v.length);
   return `<div class="mgroups">${groups.map(([g, vals]) => `<fieldset><legend>${esc(g)}</legend>` +
-    vals.map(v => `<label><input type="checkbox" value="${esc(v)}"${set.has(v) ? " checked" : ""}> ${esc(cap(v))}</label>`).join("") + `</fieldset>`).join("")}</div>` +
+    vals.map(v => `<label><input type="checkbox" value="${esc(v)}"${set.has(v) ? " checked" : ""}> ${paren(cap(v))}</label>`).join("") + `</fieldset>`).join("")}</div>` +
     `<div class="mfoot"><button type="button" class="mclear">Clear</button><button type="button" class="mdone">Done</button></div>`;
 }
 (() => {
@@ -3159,13 +3165,13 @@ function needsPanel(tab) {
     const btn = box.querySelector(".msel"), panel = box.querySelector(".mpanel");
     const close = () => { panel.hidden = true; btn.setAttribute("aria-expanded", "false"); };
     // Fixed to the window, under the box (the header would otherwise cut it off), and no taller than the space below it
-    const place = () => { const r = box.getBoundingClientRect(); panel.style.left = Math.max(16, Math.min(r.left, innerWidth - 16 - Math.min(760, innerWidth - 32))) + "px";
+    const place = () => { const r = box.getBoundingClientRect(); panel.style.left = Math.max(16, Math.min(r.left, innerWidth - 16 - panel.offsetWidth)) + "px";
       panel.style.top = r.bottom + 6 + "px"; panel.style.setProperty("--room", Math.max(200, innerHeight - r.bottom - 90) + "px"); };
     addEventListener("resize", () => { if (!panel.hidden) place(); needsLabel(tab); });
     document.addEventListener("scroll", () => { if (!panel.hidden) place(); }, true);
     btn.addEventListener("click", () => {
       if (!panel.hidden) return close();
-      needsLabel(tab); panel.innerHTML = needsPanel(tab); place(); panel.hidden = false; btn.setAttribute("aria-expanded", "true");
+      needsLabel(tab); panel.innerHTML = needsPanel(tab); panel.hidden = false; place(); btn.setAttribute("aria-expanded", "true");
       panel.querySelector("input")?.focus({ preventScroll: true });
     });
     panel.addEventListener("change", e => {
@@ -3203,6 +3209,9 @@ function pickOpt(sel, v) {   // (replaces links.js's: the same, and for Support 
   const tab = sel === fs ? "near" : sel.id === "t-support" ? "talk" : "";
   const ok = x => [...sel.options].find(o => !o.hidden && o.value.toLowerCase() === x);
   if (tab) {
+    // Needs come only from the address: opening the page without "support=" starts with nothing ticked (not this visit's
+    // earlier choices)
+    if (!START_ADDRESS.has("support")) return false;
     const vals = String(v).split(",").map(x => x.trim().toLowerCase()).filter(ok);
     if (!vals.length) return false;
     const set = needsOf(tab); set.clear(); vals.forEach(x => set.add(ok(x).value)); setNeedsSel(tab);
