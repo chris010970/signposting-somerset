@@ -257,3 +257,27 @@ $("t-when").onchange = renderTalk;
   if (!v && SAVED.open) v = "now";   // saved before When? existed
   if ([...$("t-when").options].some(o => o.value === v)) $("t-when").value = v;
 })();
+
+/* ---------- In person: opening a card shows its pin's label, and the map doesn't jump ----------
+   The list's own click handler (in-person.js) flies the map to the card's pin. This listener runs just before it and does
+   the flying itself instead: only when a card opens (not when it closes); to the service's own spot (zoomed out, its pin
+   can be an area's circle, so the map then moved again on the next click: the jump seen with town-centre pins); not at all
+   when the map is already there; and the pin's label opens once the map has stopped (zooming redraws the pins, which
+   closed it). */
+$("list").addEventListener("click", e => {
+  if (e.target.closest("a, .copy, #show-month")) return;
+  const c = e.target.closest(".card"); if (!c || !map) return;
+  if (!map._fly) {   // once: the list's own fly is skipped while SKIP_FLY is set
+    map._fly = map.flyTo.bind(map);
+    map.flyTo = (ll, z, o) => window.SKIP_FLY ? map : map._fly(ll, z, o);
+  }
+  window.SKIP_FLY = true; setTimeout(() => { window.SKIP_FLY = false; }, 0);
+  const id = c.dataset.id, s = recordById(id);
+  if (c.classList.contains("open") || !mapVisible() || !s || isNaN(s.lat)) return;   // closing, or nowhere to go
+  const z = Math.max(map.getZoom(), 15), here = map.latLngToContainerPoint(map.getCenter()), there = map.latLngToContainerPoint([s.lat, s.lon]);
+  const moving = Math.abs(z - map.getZoom()) > .01 || here.distanceTo(there) > 40;
+  window.PIN_TIP = id;
+  const show = () => { if (window.PIN_TIP === id) { markers[id]?.openTooltip(); window.PIN_TIP = null; } };
+  if (moving) { map.once("moveend", () => setTimeout(show, 50)); map._fly([s.lat, s.lon], z, { duration: .5 }); setTimeout(show, 900); }
+  else setTimeout(show, 0);
+}, true);
