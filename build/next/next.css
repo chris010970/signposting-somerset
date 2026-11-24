@@ -7,14 +7,14 @@
 .masthead .hero { padding-block: 6px 0; max-width: none; }
 .masthead .brand { display: flex; align-items: baseline; flex-wrap: wrap; gap: 2px 14px; }
 .masthead .brand .sub { font-family: var(--sans); font-size: 13.5px; font-weight: 500; color: #6B645F; }
-/* The tabs: pills, the chosen one filled; About after a thin divider. No line under the row */
+/* The tabs: pills, the chosen one filled. No line under the row */
 .masthead .sitetabs { border-bottom: 0; margin: 10px 0 12px; gap: 6px; align-items: center; }
 .masthead .sitetabs .tgrp { align-items: center; gap: 6px; }
 .masthead .sitetabs button { padding: 8px 14px; border: 0; border-radius: 999px; margin: 0; color: var(--b700); font-weight: 600; }
 .masthead .sitetabs button:hover { background: var(--b50); }
 .masthead .sitetabs button[aria-current="page"] { background: var(--b700); color: #fff; }
-.masthead .sitetabs #tab-about { margin-left: 4px; padding-left: 16px; border-radius: 0 999px 999px 0; }
-.masthead .sitetabs #tab-about::before { top: 8px; bottom: 8px; }
+.masthead .sitetabs #tab-about { margin-left: 0; padding-left: 14px; border-radius: 999px; }   /* About sits with the other tabs, no divider */
+.masthead .sitetabs #tab-about::before { display: none; }
 /* The watercolour fades in from the left, so the name and tabs keep the attention */
 .masthead .illus { -webkit-mask-image: linear-gradient(to right, transparent 0, transparent 40%, #000 62%); mask-image: linear-gradient(to right, transparent 0, transparent 40%, #000 62%); }
 @media (min-width: 1432px) {
@@ -28,5 +28,5 @@
 }
 @media (max-width: 420px) {
   .masthead .sitetabs button { padding: 7px 10px; }
-  .masthead .sitetabs #tab-about { padding-left: 12px; }
+  .masthead .sitetabs #tab-about { padding-left: 10px; }
 }
