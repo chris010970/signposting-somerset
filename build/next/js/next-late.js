@@ -281,3 +281,14 @@ $("list").addEventListener("click", e => {
   if (moving) { map.once("moveend", () => setTimeout(show, 50)); map._fly([s.lat, s.lon], z, { duration: .5 }); setTimeout(show, 900); }
   else setTimeout(show, 0);
 }, true);
+
+/* One label on the map at a time: a pin's label opening closes any other (hover, or a card's), and a list of services
+   opening (a numbered pin clicked) closes the labels. Set up once the map exists (it's made when first shown) */
+function oneLabel() {
+  if (!map || map._oneLabel) return;
+  map._oneLabel = true;
+  const closeAll = keep => layer.eachLayer(l => { if (l !== keep && l.isTooltipOpen && l.isTooltipOpen()) l.closeTooltip(); });
+  map.on("tooltipopen", e => closeAll(e.layer || e.tooltip?._source));
+  map.on("popupopen", () => closeAll(null));
+}
+new MutationObserver(oneLabel).observe($("summary"), { childList: true, subtree: true });

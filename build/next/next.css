@@ -233,3 +233,9 @@ header.top { background: var(--cream); border-bottom: 0; }
 .mdone { height: 34px; padding: 0 18px; border-radius: 9px; border: 0; background: var(--b700); color: #fff; font: 600 13px var(--sans); cursor: pointer; }
 @media (max-width: 760px) { .mgroups { grid-template-columns: 1fr; } .mpanel { width: calc(100vw - 32px); } .mgroups label { white-space: normal; } }
 @media (max-width: 760px) { .mpanel .paren, .msel .paren { display: none; } }   /* phones: "Addiction", "Abuse" */
+
+/* The lists hold their own positioned bits (the screen-reader-only kind name, tooltips): without a positioned card and list
+   these escaped the scrolling list, made the whole page scrollable, and opening a card or clicking a pin scrolled the page
+   away */
+#list, #talk-list, #courses { position: relative; }
+.card.tk, .tcard.tk { position: relative; }

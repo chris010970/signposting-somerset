@@ -1333,6 +1333,12 @@ header.top { background: var(--cream); border-bottom: 0; }
 @media (max-width: 760px) { .mgroups { grid-template-columns: 1fr; } .mpanel { width: calc(100vw - 32px); } .mgroups label { white-space: normal; } }
 @media (max-width: 760px) { .mpanel .paren, .msel .paren { display: none; } }   /* phones: "Addiction", "Abuse" */
 
+/* The lists hold their own positioned bits (the screen-reader-only kind name, tooltips): without a positioned card and list
+   these escaped the scrolling list, made the whole page scrollable, and opening a card or clicking a pin scrolled the page
+   away */
+#list, #talk-list, #courses { position: relative; }
+.card.tk, .tcard.tk { position: relative; }
+
 </style>
 </head>
 <body>
@@ -2737,7 +2743,7 @@ function renderAbout() {
     </section>
     </div></div>
     <p class="small">Service information belongs to the providers listed. Map data © <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap</a> contributors, © <a href="https://carto.com/attributions" target="_blank" rel="noopener">CARTO</a>.</p>
-    <p class="small" id="site-version">Version: next 2026-11-24 19:57</p>
+    <p class="small" id="site-version">Version: next 2026-11-24 20:27</p>
   </article>`;
 }
 /* ---------- Places: the town listings, as a tab of the directory ----------
@@ -3272,6 +3278,17 @@ $("list").addEventListener("click", e => {
   if (moving) { map.once("moveend", () => setTimeout(show, 50)); map._fly([s.lat, s.lon], z, { duration: .5 }); setTimeout(show, 900); }
   else setTimeout(show, 0);
 }, true);
+
+/* One label on the map at a time: a pin's label opening closes any other (hover, or a card's), and a list of services
+   opening (a numbered pin clicked) closes the labels. Set up once the map exists (it's made when first shown) */
+function oneLabel() {
+  if (!map || map._oneLabel) return;
+  map._oneLabel = true;
+  const closeAll = keep => layer.eachLayer(l => { if (l !== keep && l.isTooltipOpen && l.isTooltipOpen()) l.closeTooltip(); });
+  map.on("tooltipopen", e => closeAll(e.layer || e.tooltip?._source));
+  map.on("popupopen", () => closeAll(null));
+}
+new MutationObserver(oneLabel).observe($("summary"), { childList: true, subtree: true });
 
 </script>
 
