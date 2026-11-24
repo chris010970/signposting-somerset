@@ -10,7 +10,6 @@ const T_ICON = {
   web: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c3 3 3 15 0 18M12 3c-3 3-3 15 0 18"/></svg>',
   mail: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 7l9 6 9-6"/></svg>',
   pin: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 21s-7-6.2-7-11.5a7 7 0 0 1 14 0C19 14.8 12 21 12 21z"/><circle cx="12" cy="9.5" r="2.5"/></svg>',
-  ok: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9.5"/><path d="M7.5 12.5l3 3 6-6.5"/></svg>',
 };
 
 // The stub: what goes in the left-hand column for this service's next session (nx: nextText's answer)
@@ -22,22 +21,42 @@ function ticketStub(s, nx) {
     const d = nx.at, dd = Math.round((dayStart(d) - dayStart(new Date())) / 864e5);
     const tag = dd === 0 ? "Today" : dd === 1 ? "Tomorrow" : "";
     const wd = tag ? "" : `<span class="wd">${d.toLocaleDateString("en-GB", { weekday: "short" })}</span>`;
-    const notes = [/bank holiday/.test(nx.txt) ? "Bank holiday: check" : "", s._term ? "Term time" : ""].filter(Boolean);
     return (tag ? `<span class="live">${tag}</span>` : "") + wd +
       `<b class="big">${d.getDate()}</b><span class="sm">${d.toLocaleDateString("en-GB", { month: "short" })}</span>` +
-      `<span class="rule"></span><span class="tm">${tm || "Time: check"}</span>` + notes.map(n => `<span class="note">${n}</span>`).join("");
+      `<span class="rule"></span><span class="tm">${tm || askFor(s)}</span>`;
   }
+  // No date to show: an icon and a short label, in the same places as a date's number and time
+  const SI = p => `<svg class="sic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${p}</svg>`;
+  const CAL = '<rect x="3.5" y="5" width="17" height="15.5" rx="2.5"/><path d="M3.5 10h17M8 3v4M16 3v4"/>';
   if (s._kind === "check") {
     const day = split(s.days)[0] || "";
-    return (day ? `<b class="big w">${esc(day.replace(/-/g, "–"))}</b>` : "") + `<span class="sm">${esc(s.frequency || "dates vary")}</span>` +
-      (tm ? `<span class="rule"></span><span class="tm">${tm}</span>` : "") + `<span class="note">Check dates</span>`;
+    if (day) return `<b class="big w">${esc(day.replace(/-/g, "–"))}</b>` + (freqShort(s) ? `<span class="sm">${freqShort(s)}</span>` : "") +
+      `<span class="rule"></span><span class="tm">${tm || askFor(s)}</span>`;
+    return SI(CAL + '<path d="M9.6 13.6a2.5 2.5 0 1 1 3.2 2.4c-.5.2-.8.6-.8 1.1M12 19.6v.1"/>') + `<span class="rule"></span><span class="tm">Dates vary</span>`;
   }
-  // No date to show: say how it works instead (see website, by appointment, no upcoming dates)
-  const words = s._kind === "website" ? "Times vary" : s._kind === "appointment" || /^By appointment/.test(nx.txt) ? "By appointment"
-    : nx.txt === "No upcoming dates" ? "No upcoming dates" : "Check times";
+  const appt = s._kind === "appointment" || /^By appointment/.test(nx.txt);
   const days = /^By appointment · /.test(nx.txt) ? nx.txt.split(" · ")[1] : "";
-  return `<span class="words">${words}</span>` + (days ? `<span class="sm">${esc(days)}</span>` : "") +
-    (s._kind === "website" ? `<span class="note">See website</span>` : "");
+  if (appt) return SI(CAL + '<circle cx="15.5" cy="15.5" r="3.2" fill="var(--stubbg)"/><path d="M15.5 14v1.6l1 .8"/>') +
+    `<span class="rule"></span><span class="tm">Appt only</span>` + (days ? `<span class="sm">${esc(days)}</span>` : "");
+  if (s._kind === "website") return SI('<circle cx="12" cy="12" r="8.5"/><path d="M3.5 12h17M12 3.5c2.6 2.6 2.6 14.4 0 17M12 3.5c-2.6 2.6-2.6 14.4 0 17"/>') +
+    `<span class="rule"></span><span class="tm">Times vary</span>`;
+  if (nx.txt === "No upcoming dates") return SI(CAL + '<path d="M9.5 13.5l5 5M14.5 13.5l-5 5"/>') + `<span class="rule"></span><span class="tm">No dates yet</span>`;
+  return SI(CAL) + `<span class="rule"></span><span class="tm">Check times</span>`;
+}
+// No time given: how to find out (the same ways as the opened card's buttons), else say so
+const askFor = s => s.phone ? "Please call" : s.email ? "Please email" : webUrl(s.url) ? "See website" : "Time not given";
+// The frequency as one short word for the stub (build/next/freq-short.json); the card has the full wording
+const FREQ_SHORT = (/*@next:freq-short.json*/).short;
+const freqShort = s => { const f = (s.frequency || "").trim(); const m = f && FREQ_SHORT.find(([re]) => new RegExp(re, "i").test(f)); return m ? m[1] : ""; };
+// The stub shows timing only; anything to check about it goes in the card, under the description
+// A "check dates" service: its full frequency when the stub only had room for a short word (or none), else a plain reminder
+function checkNote(s) {
+  const f = (s.frequency || "").trim();
+  return f && f.toLowerCase() !== freqShort(s) ? f[0].toUpperCase() + f.slice(1) : "Check dates with the provider";
+}
+function timeNotes(s, nx) {
+  return [nx.at && /bank holiday/.test(nx.txt) ? "Bank holiday: check it's on" : "", nx.at && s._term ? "Term time only" : "",
+    s._kind === "check" ? checkNote(s) : "", s._kind === "website" ? "Times on the website" : ""].filter(Boolean);
 }
 
 // The call button: the first number in the phone field, with the number shown (on a computer you read it; on a phone you tap it)
@@ -50,6 +69,11 @@ function callButton(s) {
 const iconLink = (href, icon, tip, label, blank = true) =>
   `<a class="tbtn ic" href="${esc(href)}"${blank ? ' target="_blank" rel="noopener"' : ""} aria-label="${esc(label)}" data-tip="${esc(tip)}">${icon}</a>`;
 
+// Open and close: an arrow button at the top right, beside Copy (the whole card opens it too). It has the class "cbtn", so
+// toggleCard keeps its aria-expanded up to date and the map can focus it, as it did the name button
+const foldButton = s => `<button type="button" class="cbtn tfold" aria-expanded="${isOpen(s)}" aria-label="Details: ${esc(s.name)}">${CHEV}</button>`;
+// Cost shows only when there is one: a plain "Free" is left off the card (still in Copy details)
+const isFree = c => /^\s*free\s*\.?\s*$/i.test(c || "");
 function serviceCard(r, h = "h2", withId = true) {
   const s = r.s, [badgeCls, badge] = accessBadge(s), url = webUrl(s.url), k = KINDS[kindOf(s)];
   const col = k ? k[1] : KIND_DATA.other, kindName = k ? k[0] : "";
@@ -58,9 +82,9 @@ function serviceCard(r, h = "h2", withId = true) {
   const [, nt] = noticeFrom(s), full = /^currently full\b/i.test(nt || "");
   const why = full ? nt.replace(/^currently full\s*[:.,–-]?\s*/i, "") : nt;
   const notice = nt ? `<div class="notice">${NOTICE_ICON}<span>${esc(why ? why[0].toUpperCase() + why.slice(1) : nt)}</span></div>` : "";
+  const tn = timeNotes(s, r.nx), tnotes = tn.length ? `<div class="tnotes">${tn.map(n => `<span>${n}</span>`).join("")}</div>` : "";
   const pill = full ? ` <span class="full">Currently full</span>` : "";
-  // The opened card: kind and provider, when the details were checked, who and how, where, and the ways to get in touch
-  const when = checkedOn(s) ? `<div class="chkd">${T_ICON.ok}Details checked ${checkedOn(s).toLocaleDateString("en-GB", { day: "numeric", month: "short" })}</div>` : "";
+  // The opened card: kind and provider (when the details were checked is the tick's hover text), who and how, where, and the ways to get in touch
   const place = [s.address, s.town, s.postcode].filter(Boolean).join(", ");
   const email = s.email ? s.email.split(";")[0].trim() : "";
   const acts = [callButton(s),
@@ -72,12 +96,12 @@ function serviceCard(r, h = "h2", withId = true) {
   return `<article class="card tk fold${foldClass(s)}"${keyAttr(s)}${withId ? ` id="c${s.id}"` : ""} data-id="${s.id}" style="--k:${col}">
       <div class="stub">${ticketStub(s, r.nx)}</div><div class="perf" aria-hidden="true"></div>
       <div class="tbody">
-        <div class="row1"><span class="badge ${badgeCls}">${badge}</span>${dist}${checkedTick(s)}<span class="sp"></span>${copyBtn(s)}</div>
-        <${h} class="cname">${nameButton(s)}${pill}</${h}>
-        ${kindName ? `<span class="vh">${esc(kindName)}. </span>` : ""}<p class="desc">${esc(s.description)}</p>${notice}
+        <div class="row1"><span class="badge ${badgeCls}">${badge}</span>${dist}${checkedTick(s)}<span class="sp"></span>${copyBtn(s)}${foldButton(s)}</div>
+        <${h} class="cname">${esc(s.name)}${pill}</${h}>
+        ${kindName ? `<span class="vh">${esc(kindName)}. </span>` : ""}<p class="desc">${esc(s.description)}</p>${tnotes}${notice}
         <div class="more">
-          <div class="prov">${esc([kindName, s.provider].filter(Boolean).join(" · "))}</div>${when}
-          ${factsBlock(s)}
+          <div class="prov">${esc([kindName, s.provider].filter(Boolean).join(" · "))}</div>
+          ${factsBlock(isFree(s.cost) ? { ...s, cost: "" } : s)}
           ${place ? `<div class="where">${T_ICON.pin}<span>${esc(place)}${s.approx ? ` <span class="approx">(approx. location)</span>` : ""}</span></div>` : ""}
           ${morePhones}${acts ? `<div class="acts">${acts}</div>` : ""}
         </div>

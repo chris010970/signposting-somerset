@@ -36,16 +36,18 @@
 header.top { background: var(--cream); border-bottom: 0; }
 /* The filter boxes keep their green tint against the cream (a touch stronger than on white, which made them look grey) */
 .q, .toggle { background: #E7F0EA; }
-@media (min-width: 900px) { .qs .sort { background: #E7F0EA; } }
 .q.on { background: #FFFFFF; }
 #mapwrap { margin: 14px 0 16px; border: 1px solid var(--edge); border-radius: 16px; overflow: hidden; }
 #map { background: #F3EFE6; }
 
 /* ---------- The ticket card ---------- */
+/* Every stub the same width: wide enough for the widest label ("Tomorrow", "No upcoming dates"); longer words wrap */
+.card.tk { --stubw: 92px; }
+@media (max-width: 760px) { .card.tk { --stubw: 84px; } }
 .card.tk { display: flex; padding: 0; background: var(--card); border: 1px solid var(--edge); box-shadow: 0 1px 2px rgba(0,0,0,.05); }
 .card.tk:hover, .card.tk.hot { border-color: #B8A98F; box-shadow: 0 4px 10px rgba(0,0,0,.07); }
 .card.tk.flash { border-color: var(--b500); }
-.tk .stub { flex: 0 0 80px; box-sizing: border-box; border-radius: 15px 0 0 15px; padding: 12px 8px 12px 12px; display: flex; flex-direction: column; align-items: flex-start;
+.tk .stub { flex: 0 0 var(--stubw); width: var(--stubw); min-width: 0; box-sizing: border-box; border-radius: 15px 0 0 15px; padding: 12px 8px 12px 12px; display: flex; flex-direction: column; align-items: flex-start;
   background: color-mix(in srgb, var(--k) 28%, #fff); color: color-mix(in srgb, var(--k) 62%, #000); }
 .tk .stub .live { font-size: 10.5px; font-weight: 700; color: #fff; background: #047857; border-radius: 999px; padding: 2px 8px; margin-bottom: 6px; }
 .tk .stub .wd { font-size: 13px; font-weight: 700; color: var(--b900); margin-bottom: 1px; }
@@ -53,9 +55,11 @@ header.top { background: var(--cream); border-bottom: 0; }
 .tk .stub .big.w { font-size: 22px; line-height: 1.1; }
 .tk .stub .sm { font-size: 12px; font-weight: 600; margin-top: 3px; }
 .tk .stub .rule { width: 24px; height: 1.5px; background: currentColor; opacity: .35; margin: 8px 0 6px; }
+.tk .stub { --stubbg: color-mix(in srgb, var(--k) 28%, #fff); }
+.tk .stub .sic { width: 30px; height: 30px; color: var(--b900); margin: 2px 0 0; }
+@media (max-width: 760px) { .tk .stub .sic { width: 26px; height: 26px; } }
 .tk .stub .tm { font-size: 13.5px; font-weight: 700; color: var(--b900); font-variant-numeric: tabular-nums; }
-.tk .stub .words { font-size: 14px; font-weight: 700; color: var(--b900); line-height: 1.2; }
-.tk .stub .note { margin-top: 6px; font-size: 11px; font-weight: 600; color: var(--b900); background: rgba(255,255,255,.65); border-radius: 999px; padding: 2px 7px; }
+.tk .stub .words { font-size: 13px; hyphens: auto; -webkit-hyphens: auto; overflow-wrap: anywhere; font-weight: 700; color: var(--b900); line-height: 1.2; }
 .tk .perf { position: relative; flex: 0 0 0; border-left: 1.5px dashed var(--edge); }
 .tk .perf::before, .tk .perf::after { content: ""; position: absolute; left: -9px; width: 16px; height: 16px; border-radius: 50%; background: var(--cream); border: 1px solid var(--edge); }
 .tk .perf::before { top: -9px; clip-path: inset(50% 0 0 0); }
@@ -69,14 +73,19 @@ header.top { background: var(--cream); border-bottom: 0; }
 .tk .checked { width: 17px; height: 17px; background: none; border: 1.5px solid #3D8B5F; color: #3D8B5F; }
 .tk .checked svg { width: 10px; height: 10px; }
 .tk .cname { font-size: 17.5px; }
+.tk .tfold { width: 28px; height: 28px; display: inline-grid; place-items: center; flex: none; border: 1px solid var(--line); border-radius: 8px; background: #fff; color: var(--b700); cursor: pointer; padding: 0; }
+.tk .tfold:hover, .tk .tfold:focus-visible { border-color: var(--b200); background: var(--b50); }
+.tk .tfold .chev { width: 16px; height: 16px; margin: 0; vertical-align: 0; color: var(--b700); }
+.tk.open .tfold .chev { transform: rotate(180deg); }
+.tk .row1 .copy + .tfold { margin-left: -4px; }
 .tk .cname .full { display: inline-block; vertical-align: 2px; margin-left: 6px; font: 700 12px/16px var(--sans); color: #9A3412; background: #FCEBE4; border: 1px solid #F5C4AE; border-radius: 999px; padding: 2px 9px; white-space: nowrap; }
 .tk .desc { color: #44403C; font-size: 13.5px; line-height: 1.45; }
+.tk .tnotes { display: flex; flex-wrap: wrap; gap: 5px; margin-top: 7px; }
+.tk .tnotes span { font-size: 11.5px; font-weight: 600; color: #8A4B08; background: #FBEFD9; border-radius: 999px; padding: 2px 9px; }
 .tk .notice { color: #9A3412; background: #FCEBE4; border: 0; border-left: 3px solid #C2410C; border-radius: 8px; padding: 6px 9px; margin: 8px 0 0; }
 .tk .more { margin-top: 10px; padding-top: 10px; border-top: 1px solid #D8CDBD; }
 .fold:not(.open) .more { display: none; }
 .tk .prov { font-size: 12.5px; color: var(--muted); margin-bottom: 4px; }
-.tk .chkd { display: flex; align-items: center; gap: 6px; font-size: 12px; color: #3D6B53; margin-bottom: 8px; }
-.tk .chkd svg { width: 15px; height: 15px; color: #3D8B5F; }
 .tk .facts { border-top: 0; padding-top: 0; margin-bottom: 8px; }
 .tk .where { display: flex; align-items: flex-start; gap: 6px; font-size: 12.5px; color: #44403C; margin-bottom: 10px; }
 .tk .where svg { width: 14px; height: 14px; flex: none; margin-top: 2px; }
@@ -95,9 +104,71 @@ header.top { background: var(--cream); border-bottom: 0; }
 .tbtn.ic:focus-visible::after { opacity: 1; }
 .fold.tk:not(.open) .desc { margin-bottom: 0; -webkit-line-clamp: 2; }
 @media (max-width: 760px) {
-  .tk .stub { flex-basis: 64px; padding: 10px 7px; }
+  .tk .stub { padding: 10px 7px; }
   .tk .stub .big { font-size: 26px; } .tk .stub .big.w { font-size: 19px; } .tk .stub .wd, .tk .stub .tm { font-size: 12px; }
   .tk .tbody { padding: 10px 10px 12px 12px; }
   .tk .cname .full { display: table; margin: 4px 0 0; }
 }
 @media (max-width: 360px) { .tbtn.pri .num { display: none; } .tk .row1 .copy { display: none; } }
+
+/* ---------- Map and list: half each. The three filter boxes the same width; Sort sits on the kinds row, as on phones ---------- */
+@media (min-width: 900px) {
+  #main { grid-template-columns: minmax(0, 50%) minmax(0, 1fr); }
+  .qs { column-gap: 14px; grid-template-columns: repeat(3, minmax(0, 1fr)); }   /* the three boxes the same width */
+}
+@media (min-width: 900px) and (max-width: 1199px) {   /* smaller computers: the distance under the town, so the town fits */
+  .where { grid-template-columns: minmax(0, 1fr) auto; } .where select#within { grid-column: 1 / -1; }
+}
+
+/* ---------- The kinds row: under the filter boxes (it filters the list and the map), tick boxes in the kinds' colours ---------- */
+.maplegend { display: none !important; }
+.krow { display: flex; flex-direction: column-reverse; gap: 10px; margin-top: 10px; }   /* phones: Sort, then the kinds */
+.krow .sort { font-size: 12px; }
+@media (min-width: 900px) {   /* computers: the kinds on the left, Sort at the right-hand end */
+  .krow { flex-direction: row; align-items: center; justify-content: space-between; flex-wrap: wrap; }
+}
+.kindrow { display: flex; flex-wrap: wrap; gap: 6px; }
+.kindrow:empty { display: none; }
+.kindrow button { display: inline-flex; align-items: center; gap: 7px; height: 32px; box-sizing: border-box; padding: 0 11px 0 8px; border-radius: 999px;
+  border: 1px solid color-mix(in srgb, var(--c) 45%, #fff); background: color-mix(in srgb, var(--c) 12%, #fff); color: var(--ink);
+  font: 600 13px var(--sans); cursor: pointer; white-space: nowrap; }
+.kindrow button:hover { border-color: var(--c); }
+.kindrow button i { width: 16px; height: 16px; border-radius: 4px; flex: none; box-sizing: border-box; display: inline-flex; align-items: center; justify-content: center;
+  background: var(--c); border: 1.5px solid var(--c); }
+.kindrow button i svg { width: 10px; height: 10px; }
+.kindrow .st { display: none; }
+.kindrow button[aria-checked="false"] { background: #fff; border-color: var(--line); color: #78716C; font-weight: 500; }
+.kindrow button[aria-checked="false"] i { background: #fff; }
+.kindrow button.zero { opacity: .6; }
+@media (max-width: 760px) {   /* phones: the short names, so the row fits on one line (two rows of two on the narrowest) */
+  .kindrow { gap: 5px; }
+  .kindrow button { flex: 1 1 0; justify-content: center; height: 30px; padding: 0 7px 0 6px; gap: 5px; font-size: 12px; }
+  .kindrow button i { width: 14px; height: 14px; }
+  .kindrow .lt { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+  .kindrow .st { display: inline; }
+}
+@media (max-width: 379px) { .kindrow button { flex-basis: calc(50% - 3px); } }
+
+/* ---------- The map key: tick boxes in the kinds' colours; folds to a small pill ---------- */
+.maplegend.tickkey { position: relative; min-width: 0; padding: 14px 12px 8px !important; border-radius: 12px; }
+.tickkey [role="group"] { display: grid; gap: 1px; }
+.tickkey button[role="checkbox"] { display: flex; align-items: center; gap: 9px; border: 0; padding: 4px 4px; border-radius: 6px; font-size: 13px; color: var(--ink); background: none; text-decoration: none; }
+.tickkey button[role="checkbox"]:hover { background: var(--b50); }
+.tickkey button[role="checkbox"] i { width: 16px; height: 16px; border-radius: 4px; flex: none; box-sizing: border-box; display: inline-flex; align-items: center; justify-content: center;
+  background: var(--c); border: 1.5px solid var(--c); box-shadow: none; margin: 0; }
+.tickkey button[role="checkbox"] i svg { width: 10px; height: 10px; }
+.tickkey button[aria-checked="false"] { color: #78716C; }
+.tickkey button[aria-checked="false"] .lt { text-decoration: none; }
+.tickkey button[aria-checked="false"] i { background: #fff; }
+.tickkey button em { margin-left: auto; padding-left: 12px; font-style: normal; font-size: 11px; color: #8A837D; font-variant-numeric: tabular-nums; }
+.tickkey .lgfold { position: absolute; top: -11px; right: 10px; width: 24px; height: 24px; border-radius: 6px; border: 1px solid var(--line); background: #fff; color: var(--b700);
+  display: inline-flex; align-items: center; justify-content: center; padding: 0; box-shadow: 0 1px 4px rgba(0,0,0,.12); cursor: pointer; }
+.tickkey .lgfold svg { width: 14px; height: 14px; }
+.maplegend.tickkey.closed { padding: 6px 12px !important; border-radius: 999px; }
+.tickkey .lghead { font-size: 12.5px !important; font-weight: 700; letter-spacing: 0 !important; text-transform: none !important; color: var(--b900); gap: 7px; }
+.tickkey .lghead .hid { color: #78716C; font-weight: 500; }
+.tickkey .lghead svg { transform: none !important; }
+
+/* Narrow phones: a long word in a card wraps rather than widening the page */
+@media (max-width: 899px) { #main { grid-template-columns: minmax(0, 1fr); } }
+.tk .tbody { overflow-wrap: anywhere; }

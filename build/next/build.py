@@ -23,7 +23,12 @@ from page import LIVE, NOINDEX, STAMP, document, put
 from site_config import BASE, SETTINGS, rebase
 
 def own_files(text):
-    """/*@next:name*/ and <!--@next:name--> markers: files from build/next/."""
+    """/*@next:name*/ and <!--@next:name--> markers: files from build/next/ (they can have markers of their own)."""
+    while re.search(r"/\*@next:|<!--@next:", text):
+        text = own_files_once(text)
+    return text
+
+def own_files_once(text):
     return re.sub(r"(?:/\*@next:([\w./-]+)\*/|<!--@next:([\w./-]+)-->)",
                   lambda m: (HERE / (m.group(1) or m.group(2))).read_text(encoding="utf-8"), text)
 

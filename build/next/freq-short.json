@@ -1,0 +1,2 @@
+{"_about": "The short word a ticket stub shows for a service's frequency (first match wins, case ignored). The full wording goes in the card. No match: the stub leaves it out.",
+ "short": [["fortnight", "fortnightly"], ["^(weekly|every)", "weekly"], ["month", "monthly"]]}
