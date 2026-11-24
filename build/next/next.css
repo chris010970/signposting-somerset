@@ -172,3 +172,10 @@ header.top { background: var(--cream); border-bottom: 0; }
 /* Narrow phones: a long word in a card wraps rather than widening the page */
 @media (max-width: 899px) { #main { grid-template-columns: minmax(0, 1fr); } }
 .tk .tbody { overflow-wrap: anywhere; }
+
+/* Computers: the list scrolls inside a box that starts level with the top of the map, so cards scrolling up disappear at
+   the same line as the map's top edge (not 14px above it) */
+@media (min-width: 900px) {   /* and 12px under the kinds row (the header's 10px padding + 2px), not 24px */
+  #list { padding-top: 1px; margin-top: 1px; }
+  #mapwrap { margin-top: 2px; }
+}

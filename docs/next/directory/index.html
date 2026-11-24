@@ -1272,6 +1272,13 @@ header.top { background: var(--cream); border-bottom: 0; }
 @media (max-width: 899px) { #main { grid-template-columns: minmax(0, 1fr); } }
 .tk .tbody { overflow-wrap: anywhere; }
 
+/* Computers: the list scrolls inside a box that starts level with the top of the map, so cards scrolling up disappear at
+   the same line as the map's top edge (not 14px above it) */
+@media (min-width: 900px) {   /* and 12px under the kinds row (the header's 10px padding + 2px), not 24px */
+  #list { padding-top: 1px; margin-top: 1px; }
+  #mapwrap { margin-top: 2px; }
+}
+
 </style>
 </head>
 <body>
@@ -2666,7 +2673,7 @@ function renderAbout() {
     </section>
     </div></div>
     <p class="small">Service information belongs to the providers listed. Map data © <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap</a> contributors, © <a href="https://carto.com/attributions" target="_blank" rel="noopener">CARTO</a>.</p>
-    <p class="small" id="site-version">Version: next 2026-11-24 18:10</p>
+    <p class="small" id="site-version">Version: next 2026-11-24 18:18</p>
   </article>`;
 }
 /* ---------- Places: the town listings, as a tab of the directory ----------
