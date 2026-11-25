@@ -518,4 +518,6 @@ function placesQuery(q) {   // (replaces places-tab.js's: the same, with the tic
 // Courses' kinds row: one kind, so unticking it would empty the list: it stays ticked (as unticking every kind does elsewhere)
 $("kindrow-course").addEventListener("click", e => { if (e.target.closest("button[data-k]")) renderCourses(); });
 // Places' map-pin links carry a need into In person: let pickOpt take it (it otherwise takes needs only from the address)
-$("places-main").addEventListener("click", e => { if (e.target.closest("a.mapchip")) { window.LINK_NEEDS = true; setTimeout(() => { window.LINK_NEEDS = false; }, 0); } }, true);
+$("places-main").addEventListener("click", e => { if (e.target.closest("a.mapchip")) {
+  kindsOff.clear(); placesKindsOff().forEach(k => kindsOff.add(k));   /* In person shows the same kinds as the section (this click only) */
+  window.LINK_NEEDS = true; setTimeout(() => { window.LINK_NEEDS = false; }, 0); } }, true);
