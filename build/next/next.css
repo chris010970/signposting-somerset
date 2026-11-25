@@ -256,3 +256,6 @@ header.top { background: var(--cream); border-bottom: 0; }
 .tk .cpill { display: inline-block; vertical-align: 2px; margin-left: 6px; font: 700 12px/16px var(--sans); color: #065F46; background: #D1FAE5; border-radius: 999px; padding: 2px 9px; white-space: nowrap; }
 .tk .cpill.closed { color: #57534E; background: #E7E5E4; }
 @media (max-width: 760px) { .tk .cpill { display: table; margin: 4px 0 0; } }
+
+/* The Places pages' cards (three across): the badge stays on one line */
+.tk .row1 .badge { white-space: nowrap; }

@@ -1356,6 +1356,9 @@ header.top { background: var(--cream); border-bottom: 0; }
 .tk .cpill.closed { color: #57534E; background: #E7E5E4; }
 @media (max-width: 760px) { .tk .cpill { display: table; margin: 4px 0 0; } }
 
+/* The Places pages' cards (three across): the badge stays on one line */
+.tk .row1 .badge { white-space: nowrap; }
+
 </style>
 </head>
 <body>
@@ -2040,39 +2043,57 @@ const iconLink = (href, icon, tip, label, blank = true) =>
 const foldButton = s => `<button type="button" class="cbtn tfold" aria-expanded="${isOpen(s)}" aria-label="Details: ${esc(s.name)}">${CHEV}</button>`;
 // Cost shows only when there is one: a plain "Free" is left off the card (still in Copy details)
 const isFree = c => /^\s*free\s*\.?\s*$/i.test(c || "");
+/* ---------- The ticket card: one shape for every tab ----------
+   ticketCard draws the parts every card shares (the stub in the kind's colour, the top row with Copy and the arrow, the name,
+   the description, and the opened part with who and how and the ways to get in touch). Each tab's card is ticketCard with
+   its own parts: serviceCard (In person, and the Places pages), talkCard (Phone and online) and courseCard (Courses).
+   p: { cls: "card" or "tcard"; attrs: more attributes; stub; tag: the top row's left (badge, distance, "PHONE · UK-WIDE");
+        tools: buttons before Copy; copy: extra text for Copy; h: the name's heading level; pill: after the name;
+        sub: under the name; sr: words for screen readers before the description; afterDesc; prov: the opened part's first
+        line (default: kind · provider); extra: after who and how; acts: the buttons } */
+function ticketCard(s, p) {
+  const k = KINDS[kindOf(s)], col = k ? k[1] : KIND_DATA.other, h = p.h || "h3";
+  const prov = p.prov ?? [k ? k[0] : "", s.provider].filter(Boolean).join(" · ");
+  return `<article class="${p.cls || "card"} tk fold${foldClass(s)}"${keyAttr(s)}${p.attrs || ""} style="--k:${col}">
+      <div class="stub">${p.stub}</div><div class="perf" aria-hidden="true"></div>
+      <div class="tbody">
+        <div class="row1">${p.tag || ""}${checkedTick(s)}<span class="sp"></span>${p.tools || ""}${copyBtn(s, p.copy)}${foldButton(s)}</div>
+        <${h} class="cname">${esc(displayName(s))}${p.pill || ""}</${h}>
+        ${p.sub || ""}${p.sr ? `<span class="vh">${esc(p.sr)}. </span>` : ""}<p class="desc">${esc(s.description)}</p>${p.afterDesc || ""}
+        <div class="more">
+          <div class="prov">${esc(prov)}</div>
+          ${factsBlock(isFree(s.cost) ? { ...s, cost: "" } : s)}
+          ${p.extra || ""}${p.acts ? `<div class="acts">${p.acts}</div>` : ""}
+        </div>
+      </div>
+    </article>`;
+}
+// The buttons in an opened card: Call (with the number), then Website, Directions (In person) and Email as icons
+function contactButtons(s, { directions = false } = {}) {
+  const url = webUrl(s.url), email = s.email ? s.email.split(";")[0].trim() : "";
+  return [callButton(s),
+    url ? iconLink(url, T_ICON.web, "Website", `Website: ${s.provider || s.name} (opens in a new tab)`) : "",
+    directions && dirHref(s) ? iconLink(dirHref(s), DIR_ICON, "Directions", `Directions to ${s.name}`) : "",
+    email ? iconLink(`mailto:${email}`, T_ICON.mail, "Email", `Email ${s.provider || s.name}`, false) : ""].filter(Boolean).join("");
+}
+// In person (and the Places pages, which pass withId false: no map there, so no pin button)
 function serviceCard(r, h = "h2", withId = true) {
-  const s = r.s, [badgeCls, badge] = accessBadge(s), url = webUrl(s.url), k = KINDS[kindOf(s)];
-  const col = k ? k[1] : KIND_DATA.other, kindName = k ? k[0] : "";
+  const s = r.s, [badgeCls, badge] = accessBadge(s), k = KINDS[kindOf(s)];
   const dist = r.d != null ? `<span class="tdist">${T_ICON.pin}${r.d < .1 ? "&lt;0.1" : r.d.toFixed(1)} mi</span>` : "";
   // Currently full: a pill by the name, and the rest of the sentence under the description
   const [, nt] = noticeFrom(s), full = /^currently full\b/i.test(nt || "");
   const why = full ? nt.replace(/^currently full\s*[:.,–-]?\s*/i, "") : nt;
   const notice = nt ? `<div class="notice">${NOTICE_ICON}<span>${esc(why ? why[0].toUpperCase() + why.slice(1) : nt)}</span></div>` : "";
   const tn = timeNotes(s, r.nx), tnotes = tn.length ? `<div class="tnotes">${tn.map(n => `<span>${n}</span>`).join("")}</div>` : "";
-  const pill = full ? ` <span class="full">Currently full</span>` : "";
-  // The opened card: kind and provider (when the details were checked is the tick's hover text), who and how, where, and the ways to get in touch
   const place = [s.address, s.town, s.postcode].filter(Boolean).join(", ");
-  const email = s.email ? s.email.split(";")[0].trim() : "";
-  const acts = [callButton(s),
-    url ? iconLink(url, T_ICON.web, "Website", `Website: ${s.provider || s.name} (opens in a new tab)`) : "",
-    dirHref(s) ? iconLink(dirHref(s), DIR_ICON, "Directions", `Directions to ${s.name}`) : "",
-    email ? iconLink(`mailto:${email}`, T_ICON.mail, "Email", `Email ${s.provider || s.name}`, false) : ""].filter(Boolean).join("");
   const firstNum = s.phone ? s.phone.split(" (")[0].split(" or ")[0].split(";")[0].trim() : "";
-  const morePhones = s.phone && s.phone.trim() !== firstNum ? `<div class="phones">${esc(s.phone)}</div>` : "";
-  return `<article class="card tk fold${foldClass(s)}"${keyAttr(s)}${withId ? ` id="c${s.id}"` : ""} data-id="${s.id}" style="--k:${col}">
-      <div class="stub">${ticketStub(s, r.nx)}</div><div class="perf" aria-hidden="true"></div>
-      <div class="tbody">
-        <div class="row1"><span class="badge ${badgeCls}">${badge}</span>${dist}${checkedTick(s)}<span class="sp"></span>${pinButton(s)}${copyBtn(s)}${foldButton(s)}</div>
-        <${h} class="cname">${esc(displayName(s))}${pill}</${h}>
-        ${kindName ? `<span class="vh">${esc(kindName)}. </span>` : ""}<p class="desc">${esc(s.description)}</p>${tnotes}${notice}
-        <div class="more">
-          <div class="prov">${esc([kindName, s.provider].filter(Boolean).join(" · "))}</div>
-          ${factsBlock(isFree(s.cost) ? { ...s, cost: "" } : s)}
-          ${place ? `<div class="where">${T_ICON.pin}<span>${esc(place)}${s.approx ? ` <span class="approx">(approx. location)</span>` : ""}</span></div>` : ""}
-          ${morePhones}${acts ? `<div class="acts">${acts}</div>` : ""}
-        </div>
-      </div>
-    </article>`;
+  return ticketCard(s, {
+    attrs: (withId ? ` id="c${s.id}"` : "") + ` data-id="${s.id}"`, h, stub: ticketStub(s, r.nx),
+    tag: `<span class="badge ${badgeCls}">${badge}</span>${dist}`, tools: withId ? pinButton(s) : "",
+    pill: full ? ` <span class="full">Currently full</span>` : "", sr: k ? k[0] : "", afterDesc: tnotes + notice,
+    extra: (place ? `<div class="where">${T_ICON.pin}<span>${esc(place)}${s.approx ? ` <span class="approx">(approx. location)</span>` : ""}</span></div>` : "") +
+      (s.phone && s.phone.trim() !== firstNum ? `<div class="phones">${esc(s.phone)}</div>` : ""),
+    acts: contactButtons(s, { directions: true }) });
 }
 
 /* ---------- Places listings: shared by the directory's Places tab and the standalone Places pages ----------
@@ -2764,7 +2785,7 @@ function renderAbout() {
     </section>
     </div></div>
     <p class="small">Service information belongs to the providers listed. Map data © <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap</a> contributors, © <a href="https://carto.com/attributions" target="_blank" rel="noopener">CARTO</a>.</p>
-    <p class="small" id="site-version">Version: next 2026-11-25 00:19</p>
+    <p class="small" id="site-version">Version: next 2026-11-25 00:31</p>
   </article>`;
 }
 /* ---------- Places: the town listings, as a tab of the directory ----------
@@ -3053,31 +3074,16 @@ function talkStub(s, st, now) {
   const html = ticketStub(s, { at: o.st, txt: "" });
   return st.open ? html.replace('<span class="live">Today</span>', `<span class="live">${s.mode.includes("phone") ? "Open now" : "On now"}</span>`) : html;
 }
-function talkCard({ s, st }) {
-  const now = new Date(), k = KINDS[kindOf(s)], col = k ? k[1] : KIND_DATA.other, kindName = k ? k[0] : "";
+function talkCard({ s, st }) {   // Phone and online: the ticket card (next.js ticketCard) with when you can get through in the stub
+  const k = KINDS[kindOf(s)];
   const modes = split(s.mode).filter(m => m !== "in-person").map(m => m === "phone" ? "Phone" : "Online").sort((a, b) => a === "Phone" ? -1 : 1);
+  const how = [...modes, s.area === "national" ? "UK-wide" : "Local"].join(" · ");
   const tel = s.phone ? s.phone.split(" (")[0].split(" or ")[0].replace(/\s/g, "") : "";
   const reach = s.phone ? (/^text/i.test(s.phone) ? esc(s.phone) : `<a href="tel:${esc(tel)}">${esc(s.phone)}</a>`)
     : s.email ? `<a href="mailto:${esc(s.email)}">${esc(s.email)}</a>` : "";
-  const url = webUrl(s.url), email = s.email ? s.email.split(";")[0].trim() : "";
-  const acts = [callButton(s), url ? iconLink(url, T_ICON.web, "Website", `Website: ${s.provider || s.name} (opens in a new tab)`) : "",
-    email ? iconLink(`mailto:${email}`, T_ICON.mail, "Email", `Email ${s.provider || s.name}`, false) : ""].filter(Boolean).join("");
-  const how = [...modes, s.area === "national" ? "UK-wide" : "Local"].join(" · ");
-  const badges = `<span class="mline" title="${how}">${how}</span>`;
-  return `<article class="tcard tk fold${foldClass(s)}"${keyAttr(s)} style="--k:${col}">
-      <div class="stub">${talkStub(s, st, now)}</div><div class="perf" aria-hidden="true"></div>
-      <div class="tbody">
-        <div class="row1">${badges}${checkedTick(s)}<span class="sp"></span>${copyBtn(s)}${foldButton(s)}</div>
-        <h3 class="cname">${esc(displayName(s))}</h3>
-        ${reach ? `<div class="reach${s.phone ? "" : " email"}">${reach}</div>` : ""}
-        <span class="vh">${esc(st.txt)}. </span><p class="desc">${esc(s.description)}</p>${restrictLine(s)}
-        <div class="more">
-          <div class="prov">${esc([kindName, s.provider].filter(Boolean).join(" · "))}</div>
-          ${factsBlock(isFree(s.cost) ? { ...s, cost: "" } : s)}
-          ${acts ? `<div class="acts">${acts}</div>` : ""}
-        </div>
-      </div>
-    </article>`;
+  return ticketCard(s, { cls: "tcard", stub: talkStub(s, st, new Date()), tag: `<span class="mline" title="${how}">${how}</span>`,
+    sub: reach ? `<div class="reach${s.phone ? "" : " email"}">${reach}</div>` : "", sr: st.txt, afterDesc: restrictLine(s),
+    acts: contactButtons(s) });
 }
 
 /* ---------- Phone and online: the kinds row (as on In person) with "Open now only" at its end, and headings that say what's
@@ -3368,29 +3374,13 @@ function courseStub(s, ci, now) {
   return `<span class="wd">${lead}</span><b class="big">${first.getDate()}</b><span class="sm">${first.toLocaleDateString("en-GB", { month: "short" })}</span>` +
     `<span class="rule"></span><span class="tm">${t || askFor(s)}</span>`;
 }
-function courseCard({ s, ci }) {
-  const k = KINDS[kindOf(s)], col = k ? k[1] : KIND_DATA.other, modes = split(s.mode);
+function courseCard({ s, ci }) {   // Courses: the ticket card (next.js ticketCard) with when it starts in the stub
+  const modes = split(s.mode);
   const where = modes.includes("online") && !modes.includes("in-person") ? "Online" : [modes.includes("online") ? "In person or online" : "In person", s.town].filter(Boolean).join(" · ");
-  const url = webUrl(s.url), email = s.email ? s.email.split(";")[0].trim() : "";
-  const acts = [callButton(s), url ? iconLink(url, T_ICON.web, "Website", `Website: ${s.provider || s.name} (opens in a new tab)`) : "",
-    email ? iconLink(`mailto:${email}`, T_ICON.mail, "Email", `Email ${s.provider || s.name}`, false) : ""].filter(Boolean).join("");
-  // The stub already says when it starts; a pill only for a course that has started (no new people)
-  const pill = ci.join ? "" : `<span class="cpill closed">Running now: not taking new people</span>`;
   const when = (ci.status === "Rolling" ? "Rolling course: ask for the next start date" : ci.when).replace(/^1 sessions/, "1 session");
-  return `<article class="tcard tk fold${foldClass(s)}"${keyAttr(s)} style="--k:${col}">
-      <div class="stub">${courseStub(s, ci, new Date())}</div><div class="perf" aria-hidden="true"></div>
-      <div class="tbody">
-        <div class="row1"><span class="mline" title="${esc(where)}">${esc(where)}</span>${checkedTick(s)}<span class="sp"></span>${copyBtn(s, ci.when)}${foldButton(s)}</div>
-        <h3 class="cname">${esc(displayName(s))}${pill}</h3>
-        <div class="cwhen">${esc(when)}</div>
-        <p class="desc">${esc(s.description)}</p>${restrictLine(s)}
-        <div class="more">
-          <div class="prov">${esc(s.provider || "")}</div>
-          ${factsBlock(isFree(s.cost) ? { ...s, cost: "" } : s)}
-          ${acts ? `<div class="acts">${acts}</div>` : ""}
-        </div>
-      </div>
-    </article>`;
+  return ticketCard(s, { cls: "tcard", stub: courseStub(s, ci, new Date()), tag: `<span class="mline" title="${esc(where)}">${esc(where)}</span>`, copy: ci.when,
+    pill: ci.join ? "" : `<span class="cpill closed">Running now: not taking new people</span>`,   // the stub already says when it starts
+    sub: `<div class="cwhen">${esc(when)}</div>`, afterDesc: restrictLine(s), prov: s.provider || "", acts: contactButtons(s) });
 }
 function courseWhen(ci, when, now) {
   if (when === "join") return ci.join;

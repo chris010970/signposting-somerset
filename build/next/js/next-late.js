@@ -35,31 +35,16 @@ function talkStub(s, st, now) {
   const html = ticketStub(s, { at: o.st, txt: "" });
   return st.open ? html.replace('<span class="live">Today</span>', `<span class="live">${s.mode.includes("phone") ? "Open now" : "On now"}</span>`) : html;
 }
-function talkCard({ s, st }) {
-  const now = new Date(), k = KINDS[kindOf(s)], col = k ? k[1] : KIND_DATA.other, kindName = k ? k[0] : "";
+function talkCard({ s, st }) {   // Phone and online: the ticket card (next.js ticketCard) with when you can get through in the stub
+  const k = KINDS[kindOf(s)];
   const modes = split(s.mode).filter(m => m !== "in-person").map(m => m === "phone" ? "Phone" : "Online").sort((a, b) => a === "Phone" ? -1 : 1);
+  const how = [...modes, s.area === "national" ? "UK-wide" : "Local"].join(" · ");
   const tel = s.phone ? s.phone.split(" (")[0].split(" or ")[0].replace(/\s/g, "") : "";
   const reach = s.phone ? (/^text/i.test(s.phone) ? esc(s.phone) : `<a href="tel:${esc(tel)}">${esc(s.phone)}</a>`)
     : s.email ? `<a href="mailto:${esc(s.email)}">${esc(s.email)}</a>` : "";
-  const url = webUrl(s.url), email = s.email ? s.email.split(";")[0].trim() : "";
-  const acts = [callButton(s), url ? iconLink(url, T_ICON.web, "Website", `Website: ${s.provider || s.name} (opens in a new tab)`) : "",
-    email ? iconLink(`mailto:${email}`, T_ICON.mail, "Email", `Email ${s.provider || s.name}`, false) : ""].filter(Boolean).join("");
-  const how = [...modes, s.area === "national" ? "UK-wide" : "Local"].join(" · ");
-  const badges = `<span class="mline" title="${how}">${how}</span>`;
-  return `<article class="tcard tk fold${foldClass(s)}"${keyAttr(s)} style="--k:${col}">
-      <div class="stub">${talkStub(s, st, now)}</div><div class="perf" aria-hidden="true"></div>
-      <div class="tbody">
-        <div class="row1">${badges}${checkedTick(s)}<span class="sp"></span>${copyBtn(s)}${foldButton(s)}</div>
-        <h3 class="cname">${esc(displayName(s))}</h3>
-        ${reach ? `<div class="reach${s.phone ? "" : " email"}">${reach}</div>` : ""}
-        <span class="vh">${esc(st.txt)}. </span><p class="desc">${esc(s.description)}</p>${restrictLine(s)}
-        <div class="more">
-          <div class="prov">${esc([kindName, s.provider].filter(Boolean).join(" · "))}</div>
-          ${factsBlock(isFree(s.cost) ? { ...s, cost: "" } : s)}
-          ${acts ? `<div class="acts">${acts}</div>` : ""}
-        </div>
-      </div>
-    </article>`;
+  return ticketCard(s, { cls: "tcard", stub: talkStub(s, st, new Date()), tag: `<span class="mline" title="${how}">${how}</span>`,
+    sub: reach ? `<div class="reach${s.phone ? "" : " email"}">${reach}</div>` : "", sr: st.txt, afterDesc: restrictLine(s),
+    acts: contactButtons(s) });
 }
 
 /* ---------- Phone and online: the kinds row (as on In person) with "Open now only" at its end, and headings that say what's
@@ -350,29 +335,13 @@ function courseStub(s, ci, now) {
   return `<span class="wd">${lead}</span><b class="big">${first.getDate()}</b><span class="sm">${first.toLocaleDateString("en-GB", { month: "short" })}</span>` +
     `<span class="rule"></span><span class="tm">${t || askFor(s)}</span>`;
 }
-function courseCard({ s, ci }) {
-  const k = KINDS[kindOf(s)], col = k ? k[1] : KIND_DATA.other, modes = split(s.mode);
+function courseCard({ s, ci }) {   // Courses: the ticket card (next.js ticketCard) with when it starts in the stub
+  const modes = split(s.mode);
   const where = modes.includes("online") && !modes.includes("in-person") ? "Online" : [modes.includes("online") ? "In person or online" : "In person", s.town].filter(Boolean).join(" · ");
-  const url = webUrl(s.url), email = s.email ? s.email.split(";")[0].trim() : "";
-  const acts = [callButton(s), url ? iconLink(url, T_ICON.web, "Website", `Website: ${s.provider || s.name} (opens in a new tab)`) : "",
-    email ? iconLink(`mailto:${email}`, T_ICON.mail, "Email", `Email ${s.provider || s.name}`, false) : ""].filter(Boolean).join("");
-  // The stub already says when it starts; a pill only for a course that has started (no new people)
-  const pill = ci.join ? "" : `<span class="cpill closed">Running now: not taking new people</span>`;
   const when = (ci.status === "Rolling" ? "Rolling course: ask for the next start date" : ci.when).replace(/^1 sessions/, "1 session");
-  return `<article class="tcard tk fold${foldClass(s)}"${keyAttr(s)} style="--k:${col}">
-      <div class="stub">${courseStub(s, ci, new Date())}</div><div class="perf" aria-hidden="true"></div>
-      <div class="tbody">
-        <div class="row1"><span class="mline" title="${esc(where)}">${esc(where)}</span>${checkedTick(s)}<span class="sp"></span>${copyBtn(s, ci.when)}${foldButton(s)}</div>
-        <h3 class="cname">${esc(displayName(s))}${pill}</h3>
-        <div class="cwhen">${esc(when)}</div>
-        <p class="desc">${esc(s.description)}</p>${restrictLine(s)}
-        <div class="more">
-          <div class="prov">${esc(s.provider || "")}</div>
-          ${factsBlock(isFree(s.cost) ? { ...s, cost: "" } : s)}
-          ${acts ? `<div class="acts">${acts}</div>` : ""}
-        </div>
-      </div>
-    </article>`;
+  return ticketCard(s, { cls: "tcard", stub: courseStub(s, ci, new Date()), tag: `<span class="mline" title="${esc(where)}">${esc(where)}</span>`, copy: ci.when,
+    pill: ci.join ? "" : `<span class="cpill closed">Running now: not taking new people</span>`,   // the stub already says when it starts
+    sub: `<div class="cwhen">${esc(when)}</div>`, afterDesc: restrictLine(s), prov: s.provider || "", acts: contactButtons(s) });
 }
 function courseWhen(ci, when, now) {
   if (when === "join") return ci.join;
