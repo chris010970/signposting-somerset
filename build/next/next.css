@@ -262,7 +262,14 @@ header.top { background: var(--cream); border-bottom: 0; }
 @media (max-width: 760px) { .tk .cpill { display: table; margin: 4px 0 0; } }
 
 /* The Places pages' cards (three across): the badge stays on one line */
-@media (min-width: 900px) { .tk .row1 .badge { white-space: nowrap; } }   /* (phones: it may wrap, so the row fits) */
+.tk .row1 .badge { white-space: nowrap; }
+/* Phones: no pin (the List and Map switch does that) and no checked tick (its date is in hover text, which phones don't
+   show; Copy details still has it), so the badge, distance, copy and open fit on one line */
+@media (max-width: 600px) {
+  .tk .row1 .tpin, .tk .row1 .checked, .tk .row1 .tdist svg { display: none; }   /* (and the distance's pin icon: "0.6 mi" is enough) */
+  .tk .row1 { gap: 6px; }
+}
+@media (max-width: 340px) { .tk .row1 { flex-wrap: wrap; row-gap: 6px; } }   /* (the smallest phones: the open button drops below when it doesn't fit) */
 
 /* Phone and online, Courses, Places: three cards across, one under each filter box (the same columns and 14px gaps as
    the boxes); one column where the boxes stack */

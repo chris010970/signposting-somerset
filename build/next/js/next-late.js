@@ -418,7 +418,7 @@ function placesApply() {
     // The heading, as the other tabs': "Anxiety in Frome  13 services found"
     const h2 = sec.querySelector(".bsh h2");
     if (h2) {
-      if (!h2.dataset.need) h2.dataset.need = h2.firstChild.textContent.trim();
+      if (!h2.dataset.need) h2.dataset.need = cap(sec.dataset.k);   // (the everyday label, not the Places page's own word)
       const town = $("b-town")?.selectedOptions[0]?.textContent.trim() || "";
       h2.innerHTML = `${esc(h2.dataset.need)}${town ? " in " + esc(town) : ""}<span>${n} ${n === 1 ? "service" : "services"} found</span>`;
     }

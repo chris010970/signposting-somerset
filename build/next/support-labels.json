@@ -1,0 +1,29 @@
+{
+ "_about": "The next design's everyday words for the support types and their groups, shown everywhere in the preview (dropdowns, headings, Places). The sheet and the filters keep the tags (left); only what people read changes. Read by build/next/js/next.js; the live site keeps build/core/data/support-types.json until the switch-over.",
+ "groups": {
+  "Specialist support": "Help with something specific",
+  "Practical help and support": "Practical help",
+  "Everyday wellbeing": "Everyday wellbeing"
+ },
+ "labels": {
+  "crisis prevention": "Crisis support",
+  "low mood": "Feeling low",
+  "anxiety": "Anxiety and worry",
+  "bereavement": "Grief and loss",
+  "hearing voices": "Hearing voices (psychosis)",
+  "eating disorders": "Eating disorders",
+  "long-term pain": "Living with pain",
+  "dementia": "Dementia and memory",
+  "addiction": "Drink, drugs or gambling",
+  "abuse": "Abuse and domestic violence",
+  "caring for someone": "Caring for someone",
+  "housing": "Housing problems",
+  "finances": "Money worries",
+  "food": "Food help",
+  "connect": "Meeting people",
+  "be active": "Getting active",
+  "take notice": "Calm and nature",
+  "keep learning": "Learning something new",
+  "giving": "Volunteering and giving"
+ }
+}

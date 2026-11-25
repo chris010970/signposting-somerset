@@ -1361,7 +1361,14 @@ header.top { background: var(--cream); border-bottom: 0; }
 @media (max-width: 760px) { .tk .cpill { display: table; margin: 4px 0 0; } }
 
 /* The Places pages' cards (three across): the badge stays on one line */
-@media (min-width: 900px) { .tk .row1 .badge { white-space: nowrap; } }   /* (phones: it may wrap, so the row fits) */
+.tk .row1 .badge { white-space: nowrap; }
+/* Phones: no pin (the List and Map switch does that) and no checked tick (its date is in hover text, which phones don't
+   show; Copy details still has it), so the badge, distance, copy and open fit on one line */
+@media (max-width: 600px) {
+  .tk .row1 .tpin, .tk .row1 .checked, .tk .row1 .tdist svg { display: none; }   /* (and the distance's pin icon: "0.6 mi" is enough) */
+  .tk .row1 { gap: 6px; }
+}
+@media (max-width: 340px) { .tk .row1 { flex-wrap: wrap; row-gap: 6px; } }   /* (the smallest phones: the open button drops below when it doesn't fit) */
 
 /* Phone and online, Courses, Places: three cards across, one under each filter box (the same columns and 14px gaps as
    the boxes); one column where the boxes stack */
@@ -2021,13 +2028,46 @@ KINDS.splice(0, KINDS.length, ...({
  "kinds": [
   {"kind": "Activities", "colour": "#3F6FB0", "types": ["Activity group", "Volunteering"]},
   {"kind": "Peer support", "colour": "#3A9488", "types": ["Peer group"]},
-  {"kind": "Community", "colour": "#7A9A3A", "types": ["Community"]},
+  {"kind": "Community", "colour": "#93549B", "types": ["Community"]},
   {"kind": "Advice and practical help", "colour": "#D08A2E", "types": ["Advocacy", "Practical support"]},
-  {"kind": "One-to-one and therapy", "colour": "#93549B", "types": ["One-to-one support", "Counselling or therapy", "Helpline"]},
+  {"kind": "One-to-one and therapy", "colour": "#7A9A3A", "types": ["One-to-one support", "Counselling or therapy", "Helpline"]},
   {"kind": "Courses", "colour": "#B5577A", "types": ["Course"]}
  ]
 }
 ).kinds.map(k => [k.kind, k.colour, k.types]));
+
+// The everyday words for the support types and their groups (build/next/support-labels.json), in place of the shared ones
+{ const L = ({
+ "_about": "The next design's everyday words for the support types and their groups, shown everywhere in the preview (dropdowns, headings, Places). The sheet and the filters keep the tags (left); only what people read changes. Read by build/next/js/next.js; the live site keeps build/core/data/support-types.json until the switch-over.",
+ "groups": {
+  "Specialist support": "Help with something specific",
+  "Practical help and support": "Practical help",
+  "Everyday wellbeing": "Everyday wellbeing"
+ },
+ "labels": {
+  "crisis prevention": "Crisis support",
+  "low mood": "Feeling low",
+  "anxiety": "Anxiety and worry",
+  "bereavement": "Grief and loss",
+  "hearing voices": "Hearing voices (psychosis)",
+  "eating disorders": "Eating disorders",
+  "long-term pain": "Living with pain",
+  "dementia": "Dementia and memory",
+  "addiction": "Drink, drugs or gambling",
+  "abuse": "Abuse and domestic violence",
+  "caring for someone": "Caring for someone",
+  "housing": "Housing problems",
+  "finances": "Money worries",
+  "food": "Food help",
+  "connect": "Meeting people",
+  "be active": "Getting active",
+  "take notice": "Calm and nature",
+  "keep learning": "Learning something new",
+  "giving": "Volunteering and giving"
+ }
+}
+);
+  GROUPS.forEach(g => { g[0] = L.groups[g[0]] || g[0]; }); Object.assign(LABEL, L.labels); }
 
 // The map: CARTO's Voyager style first (clearer roads and place names, warmer colours), Positron as the fallback
 TILE_URLS.reverse();
@@ -2851,7 +2891,7 @@ function renderAbout() {
     </section>
     </div></div>
     <p class="small">Service information belongs to the providers listed. Map data © <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap</a> contributors, © <a href="https://carto.com/attributions" target="_blank" rel="noopener">CARTO</a>.</p>
-    <p class="small" id="site-version">Version: next 2026-11-25 17:59</p>
+    <p class="small" id="site-version">Version: next 2026-11-25 20:14</p>
   </article>`;
 }
 /* ---------- Places: the town listings, as a tab of the directory ----------
@@ -3523,7 +3563,7 @@ function placesApply() {
     // The heading, as the other tabs': "Anxiety in Frome  13 services found"
     const h2 = sec.querySelector(".bsh h2");
     if (h2) {
-      if (!h2.dataset.need) h2.dataset.need = h2.firstChild.textContent.trim();
+      if (!h2.dataset.need) h2.dataset.need = cap(sec.dataset.k);   // (the everyday label, not the Places page's own word)
       const town = $("b-town")?.selectedOptions[0]?.textContent.trim() || "";
       h2.innerHTML = `${esc(h2.dataset.need)}${town ? " in " + esc(town) : ""}<span>${n} ${n === 1 ? "service" : "services"} found</span>`;
     }

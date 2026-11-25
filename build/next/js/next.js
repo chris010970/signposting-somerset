@@ -8,6 +8,10 @@ const START_ADDRESS = new URLSearchParams(location.search);
 // The kinds (build/next/kinds.json): replace the shared list in place, before anything uses it
 KINDS.splice(0, KINDS.length, ...(/*@next:kinds.json*/).kinds.map(k => [k.kind, k.colour, k.types]));
 
+// The everyday words for the support types and their groups (build/next/support-labels.json), in place of the shared ones
+{ const L = (/*@next:support-labels.json*/);
+  GROUPS.forEach(g => { g[0] = L.groups[g[0]] || g[0]; }); Object.assign(LABEL, L.labels); }
+
 // The map: CARTO's Voyager style first (clearer roads and place names, warmer colours), Positron as the fallback
 TILE_URLS.reverse();
 
