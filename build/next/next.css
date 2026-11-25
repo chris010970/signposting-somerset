@@ -249,3 +249,10 @@ header.top { background: var(--cream); border-bottom: 0; }
   font: 600 12px var(--sans); padding: 4px 8px; border-radius: 6px; white-space: nowrap; opacity: 0; pointer-events: none; transition: opacity .1s; }
 @media (hover: hover) { .tk .tpin:hover::after { opacity: 1; } }
 .tk .tpin:focus-visible::after { opacity: 1; }
+@media (hover: hover) and (pointer: fine) { .tcard.tk .reach a { cursor: inherit; } }   /* computers: the number reads as text (next-late.js) */
+
+/* Courses (next-late.js courseCard): the line of sessions, and the pill by the name */
+.tcard.tk .cwhen { font-size: 12.5px; font-weight: 600; color: #57534E; margin: 0 0 4px; }
+.tk .cpill { display: inline-block; vertical-align: 2px; margin-left: 6px; font: 700 12px/16px var(--sans); color: #065F46; background: #D1FAE5; border-radius: 999px; padding: 2px 9px; white-space: nowrap; }
+.tk .cpill.closed { color: #57534E; background: #E7E5E4; }
+@media (max-width: 760px) { .tk .cpill { display: table; margin: 4px 0 0; } }

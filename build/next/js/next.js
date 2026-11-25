@@ -100,7 +100,7 @@ function serviceCard(r, h = "h2", withId = true) {
       <div class="stub">${ticketStub(s, r.nx)}</div><div class="perf" aria-hidden="true"></div>
       <div class="tbody">
         <div class="row1"><span class="badge ${badgeCls}">${badge}</span>${dist}${checkedTick(s)}<span class="sp"></span>${pinButton(s)}${copyBtn(s)}${foldButton(s)}</div>
-        <${h} class="cname">${esc(s.name)}${pill}</${h}>
+        <${h} class="cname">${esc(displayName(s))}${pill}</${h}>
         ${kindName ? `<span class="vh">${esc(kindName)}. </span>` : ""}<p class="desc">${esc(s.description)}</p>${tnotes}${notice}
         <div class="more">
           <div class="prov">${esc([kindName, s.provider].filter(Boolean).join(" · "))}</div>

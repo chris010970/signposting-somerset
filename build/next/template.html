@@ -61,10 +61,14 @@
       <!-- The old "Open now only" tick box, kept hidden: the directory's shared code (links.js) still reads and saves it -->
       <label id="q-open" hidden><input type="checkbox" id="t-open"></label>
     </div>
-    <div id="hdr-course" class="tq" hidden>
-      <div class="q" id="q-csupport"><label for="c-support">1. Support for</label><select autocomplete="off" id="c-support"></select></div>
-      <div class="q" id="q-cfmt"><label for="c-fmt">2. Format</label><select autocomplete="off" id="c-fmt"><option value="">In person or online</option><option value="in-person">In person</option><option value="online">Online</option></select></div>
-      <label class="toggle" id="q-cbook"><input type="checkbox" id="c-book"> Upcoming or rolling</label>
+    <div id="hdr-course" hidden>
+      <div class="tq">
+        <div class="q" id="q-csupport"><label for="c-support">1. Support for</label><select autocomplete="off" id="c-support"></select></div>
+        <div class="q" id="q-cwhere"><label for="c-where">2. Where?</label><select autocomplete="off" id="c-where"><option value="">Anywhere</option><option value="online">Online</option><option value="Somerset">In person: Somerset</option><option value="Bath and North East Somerset">In person: Bath and North East Somerset</option></select></div>
+        <div class="q" id="q-cwhen"><label for="c-when">3. When?</label><select autocomplete="off" id="c-when"><option value="">Any time</option><option value="join">Can join now</option><option value="soon">Starting in the next 4 weeks</option><option value="rolling">Rolling</option></select></div>
+      </div>
+      <!-- The old Format box and "Upcoming or rolling" tick box, kept hidden: the directory's shared code (links.js) still reads and saves them -->
+      <div hidden><select id="c-fmt"><option value=""></option><option value="in-person"></option><option value="online"></option></select><label id="q-cfmt"></label><label id="q-cbook"><input type="checkbox" id="c-book"></label></div>
     </div>
     <div id="hdr-about" hidden></div>
     <div id="hdr-places" hidden><div id="hdr-towns"></div></div>

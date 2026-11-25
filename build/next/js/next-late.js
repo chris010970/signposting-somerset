@@ -50,7 +50,7 @@ function talkCard({ s, st }) {
       <div class="stub">${talkStub(s, st, now)}</div><div class="perf" aria-hidden="true"></div>
       <div class="tbody">
         <div class="row1">${badges}${checkedTick(s)}<span class="sp"></span>${copyBtn(s)}${foldButton(s)}</div>
-        <h3 class="cname">${esc(s.name)}</h3>
+        <h3 class="cname">${esc(displayName(s))}</h3>
         ${reach ? `<div class="reach${s.phone ? "" : " email"}">${reach}</div>` : ""}
         <span class="vh">${esc(st.txt)}. </span><p class="desc">${esc(s.description)}</p>${restrictLine(s)}
         <div class="more">
@@ -114,6 +114,15 @@ function renderTalk() {
   }
   $("talk-list").innerHTML = html;
 }
+// The big number (or email) on a card: tap to call on phones and tablets; with a mouse or trackpad, a click there opens or
+// closes the card like the rest of it (a "tel:" link on a computer makes the browser ask which app should call). The Call
+// button in the opened card still calls; so does the keyboard (Enter on the number)
+const FINE_POINTER = matchMedia("(hover: hover) and (pointer: fine)");
+$("talk-list").addEventListener("click", e => {
+  if (!e.detail || !FINE_POINTER.matches || !e.target.closest(".reach a")) return;
+  e.preventDefault();
+  if (!String(getSelection())) toggleCard(e.target.closest(".tcard"));   // (not when the number was being selected to copy)
+}, true);
 // "Show all" in the empty message: tick all the boxes again
 $("talk-list").addEventListener("click", e => { if (e.target.closest("#talk-showall")) { talkOff().clear(); renderTalk(); } });
 
@@ -126,9 +135,10 @@ $("talk-list").addEventListener("click", e => { if (e.target.closest("#talk-show
 // the lines of this file have run)
 function needsUI(tab) {
   return { near: { sel: () => fs, list: () => S, box: "q-support", redraw: () => refit() },
-           talk: { sel: () => $("t-support"), list: () => T, box: "q-tsupport", redraw: () => renderTalk() } }[tab];
+           talk: { sel: () => $("t-support"), list: () => T, box: "q-tsupport", redraw: () => renderTalk() },
+           course: { sel: () => $("c-support"), list: () => C, box: "q-csupport", redraw: () => renderCourses() } }[tab];
 }
-function needsOf(tab) { return (window.NEEDS ||= { near: new Set(), talk: new Set() })[tab]; }
+function needsOf(tab) { return (window.NEEDS ||= { near: new Set(), talk: new Set(), course: new Set() })[tab]; }
 function applyNeeds(tab) { setNeedsSel(tab); needsUI(tab).redraw(); }
 function setNeedsSel(tab) {   // the dropdown (and the hidden tags) to match the ticked needs
   const u = needsUI(tab), sel = u.sel(), set = needsOf(tab), tag = "__multi_" + tab;
@@ -166,7 +176,7 @@ function needsPanel(tab) {
 }
 (() => {
   const CHEV = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>';
-  for (const tab of ["near", "talk"]) {
+  for (const tab of ["near", "talk", "course"]) {
     const u = needsUI(tab), box = $(u.box), sel = u.sel();
     sel.hidden = true; sel.setAttribute("aria-hidden", "true"); sel.tabIndex = -1;
     box.querySelector("label").removeAttribute("for");
@@ -210,12 +220,12 @@ function linkFor(t) {   // (replaces links.js's: the same, with the ticked needs
     if ($("f-when").value !== "week") q.set("when", $("f-when").value);
   } else if (t === "places") placesQuery(q);
   else if (t === "talk" && needs("talk")) q.set("support", needs("talk"));
-  else if (t === "course" && $("c-support").value) q.set("support", $("c-support").value);
+  else if (t === "course" && needs("course")) q.set("support", needs("course"));
   return q.toString();
 }
 function pickOpt(sel, v) {   // (replaces links.js's: the same, and for Support for one or several needs)
   if (!sel || v == null || String(v).trim() === "") return false;
-  const tab = sel === fs ? "near" : sel.id === "t-support" ? "talk" : "";
+  const tab = sel === fs ? "near" : sel.id === "t-support" ? "talk" : sel.id === "c-support" ? "course" : "";
   const ok = x => [...sel.options].find(o => !o.hidden && o.value.toLowerCase() === x);
   if (tab) {
     // Needs come only from the address: opening the page without "support=" starts with nothing ticked (not this visit's
@@ -231,7 +241,7 @@ function pickOpt(sel, v) {   // (replaces links.js's: the same, and for Support 
   return !!o;
 }
 // The records arriving again (the sheet's refresh) rebuild the dropdowns: put the ticked needs back
-for (const tab of ["near", "talk"]) new MutationObserver(() => {
+for (const tab of ["near", "talk", "course"]) new MutationObserver(() => {
   if (needsOf(tab).size > 1 && !needsUI(tab).sel().value.startsWith("__multi")) { setNeedsSel(tab); needsUI(tab).redraw(); }
 }).observe(needsUI(tab).sel(), { childList: true });
 
@@ -314,8 +324,9 @@ function oneLabel() {
 }
 new MutationObserver(oneLabel).observe($("summary"), { childList: true, subtree: true });
 
-/* Display names (a mock-up, not used yet): the sheet's name without the bracketed parts that repeat what the card shows
-   elsewhere, i.e. the record's own town, its days or its times. "Suicide Bereavement Peer Support Group (Yeovil)" becomes
+/* Display names, for the cards' titles (In person, Phone and online): the sheet's name without the bracketed parts that
+   repeat what the card shows elsewhere, i.e. the record's own town, its days or its times. The full name stays in Copy
+   details, the map's labels and Assist. "Suicide Bereavement Peer Support Group (Yeovil)" becomes
    "Suicide Bereavement Peer Support Group"; "Tai Chi QiGong (Ash, Martock)" becomes "Tai Chi QiGong (Ash)"; a venue stays */
 function displayName(s) {
   const m = s.name.match(/^(.*\S)\s*\(([^()]*)\)\s*$/); if (!m) return s.name;
@@ -326,3 +337,88 @@ function displayName(s) {
   const keep = m[2].split(",").filter(p => !repeats(p));
   return keep.length ? `${m[1]} (${keep.map(p => p.trim()).join(", ")})` : m[1];
 }
+
+/* ---------- Courses: three boxes (Support for with tick boxes, Where?, When?) and ticket cards. Replaces courseCard and
+   renderCourses in courses.js (courseInfo there still works out the dates). Stub colour: the Courses kind ---------- */
+function courseStub(s, ci, now) {
+  const SI = p => `<svg class="sic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${p}</svg>`;
+  const t = s._times ? fmtT(s._times.s) + (s._times.e != null ? "–" + fmtT(s._times.e) : "") : "";
+  if (ci.status === "Rolling")   // a loop: starts whenever you ask
+    return SI('<path d="M20 11a8 8 0 0 0-14.3-4.9L4 8"/><path d="M4 3.5V8h4.5"/><path d="M4 13a8 8 0 0 0 14.3 4.9L20 16"/><path d="M20 20.5V16h-4.5"/>') +
+      `<span class="rule"></span><span class="tm">Rolling</span>` + (s.days ? `<span class="sm">${esc(split(s.days).join(", ").replace(/-/g, "–"))}</span>` : "") + (t ? `<span class="sm">${t}</span>` : "");
+  const first = new Date(ci.order), lead = ci.join ? "Starts" : "Started";
+  return `<span class="wd">${lead}</span><b class="big">${first.getDate()}</b><span class="sm">${first.toLocaleDateString("en-GB", { month: "short" })}</span>` +
+    `<span class="rule"></span><span class="tm">${t || askFor(s)}</span>`;
+}
+function courseCard({ s, ci }) {
+  const k = KINDS[kindOf(s)], col = k ? k[1] : KIND_DATA.other, modes = split(s.mode);
+  const where = modes.includes("online") && !modes.includes("in-person") ? "Online" : [modes.includes("online") ? "In person or online" : "In person", s.town].filter(Boolean).join(" · ");
+  const url = webUrl(s.url), email = s.email ? s.email.split(";")[0].trim() : "";
+  const acts = [callButton(s), url ? iconLink(url, T_ICON.web, "Website", `Website: ${s.provider || s.name} (opens in a new tab)`) : "",
+    email ? iconLink(`mailto:${email}`, T_ICON.mail, "Email", `Email ${s.provider || s.name}`, false) : ""].filter(Boolean).join("");
+  // The stub already says when it starts; a pill only for a course that has started (no new people)
+  const pill = ci.join ? "" : `<span class="cpill closed">Running now: not taking new people</span>`;
+  const when = (ci.status === "Rolling" ? "Rolling course: ask for the next start date" : ci.when).replace(/^1 sessions/, "1 session");
+  return `<article class="tcard tk fold${foldClass(s)}"${keyAttr(s)} style="--k:${col}">
+      <div class="stub">${courseStub(s, ci, new Date())}</div><div class="perf" aria-hidden="true"></div>
+      <div class="tbody">
+        <div class="row1"><span class="mline" title="${esc(where)}">${esc(where)}</span>${checkedTick(s)}<span class="sp"></span>${copyBtn(s, ci.when)}${foldButton(s)}</div>
+        <h3 class="cname">${esc(displayName(s))}${pill}</h3>
+        <div class="cwhen">${esc(when)}</div>
+        <p class="desc">${esc(s.description)}</p>${restrictLine(s)}
+        <div class="more">
+          <div class="prov">${esc(s.provider || "")}</div>
+          ${factsBlock(isFree(s.cost) ? { ...s, cost: "" } : s)}
+          ${acts ? `<div class="acts">${acts}</div>` : ""}
+        </div>
+      </div>
+    </article>`;
+}
+function courseWhen(ci, when, now) {
+  if (when === "join") return ci.join;
+  if (when === "rolling") return ci.status === "Rolling";
+  if (when === "soon") return ci.join && ci.status !== "Rolling" && ci.order - now < 28 * 864e5;
+  return true;
+}
+function renderCourses() {
+  setTimeout(syncLink, 0);   // keep the address bar in step with the filters
+  if (!ALL.length) { panelMessage(liveMsg); return; }
+  const now = new Date(), sup = $("c-support").value, where = $("c-where").value, when = $("c-when").value;
+  $("q-csupport").classList.toggle("on", !!sup); $("q-cwhere").classList.toggle("on", !!where); $("q-cwhen").classList.toggle("on", !!when);
+  $("c-book").checked = when === "join"; $("c-fmt").value = where === "online" ? "online" : "";   // (the hidden boxes the shared code saves)
+  needsLabel("course");
+  const at = s => where === "online" ? split(s.mode).includes("online") : split(s.mode).includes("in-person") && s.area === where;
+  let rows = C.filter(s => (!sup || s._sf.includes(sup)) && (!where || at(s))).map(s => ({ s, ci: courseInfo(s, now) }));
+  rows = rows.filter(r => courseWhen(r.ci, when, now));
+  rows.sort((a, b) => (b.ci.join - a.ci.join) || (a.ci.order - b.ci.order));   // can join first, then by start date
+  const head = (title, n) => `<h2 class="gh">${esc(title)}<small>${n} ${n === 1 ? "course" : "courses"} found</small></h2>`;
+  const several = sup.startsWith("__multi") ? GROUPS.flatMap(([, v]) => v).filter(v => needsOf("course").has(v)) : null;
+  let html = "";
+  if (several) for (const n of several) { const rs = rows.filter(r => r.s._sf.includes(n));
+    html += head(cap(n), rs.length) + (rs.length ? `<div class="tgrid">${rs.map(courseCard).join("")}</div>` : ""); }
+  else html = head(sup ? cap(sup) : "Courses", rows.length) + (rows.length ? `<div class="tgrid">${rows.map(courseCard).join("")}</div>` : "");
+  if (!rows.length) {
+    const tips = [when ? 'choose "Any time" under When' : "", where ? 'choose "Anywhere" under Where' : "", sup ? 'choose "Anything" under Support for' : ""]
+      .filter(Boolean).join(", or ").replace(/^./, c => c.toUpperCase());
+    html += `<div class="empty"><strong>No courses match</strong><br>${tips || "Try again later"}.</div>`;
+  }
+  $("courses").innerHTML = html;
+}
+$("c-where").onchange = renderCourses;
+$("c-when").onchange = renderCourses;
+// The course card's number on computers: opens the card, as on Phone and online
+$("courses").addEventListener("click", e => {
+  if (!e.detail || !FINE_POINTER.matches || !e.target.closest(".reach a")) return;
+  e.preventDefault(); if (!String(getSelection())) toggleCard(e.target.closest(".tcard"));
+}, true);
+// Where? and When? in links and saved choices ("cwhere", "cwhen")
+(() => {
+  const was = linkFor;
+  linkFor = function (t) { const q = new URLSearchParams(was(t));
+    if (t === "course") { if ($("c-where").value) q.set("cwhere", $("c-where").value); if ($("c-when").value) q.set("cwhen", $("c-when").value); }
+    return q.toString(); };
+  let q = new URLSearchParams();
+  try { q = new URLSearchParams(LINK_TAB === "course" ? location.search : SAVED.course || ""); } catch (e) {}
+  for (const [id, key] of [["c-where", "cwhere"], ["c-when", "cwhen"]]) { const v = q.get(key) || ""; if ([...$(id).options].some(o => o.value === v)) $(id).value = v; }
+  if (!q.get("cwhen") && SAVED.book) $("c-when").value = "join";   // saved before When? existed
+})();
