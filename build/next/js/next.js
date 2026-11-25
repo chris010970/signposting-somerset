@@ -5,6 +5,9 @@
 // The address the page was opened with (before the page rewrites it to follow the filters): Support for comes only from here
 const START_ADDRESS = new URLSearchParams(location.search);
 
+// The kinds (build/next/kinds.json): replace the shared list in place, before anything uses it
+KINDS.splice(0, KINDS.length, ...(/*@next:kinds.json*/).kinds.map(k => [k.kind, k.colour, k.types]));
+
 // The map: CARTO's Voyager style first (clearer roads and place names, warmer colours), Positron as the fallback
 TILE_URLS.reverse();
 
@@ -82,11 +85,11 @@ const isFree = c => /^\s*free\s*\.?\s*$/i.test(c || "");
    the description, and the opened part with who and how and the ways to get in touch). Each tab's card is ticketCard with
    its own parts: serviceCard (In person, and the Places pages), talkCard (Phone and online) and courseCard (Courses).
    p: { cls: "card" or "tcard"; attrs: more attributes; stub; tag: the top row's left (badge, distance, "PHONE · UK-WIDE");
-        tools: buttons before Copy; copy: extra text for Copy; h: the name's heading level; pill: after the name;
+        col: the stub's colour (default: the kind's); tools: buttons before Copy; copy: extra text for Copy; h: the name's heading level; pill: after the name;
         sub: under the name; sr: words for screen readers before the description; afterDesc; prov: the opened part's first
         line (default: kind · provider); extra: after who and how; acts: the buttons } */
 function ticketCard(s, p) {
-  const k = KINDS[kindOf(s)], col = k ? k[1] : KIND_DATA.other, h = p.h || "h3";
+  const k = KINDS[kindOf(s)], col = p.col || (k ? k[1] : KIND_DATA.other), h = p.h || "h3";
   const prov = p.prov ?? [k ? k[0] : "", s.provider].filter(Boolean).join(" · ");
   return `<article class="${p.cls || "card"} tk fold${foldClass(s)}"${keyAttr(s)}${p.attrs || ""} style="--k:${col}">
       <div class="stub">${p.stub}</div><div class="perf" aria-hidden="true"></div>

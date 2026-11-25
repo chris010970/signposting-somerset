@@ -1390,6 +1390,9 @@ header.top { background: var(--cream); border-bottom: 0; }
 #places-main .bsh a.bmap { display: none; }
 #places-main { margin-top: -20px; }
 @media (min-width: 900px) { #panel-places > .talk { padding-top: 2px; } }   /* the first heading 12px under the kinds row, as on Phone and online */
+/* Phones: five kinds don't fit one line: three across, so the rows stay even (not one chip stretched across a row) */
+@media (max-width: 760px) { .kindrow { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); } .kindrow button { min-width: 0; } }
+@media (max-width: 379px) { .kindrow button { flex-basis: auto; } }
 
 </style>
 </head>
@@ -1415,7 +1418,7 @@ header.top { background: var(--cream); border-bottom: 0; }
       <nav class="sitetabs" aria-label="Site">
       <span class="tgrp"><button type="button" id="tab-near" aria-controls="panel-near">In person</button>
       <button type="button" id="tab-talk" aria-controls="panel-talk"><span class="lg">Phone and online</span><span class="sh">Phone &amp; online</span></button>
-      <button type="button" id="tab-course" aria-controls="panel-course">Courses</button><button type="button" id="tab-places" aria-controls="panel-places">Places</button></span>
+      <button type="button" id="tab-places" aria-controls="panel-places">Places</button><button type="button" id="tab-course" aria-controls="panel-course">Courses</button></span>
       <button type="button" id="tab-about" aria-controls="panel-about">About</button>
       </nav>
     </div>
@@ -1436,10 +1439,10 @@ header.top { background: var(--cream); border-bottom: 0; }
     <div id="hdr-course" hidden>
       <div class="tq">
         <div class="q" id="q-csupport"><label for="c-support">1. Support for</label><select autocomplete="off" id="c-support"></select></div>
-        <div class="q" id="q-cwhere"><label for="c-where">2. Where?</label><select autocomplete="off" id="c-where"><option value="">Anywhere</option><option value="online">Online</option><option value="Somerset">In person: Somerset</option><option value="Bath and North East Somerset">In person: Bath and North East Somerset</option></select></div>
+        <div class="q" id="q-cwhere"><label for="c-where">2. Where?</label><select autocomplete="off" id="c-where"><option value="">Anywhere</option><option value="Somerset">Somerset</option><option value="Bath and North East Somerset">Bath and North East Somerset</option></select></div>
         <div class="q" id="q-cwhen"><label for="c-when">3. When?</label><select autocomplete="off" id="c-when"><option value="">Any time</option><option value="join">Can join now</option><option value="soon">Starting in the next 4 weeks</option><option value="rolling">Rolling</option></select></div>
       </div>
-      <div class="krow"><div class="kindrow" id="kindrow-course" role="group" aria-label="Show these kinds of support"></div></div>
+      <div class="krow"><div class="kindrow" id="kindrow-course" role="group" aria-label="Show courses taken in these ways"></div></div>
       <!-- The old Format box and "Upcoming or rolling" tick box, kept hidden: the directory's shared code (links.js) still reads and saves them -->
       <div hidden><select id="c-fmt"><option value=""></option><option value="in-person"></option><option value="online"></option></select><label id="q-cfmt"></label><label id="q-cbook"><input type="checkbox" id="c-book"></label></div>
     </div>
@@ -2004,6 +2007,20 @@ function serviceCard(r, h = "h2", withId = true) {
 // The address the page was opened with (before the page rewrites it to follow the filters): Support for comes only from here
 const START_ADDRESS = new URLSearchParams(location.search);
 
+// The kinds (build/next/kinds.json): replace the shared list in place, before anything uses it
+KINDS.splice(0, KINDS.length, ...({
+ "_about": "The next design's kinds (they replace build/core/data/kinds.json on /next/ only; at switch-over this becomes that file). Groups and community is split into Peer support and Community; Helpline joins One-to-one and therapy.",
+ "kinds": [
+  {"kind": "Activities", "colour": "#3F6FB0", "types": ["Activity group", "Volunteering"]},
+  {"kind": "Peer support", "colour": "#3A9488", "types": ["Peer group"]},
+  {"kind": "Community", "colour": "#7A9A3A", "types": ["Community"]},
+  {"kind": "Advice and practical help", "colour": "#D08A2E", "types": ["Advocacy", "Practical support"]},
+  {"kind": "One-to-one and therapy", "colour": "#93549B", "types": ["One-to-one support", "Counselling or therapy", "Helpline"]},
+  {"kind": "Courses", "colour": "#B5577A", "types": ["Course"]}
+ ]
+}
+).kinds.map(k => [k.kind, k.colour, k.types]));
+
 // The map: CARTO's Voyager style first (clearer roads and place names, warmer colours), Positron as the fallback
 TILE_URLS.reverse();
 
@@ -2083,11 +2100,11 @@ const isFree = c => /^\s*free\s*\.?\s*$/i.test(c || "");
    the description, and the opened part with who and how and the ways to get in touch). Each tab's card is ticketCard with
    its own parts: serviceCard (In person, and the Places pages), talkCard (Phone and online) and courseCard (Courses).
    p: { cls: "card" or "tcard"; attrs: more attributes; stub; tag: the top row's left (badge, distance, "PHONE · UK-WIDE");
-        tools: buttons before Copy; copy: extra text for Copy; h: the name's heading level; pill: after the name;
+        col: the stub's colour (default: the kind's); tools: buttons before Copy; copy: extra text for Copy; h: the name's heading level; pill: after the name;
         sub: under the name; sr: words for screen readers before the description; afterDesc; prov: the opened part's first
         line (default: kind · provider); extra: after who and how; acts: the buttons } */
 function ticketCard(s, p) {
-  const k = KINDS[kindOf(s)], col = k ? k[1] : KIND_DATA.other, h = p.h || "h3";
+  const k = KINDS[kindOf(s)], col = p.col || (k ? k[1] : KIND_DATA.other), h = p.h || "h3";
   const prov = p.prov ?? [k ? k[0] : "", s.provider].filter(Boolean).join(" · ");
   return `<article class="${p.cls || "card"} tk fold${foldClass(s)}"${keyAttr(s)}${p.attrs || ""} style="--k:${col}">
       <div class="stub">${p.stub}</div><div class="perf" aria-hidden="true"></div>
@@ -2820,7 +2837,7 @@ function renderAbout() {
     </section>
     </div></div>
     <p class="small">Service information belongs to the providers listed. Map data © <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap</a> contributors, © <a href="https://carto.com/attributions" target="_blank" rel="noopener">CARTO</a>.</p>
-    <p class="small" id="site-version">Version: next 2026-11-25 01:44</p>
+    <p class="small" id="site-version">Version: next 2026-11-25 16:54</p>
   </article>`;
 }
 /* ---------- Places: the town listings, as a tab of the directory ----------
@@ -3078,7 +3095,7 @@ function drawLegend() { const d = $("kindrow"); legendEl = d; d.innerHTML = kind
 // The tick boxes for the kinds that appear in a list of records (off: the kinds unticked)
 function kindChips(list, off) {
   const KEY_TICK = '<svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12l5 5 9-10"/></svg>';
-  const KIND_SHORT = ({"Activities": "Activities", "Groups and community": "Groups", "Advice and practical help": "Advice", "One-to-one and therapy": "Therapy", "Courses": "Courses"}
+  const KIND_SHORT = ({"Activities": "Activities", "Advice and practical help": "Advice", "One-to-one and therapy": "Therapy", "Courses": "Courses", "Peer support": "Peer", "Community": "Community"}
 );   // (inside: the map draws its key before the lines below have run)
   return KINDS.map((k, i) => { if (!list.some(x => kindOf(x) === i)) return ""; const on = !off.has(i);
     return `<button type="button" role="checkbox" aria-checked="${on}" data-k="${i}" style="--c:${k[1]}">` +
@@ -3413,7 +3430,7 @@ function courseCard({ s, ci }) {   // Courses: the ticket card (next.js ticketCa
   const modes = split(s.mode);
   const where = modes.includes("online") && !modes.includes("in-person") ? "Online" : [modes.includes("online") ? "In person or online" : "In person", s.town].filter(Boolean).join(" · ");
   const when = (ci.status === "Rolling" ? "Rolling course: ask for the next start date" : ci.when).replace(/^1 sessions/, "1 session");
-  return ticketCard(s, { cls: "tcard", stub: courseStub(s, ci, new Date()), tag: `<span class="mline" title="${esc(where)}">${esc(where)}</span>`, copy: ci.when,
+  return ticketCard(s, { cls: "tcard", col: COURSE_FORMATS[courseFormat(s)][1], stub: courseStub(s, ci, new Date()), tag: `<span class="mline" title="${esc(where)}">${esc(where)}</span>`, copy: ci.when,
     pill: ci.join ? "" : `<span class="cpill closed">Running now: not taking new people</span>`,   // the stub already says when it starts
     sub: `<div class="cwhen">${esc(when)}</div>`, afterDesc: restrictLine(s), prov: s.provider || "", acts: contactButtons(s) });
 }
@@ -3428,11 +3445,13 @@ function renderCourses() {
   if (!ALL.length) { panelMessage(liveMsg); return; }
   const now = new Date(), sup = $("c-support").value, where = $("c-where").value, when = $("c-when").value;
   $("q-csupport").classList.toggle("on", !!sup); $("q-cwhere").classList.toggle("on", !!where); $("q-cwhen").classList.toggle("on", !!when);
-  $("c-book").checked = when === "join"; $("c-fmt").value = where === "online" ? "online" : "";   // (the hidden boxes the shared code saves)
+  $("c-book").checked = when === "join"; $("c-fmt").value = "";   // (the hidden boxes the shared code saves)
   needsLabel("course");
-  $("kindrow-course").innerHTML = kindChips(C, new Set());   // one kind here: shown for the same look as the other tabs
-  const at = s => where === "online" ? split(s.mode).includes("online") : split(s.mode).includes("in-person") && s.area === where;
-  let rows = C.filter(s => (!sup || s._sf.includes(sup)) && (!where || at(s))).map(s => ({ s, ci: courseInfo(s, now) }));
+  const off = courseFmtOff();
+  $("kindrow-course").innerHTML = formatChips(off);
+  // Where?: the area. Online courses can be joined from anywhere, so they show for every area
+  const at = s => split(s.mode).includes("online") || s.area === where;
+  let rows = C.filter(s => (!sup || s._sf.includes(sup)) && (!where || at(s)) && !off.has(courseFormat(s))).map(s => ({ s, ci: courseInfo(s, now) }));
   rows = rows.filter(r => courseWhen(r.ci, when, now));
   rows.sort((a, b) => (b.ci.join - a.ci.join) || (a.ci.order - b.ci.order));   // can join first, then by start date
   const head = (title, n) => `<h2 class="gh">${esc(title)}<small>${n} ${n === 1 ? "course" : "courses"} found</small></h2>`;
@@ -3442,9 +3461,10 @@ function renderCourses() {
     html += head(cap(n), rs.length) + (rs.length ? `<div class="tgrid">${rs.map(courseCard).join("")}</div>` : ""); }
   else html = head(sup ? cap(sup) : "Courses", rows.length) + (rows.length ? `<div class="tgrid">${rows.map(courseCard).join("")}</div>` : "");
   if (!rows.length) {
-    const tips = [when ? 'choose "Any time" under When' : "", where ? 'choose "Anywhere" under Where' : "", sup ? 'choose "Anything" under Support for' : ""]
+    const tips = [when ? 'choose "Any time" under When' : "", where ? 'choose "Anywhere" under Where' : "", off.size ? "tick all the boxes above" : "", sup ? 'choose "Anything" under Support for' : ""]
       .filter(Boolean).join(", or ").replace(/^./, c => c.toUpperCase());
-    html += `<div class="empty"><strong>No courses match</strong><br>${tips || "Try again later"}.</div>`;
+    html += `<div class="empty"><strong>No courses match</strong><br>${tips || "Try again later"}.` +
+      (off.size ? `<br><button type="button" class="showall" id="course-showall">Show all</button>` : "") + `</div>`;
   }
   $("courses").innerHTML = html;
 }
@@ -3589,8 +3609,24 @@ function placesQuery(q) {   // (replaces places-tab.js's: the same, with the tic
   if (needs) q.set("support", needs); else if (s.support && s.support !== "all") q.set("support", s.support);
   if (s.when && s.when !== "any") q.set("when", s.when);
 }
-// Courses' kinds row: one kind, so unticking it would empty the list: it stays ticked (as unticking every kind does elsewhere)
-$("kindrow-course").addEventListener("click", e => { if (e.target.closest("button[data-k]")) renderCourses(); });
+/* Courses: coloured by how you take part, not by kind (they're all one kind). The format row (tick boxes, as the kinds row
+   on the other tabs) and the stubs use these: the site's own colours, labelled by the chips */
+const COURSE_FORMATS = { inperson: ["In person", "#B5577A"], online: ["Online", "#5A5FA8"], both: ["In person or online", "#C4A02F"] };   // pink (the Courses colour), indigo, mustard
+function courseFormat(s) { const m = split(s.mode), i = m.includes("in-person"), o = m.includes("online"); return i && o ? "both" : o ? "online" : "inperson"; }
+function courseFmtOff() { return (window.COURSE_FMT_OFF ||= new Set()); }
+function formatChips(off) {
+  const TICK = '<svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12l5 5 9-10"/></svg>';
+  return Object.entries(COURSE_FORMATS).filter(([f]) => C.some(s => courseFormat(s) === f)).map(([f, [name, col]]) => { const on = !off.has(f);
+    return `<button type="button" role="checkbox" aria-checked="${on}" data-f="${f}" style="--c:${col}"><i>${on ? TICK : ""}</i><span class="lt">${name}</span>` +
+      `<span class="st" aria-hidden="true">${f === "both" ? "Either" : name}</span></button>`; }).join("");
+}
+$("kindrow-course").addEventListener("click", e => {
+  const b = e.target.closest("button[data-f]"); if (!b) return;
+  const off = courseFmtOff(), f = b.dataset.f; off.has(f) ? off.delete(f) : off.add(f);
+  if (Object.keys(COURSE_FORMATS).every(x => off.has(x) || !C.some(s => courseFormat(s) === x))) off.clear();   // all unticked: show all
+  renderCourses();
+});
+$("courses").addEventListener("click", e => { if (e.target.closest("#course-showall")) { courseFmtOff().clear(); renderCourses(); } });
 // Places' map-pin links carry a need into In person: let pickOpt take it (it otherwise takes needs only from the address)
 $("places-main").addEventListener("click", e => { if (e.target.closest("a.mapchip")) {
   kindsOff.clear(); placesKindsOff().forEach(k => kindsOff.add(k));   /* In person shows the same kinds as the section (this click only) */

@@ -339,7 +339,7 @@ function courseCard({ s, ci }) {   // Courses: the ticket card (next.js ticketCa
   const modes = split(s.mode);
   const where = modes.includes("online") && !modes.includes("in-person") ? "Online" : [modes.includes("online") ? "In person or online" : "In person", s.town].filter(Boolean).join(" · ");
   const when = (ci.status === "Rolling" ? "Rolling course: ask for the next start date" : ci.when).replace(/^1 sessions/, "1 session");
-  return ticketCard(s, { cls: "tcard", stub: courseStub(s, ci, new Date()), tag: `<span class="mline" title="${esc(where)}">${esc(where)}</span>`, copy: ci.when,
+  return ticketCard(s, { cls: "tcard", col: COURSE_FORMATS[courseFormat(s)][1], stub: courseStub(s, ci, new Date()), tag: `<span class="mline" title="${esc(where)}">${esc(where)}</span>`, copy: ci.when,
     pill: ci.join ? "" : `<span class="cpill closed">Running now: not taking new people</span>`,   // the stub already says when it starts
     sub: `<div class="cwhen">${esc(when)}</div>`, afterDesc: restrictLine(s), prov: s.provider || "", acts: contactButtons(s) });
 }
@@ -354,11 +354,13 @@ function renderCourses() {
   if (!ALL.length) { panelMessage(liveMsg); return; }
   const now = new Date(), sup = $("c-support").value, where = $("c-where").value, when = $("c-when").value;
   $("q-csupport").classList.toggle("on", !!sup); $("q-cwhere").classList.toggle("on", !!where); $("q-cwhen").classList.toggle("on", !!when);
-  $("c-book").checked = when === "join"; $("c-fmt").value = where === "online" ? "online" : "";   // (the hidden boxes the shared code saves)
+  $("c-book").checked = when === "join"; $("c-fmt").value = "";   // (the hidden boxes the shared code saves)
   needsLabel("course");
-  $("kindrow-course").innerHTML = kindChips(C, new Set());   // one kind here: shown for the same look as the other tabs
-  const at = s => where === "online" ? split(s.mode).includes("online") : split(s.mode).includes("in-person") && s.area === where;
-  let rows = C.filter(s => (!sup || s._sf.includes(sup)) && (!where || at(s))).map(s => ({ s, ci: courseInfo(s, now) }));
+  const off = courseFmtOff();
+  $("kindrow-course").innerHTML = formatChips(off);
+  // Where?: the area. Online courses can be joined from anywhere, so they show for every area
+  const at = s => split(s.mode).includes("online") || s.area === where;
+  let rows = C.filter(s => (!sup || s._sf.includes(sup)) && (!where || at(s)) && !off.has(courseFormat(s))).map(s => ({ s, ci: courseInfo(s, now) }));
   rows = rows.filter(r => courseWhen(r.ci, when, now));
   rows.sort((a, b) => (b.ci.join - a.ci.join) || (a.ci.order - b.ci.order));   // can join first, then by start date
   const head = (title, n) => `<h2 class="gh">${esc(title)}<small>${n} ${n === 1 ? "course" : "courses"} found</small></h2>`;
@@ -368,9 +370,10 @@ function renderCourses() {
     html += head(cap(n), rs.length) + (rs.length ? `<div class="tgrid">${rs.map(courseCard).join("")}</div>` : ""); }
   else html = head(sup ? cap(sup) : "Courses", rows.length) + (rows.length ? `<div class="tgrid">${rows.map(courseCard).join("")}</div>` : "");
   if (!rows.length) {
-    const tips = [when ? 'choose "Any time" under When' : "", where ? 'choose "Anywhere" under Where' : "", sup ? 'choose "Anything" under Support for' : ""]
+    const tips = [when ? 'choose "Any time" under When' : "", where ? 'choose "Anywhere" under Where' : "", off.size ? "tick all the boxes above" : "", sup ? 'choose "Anything" under Support for' : ""]
       .filter(Boolean).join(", or ").replace(/^./, c => c.toUpperCase());
-    html += `<div class="empty"><strong>No courses match</strong><br>${tips || "Try again later"}.</div>`;
+    html += `<div class="empty"><strong>No courses match</strong><br>${tips || "Try again later"}.` +
+      (off.size ? `<br><button type="button" class="showall" id="course-showall">Show all</button>` : "") + `</div>`;
   }
   $("courses").innerHTML = html;
 }
@@ -515,8 +518,24 @@ function placesQuery(q) {   // (replaces places-tab.js's: the same, with the tic
   if (needs) q.set("support", needs); else if (s.support && s.support !== "all") q.set("support", s.support);
   if (s.when && s.when !== "any") q.set("when", s.when);
 }
-// Courses' kinds row: one kind, so unticking it would empty the list: it stays ticked (as unticking every kind does elsewhere)
-$("kindrow-course").addEventListener("click", e => { if (e.target.closest("button[data-k]")) renderCourses(); });
+/* Courses: coloured by how you take part, not by kind (they're all one kind). The format row (tick boxes, as the kinds row
+   on the other tabs) and the stubs use these: the site's own colours, labelled by the chips */
+const COURSE_FORMATS = { inperson: ["In person", "#B5577A"], online: ["Online", "#5A5FA8"], both: ["In person or online", "#C4A02F"] };   // pink (the Courses colour), indigo, mustard
+function courseFormat(s) { const m = split(s.mode), i = m.includes("in-person"), o = m.includes("online"); return i && o ? "both" : o ? "online" : "inperson"; }
+function courseFmtOff() { return (window.COURSE_FMT_OFF ||= new Set()); }
+function formatChips(off) {
+  const TICK = '<svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12l5 5 9-10"/></svg>';
+  return Object.entries(COURSE_FORMATS).filter(([f]) => C.some(s => courseFormat(s) === f)).map(([f, [name, col]]) => { const on = !off.has(f);
+    return `<button type="button" role="checkbox" aria-checked="${on}" data-f="${f}" style="--c:${col}"><i>${on ? TICK : ""}</i><span class="lt">${name}</span>` +
+      `<span class="st" aria-hidden="true">${f === "both" ? "Either" : name}</span></button>`; }).join("");
+}
+$("kindrow-course").addEventListener("click", e => {
+  const b = e.target.closest("button[data-f]"); if (!b) return;
+  const off = courseFmtOff(), f = b.dataset.f; off.has(f) ? off.delete(f) : off.add(f);
+  if (Object.keys(COURSE_FORMATS).every(x => off.has(x) || !C.some(s => courseFormat(s) === x))) off.clear();   // all unticked: show all
+  renderCourses();
+});
+$("courses").addEventListener("click", e => { if (e.target.closest("#course-showall")) { courseFmtOff().clear(); renderCourses(); } });
 // Places' map-pin links carry a need into In person: let pickOpt take it (it otherwise takes needs only from the address)
 $("places-main").addEventListener("click", e => { if (e.target.closest("a.mapchip")) {
   kindsOff.clear(); placesKindsOff().forEach(k => kindsOff.add(k));   /* In person shows the same kinds as the section (this click only) */

@@ -291,3 +291,6 @@ header.top { background: var(--cream); border-bottom: 0; }
 #places-main .bsh a.bmap { display: none; }
 #places-main { margin-top: -20px; }
 @media (min-width: 900px) { #panel-places > .talk { padding-top: 2px; } }   /* the first heading 12px under the kinds row, as on Phone and online */
+/* Phones: five kinds don't fit one line: three across, so the rows stay even (not one chip stretched across a row) */
+@media (max-width: 760px) { .kindrow { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); } .kindrow button { min-width: 0; } }
+@media (max-width: 379px) { .kindrow button { flex-basis: auto; } }
