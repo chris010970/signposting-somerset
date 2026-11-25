@@ -1196,7 +1196,6 @@ header.top { background: var(--cream); border-bottom: 0; }
 .tk .where svg { width: 14px; height: 14px; flex: none; margin-top: 2px; }
 .tk .phones { font-size: 12.5px; color: var(--tx2); margin: -4px 0 8px; }
 .tk .acts { display: flex; flex-wrap: nowrap; gap: 6px; align-items: center; }
-.tk .acts.out { margin-top: 10px; }   /* Phone and online: the Call button shows on closed cards too */
 .tbtn { position: relative; display: inline-flex; align-items: center; justify-content: center; gap: 6px; height: 36px; box-sizing: border-box; border-radius: 9px;
   border: 1px solid #CFDCD4; background: var(--cream); color: var(--b700); font: 600 13px var(--sans); text-decoration: none; white-space: nowrap; }
 .tbtn svg { width: 16px; height: 16px; flex: none; }
@@ -2128,7 +2127,7 @@ function ticketCard(s, p) {
           <div class="prov">${esc(prov)}</div>
           ${factsBlock(isFree(s.cost) ? { ...s, cost: "" } : s)}
           ${p.extra || ""}${p.acts ? `<div class="acts">${p.acts}</div>` : ""}
-        </div>${p.actsOut ? `<div class="acts out">${p.actsOut}</div>` : ""}
+        </div>
       </div>
     </article>`;
 }
@@ -2852,7 +2851,7 @@ function renderAbout() {
     </section>
     </div></div>
     <p class="small">Service information belongs to the providers listed. Map data © <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap</a> contributors, © <a href="https://carto.com/attributions" target="_blank" rel="noopener">CARTO</a>.</p>
-    <p class="small" id="site-version">Version: next 2026-11-25 17:40</p>
+    <p class="small" id="site-version">Version: next 2026-11-25 17:59</p>
   </article>`;
 }
 /* ---------- Places: the town listings, as a tab of the directory ----------
@@ -3145,13 +3144,13 @@ function talkCard({ s, st }) {   // Phone and online: the ticket card (next.js t
   const k = KINDS[kindOf(s)];
   const modes = split(s.mode).filter(m => m !== "in-person").map(m => m === "phone" ? "Phone" : "Online").sort((a, b) => a === "Phone" ? -1 : 1);
   const how = [...modes, s.area === "national" ? "UK-wide" : "Local"].join(" · ");
-  // The Call (or Text, or Email) button shows on closed cards too, as the number is the point here; an opened card adds the
-  // full phone line when it says more than the button (other numbers, options)
+  // An opened card: the Call (or Text, or Email) button, as on In person, and the full phone line when it says more than the
+  // button (other numbers, options)
   const btn = callButton(s), shown = btn ? btn.replace(/.*<span class="num">|<\/span>.*/gs, "") : "";
   return ticketCard(s, { cls: "tcard", stub: talkStub(s, st, new Date()), tag: `<span class="mline" title="${how}">${how}</span>`,
     sr: st.txt, afterDesc: restrictLine(s),
     extra: s.phone && s.phone.trim().replace(/^text\s+/i, "") !== shown ? `<div class="phones">${esc(s.phone)}</div>` : "",
-    actsOut: contactButtons(s, { mainEmail: true }) });
+    acts: contactButtons(s, { mainEmail: true }) });
 }
 
 /* ---------- Phone and online: the kinds row (as on In person) with "Open now only" at its end, and headings that say what's

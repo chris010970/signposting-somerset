@@ -104,7 +104,7 @@ function ticketCard(s, p) {
           <div class="prov">${esc(prov)}</div>
           ${factsBlock(isFree(s.cost) ? { ...s, cost: "" } : s)}
           ${p.extra || ""}${p.acts ? `<div class="acts">${p.acts}</div>` : ""}
-        </div>${p.actsOut ? `<div class="acts out">${p.actsOut}</div>` : ""}
+        </div>
       </div>
     </article>`;
 }

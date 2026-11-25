@@ -39,13 +39,13 @@ function talkCard({ s, st }) {   // Phone and online: the ticket card (next.js t
   const k = KINDS[kindOf(s)];
   const modes = split(s.mode).filter(m => m !== "in-person").map(m => m === "phone" ? "Phone" : "Online").sort((a, b) => a === "Phone" ? -1 : 1);
   const how = [...modes, s.area === "national" ? "UK-wide" : "Local"].join(" · ");
-  // The Call (or Text, or Email) button shows on closed cards too, as the number is the point here; an opened card adds the
-  // full phone line when it says more than the button (other numbers, options)
+  // An opened card: the Call (or Text, or Email) button, as on In person, and the full phone line when it says more than the
+  // button (other numbers, options)
   const btn = callButton(s), shown = btn ? btn.replace(/.*<span class="num">|<\/span>.*/gs, "") : "";
   return ticketCard(s, { cls: "tcard", stub: talkStub(s, st, new Date()), tag: `<span class="mline" title="${how}">${how}</span>`,
     sr: st.txt, afterDesc: restrictLine(s),
     extra: s.phone && s.phone.trim().replace(/^text\s+/i, "") !== shown ? `<div class="phones">${esc(s.phone)}</div>` : "",
-    actsOut: contactButtons(s, { mainEmail: true }) });
+    acts: contactButtons(s, { mainEmail: true }) });
 }
 
 /* ---------- Phone and online: the kinds row (as on In person) with "Open now only" at its end, and headings that say what's
