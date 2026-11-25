@@ -258,4 +258,9 @@ header.top { background: var(--cream); border-bottom: 0; }
 @media (max-width: 760px) { .tk .cpill { display: table; margin: 4px 0 0; } }
 
 /* The Places pages' cards (three across): the badge stays on one line */
-.tk .row1 .badge { white-space: nowrap; }
+@media (min-width: 900px) { .tk .row1 .badge { white-space: nowrap; } }   /* (phones: it may wrap, so the row fits) */
+
+/* Phone and online, Courses, Places: three cards across, one under each filter box (the same columns and 14px gaps as
+   the boxes); one column where the boxes stack */
+.tgrid, .blist { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; }
+@media (max-width: 899px) { .tgrid, .blist { grid-template-columns: minmax(0, 1fr); } }
