@@ -391,3 +391,75 @@ $("courses").addEventListener("click", e => {
   for (const [id, key] of [["c-where", "cwhere"], ["c-when", "cwhen"]]) { const v = q.get(key) || ""; if ([...$(id).options].some(o => o.value === v)) $(id).value = v; }
   if (!q.get("cwhen") && SAVED.book) $("c-when").value = "join";   // saved before When? existed
 })();
+
+/* ---------- Places: Support for with tick boxes ----------
+   A Places page's Support for box (built by build_places.py, with each need's count) gets the same button and panel as the
+   other tabs. One need ticked: the page's own box is set to it; several: the box is set to "All support" and the sections
+   for the other needs are hidden. The ticked needs carry over from town to town. (The standalone Places pages keep their
+   dropdown until the switch-over.) */
+function placesNeeds() { return (window.PLACES_NEEDS ||= new Set()); }
+function placesSetSel() {   // the page's own box, from the ticks; then let places-view redraw
+  const sel = $("b-support"); if (!sel) return;
+  const ok = [...placesNeeds()].filter(v => [...sel.options].some(o => o.value === v));
+  sel.value = ok.length === 1 ? ok[0] : "all";
+  sel.dispatchEvent(new Event("change"));
+}
+function placesApply() {   // several ticked: only their sections
+  const set = placesNeeds(), main = $("places-main"); if (set.size < 2) return;
+  let shown = 0;
+  main.querySelectorAll(".bsec").forEach(sec => { if (!set.has(sec.dataset.k)) sec.hidden = true; else if (!sec.hidden) shown++; });
+  const none = main.querySelector(".bnone"); if (none) none.hidden = !!shown;
+}
+function placesLabel(btn) {   // as the other tabs: Anything; one name; names that fit, then "and 3 others"; phones: "3 needs chosen"
+  const b = btn.querySelector("span"), sel = $("b-support"), order = [...sel.options].map(o => o.value);
+  const names = [...placesNeeds()].sort((x, y) => order.indexOf(x) - order.indexOf(y)).map(cap);
+  if (names.length < 2) { b.innerHTML = names[0] ? paren(names[0]) : "Anything"; return; }
+  if (matchMedia("(max-width: 760px)").matches) { b.textContent = `${names.length} needs chosen`; return; }
+  for (let k = names.length; k >= 1; k--) {
+    const rest = names.length - k;
+    b.textContent = names.slice(0, k).join(", ") + (rest ? ` and ${rest} ${rest === 1 ? "other" : "others"}` : "");
+    if (b.scrollWidth <= b.clientWidth || k === 1) return;
+  }
+}
+function placesBox() {   // after each Places page is put in place: swap its Support for dropdown for the button and panel
+  const box = $("bq-support"), sel = $("b-support"); if (!box || !sel || box.querySelector(".msel")) return;
+  const set = placesNeeds();
+  if (!set.size) {   // first time: from a link ("support=low mood,anxiety") or the page's own box
+    const v = START_ADDRESS.has("place") ? START_ADDRESS.get("support") || "" : sel.value;
+    v.split(",").map(x => x.trim()).filter(x => x && x !== "all").forEach(x => set.add(x));
+  }
+  const CHEV_D = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>';
+  sel.hidden = true; sel.tabIndex = -1; box.querySelector("label")?.removeAttribute("for");
+  box.insertAdjacentHTML("beforeend", `<button type="button" class="msel" aria-haspopup="true" aria-expanded="false"><span>Anything</span>${CHEV_D}</button><div class="mpanel" hidden></div>`);
+  const btn = box.querySelector(".msel"), panel = box.querySelector(".mpanel");
+  const close = () => { panel.hidden = true; btn.setAttribute("aria-expanded", "false"); };
+  const place = () => { const r = box.getBoundingClientRect(); panel.style.left = Math.max(16, Math.min(r.left, innerWidth - 16 - panel.offsetWidth)) + "px";
+    panel.style.top = r.bottom + 6 + "px"; panel.style.setProperty("--room", Math.max(200, innerHeight - r.bottom - 90) + "px"); };
+  const draw = () => {   // the page's own groups and needs, with their counts here
+    panel.innerHTML = `<div class="mgroups">${[...sel.querySelectorAll("optgroup")].map(g => `<fieldset><legend>${esc(g.label)}</legend>` +
+      [...g.querySelectorAll("option")].map(o => { const n = (o.textContent.match(/\((\d+)\)\s*$/) || [])[1];
+        return `<label><input type="checkbox" value="${esc(o.value)}"${set.has(o.value) ? " checked" : ""}><span>${paren(cap(o.value))}${n ? ` <em class="mcount">${n}</em>` : ""}</span></label>`; }).join("") +
+      `</fieldset>`).join("")}</div><div class="mfoot"><button type="button" class="mclear">Clear</button><button type="button" class="mdone">Done</button></div>`;
+  };
+  const update = () => { placesSetSel(); placesApply(); placesLabel(btn); };
+  btn.addEventListener("click", () => { if (!panel.hidden) return close(); draw(); panel.hidden = false; place(); btn.setAttribute("aria-expanded", "true");
+    panel.querySelector("input")?.focus({ preventScroll: true }); });
+  panel.addEventListener("change", e => { const i = e.target; if (i.type !== "checkbox") return; i.checked ? set.add(i.value) : set.delete(i.value); update(); });
+  panel.addEventListener("click", e => {
+    if (e.target.closest(".mclear")) { set.clear(); panel.querySelectorAll("input").forEach(i => { i.checked = false; }); update(); }
+    if (e.target.closest(".mdone")) { close(); btn.focus(); }
+  });
+  document.addEventListener("click", e => { if (!panel.hidden && !box.contains(e.target)) close(); });
+  document.addEventListener("keydown", e => { if (e.key === "Escape" && !panel.hidden) { close(); btn.focus(); } });
+  $("b-when")?.addEventListener("change", () => placesApply());   // places-view redraws for When?: hide again
+  update();
+}
+new MutationObserver(placesBox).observe($("hdr-towns"), { childList: true });
+// The Places tab's address: the ticked needs ("support=low mood,anxiety")
+function placesQuery(q) {   // (replaces places-tab.js's: the same, with the ticks)
+  const s = placesState() || {};
+  if (placeName(s.href)) q.set("place", placeName(s.href));
+  const needs = [...placesNeeds()].join(",");
+  if (needs) q.set("support", needs); else if (s.support && s.support !== "all") q.set("support", s.support);
+  if (s.when && s.when !== "any") q.set("when", s.when);
+}

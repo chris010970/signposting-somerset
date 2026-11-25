@@ -264,3 +264,5 @@ header.top { background: var(--cream); border-bottom: 0; }
    the boxes); one column where the boxes stack */
 .tgrid, .blist { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; }
 @media (max-width: 899px) { .tgrid, .blist { grid-template-columns: minmax(0, 1fr); } }
+.mpanel .mcount { font-style: normal; font-size: 12px; color: #8A837D; margin-left: 4px; font-variant-numeric: tabular-nums; }
+#bq-support { position: relative; }
