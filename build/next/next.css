@@ -266,3 +266,28 @@ header.top { background: var(--cream); border-bottom: 0; }
 @media (max-width: 899px) { .tgrid, .blist { grid-template-columns: minmax(0, 1fr); } }
 .mpanel .mcount { font-style: normal; font-size: 12px; color: #8A837D; margin-left: 4px; font-variant-numeric: tabular-nums; }
 #bq-support { position: relative; }
+
+/* Places: the kinds row under the filter boxes, as on the other tabs */
+#hdr-places .krow { margin-top: 10px; }
+/* Places: "Show on map" at the right of each need's heading, with dots in the colours of the kinds there ("Map" on phones) */
+#places-main .bsh { display: flex; align-items: center; }
+.mapchip { margin-left: auto; flex: none; display: inline-flex; align-items: center; gap: 8px; height: 30px; box-sizing: border-box; padding: 0 12px 0 7px;
+  border-radius: 999px; border: 1px solid var(--edge); background: #fff; font: 600 12.5px var(--sans); color: var(--b700); text-decoration: none; }
+.mapchip:hover, .mapchip:focus-visible { border-color: var(--b500); background: var(--b50); }
+.mapchip .dots { display: inline-flex; }
+.mapchip .dots i { width: 15px; height: 15px; border-radius: 50%; border: 2px solid #fff; margin-left: -6px; box-sizing: border-box; }
+.mapchip .dots i:first-child { margin-left: 0; }
+.mapchip .sh { display: none; }
+@media (max-width: 760px) { .mapchip .lg { display: none; } .mapchip .sh { display: inline; } #places-main .bsh h2 { min-width: 0; } }
+#hdr-course .krow { margin-top: 10px; }
+/* Places: each need's heading like the other tabs' ("Anxiety  13 services found") */
+.bsh h2 span { font-weight: 500; margin-left: 8px; }
+
+/* Places: no title line; each need's heading the size and spacing of the other tabs' (.gh) */
+#places-main .bhead { display: none; }
+#places-main .bsh { border-bottom: 0; padding: 0; margin: 20px 4px 10px; }
+#places-main .bsh h2 { font-size: 18px; }
+#places-main .bsh h2 span { font-family: var(--sans); font-size: 12px; color: var(--muted); font-weight: 500; margin-left: 8px; }
+#places-main .bsh a.bmap { display: none; }
+#places-main { margin-top: -20px; }
+@media (min-width: 900px) { #panel-places > .talk { padding-top: 2px; } }   /* the first heading 12px under the kinds row, as on Phone and online */

@@ -215,7 +215,7 @@ function pickOpt(sel, v) {   // (replaces links.js's: the same, and for Support 
   if (tab) {
     // Needs come only from the address: opening the page without "support=" starts with nothing ticked (not this visit's
     // earlier choices)
-    if (!START_ADDRESS.has("support")) return false;
+    if (!START_ADDRESS.has("support") && !window.LINK_NEEDS) return false;   // (LINK_NEEDS: a link inside the page, e.g. Places' map-pin)
     const vals = String(v).split(",").map(x => x.trim().toLowerCase()).filter(ok);
     if (!vals.length) return false;
     const set = needsOf(tab); set.clear(); vals.forEach(x => set.add(ok(x).value)); setNeedsSel(tab);
@@ -356,6 +356,7 @@ function renderCourses() {
   $("q-csupport").classList.toggle("on", !!sup); $("q-cwhere").classList.toggle("on", !!where); $("q-cwhen").classList.toggle("on", !!when);
   $("c-book").checked = when === "join"; $("c-fmt").value = where === "online" ? "online" : "";   // (the hidden boxes the shared code saves)
   needsLabel("course");
+  $("kindrow-course").innerHTML = kindChips(C, new Set());   // one kind here: shown for the same look as the other tabs
   const at = s => where === "online" ? split(s.mode).includes("online") : split(s.mode).includes("in-person") && s.area === where;
   let rows = C.filter(s => (!sup || s._sf.includes(sup)) && (!where || at(s))).map(s => ({ s, ci: courseInfo(s, now) }));
   rows = rows.filter(r => courseWhen(r.ci, when, now));
@@ -404,12 +405,63 @@ function placesSetSel() {   // the page's own box, from the ticks; then let plac
   sel.value = ok.length === 1 ? ok[0] : "all";
   sel.dispatchEvent(new Event("change"));
 }
-function placesApply() {   // several ticked: only their sections
-  const set = placesNeeds(), main = $("places-main"); if (set.size < 2) return;
+function placesKindsOff() { return (window.PLACES_KINDS_OFF ||= new Set()); }
+// After places-view has drawn (it shows the cards for 1. Support for and 3. When?): the kinds unticked and, with several
+// needs ticked, the other needs' sections come off too; then the counts are redone and the "In person" links tidied
+function placesApply() {
+  const set = placesNeeds(), off = placesKindsOff(), main = $("places-main");
+  const rec = li => PLACE_RECS.find(s => s.id === "p" + li.dataset.i);
   let shown = 0;
-  main.querySelectorAll(".bsec").forEach(sec => { if (!set.has(sec.dataset.k)) sec.hidden = true; else if (!sec.hidden) shown++; });
-  const none = main.querySelector(".bnone"); if (none) none.hidden = !!shown;
+  main.querySelectorAll(".bsec").forEach(sec => {
+    if (sec.hidden && !(set.size > 1 && set.has(sec.dataset.k))) return;   // places-view left it out (or another need)
+    if (set.size > 1 && !set.has(sec.dataset.k)) { sec.hidden = true; return; }
+    let n = 0;
+    sec.querySelectorAll("h3").forEach(h => {
+      const ul = h.nextElementSibling; let m = 0;
+      ul.querySelectorAll("li[data-i]").forEach(li => {
+        if (li.hidden) return;
+        const s = rec(li); if (s && off.has(kindOf(s))) { li.hidden = true; return; }
+        m++;
+      });
+      h.hidden = ul.hidden = !m; h.textContent = h.dataset.l + " · " + m; n += m;
+    });
+    // The heading, as the other tabs': "Anxiety in Frome  13 services found"
+    const h2 = sec.querySelector(".bsh h2");
+    if (h2) {
+      if (!h2.dataset.need) h2.dataset.need = h2.firstChild.textContent.trim();
+      const town = $("b-town")?.selectedOptions[0]?.textContent.trim() || "";
+      h2.innerHTML = `${esc(h2.dataset.need)}${town ? " in " + esc(town) : ""}<span>${n} ${n === 1 ? "service" : "services"} found</span>`;
+    }
+    sec.hidden = !n; if (n) shown++;
+  });
+  const none = main.querySelector(".bnone"); if (none) none.hidden = !!shown || !main.querySelector(".bsec");
+  $("kindrow-places").innerHTML = kindChips(PLACE_RECS, off);
+  placesLinks();
 }
+// "Show on map" by each need's heading: opens In person on the same town, that need and 3. When? (the page's own
+// "In person view →" link, which places-view keeps up to date, pointed here rather than at the directory the pages were
+// built for). Its dots: the kinds showing in that section, like the map's pins
+function placesLinks() {
+  $("places-main").querySelectorAll(".bsec:not([hidden])").forEach(sec => {
+    const a = sec.querySelector("a.bmap"); if (!a) return;
+    let chip = sec.querySelector("a.mapchip");
+    if (!chip) {
+      const need = sec.querySelector(".bsh h2")?.dataset.need || "these";
+      a.insertAdjacentHTML("afterend", `<a class="mapchip" aria-label="Show ${esc(need)} on the In person map"><span class="dots" aria-hidden="true"></span><span class="lg">Show on map</span><span class="sh">Map</span></a>`);
+      chip = sec.querySelector("a.mapchip");
+    }
+    const u = new URL(a.getAttribute("href"), location.href); u.pathname = location.pathname;
+    chip.href = u.pathname + u.search + u.hash;
+    const cols = [...new Set([...sec.querySelectorAll("li[data-i]:not([hidden]) .card")].map(c => c.style.getPropertyValue("--k")).filter(Boolean))];
+    chip.querySelector(".dots").innerHTML = cols.map(c => `<i style="background:${c}"></i>`).join("");
+  });
+}
+$("kindrow-places").addEventListener("click", e => {
+  const b = e.target.closest("button[data-k]"); if (!b) return;
+  const k = +b.dataset.k, off = placesKindsOff(); off.has(k) ? off.delete(k) : off.add(k);
+  if (KINDS.every((_, i) => off.has(i) || !PLACE_RECS.some(x => kindOf(x) === i))) off.clear();   // all unticked: show all
+  placesSetSel(); placesApply();
+});
 function placesLabel(btn) {   // as the other tabs: Anything; one name; names that fit, then "and 3 others"; phones: "3 needs chosen"
   const b = btn.querySelector("span"), sel = $("b-support"), order = [...sel.options].map(o => o.value);
   const names = [...placesNeeds()].sort((x, y) => order.indexOf(x) - order.indexOf(y)).map(cap);
@@ -441,7 +493,7 @@ function placesBox() {   // after each Places page is put in place: swap its Sup
         return `<label><input type="checkbox" value="${esc(o.value)}"${set.has(o.value) ? " checked" : ""}><span>${paren(cap(o.value))}${n ? ` <em class="mcount">${n}</em>` : ""}</span></label>`; }).join("") +
       `</fieldset>`).join("")}</div><div class="mfoot"><button type="button" class="mclear">Clear</button><button type="button" class="mdone">Done</button></div>`;
   };
-  const update = () => { placesSetSel(); placesApply(); placesLabel(btn); };
+  const update = () => { placesSetSel(); placesApply(); placesLabel(btn); };   // (placesSetSel makes places-view redraw first)
   btn.addEventListener("click", () => { if (!panel.hidden) return close(); draw(); panel.hidden = false; place(); btn.setAttribute("aria-expanded", "true");
     panel.querySelector("input")?.focus({ preventScroll: true }); });
   panel.addEventListener("change", e => { const i = e.target; if (i.type !== "checkbox") return; i.checked ? set.add(i.value) : set.delete(i.value); update(); });
@@ -451,7 +503,7 @@ function placesBox() {   // after each Places page is put in place: swap its Sup
   });
   document.addEventListener("click", e => { if (!panel.hidden && !box.contains(e.target)) close(); });
   document.addEventListener("keydown", e => { if (e.key === "Escape" && !panel.hidden) { close(); btn.focus(); } });
-  $("b-when")?.addEventListener("change", () => placesApply());   // places-view redraws for When?: hide again
+  $("b-when")?.addEventListener("change", () => placesApply());   // places-view redraws for When?: apply again
   update();
 }
 new MutationObserver(placesBox).observe($("hdr-towns"), { childList: true });
@@ -463,3 +515,7 @@ function placesQuery(q) {   // (replaces places-tab.js's: the same, with the tic
   if (needs) q.set("support", needs); else if (s.support && s.support !== "all") q.set("support", s.support);
   if (s.when && s.when !== "any") q.set("when", s.when);
 }
+// Courses' kinds row: one kind, so unticking it would empty the list: it stays ticked (as unticking every kind does elsewhere)
+$("kindrow-course").addEventListener("click", e => { if (e.target.closest("button[data-k]")) renderCourses(); });
+// Places' map-pin links carry a need into In person: let pickOpt take it (it otherwise takes needs only from the address)
+$("places-main").addEventListener("click", e => { if (e.target.closest("a.mapchip")) { window.LINK_NEEDS = true; setTimeout(() => { window.LINK_NEEDS = false; }, 0); } }, true);
