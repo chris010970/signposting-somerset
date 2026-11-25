@@ -270,7 +270,7 @@ function recordsFromCSV(text) {
   }
   return { recs };
 }
-const VERSION = "2026-11-23 22:03";        // set when the worker is built; shown on the Assist tab
+const VERSION = "2026-11-25 10:09";        // set when the worker is built; shown on the Assist tab
 const DEFAULT_MODEL = "claude-sonnet-5-5";
 const MAX_PER_HOUR = 30;               // per visitor (best effort: counts reset when Cloudflare restarts the Worker)
 const RISK = /suicid|kill (my|him|her|them)sel|end (my|his|her|their) life|self[- ]?harm|cutting (my|him|her)|overdos|want(s|ed)? to die|no reason to live|better off dead/i;
@@ -312,6 +312,22 @@ const hits = new Map();
 const badCodes = new Map();
 const MAX_BAD_CODES = 10;              // wrong codes per visitor per hour
 
+// ---------- tasks ----------
+// What each of the relay's addresses does. The relay itself (below) does what every task shares: only the site's own pages,
+// the access code where it's needed, the per-visitor limit and reading the request. A new AI feature is a new entry here.
+//   code: needs the access code;  limit: counts toward the per-visitor limit;  body: reads a JSON body (default true)
+//   run(body, { env, reply, cors }) gives the Response
+const TASKS = {
+  verify: { code: true, limit: false, body: false, run: (body, { reply }) => reply({ ok: true }) },   // the Assist tab's unlock check: no AI
+  plan: { code: true, limit: true, run: planTask },                                                    // Assist's support plan
+  web: { code: true, limit: true, run: (body, { env, reply }) => webSearch(body, env, reply) },         // Assist's online search for the gap
+};
+// The address's last part names the task (".../web", ".../verify"); anything else is a plan, as the Assist page has always asked
+function taskFor(url) { const last = new URL(url).pathname.replace(/\/+$/, "").split("/").pop(); return Object.hasOwn(TASKS, last) ? last : "plan"; }
+// Each task's model: MODEL_<TASK> in Cloudflare (e.g. MODEL_PLAN), else MODEL, else the default
+function modelFor(env, task) { return env["MODEL_" + task.toUpperCase()] || env.MODEL || DEFAULT_MODEL; }
+
+// ---------- the relay ----------
 export default {
   async fetch(request, env) {
     // One or more allowed site addresses, comma-separated; the matching one is echoed back
@@ -330,123 +346,133 @@ export default {
     if (request.method === "OPTIONS") return new Response(null, { status: 204, headers: cors });
     if (request.method !== "POST") return reply({ error: "not_found" }, 404);
     if (allowed.length && !allowed.includes(from)) return reply({ error: "forbidden" }, 403);
-    // Wrong codes are limited per visitor, so the code can't be guessed by trying many (best effort, as below)
+    const task = TASKS[taskFor(request.url)];
     const ip = request.headers.get("CF-Connecting-IP") || "?";
     const ms = Date.now(), hour = 3600e3;   // (for the per-visitor limits)
-    const fails = (badCodes.get(ip) || []).filter(t => ms - t < hour);
-    if (fails.length >= MAX_BAD_CODES) return reply({ error: "rate_limited" }, 429);
-    if (!env.ACCESS_CODE || request.headers.get("X-Access-Code") !== env.ACCESS_CODE) { fails.push(ms); badCodes.set(ip, fails); return reply({ error: "bad_code" }, 401); }
-
-    // Unlock check from the site's Assist tab: confirms the code without using the AI
-    if (new URL(request.url).pathname.replace(/\/+$/, "").endsWith("/verify")) return reply({ ok: true });
-
-    const isWeb = new URL(request.url).pathname.replace(/\/+$/, "").endsWith("/web");
-
-    // Simple per-visitor limit
-    const mine = (hits.get(ip) || []).filter(t => ms - t < hour);
-    if (mine.length >= MAX_PER_HOUR) return reply({ error: "rate_limited" }, 429);
-    mine.push(ms); hits.set(ip, mine);
-
-    let body;
-    try { body = await request.json(); } catch { return reply({ error: "bad_request" }, 400); }
-    if (isWeb) return webSearch(body, env, reply);
-    const need = String(body.need || "").trim().slice(0, 2000);
-    const followups = (Array.isArray(body.followups) ? body.followups : []).map(s => String(s).trim().slice(0, 300)).filter(Boolean).slice(-5);
-    const previous = (Array.isArray(body.previous) ? body.previous : []).map(s => String(s).slice(0, 120)).slice(0, 10);
-    const town = String(body.town || "");
-    const radius = Math.min(Math.max(Number(body.radius) || 8, 1), 25);
-    const remoteOnly = town === "__remote";
-    const remote = remoteOnly || body.remote !== false;
-    if (!need) return reply({ error: "no_need" }, 400);
-    // A point picked on the map: accept only a rounded point (about 1 km) inside the area, and describe it by the nearest town
-    let centre = null, placeName = town;
-    if (town === "__pt") {
-      const la = Math.round(Number(body.lat) * 100) / 100, lo = Math.round(Number(body.lon) * 100) / 100;
-      if (!(la > 50.5 && la < 51.8 && lo > -4.1 && lo < -1.9)) return reply({ error: "bad_town" }, 400);
-      centre = { lat: la, lon: lo };
-      const near = Object.entries(TOWNS).map(([t, [lat, lon]]) => [t, miles(centre, { lat, lon })]).sort((x, y) => x[1] - y[1])[0];
-      placeName = near ? (near[1] < 1 ? near[0] : `a point about ${Math.round(near[1])} mile${Math.round(near[1]) === 1 ? "" : "s"} from ${near[0]}`) : "the chosen point";
-    } else if (!remoteOnly) {
-      if (!TOWNS[town]) return reply({ error: "bad_town" }, 400);
-      centre = { lat: TOWNS[town][0], lon: TOWNS[town][1] };
+    if (task.code) {
+      // Wrong codes are limited per visitor, so the code can't be guessed by trying many (best effort, as below)
+      const fails = (badCodes.get(ip) || []).filter(t => ms - t < hour);
+      if (fails.length >= MAX_BAD_CODES) return reply({ error: "rate_limited" }, 429);
+      if (!env.ACCESS_CODE || request.headers.get("X-Access-Code") !== env.ACCESS_CODE) { fails.push(ms); badCodes.set(ip, fails); return reply({ error: "bad_code" }, 401); }
     }
-
-    const now = ukNow();
-    let recs;
-    try { recs = await records(env); } catch { return reply({ error: "sheet_unavailable" }, 502); }
-
-    // Optional "Support for" choice from the page: only services tagged with it
-    const support = String(body.support || "").trim().toLowerCase().slice(0, 40);
-    // Which council area the place is in, from the nearest located records (so Assist can respect "X residents only")
-    const homeArea = centre ? areaOf(recs, centre) : "";
-    let cands = candidates(recs, remoteOnly ? null : centre, radius, remote, now);
-    if (support) cands = cands.filter(c => String(c.s.support_for || "").toLowerCase().split(";").map(x => x.trim()).includes(support));
-    const t0 = Date.now(), timing = {};
-    const place = (remoteOnly ? "phone and online only" : `within ${radius} miles of ${placeName}${homeArea ? ` (${homeArea})` : ""}`) + (support ? `, for ${support}` : "");
-    const nNear = cands.filter(c => c.d !== null).length;
-    const scope = { place, total: cands.length, near: nNear, remote: cands.length - nNear, records: recs.length, timing };
-    const riskWords = RISK.test([need, ...followups].join(" "));
-    if (!cands.length) return reply({ reading: "", risk: riskWords, picks: [], gaps: "No services found for that area.", questions: [], scope });
-
-    const prompt = buildPrompt(need, followups, previous, place, cands, now);
-    timing.prompt_chars = prompt.length;
-    timing.model = env.MODEL || DEFAULT_MODEL;
-
-    // Turn the AI's text into the plan the page shows. Only real records from the list we sent are kept.
-    const finish = (text) => {
-      let out;
-      try { out = JSON.parse(text.slice(text.indexOf("{"), text.lastIndexOf("}") + 1)); } catch { console.log("Unreadable answer, length", text.length, "stop", timing.stop); return { error: "bad_answer", detail: timing.stop === "max_tokens" ? "The plan ran out of room" : "" }; }
-      const byId = new Map(cands.map(c => [c.id, c]));
-      const picks = (out.off_topic && !riskWords ? [] : Array.isArray(out.picks) ? out.picks : [])
-        .map(p => ({ step: String(p.step || "Next step"), why: String(p.why || "").slice(0, 400), c: byId.get(Number(p.id)) }))
-        .filter(p => p.c)
-        .map(p => ({ step: p.step, why: p.why, distance: p.c.d === null || !located(p.c.s) ? null : Math.round(p.c.d * 10) / 10, record: publicRecord(p.c.s) }));
-      return {
-        off_topic: !!out.off_topic && !riskWords,
-        reading: String(out.reading || "").slice(0, 600),
-        safety: String(out.safety || "").slice(0, 400),
-        core_needs: (Array.isArray(out.core_needs) ? out.core_needs : []).map(x => String(x).slice(0, 60)).slice(0, 3),
-        core_covered: ["yes", "partly", "no"].includes(String(out.core_covered).toLowerCase()) ? String(out.core_covered).toLowerCase() : "partly",
-        search_for: String(out.search_for || "").slice(0, 120),
-        constraints: String(out.constraints || "").slice(0, 160),
-        place: placeName,
-        risk: !!out.risk || riskWords,
-        picks,
-        gaps: String(out.gaps || "").slice(0, 400),
-        questions: (Array.isArray(out.questions) ? out.questions : []).map(q => String(q).slice(0, 250)).slice(0, 2),
-        scope,
-      };
-    };
-    const run = async (progress) => {
-      const ai = await askClaude(env, prompt, timing, progress);
-      timing.total_ms = Date.now() - t0;
-      console.log(JSON.stringify({ assist_timing: timing, candidates: cands.length }));
-      return ai.error ? ai : finish(ai.text);
-    };
-
-    // Pages that ask for it get progress messages as the AI works, then the finished plan as the last line.
-    // The plan itself is never sent in pieces: it's checked and sent whole, as before.
-    if (body.stream === true) {
-      const { readable, writable } = new TransformStream();
-      const w = writable.getWriter(), enc = new TextEncoder();
-      const send = o => w.write(enc.encode(JSON.stringify({ ...o, version: VERSION }) + "\n")).catch(() => {});
-      (async () => {
-        try {
-          send({ stage: "reading", services: cands.length });
-          const res = await run(st => send(st));
-          await send(res.error ? res : { done: true, result: res });
-        } catch (e) { console.log("stream failed", String(e)); await send({ error: "ai_error", detail: "Couldn't reach the AI service" }); }
-        finally { w.close().catch(() => {}); }
-      })();
-      return new Response(readable, { headers: { ...cors, "Content-Type": "application/x-ndjson", "Cache-Control": "no-store" } });
+    if (task.limit) {   // simple per-visitor limit
+      const mine = (hits.get(ip) || []).filter(t => ms - t < hour);
+      if (mine.length >= MAX_PER_HOUR) return reply({ error: "rate_limited" }, 429);
+      mine.push(ms); hits.set(ip, mine);
     }
-    const res = await run(() => {});
-    if (res.error) return reply(res, res.error === "busy" ? 503 : 502);
-    return reply(res);
+    let body = {};
+    if (task.body !== false) { try { body = await request.json(); } catch { return reply({ error: "bad_request" }, 400); } }
+    return task.run(body, { env, reply, cors });
   },
 };
 
-// ---------- the AI call ----------
+// ---------- the plan (Assist) ----------
+async function planTask(body, { env, reply, cors }) {
+  const need = String(body.need || "").trim().slice(0, 2000);
+  const followups = (Array.isArray(body.followups) ? body.followups : []).map(s => String(s).trim().slice(0, 300)).filter(Boolean).slice(-5);
+  const previous = (Array.isArray(body.previous) ? body.previous : []).map(s => String(s).slice(0, 120)).slice(0, 10);
+  const town = String(body.town || "");
+  const radius = Math.min(Math.max(Number(body.radius) || 8, 1), 25);
+  const remoteOnly = town === "__remote";
+  const remote = remoteOnly || body.remote !== false;
+  if (!need) return reply({ error: "no_need" }, 400);
+  // A point picked on the map: accept only a rounded point (about 1 km) inside the area, and describe it by the nearest town
+  let centre = null, placeName = town;
+  if (town === "__pt") {
+    const la = Math.round(Number(body.lat) * 100) / 100, lo = Math.round(Number(body.lon) * 100) / 100;
+    if (!(la > 50.5 && la < 51.8 && lo > -4.1 && lo < -1.9)) return reply({ error: "bad_town" }, 400);
+    centre = { lat: la, lon: lo };
+    const near = Object.entries(TOWNS).map(([t, [lat, lon]]) => [t, miles(centre, { lat, lon })]).sort((x, y) => x[1] - y[1])[0];
+    placeName = near ? (near[1] < 1 ? near[0] : `a point about ${Math.round(near[1])} mile${Math.round(near[1]) === 1 ? "" : "s"} from ${near[0]}`) : "the chosen point";
+  } else if (!remoteOnly) {
+    if (!TOWNS[town]) return reply({ error: "bad_town" }, 400);
+    centre = { lat: TOWNS[town][0], lon: TOWNS[town][1] };
+  }
+
+  const now = ukNow();
+  let recs;
+  try { recs = await records(env); } catch { return reply({ error: "sheet_unavailable" }, 502); }
+
+  // Optional "Support for" choice from the page: only services tagged with it
+  const support = String(body.support || "").trim().toLowerCase().slice(0, 40);
+  // Which council area the place is in, from the nearest located records (so Assist can respect "X residents only")
+  const homeArea = centre ? areaOf(recs, centre) : "";
+  let cands = candidates(recs, remoteOnly ? null : centre, radius, remote, now);
+  if (support) cands = cands.filter(c => String(c.s.support_for || "").toLowerCase().split(";").map(x => x.trim()).includes(support));
+  const t0 = Date.now(), timing = {};
+  const place = (remoteOnly ? "phone and online only" : `within ${radius} miles of ${placeName}${homeArea ? ` (${homeArea})` : ""}`) + (support ? `, for ${support}` : "");
+  const nNear = cands.filter(c => c.d !== null).length;
+  const scope = { place, total: cands.length, near: nNear, remote: cands.length - nNear, records: recs.length, timing };
+  const riskWords = RISK.test([need, ...followups].join(" "));
+  if (!cands.length) return reply({ reading: "", risk: riskWords, picks: [], gaps: "No services found for that area.", questions: [], scope });
+
+  const prompt = buildPrompt(need, followups, previous, place, cands, now);
+  timing.prompt_chars = prompt.length;
+  timing.model = modelFor(env, "plan");
+
+  // Turn the AI's text into the plan the page shows. Only real records from the list we sent are kept.
+  const finish = (text) => {
+    let out;
+    try { out = JSON.parse(text.slice(text.indexOf("{"), text.lastIndexOf("}") + 1)); } catch { console.log("Unreadable answer, length", text.length, "stop", timing.stop); return { error: "bad_answer", detail: timing.stop === "max_tokens" ? "The plan ran out of room" : "" }; }
+    const byId = new Map(cands.map(c => [c.id, c]));
+    const picks = (out.off_topic && !riskWords ? [] : Array.isArray(out.picks) ? out.picks : [])
+      .map(p => ({ step: String(p.step || "Next step"), why: String(p.why || "").slice(0, 400), c: byId.get(Number(p.id)) }))
+      .filter(p => p.c)
+      .map(p => ({ step: p.step, why: p.why, distance: p.c.d === null || !located(p.c.s) ? null : Math.round(p.c.d * 10) / 10, record: publicRecord(p.c.s) }));
+    return {
+      off_topic: !!out.off_topic && !riskWords,
+      reading: String(out.reading || "").slice(0, 600),
+      safety: String(out.safety || "").slice(0, 400),
+      core_needs: (Array.isArray(out.core_needs) ? out.core_needs : []).map(x => String(x).slice(0, 60)).slice(0, 3),
+      core_covered: ["yes", "partly", "no"].includes(String(out.core_covered).toLowerCase()) ? String(out.core_covered).toLowerCase() : "partly",
+      search_for: String(out.search_for || "").slice(0, 120),
+      constraints: String(out.constraints || "").slice(0, 160),
+      place: placeName,
+      risk: !!out.risk || riskWords,
+      picks,
+      gaps: String(out.gaps || "").slice(0, 400),
+      questions: (Array.isArray(out.questions) ? out.questions : []).map(q => String(q).slice(0, 250)).slice(0, 2),
+      scope,
+    };
+  };
+  const run = async (progress) => {
+    const ai = await ask(env, { model: modelFor(env, "plan"), max_tokens: 8000, stream: true, timeout: 60000, options: aiOptions(env),
+      messages: [{ role: "user", content: prompt }] }, timing, progress);
+    timing.total_ms = Date.now() - t0;
+    console.log(JSON.stringify({ assist_timing: timing, candidates: cands.length }));
+    return ai.error ? ai : finish(ai.text);
+  };
+
+  // Pages that ask for it get progress messages as the AI works, then the finished plan as the last line.
+  // The plan itself is never sent in pieces: it's checked and sent whole, as before.
+  if (body.stream === true) {
+    const { readable, writable } = new TransformStream();
+    const w = writable.getWriter(), enc = new TextEncoder();
+    const send = o => w.write(enc.encode(JSON.stringify({ ...o, version: VERSION }) + "\n")).catch(() => {});
+    (async () => {
+      try {
+        send({ stage: "reading", services: cands.length });
+        const res = await run(st => send(st));
+        await send(res.error ? res : { done: true, result: res });
+      } catch (e) { console.log("stream failed", String(e)); await send({ error: "ai_error", detail: "Couldn't reach the AI service" }); }
+      finally { w.close().catch(() => {}); }
+    })();
+    return new Response(readable, { headers: { ...cors, "Content-Type": "application/x-ndjson", "Cache-Control": "no-store" } });
+  }
+  const res = await run(() => {});
+  if (res.error) return reply(res, res.error === "busy" ? 503 : 502);
+  return reply(res);
+}
+
+// ---------- the AI service ----------
+// ask(env, request, timing, progress) -> { text } (streamed) or { data } (the service's whole answer), or { error, status, detail }.
+//   request: { model, max_tokens, messages, tools, stream, timeout (ms), options (more settings for the service) }
+// Anthropic only for now. Another service (Gemini, DeepSeek...) would be another entry in PROVIDERS, chosen with PROVIDER in
+// Cloudflare, taking the same request and giving the same answer.
+const PROVIDERS = { anthropic: anthropicAsk };
+function ask(env, req, timing = {}, progress = () => {}) {
+  return (PROVIDERS[String(env.PROVIDER || "anthropic").toLowerCase()] || PROVIDERS.anthropic)(env, req, timing, progress);
+}
 // Optional settings in Cloudflare, to trade thinking time for speed. Unset = the model's defaults.
 //   THINKING = off     -> no thinking before the answer ("between_tools"; Assist uses no tools)
 //   EFFORT   = low | medium | high
@@ -458,17 +484,18 @@ function aiOptions(env) {
   return o;
 }
 
-// Always streamed from Anthropic, so we know when it starts thinking and writing (for progress messages
-// and timings). The text is collected and only used once complete.
-async function askClaude(env, prompt, timing, progress) {
+// Anthropic's Messages API. Streamed requests are read as they arrive, so we know when it starts thinking and writing
+// (for progress messages and timings); the text is only used once complete.
+async function anthropicAsk(env, req, timing, progress) {
   const t = Date.now();
   let r;
   try {
     r = await fetch("https://api.anthropic.com/v1/messages", {
       method: "POST",
       headers: { "x-api-key": env.ANTHROPIC_API_KEY, "anthropic-version": "2023-06-01", "content-type": "application/json" },
-      body: JSON.stringify({ model: env.MODEL || DEFAULT_MODEL, max_tokens: 8000, stream: true, messages: [{ role: "user", content: prompt }], ...aiOptions(env) }),
-      signal: AbortSignal.timeout(60000),
+      body: JSON.stringify({ model: req.model, max_tokens: req.max_tokens, ...(req.stream ? { stream: true } : {}), messages: req.messages,
+        ...(req.tools ? { tools: req.tools } : {}), ...(req.options || {}) }),
+      signal: AbortSignal.timeout(req.timeout || 60000),
     });
   } catch (e) { console.log("Claude API call failed", String(e)); return { error: "ai_error", detail: "Couldn't reach the AI service" }; }
   if (r.status === 429 || r.status === 529) return { error: "busy" };
@@ -479,6 +506,7 @@ async function askClaude(env, prompt, timing, progress) {
     console.log("Claude API error", r.status, detail);
     return { error: "ai_error", status: r.status, detail };
   }
+  if (!req.stream) return { data: await r.json() };
   let text = "", thinkingChars = 0, picks = 0, buf = "", kind = "";
   const blocks = [];
   const reader = r.body.getReader(), dec = new TextDecoder();
@@ -677,19 +705,10 @@ Reply with only this JSON:
   let messages = [{ role: "user", content: prompt }], content = [];
   try {
     for (let turn = 0; turn < 3; turn++) {
-      const r = await fetch("https://api.anthropic.com/v1/messages", {
-        method: "POST",
-        headers: { "x-api-key": env.ANTHROPIC_API_KEY, "anthropic-version": "2023-06-01", "content-type": "application/json" },
-        body: JSON.stringify({ model: env.MODEL || DEFAULT_MODEL, max_tokens: 3000, messages, tools }),
-        signal: AbortSignal.timeout(90000),
-      });
-      if (r.status === 429 || r.status === 529) return reply({ error: "busy" }, 503);
-      if (!r.ok) {
-        let detail = ""; try { const e = await r.json(); detail = String(e?.error?.message || e?.error?.type || "").slice(0, 300); } catch {}
-        console.log("Claude API error (web)", r.status, detail);
-        return reply({ error: "ai_error", status: r.status, detail }, 502);
-      }
-      const data = await r.json();
+      const res = await ask(env, { model: modelFor(env, "web"), max_tokens: 3000, messages, tools, timeout: 90000 });
+      if (res.error === "busy") return reply({ error: "busy" }, 503);
+      if (res.error) return reply(res, 502);
+      const data = res.data;
       content = content.concat(data.content || []);
       if (data.stop_reason !== "pause_turn") break;
       messages = [{ role: "user", content: prompt }, { role: "assistant", content: data.content }];

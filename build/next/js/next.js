@@ -66,10 +66,13 @@ function timeNotes(s, nx) {
 }
 
 // The call button: the first number in the phone field, with the number shown (on a computer you read it; on a phone you tap it)
+// The main button: Call with the first number; a text-only line ("Text 85258", "Text Hello to 80899") gets Text with its number
 function callButton(s) {
   if (!s.phone) return "";
+  if (/^text/i.test(s.phone)) { const m = s.phone.match(/\d[\d ]*\d/), n = m ? m[0].replace(/\s/g, "") : "";
+    return n ? `<a class="tbtn pri" href="sms:${n}">${T_ICON.phone}Text <span class="num">${esc(m[0])}</span></a>` : ""; }
   const shown = s.phone.split(" (")[0].split(" or ")[0].split(";")[0].trim(), n = shown.replace(/[^\d+]/g, "");
-  if (/^text/i.test(s.phone) || n.length < 5) return "";
+  if (n.length < 3) return "";   // (3: NHS 111)
   return `<a class="tbtn pri" href="tel:${n}">${T_ICON.phone}Call <span class="num">${esc(shown)}</span></a>`;
 }
 const iconLink = (href, icon, tip, label, blank = true) =>
@@ -101,14 +104,17 @@ function ticketCard(s, p) {
           <div class="prov">${esc(prov)}</div>
           ${factsBlock(isFree(s.cost) ? { ...s, cost: "" } : s)}
           ${p.extra || ""}${p.acts ? `<div class="acts">${p.acts}</div>` : ""}
-        </div>
+        </div>${p.actsOut ? `<div class="acts out">${p.actsOut}</div>` : ""}
       </div>
     </article>`;
 }
 // The buttons in an opened card: Call (with the number), then Website, Directions (In person) and Email as icons
-function contactButtons(s, { directions = false } = {}) {
-  const url = webUrl(s.url), email = s.email ? s.email.split(";")[0].trim() : "";
-  return [callButton(s),
+// (mainEmail: with no number, Email is the main button, with its word, rather than an icon)
+function contactButtons(s, { directions = false, mainEmail = false } = {}) {
+  const url = webUrl(s.url), email = s.email ? s.email.split(";")[0].trim() : "", call = callButton(s);
+  if (mainEmail && !call && email) return [`<a class="tbtn pri" href="mailto:${esc(email)}">${T_ICON.mail}Email</a>`,
+    url ? iconLink(url, T_ICON.web, "Website", `Website: ${s.provider || s.name} (opens in a new tab)`) : ""].join("");
+  return [call,
     url ? iconLink(url, T_ICON.web, "Website", `Website: ${s.provider || s.name} (opens in a new tab)`) : "",
     directions && dirHref(s) ? iconLink(dirHref(s), DIR_ICON, "Directions", `Directions to ${s.name}`) : "",
     email ? iconLink(`mailto:${email}`, T_ICON.mail, "Email", `Email ${s.provider || s.name}`, false) : ""].filter(Boolean).join("");

@@ -139,3 +139,20 @@ test("online search: personal details removed from the search; only real, contac
   assert.equal(res.items[0].step, "Next step", "the directory has a first step, so an online find isn't one");
   assert.deepEqual(res.keep.map(k => [k.n, k.step]), [[1, "First step"], [2, "Next step"]], "the directory's first step stays");
 });
+
+test("tasks: each address does one job; each task can have its own model; the request to the AI service is as before", async () => {
+  NOW = Date.parse("2026-11-16T10:30:00Z"); sheet = SHEET;
+  ai = () => streamed(JSON.stringify({ picks: [] }));
+  for (const path of ["/", "/plan", "/anything-else"]) {   // a plan, at its own address or (as the Assist page has always asked) any other
+    const r = await call(path, { need: "Feeling low, would like a group nearby", town: "__pt", lat: 51.209, lon: -2.645, radius: 5 });
+    assert.equal(r.status, 200, path);
+    assert.ok("picks" in await r.json(), path);
+  }
+  const sent = asked.at(-1);
+  assert.deepEqual([sent.model, sent.max_tokens, sent.stream, sent.messages.length], ["claude-sonnet-5-5", 8000, true, 1]);
+  const withEnv = (extra, body) => worker.fetch(new Request("https://relay.test/plan", { method: "POST",
+    headers: { Origin: ORIGIN, "X-Access-Code": CODE, "Content-Type": "application/json", "CF-Connecting-IP": "10.0.1." + ++ip }, body: JSON.stringify(body) }), { ...ENV, ...extra });
+  const body = { need: "Feeling low", town: "__pt", lat: 51.209, lon: -2.645, radius: 5 };
+  await withEnv({ MODEL: "model-all" }, body); assert.equal(asked.at(-1).model, "model-all");
+  await withEnv({ MODEL: "model-all", MODEL_PLAN: "model-plan" }, body); assert.equal(asked.at(-1).model, "model-plan", "MODEL_PLAN wins for plans");
+});

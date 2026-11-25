@@ -1102,6 +1102,10 @@ html.short #mapwrap { height: 100vh; }
    into build/core/css/ and build/directory/, and build/next/ is deleted. */
 
 /* ---------- Header (option 4): no logo, the subtitle on the name's line, the tabs under it, the watercolour at full height ---------- */
+/* Card text: three colours. Names and dates use the green --b900; --tx2 for what a card says (description, provider, answers,
+   address); --tx3 for labels and small print (How to join, distance, PHONE · UK-WIDE) */
+:root { --tx2: #44403C; --tx3: #6B645F; }
+
 .masthead { padding-top: 2px; }
 .masthead .hero { padding-block: 6px 0; max-width: none; }
 .masthead .brand { display: flex; align-items: baseline; flex-wrap: wrap; gap: 2px 14px; }
@@ -1166,7 +1170,7 @@ header.top { background: var(--cream); border-bottom: 0; }
 .tk .tbody { flex: 1; min-width: 0; padding: 12px 14px 14px 16px; }
 .tk .row1 { align-items: center; flex-wrap: nowrap; gap: 10px; margin-bottom: 5px; }
 .tk .row1 .sp { flex: 1; }
-.tk .tdist { display: inline-flex; align-items: center; gap: 3px; font-size: 12px; color: var(--muted); white-space: nowrap; }
+.tk .tdist { display: inline-flex; align-items: center; gap: 3px; font-size: 12px; color: var(--tx3); white-space: nowrap; }
 .tk .tdist svg { width: 13px; height: 13px; }
 /* Details checked: a small green tick in a circle (hover or focus: how long ago) */
 .tk .checked { width: 17px; height: 17px; background: none; border: 1.5px solid #3D8B5F; color: #3D8B5F; }
@@ -1178,18 +1182,21 @@ header.top { background: var(--cream); border-bottom: 0; }
 .tk.open .tfold .chev { transform: rotate(180deg); }
 .tk .row1 .copy + .tfold { margin-left: -4px; }
 .tk .cname .full { display: inline-block; vertical-align: 2px; margin-left: 6px; font: 700 12px/16px var(--sans); color: #9A3412; background: #FCEBE4; border: 1px solid #F5C4AE; border-radius: 999px; padding: 2px 9px; white-space: nowrap; }
-.tk .desc { color: #44403C; font-size: 13.5px; line-height: 1.45; }
+.tk .desc { color: var(--tx2); font-size: 13.5px; line-height: 1.45; }
 .tk .tnotes { display: flex; flex-wrap: wrap; gap: 5px; margin-top: 7px; }
 .tk .tnotes span { font-size: 11.5px; font-weight: 600; color: #8A4B08; background: #FBEFD9; border-radius: 999px; padding: 2px 9px; }
 .tk .notice { color: #9A3412; background: #FCEBE4; border: 0; border-left: 3px solid #C2410C; border-radius: 8px; padding: 6px 9px; margin: 8px 0 0; }
 .tk .more { margin-top: 10px; padding-top: 10px; border-top: 1px solid #D8CDBD; }
 .fold:not(.open) .more { display: none; }
-.tk .prov { font-size: 12.5px; color: var(--muted); margin-bottom: 4px; }
+.tk .prov { font-size: 12.5px; color: var(--tx2); margin-bottom: 4px; }
 .tk .facts { border-top: 0; padding-top: 0; margin-bottom: 8px; }
-.tk .where { display: flex; align-items: flex-start; gap: 6px; font-size: 12.5px; color: #44403C; margin-bottom: 10px; }
+.tk .facts dt { font-size: 12.5px; color: var(--tx3); }
+.tk .facts dd { color: var(--tx2); }
+.tk .where { display: flex; align-items: flex-start; gap: 6px; font-size: 12.5px; color: var(--tx2); margin-bottom: 10px; }
 .tk .where svg { width: 14px; height: 14px; flex: none; margin-top: 2px; }
-.tk .phones { font-size: 12.5px; color: #44403C; margin: -4px 0 8px; }
+.tk .phones { font-size: 12.5px; color: var(--tx2); margin: -4px 0 8px; }
 .tk .acts { display: flex; flex-wrap: nowrap; gap: 6px; align-items: center; }
+.tk .acts.out { margin-top: 10px; }   /* Phone and online: the Call button shows on closed cards too */
 .tbtn { position: relative; display: inline-flex; align-items: center; justify-content: center; gap: 6px; height: 36px; box-sizing: border-box; border-radius: 9px;
   border: 1px solid #CFDCD4; background: var(--cream); color: var(--b700); font: 600 13px var(--sans); text-decoration: none; white-space: nowrap; }
 .tbtn svg { width: 16px; height: 16px; flex: none; }
@@ -1288,8 +1295,7 @@ header.top { background: var(--cream); border-bottom: 0; }
 .tcard.tk:hover { border-color: #B8A98F; box-shadow: 0 4px 10px rgba(0,0,0,.07); }
 .tcard.tk .row1 { display: flex; gap: 6px; }
 .tcard.tk .cname { font-family: var(--serif); color: var(--b900); font-size: 17px; margin: 0 0 2px; }
-.tcard.tk .reach { margin-bottom: 4px; }
-.tk .mline { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 10.5px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; color: #6B645F; }
+.tk .mline { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 10.5px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; color: var(--tx3); }
 .tcard.tk .row1 .checked { margin-left: 2px; }
 .fold.tcard:not(.open) .desc { -webkit-line-clamp: 2; }
 
@@ -1348,10 +1354,9 @@ header.top { background: var(--cream); border-bottom: 0; }
   font: 600 12px var(--sans); padding: 4px 8px; border-radius: 6px; white-space: nowrap; opacity: 0; pointer-events: none; transition: opacity .1s; }
 @media (hover: hover) { .tk .tpin:hover::after { opacity: 1; } }
 .tk .tpin:focus-visible::after { opacity: 1; }
-@media (hover: hover) and (pointer: fine) { .tcard.tk .reach a { cursor: inherit; } }   /* computers: the number reads as text (next-late.js) */
 
 /* Courses (next-late.js courseCard): the line of sessions, and the pill by the name */
-.tcard.tk .cwhen { font-size: 12.5px; font-weight: 600; color: #57534E; margin: 0 0 4px; }
+.tcard.tk .cwhen { font-size: 12.5px; font-weight: 600; color: var(--tx2); margin: 0 0 4px; }
 .tk .cpill { display: inline-block; vertical-align: 2px; margin-left: 6px; font: 700 12px/16px var(--sans); color: #065F46; background: #D1FAE5; border-radius: 999px; padding: 2px 9px; white-space: nowrap; }
 .tk .cpill.closed { color: #57534E; background: #E7E5E4; }
 @media (max-width: 760px) { .tk .cpill { display: table; margin: 4px 0 0; } }
@@ -1393,6 +1398,10 @@ header.top { background: var(--cream); border-bottom: 0; }
 /* Phones: five kinds don't fit one line: three across, so the rows stay even (not one chip stretched across a row) */
 @media (max-width: 760px) { .kindrow { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); } .kindrow button { min-width: 0; } }
 @media (max-width: 379px) { .kindrow button { flex-basis: auto; } }
+
+/* About: its card's top in line with the dropdowns on the other tabs (the header's 10px foot and the list's 14px top taken off) */
+header.top:has(#tab-about[aria-current="page"]) { padding-bottom: 0; }
+#about-page.talk { padding-top: 0; }
 
 </style>
 </head>
@@ -2081,10 +2090,13 @@ function timeNotes(s, nx) {
 }
 
 // The call button: the first number in the phone field, with the number shown (on a computer you read it; on a phone you tap it)
+// The main button: Call with the first number; a text-only line ("Text 85258", "Text Hello to 80899") gets Text with its number
 function callButton(s) {
   if (!s.phone) return "";
+  if (/^text/i.test(s.phone)) { const m = s.phone.match(/\d[\d ]*\d/), n = m ? m[0].replace(/\s/g, "") : "";
+    return n ? `<a class="tbtn pri" href="sms:${n}">${T_ICON.phone}Text <span class="num">${esc(m[0])}</span></a>` : ""; }
   const shown = s.phone.split(" (")[0].split(" or ")[0].split(";")[0].trim(), n = shown.replace(/[^\d+]/g, "");
-  if (/^text/i.test(s.phone) || n.length < 5) return "";
+  if (n.length < 3) return "";   // (3: NHS 111)
   return `<a class="tbtn pri" href="tel:${n}">${T_ICON.phone}Call <span class="num">${esc(shown)}</span></a>`;
 }
 const iconLink = (href, icon, tip, label, blank = true) =>
@@ -2116,14 +2128,17 @@ function ticketCard(s, p) {
           <div class="prov">${esc(prov)}</div>
           ${factsBlock(isFree(s.cost) ? { ...s, cost: "" } : s)}
           ${p.extra || ""}${p.acts ? `<div class="acts">${p.acts}</div>` : ""}
-        </div>
+        </div>${p.actsOut ? `<div class="acts out">${p.actsOut}</div>` : ""}
       </div>
     </article>`;
 }
 // The buttons in an opened card: Call (with the number), then Website, Directions (In person) and Email as icons
-function contactButtons(s, { directions = false } = {}) {
-  const url = webUrl(s.url), email = s.email ? s.email.split(";")[0].trim() : "";
-  return [callButton(s),
+// (mainEmail: with no number, Email is the main button, with its word, rather than an icon)
+function contactButtons(s, { directions = false, mainEmail = false } = {}) {
+  const url = webUrl(s.url), email = s.email ? s.email.split(";")[0].trim() : "", call = callButton(s);
+  if (mainEmail && !call && email) return [`<a class="tbtn pri" href="mailto:${esc(email)}">${T_ICON.mail}Email</a>`,
+    url ? iconLink(url, T_ICON.web, "Website", `Website: ${s.provider || s.name} (opens in a new tab)`) : ""].join("");
+  return [call,
     url ? iconLink(url, T_ICON.web, "Website", `Website: ${s.provider || s.name} (opens in a new tab)`) : "",
     directions && dirHref(s) ? iconLink(dirHref(s), DIR_ICON, "Directions", `Directions to ${s.name}`) : "",
     email ? iconLink(`mailto:${email}`, T_ICON.mail, "Email", `Email ${s.provider || s.name}`, false) : ""].filter(Boolean).join("");
@@ -2837,7 +2852,7 @@ function renderAbout() {
     </section>
     </div></div>
     <p class="small">Service information belongs to the providers listed. Map data © <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap</a> contributors, © <a href="https://carto.com/attributions" target="_blank" rel="noopener">CARTO</a>.</p>
-    <p class="small" id="site-version">Version: next 2026-11-25 16:54</p>
+    <p class="small" id="site-version">Version: next 2026-11-25 17:40</p>
   </article>`;
 }
 /* ---------- Places: the town listings, as a tab of the directory ----------
@@ -3130,12 +3145,13 @@ function talkCard({ s, st }) {   // Phone and online: the ticket card (next.js t
   const k = KINDS[kindOf(s)];
   const modes = split(s.mode).filter(m => m !== "in-person").map(m => m === "phone" ? "Phone" : "Online").sort((a, b) => a === "Phone" ? -1 : 1);
   const how = [...modes, s.area === "national" ? "UK-wide" : "Local"].join(" · ");
-  const tel = s.phone ? s.phone.split(" (")[0].split(" or ")[0].replace(/\s/g, "") : "";
-  const reach = s.phone ? (/^text/i.test(s.phone) ? esc(s.phone) : `<a href="tel:${esc(tel)}">${esc(s.phone)}</a>`)
-    : s.email ? `<a href="mailto:${esc(s.email)}">${esc(s.email)}</a>` : "";
+  // The Call (or Text, or Email) button shows on closed cards too, as the number is the point here; an opened card adds the
+  // full phone line when it says more than the button (other numbers, options)
+  const btn = callButton(s), shown = btn ? btn.replace(/.*<span class="num">|<\/span>.*/gs, "") : "";
   return ticketCard(s, { cls: "tcard", stub: talkStub(s, st, new Date()), tag: `<span class="mline" title="${how}">${how}</span>`,
-    sub: reach ? `<div class="reach${s.phone ? "" : " email"}">${reach}</div>` : "", sr: st.txt, afterDesc: restrictLine(s),
-    acts: contactButtons(s) });
+    sr: st.txt, afterDesc: restrictLine(s),
+    extra: s.phone && s.phone.trim().replace(/^text\s+/i, "") !== shown ? `<div class="phones">${esc(s.phone)}</div>` : "",
+    actsOut: contactButtons(s, { mainEmail: true }) });
 }
 
 /* ---------- Phone and online: the kinds row (as on In person) with "Open now only" at its end, and headings that say what's
@@ -3190,15 +3206,6 @@ function renderTalk() {
   }
   $("talk-list").innerHTML = html;
 }
-// The big number (or email) on a card: tap to call on phones and tablets; with a mouse or trackpad, a click there opens or
-// closes the card like the rest of it (a "tel:" link on a computer makes the browser ask which app should call). The Call
-// button in the opened card still calls; so does the keyboard (Enter on the number)
-const FINE_POINTER = matchMedia("(hover: hover) and (pointer: fine)");
-$("talk-list").addEventListener("click", e => {
-  if (!e.detail || !FINE_POINTER.matches || !e.target.closest(".reach a")) return;
-  e.preventDefault();
-  if (!String(getSelection())) toggleCard(e.target.closest(".tcard"));   // (not when the number was being selected to copy)
-}, true);
 // "Show all" in the empty message: tick all the boxes again
 $("talk-list").addEventListener("click", e => { if (e.target.closest("#talk-showall")) { talkOff().clear(); renderTalk(); } });
 
@@ -3470,11 +3477,6 @@ function renderCourses() {
 }
 $("c-where").onchange = renderCourses;
 $("c-when").onchange = renderCourses;
-// The course card's number on computers: opens the card, as on Phone and online
-$("courses").addEventListener("click", e => {
-  if (!e.detail || !FINE_POINTER.matches || !e.target.closest(".reach a")) return;
-  e.preventDefault(); if (!String(getSelection())) toggleCard(e.target.closest(".tcard"));
-}, true);
 // Where? and When? in links and saved choices ("cwhere", "cwhen")
 (() => {
   const was = linkFor;

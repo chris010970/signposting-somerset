@@ -39,12 +39,13 @@ function talkCard({ s, st }) {   // Phone and online: the ticket card (next.js t
   const k = KINDS[kindOf(s)];
   const modes = split(s.mode).filter(m => m !== "in-person").map(m => m === "phone" ? "Phone" : "Online").sort((a, b) => a === "Phone" ? -1 : 1);
   const how = [...modes, s.area === "national" ? "UK-wide" : "Local"].join(" · ");
-  const tel = s.phone ? s.phone.split(" (")[0].split(" or ")[0].replace(/\s/g, "") : "";
-  const reach = s.phone ? (/^text/i.test(s.phone) ? esc(s.phone) : `<a href="tel:${esc(tel)}">${esc(s.phone)}</a>`)
-    : s.email ? `<a href="mailto:${esc(s.email)}">${esc(s.email)}</a>` : "";
+  // The Call (or Text, or Email) button shows on closed cards too, as the number is the point here; an opened card adds the
+  // full phone line when it says more than the button (other numbers, options)
+  const btn = callButton(s), shown = btn ? btn.replace(/.*<span class="num">|<\/span>.*/gs, "") : "";
   return ticketCard(s, { cls: "tcard", stub: talkStub(s, st, new Date()), tag: `<span class="mline" title="${how}">${how}</span>`,
-    sub: reach ? `<div class="reach${s.phone ? "" : " email"}">${reach}</div>` : "", sr: st.txt, afterDesc: restrictLine(s),
-    acts: contactButtons(s) });
+    sr: st.txt, afterDesc: restrictLine(s),
+    extra: s.phone && s.phone.trim().replace(/^text\s+/i, "") !== shown ? `<div class="phones">${esc(s.phone)}</div>` : "",
+    actsOut: contactButtons(s, { mainEmail: true }) });
 }
 
 /* ---------- Phone and online: the kinds row (as on In person) with "Open now only" at its end, and headings that say what's
@@ -99,15 +100,6 @@ function renderTalk() {
   }
   $("talk-list").innerHTML = html;
 }
-// The big number (or email) on a card: tap to call on phones and tablets; with a mouse or trackpad, a click there opens or
-// closes the card like the rest of it (a "tel:" link on a computer makes the browser ask which app should call). The Call
-// button in the opened card still calls; so does the keyboard (Enter on the number)
-const FINE_POINTER = matchMedia("(hover: hover) and (pointer: fine)");
-$("talk-list").addEventListener("click", e => {
-  if (!e.detail || !FINE_POINTER.matches || !e.target.closest(".reach a")) return;
-  e.preventDefault();
-  if (!String(getSelection())) toggleCard(e.target.closest(".tcard"));   // (not when the number was being selected to copy)
-}, true);
 // "Show all" in the empty message: tick all the boxes again
 $("talk-list").addEventListener("click", e => { if (e.target.closest("#talk-showall")) { talkOff().clear(); renderTalk(); } });
 
@@ -379,11 +371,6 @@ function renderCourses() {
 }
 $("c-where").onchange = renderCourses;
 $("c-when").onchange = renderCourses;
-// The course card's number on computers: opens the card, as on Phone and online
-$("courses").addEventListener("click", e => {
-  if (!e.detail || !FINE_POINTER.matches || !e.target.closest(".reach a")) return;
-  e.preventDefault(); if (!String(getSelection())) toggleCard(e.target.closest(".tcard"));
-}, true);
 // Where? and When? in links and saved choices ("cwhere", "cwhen")
 (() => {
   const was = linkFor;
