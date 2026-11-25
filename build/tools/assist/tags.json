@@ -1,0 +1,26 @@
+{
+ "_about": "The tags task (POST .../tags): what someone types on the landing page, turned into up to max_tags support types (the sheet's tags, build/core/data/support-types.json), a place and two flags. max_chars: text beyond this is cut before the AI sees it. hints: a few everyday words for each tag, given to the AI so it can match how people talk; change them freely (every tag needs one). The prompt itself is in worker-template.js (tagsPrompt).",
+ "max_chars": 500,
+ "max_tags": 3,
+ "hints": {
+  "crisis prevention": "suicidal thoughts, self-harm, can't keep themselves safe, in crisis right now",
+  "low mood": "depression, feeling down or flat, hopeless, can't get out of bed, struggling",
+  "anxiety": "worry, panic, stress, nerves, can't switch off",
+  "bereavement": "someone has died, grief, loss, including pets and baby loss",
+  "hearing voices": "psychosis, hearing or seeing things others don't, paranoia",
+  "eating disorders": "anorexia, bulimia, bingeing, worries about eating or weight",
+  "long-term pain": "chronic pain, fibromyalgia, pain that doesn't go away",
+  "dementia": "memory problems, dementia, Alzheimer's, for the person or their family",
+  "addiction": "alcohol, drinking, drugs, gambling, for the person or their family",
+  "abuse": "domestic abuse, violence, controlling partner, sexual abuse, unsafe at home",
+  "caring for someone": "looking after a family member or friend, unpaid carer",
+  "housing": "homeless, eviction, rent, landlord, damp, sofa-surfing",
+  "finances": "money worries, debt, skint, benefits, bills, cost of living",
+  "food": "food bank, can't afford food, going hungry",
+  "connect": "lonely, isolated, want to meet people or make friends, new to the area",
+  "be active": "exercise, walking, sport, getting out of the house and moving",
+  "take notice": "mindfulness, nature, calm, arts and crafts, slowing down",
+  "keep learning": "courses, learning something new, skills",
+  "giving": "volunteering, helping others, giving something back"
+ }
+}

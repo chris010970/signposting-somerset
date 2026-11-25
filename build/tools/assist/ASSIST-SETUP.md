@@ -45,6 +45,7 @@ To go back, paste the previous `src/cloudflare-worker.js` (from the repo's histo
 | `SHEET_CSV_URL` | Text | the sheet's published CSV link (the same as `build/directory/sheet_url.txt`) |
 | `ALLOWED_ORIGIN` | Text | the site's address, without a slash at the end; several separated by commas, e.g. `https://signpostingsomerset.org.uk,https://chris010970.github.io` |
 | `MODEL` | Text (optional) | leave out to use `claude-sonnet-5-5`; `claude-haiku-5-5` is cheaper and faster |
+| `MODEL_TAGS` | Text (optional) | the landing page's tags task (`.../tags`): set to `claude-haiku-5-5`. Try it with `python src\run_tags.py` |
 | `EFFORT` | Text (optional) | `low`, `medium` or `high`: trades thinking time for speed. Leave out for the model's default |
 
 5. Copy the Worker's address from its overview page (`https://signposting-assist.<your-name>.workers.dev`).
