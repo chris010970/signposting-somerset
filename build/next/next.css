@@ -239,3 +239,13 @@ header.top { background: var(--cream); border-bottom: 0; }
    away */
 #list, #talk-list, #courses { position: relative; }
 .card.tk, .tcard.tk { position: relative; }
+
+/* In person: the pin button by Copy (next-late.js): shows the service on the map */
+.tk .tpin { position: relative; width: 28px; height: 28px; display: inline-grid; place-items: center; flex: none; border: 1px solid var(--line); border-radius: 8px;
+  background: #fff; color: var(--b700); cursor: pointer; padding: 0; }
+.tk .tpin svg { width: 15px; height: 15px; }
+.tk .tpin:hover, .tk .tpin:focus-visible { border-color: var(--b200); background: var(--b50); }
+.tk .tpin::after { content: attr(data-tip); position: absolute; left: 50%; bottom: calc(100% + 6px); transform: translateX(-50%); z-index: 5; background: var(--ink); color: #fff;
+  font: 600 12px var(--sans); padding: 4px 8px; border-radius: 6px; white-space: nowrap; opacity: 0; pointer-events: none; transition: opacity .1s; }
+@media (hover: hover) { .tk .tpin:hover::after { opacity: 1; } }
+.tk .tpin:focus-visible::after { opacity: 1; }

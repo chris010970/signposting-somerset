@@ -161,7 +161,7 @@ function needsPanel(tab) {
   const u = needsUI(tab), set = needsOf(tab), list = u.list();
   const groups = GROUPS.map(([g, vals]) => [g, vals.filter(v => list.some(s => s._sf.includes(v)))]).filter(([, v]) => v.length);
   return `<div class="mgroups">${groups.map(([g, vals]) => `<fieldset><legend>${esc(g)}</legend>` +
-    vals.map(v => `<label><input type="checkbox" value="${esc(v)}"${set.has(v) ? " checked" : ""}> ${paren(cap(v))}</label>`).join("") + `</fieldset>`).join("")}</div>` +
+    vals.map(v => `<label><input type="checkbox" value="${esc(v)}"${set.has(v) ? " checked" : ""}><span>${paren(cap(v))}</span></label>`).join("") + `</fieldset>`).join("")}</div>` +
     `<div class="mfoot"><button type="button" class="mclear">Clear</button><button type="button" class="mdone">Done</button></div>`;
 }
 (() => {
@@ -258,37 +258,71 @@ $("t-when").onchange = renderTalk;
   if ([...$("t-when").options].some(o => o.value === v)) $("t-when").value = v;
 })();
 
-/* ---------- In person: opening a card shows its pin's label, and the map doesn't jump ----------
-   The list's own click handler (in-person.js) flies the map to the card's pin. This listener runs just before it and does
-   the flying itself instead: only when a card opens (not when it closes); to the service's own spot (zoomed out, its pin
-   can be an area's circle, so the map then moved again on the next click: the jump seen with town-centre pins); not at all
-   when the map is already there; and the pin's label opens once the map has stopped (zooming redraws the pins, which
-   closed it). */
-$("list").addEventListener("click", e => {
-  if (e.target.closest("a, .copy, #show-month")) return;
-  const c = e.target.closest(".card"); if (!c || !map) return;
-  if (!map._fly) {   // once: the list's own fly is skipped while SKIP_FLY is set
-    map._fly = map.flyTo.bind(map);
-    map.flyTo = (ll, z, o) => window.SKIP_FLY ? map : map._fly(ll, z, o);
-  }
-  window.SKIP_FLY = true; setTimeout(() => { window.SKIP_FLY = false; }, 0);
-  const id = c.dataset.id, s = recordById(id);
-  if (c.classList.contains("open") || !mapVisible() || !s || isNaN(s.lat)) return;   // closing, or nowhere to go
-  const z = Math.max(map.getZoom(), 15), here = map.latLngToContainerPoint(map.getCenter()), there = map.latLngToContainerPoint([s.lat, s.lon]);
+/* ---------- In person: the map moves only when asked ----------
+   Opening or closing a card leaves the map alone (the list's own click handler in in-person.js flies the map to the card's
+   pin: a listener that runs just before it switches that off). The pin button by Copy shows the service on the map
+   instead: the map flies to its spot (on phones, switching to the map first) and its pin's label opens once the map has
+   stopped (zooming redraws the pins). */
+function steadyMap() {   // once: the list's own fly is skipped while SKIP_FLY is set
+  if (!map || map._fly) return;
+  map._fly = map.flyTo.bind(map);
+  map.flyTo = (ll, z, o) => window.SKIP_FLY ? map : map._fly(ll, z, o);
+}
+function showOnMap(id) {
+  const s = recordById(id); if (!s || isNaN(s.lat) || !map) return;
+  steadyMap();
+  // How close: street level for an exact address; the town for a town-centre (approximate) spot. Never further out
+  const z = Math.max(map.getZoom(), s.approx ? 14 : 16), here = map.latLngToContainerPoint(map.getCenter()), there = map.latLngToContainerPoint([s.lat, s.lon]);
   const moving = Math.abs(z - map.getZoom()) > .01 || here.distanceTo(there) > 40;
   window.PIN_TIP = id;
   const show = () => { if (window.PIN_TIP === id) { markers[id]?.openTooltip(); window.PIN_TIP = null; } };
   if (moving) { map.once("moveend", () => setTimeout(show, 50)); map._fly([s.lat, s.lon], z, { duration: .5 }); setTimeout(show, 900); }
   else setTimeout(show, 0);
+}
+$("list").addEventListener("click", e => {
+  const pin = e.target.closest(".tpin");
+  if (pin) {   // the pin button: show on the map, and don't open or close the card
+    e.stopPropagation();
+    const id = pin.closest(".card").dataset.id;
+    if (!mapVisible()) { setView("map"); setTimeout(() => showOnMap(id), 700); }   // phones: the map first (it fits itself, then flies)
+    else showOnMap(id);
+    return;
+  }
+  if (e.target.closest("a, .copy, #show-month")) return;
+  if (!e.target.closest(".card")) return;
+  steadyMap(); window.SKIP_FLY = true; setTimeout(() => { window.SKIP_FLY = false; }, 0);
 }, true);
+// The pin button (next.js's serviceCard puts it by Copy, for services with a place on the map)
+function pinButton(s) {
+  return isNaN(s.lat) ? "" : `<button type="button" class="tpin" aria-label="Show ${esc(s.name)} on the map" data-tip="Show on map">` +
+    '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 21s-6.5-6.2-6.5-11.2a6.5 6.5 0 0 1 13 0C18.5 14.8 12 21 12 21z"/><circle cx="12" cy="9.8" r="2.3"/></svg></button>';
+}
 
 /* One label on the map at a time: a pin's label opening closes any other (hover, or a card's), and a list of services
    opening (a numbered pin clicked) closes the labels. Set up once the map exists (it's made when first shown) */
 function oneLabel() {
   if (!map || map._oneLabel) return;
   map._oneLabel = true;
+  map.options.zoomDelta = 1;   // the + and - buttons and keys: a whole level a press (the map's own fitting keeps its quarter levels)
+  // Pins: no browser hover text (it doubled the map's own label); screen readers get the same words as a label
+  map.on("layeradd", e => { const el = e.layer.getElement && e.layer.getElement();
+    if (el && el.title) { el.setAttribute("aria-label", el.title); el.removeAttribute("title"); } });
+  layer.eachLayer(l => { const el = l.getElement && l.getElement(); if (el && el.title) { el.setAttribute("aria-label", el.title); el.removeAttribute("title"); } });
   const closeAll = keep => layer.eachLayer(l => { if (l !== keep && l.isTooltipOpen && l.isTooltipOpen()) l.closeTooltip(); });
   map.on("tooltipopen", e => closeAll(e.layer || e.tooltip?._source));
   map.on("popupopen", () => closeAll(null));
 }
 new MutationObserver(oneLabel).observe($("summary"), { childList: true, subtree: true });
+
+/* Display names (a mock-up, not used yet): the sheet's name without the bracketed parts that repeat what the card shows
+   elsewhere, i.e. the record's own town, its days or its times. "Suicide Bereavement Peer Support Group (Yeovil)" becomes
+   "Suicide Bereavement Peer Support Group"; "Tai Chi QiGong (Ash, Martock)" becomes "Tai Chi QiGong (Ash)"; a venue stays */
+function displayName(s) {
+  const m = s.name.match(/^(.*\S)\s*\(([^()]*)\)\s*$/); if (!m) return s.name;
+  const DAY = "(mon|tue|wed|thu|fri|sat|sun)[a-z]*", town = (s.town || "").toLowerCase();
+  const repeats = p => { const x = p.trim().toLowerCase();
+    return x === town || new RegExp(`^${DAY}(\\s*[-–]\\s*${DAY})?(\\s+(morning|afternoon|evening)s?)?$`).test(x) || /^(morning|afternoon|evening)s?$/.test(x) ||
+      /^\d{1,2}(:\d\d)?\s*(am|pm)$/.test(x) || /^\d{1,2}:\d\d(\s*[-–]\s*\d{1,2}:\d\d)?$/.test(x); };
+  const keep = m[2].split(",").filter(p => !repeats(p));
+  return keep.length ? `${m[1]} (${keep.map(p => p.trim()).join(", ")})` : m[1];
+}
