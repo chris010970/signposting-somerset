@@ -1136,10 +1136,11 @@ html.short #mapwrap { height: 100vh; }
 }
 
 /* ---------- Colours: light cream page and header, darker cream cards with a warm outline ---------- */
-:root { --cream: #FFFCF7; --card: #F4EEE4; --edge: #CFC3B1; --line: #E6DED2; }
+:root { --cream: #FFFCF7; --card: #F4EEE4; --edge: #CFC3B1; --line: #E6DED2; --sage: #ECEFDC; }   /* (--sage: the warm meadow green of the panels: the filter boxes and the landing page's band, one colour) */
+:root { --strip: url("/assets/banner-next.webp"); }   /* (this design's header strip: the live site keeps banner.webp) */
 header.top { background: var(--cream); border-bottom: 0; }
 /* The filter boxes keep their green tint against the cream (a touch stronger than on white, which made them look grey) */
-.q, .toggle { background: #E7F0EA; }
+.q, .toggle { background: var(--sage); }
 .q.on { background: #FFFFFF; }
 #mapwrap { margin: 14px 0 16px; border: 1px solid var(--edge); border-radius: 16px; overflow: hidden; }
 #map { background: #F3EFE6; }
@@ -1478,7 +1479,7 @@ body.landing header.top, body.landing #hdr-home { display: none; }
 .htopic:hover { border-color: var(--b700); }
 .htopic svg { width: 17px; height: 17px; color: var(--b600); }
 /* The ways in */
-.hways { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); column-gap: 12px; margin: 46px 0 0; padding: 34px max(24px, calc(50% - 680px)) 30px; background: linear-gradient(to bottom, var(--b50), #EEF3EC); border-radius: 50% 50% 0 0 / 28px 28px 0 0; }
+.hways { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); column-gap: 12px; margin: 46px 0 0; padding: 34px max(24px, calc(50% - 680px)) 30px; background: var(--sage); border-radius: 50% 50% 0 0 / 28px 28px 0 0; }
 .hway { display: flex; gap: 14px; padding: 14px 18px; text-decoration: none; color: inherit; border-radius: 16px; transition: background 0.15s; }
 .hway:hover { background: rgba(47, 84, 65, 0.07); }
 .hway > svg { width: 34px; height: 34px; flex: none; color: var(--b600); margin-top: 2px; }
@@ -1617,7 +1618,7 @@ body.landing footer.help { padding-block: 14px calc(14px + env(safe-area-inset-b
   body.landing .crisis > div { display: none; }
   body.landing .crisis .exit { background: rgba(15, 23, 42, 0.82); border-color: transparent; padding: 7px 12px; font-size: 13px; }
   body.landing .hways { padding-bottom: 22px; }
-  body.landing .hways { box-shadow: 0 50vh 0 50vh #EEF3EC; }   /* (the sage band carries on to the foot of a tall window, as a footer: painted only, so the page doesn't grow) */
+  body.landing .hways { box-shadow: 0 50vh 0 50vh var(--sage); }   /* (the sage band carries on to the foot of a tall window, as a footer: painted only, so the page doesn't grow) */
 }
 .hway span span { display: block; max-width: 300px; text-wrap: balance; }   /* (each description on two even lines) */
 @media (min-width: 701px) and (max-height: 600px) { .hway span span { display: none; } }
@@ -3126,7 +3127,7 @@ function renderAbout() {
     </section>
     </div></div>
     <p class="small">Service information belongs to the providers listed. Map data © <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap</a> contributors, © <a href="https://carto.com/attributions" target="_blank" rel="noopener">CARTO</a>.</p>
-    <p class="small" id="site-version">Version: next 2026-11-26 22:57</p>
+    <p class="small" id="site-version">Version: next 2026-11-26 23:46</p>
   </article>`;
 }
 /* ---------- Places: the town listings, as a tab of the directory ----------
