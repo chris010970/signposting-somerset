@@ -2,9 +2,8 @@
 """
 run_tags.py - try the tags task (what someone types on the landing page -> support types, place, flags) on the live worker.
 
-Your access code is read from an environment variable and never written anywhere:
-  Windows (Command Prompt):  set ASSIST_CODE=your-code
-  Windows (PowerShell):      $env:ASSIST_CODE="your-code"
+No access code is needed: the tags task is open to all, as the landing page is. Each phrase counts toward the
+worker's daily cap (daily_cap in build/tools/assist/tags.json).
 
 Usage:
   pip install requests
@@ -16,7 +15,7 @@ Each phrase costs a fraction of a penny with Haiku. The worker allows 30 request
 Assist), so the script waits between phrases after the 28th. Results: tags-<date>.md beside this file, with the model that
 answered (from the worker's reply).
 """
-import argparse, json, os, sys, time
+import argparse, json, os, time
 from datetime import datetime
 import requests
 
@@ -25,10 +24,10 @@ ORIGIN = "https://signpostingsomerset.org.uk"
 HERE = os.path.dirname(os.path.abspath(__file__))
 
 
-def ask(text, code):
+def ask(text):
     t = time.time()
     r = requests.post(WORKER, json={"text": text}, timeout=60,
-                      headers={"X-Access-Code": code, "Origin": ORIGIN, "Content-Type": "application/json"})
+                      headers={"Origin": ORIGIN, "Content-Type": "application/json"})
     try:
         out = r.json()
     except ValueError:
@@ -65,11 +64,8 @@ def main():
     ap.add_argument("--ids", help="comma-separated, e.g. T02,T09")
     ap.add_argument("--text", help="one phrase of your own (no checks, just the answer)")
     a = ap.parse_args()
-    code = os.environ.get("ASSIST_CODE")
-    if not code:
-        sys.exit("Set ASSIST_CODE first (see the top of this file).")
     if a.text:
-        print(json.dumps(ask(a.text, code), indent=1, ensure_ascii=False))
+        print(json.dumps(ask(a.text), indent=1, ensure_ascii=False))
         return
     S = json.load(open(a.scenarios, encoding="utf-8"))["scenarios"]
     if a.ids:
@@ -78,7 +74,7 @@ def main():
     for i, s in enumerate(S):
         if i >= 28:
             time.sleep(125)   # the worker's limit: 30 an hour from one computer
-        out = ask(s["text"], code)
+        out = ask(s["text"])
         models.add(out.get("model") or "(not given: worker before 26 Nov)")
         notes = check(s, out)
         passed += not notes

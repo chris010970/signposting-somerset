@@ -40,13 +40,9 @@ function drawTraining() {
 // ---------- Home: the landing page (a first working version; the look comes last) ----------
 // Someone says what's going on in their own words; the worker's tags task (Haiku) turns it into topics, a place and flags;
 // they can change the topics and the place; "Show me" opens the directory with those set. What they type goes only to the
-// worker, isn't kept, and never goes in an address. While the tags task is tested it needs the access code: asked once in
-// this browser tab, kept in this tab only (as Assist).
+// worker, isn't kept, and never goes in an address. No access code: the worker caps the task's answers a day instead.
 const TAGS_URL = "/*WORKER_URL*/".replace(/\/$/, "") + "/tags";
-const ALL_TAGS = GROUPS.flatMap(g => g[1]);
 let home = { busy: false, text: "", where: null, note: "", risk: false };   // where: the town chosen, or their location
-const homeCode = { get: () => { try { return sessionStorage.getItem("assist-code") || ""; } catch (e) { return ""; } },
-  set: v => { try { v ? sessionStorage.setItem("assist-code", v) : sessionStorage.removeItem("assist-code"); } catch (e) {} } };
 // Small line icons for the landing page (topics and the ways in)
 const L_ICON = p => `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${p}</svg>`;
 const HOME_TOPICS = [   // "Or explore by topic": a few to tap without typing (More shows them all)
@@ -111,8 +107,7 @@ function drawAsk() {
       <select id="h-town"><option value="">All of Somerset</option>${h.where && h.where.lat && !h.where.town ? `<option value="__me" selected>Your location</option>` : ""}${towns.map(t => `<option${h.where && h.where.town === t ? " selected" : ""}>${esc(t)}</option>`).join("")}</select>
       <button type="button" class="hloc" id="h-loc">${L_ICON('<circle cx="12" cy="12" r="3.2"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3"/><circle cx="12" cy="12" r="7.5"/>')}Use my location</button></div>
     ${h.note ? `<p class="asknote">${h.note}</p>` : ""}
-    <p class="askfine">${L_ICON('<rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/>')}No names, addresses or contact details, please.</p>
-    ${h.needCode ? `<p class="askcode"><label>Access code (while we test) <input id="ask-code" type="password" autocomplete="off"></label></p>` : ""}</form>`;
+    <p class="askfine">${L_ICON('<rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/>')}No names, addresses or contact details, please.</p></form>`;
   $("ask-form").onsubmit = e => { e.preventDefault(); askTags(); };
   $("ask-text").oninput = e => { h.text = e.target.value; };
   $("ask-text").onkeydown = e => { if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); askTags(); } };   // Enter sends; Shift+Enter, a new line
@@ -125,14 +120,13 @@ function drawAsk() {
 async function askTags() {
   const h = home, text = h.text.trim();
   if (!text) { h.note = "Tell us a little about what's going on, or choose a topic below."; drawAsk(); return; }
-  if ($("ask-code")?.value) homeCode.set($("ask-code").value.trim());
   h.busy = true; h.note = ""; drawAsk();
   let d = {}, status = 0;
-  try { const r = await fetch(TAGS_URL, { method: "POST", headers: { "Content-Type": "application/json", "X-Access-Code": homeCode.get() }, body: JSON.stringify({ text }) });
+  try { const r = await fetch(TAGS_URL, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ text }) });
     status = r.status; d = await r.json().catch(() => ({})); } catch (e) { d = { error: "offline" }; }
   h.busy = false;
-  if (status === 401 || d.error === "bad_code" || d.error === "no_code") { homeCode.set(""); Object.assign(h, { needCode: true, note: "This is being tested: enter the access code." }); drawAsk(); return; }
-  if (d.error) { h.note = d.error === "rate_limited" ? "Lots of requests just now: please try again in a few minutes, or choose a topic below." : "Sorry, that didn't work. Please try again, or choose a topic below."; drawAsk(); return; }
+  // Busy (the daily cap or the per-visitor limit) or not working: never stuck, straight to the directory with their place
+  if (d.error || !status || status >= 400) { goShow([], h.where); return; }
   if (d.off_topic) { h.note = "We couldn't find anything in that we can help with. Try telling us what's going on, or choose a topic below."; drawAsk(); return; }
   // Where: a place in their words wins (it's probably what they meant), then the town or location they chose, else anywhere
   const said = d.place && d.place.lat ? { town: d.place.town, lat: d.place.lat, lon: d.place.lon } : null;

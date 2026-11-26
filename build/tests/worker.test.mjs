@@ -185,15 +185,31 @@ test("tags: only the sheet's support types come back, at most 3, in the model's 
   assert.equal(sent.messages[0].content, "<text>lost my husband, skint and lonely</text>", "what they typed goes as data, in its tags");
 });
 
-test("tags: MODEL_TAGS picks the model; the access code is needed while it's tested; empty text is refused", async () => {
+test("tags: MODEL_TAGS picks the model; no access code is needed; empty text is refused", async () => {
   await tagsFor("feeling low", '{"tags": ["low mood"]}', { MODEL: "model-all", MODEL_TAGS: "claude-haiku-5-5" });
   assert.equal(asked.at(-1).model, "claude-haiku-5-5");
   const said = await (await tagsFor("feeling low", '{"tags": ["low mood"]}', { MODEL_TAGS: "claude-haiku-5-5" })).json();
   assert.equal(said.model, "claude-haiku-5-5", "the reply says which model answered");
   const noCode = await worker.fetch(new Request("https://relay.test/tags", { method: "POST", headers: { Origin: ORIGIN, "Content-Type": "application/json",
     "CF-Connecting-IP": "10.0.2." + ++ip }, body: JSON.stringify({ text: "feeling low" }) }), ENV);
-  assert.equal(noCode.status, 401);
+  assert.equal(noCode.status, 200, "open to all: the landing page sends no code");
+  assert.deepEqual((await noCode.json()).tags, ["low mood"]);
   assert.equal((await tagsFor("   ", '{"tags": []}')).status, 400);
+});
+
+test("tags: at most daily_cap answers a day for everyone together, then busy until the next day; other tasks aren't counted", async () => {
+  const was = NOW;
+  NOW = Date.parse("2026-12-01T09:00:00Z");   // a fresh day, so earlier tests' answers don't count
+  for (let i = 0; i < TAG_SETTINGS.daily_cap; i++) assert.equal((await tagsFor("feeling low", '{"tags": ["low mood"]}')).status, 200, `answer ${i + 1}`);
+  const over = await tagsFor("feeling low", '{"tags": ["low mood"]}');
+  assert.equal(over.status, 429);
+  assert.equal((await over.json()).error, "busy");
+  const verify = await worker.fetch(new Request("https://relay.test/verify", { method: "POST", headers: { Origin: ORIGIN, "X-Access-Code": CODE,
+    "CF-Connecting-IP": "10.0.2." + ++ip } }), ENV);
+  assert.equal(verify.status, 200, "Assist's tasks have no daily cap");
+  NOW = Date.parse("2026-12-02T00:00:01Z");   // the next day (UTC)
+  assert.equal((await tagsFor("feeling low", '{"tags": ["low mood"]}')).status, 200);
+  NOW = was;
 });
 
 test("tags: long text is cut before the AI sees it, and can't close its own <text> tag", async () => {

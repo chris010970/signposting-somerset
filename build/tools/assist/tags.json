@@ -1,5 +1,6 @@
 {
- "_about": "The tags task (POST .../tags): what someone types on the landing page, turned into up to max_tags support types (the sheet's tags, build/core/data/support-types.json), a place and two flags. max_chars: text beyond this is cut before the AI sees it. hints: a few everyday words for each tag, given to the AI so it can match how people talk; change them freely (every tag needs one). The prompt itself is in worker-template.js (tagsPrompt).",
+ "_about": "The tags task (POST .../tags): what someone types on the landing page, turned into up to max_tags support types (the sheet's tags, build/core/data/support-types.json), a place and two flags. daily_cap: at most this many answers a day, for everyone together (the task is open to the public, without the access code, so this caps its cost; past it, the page takes people straight to the directory). max_chars: text beyond this is cut before the AI sees it. hints: a few everyday words for each tag, given to the AI so it can match how people talk; change them freely (every tag needs one). The prompt itself is in worker-template.js (tagsPrompt).",
+ "daily_cap": 300,
  "max_chars": 500,
  "max_tags": 3,
  "hints": {

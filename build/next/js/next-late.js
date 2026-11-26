@@ -36,7 +36,6 @@ function talkStub(s, st, now) {
   return st.open ? html.replace('<span class="live">Today</span>', `<span class="live">${s.mode.includes("phone") ? "Open now" : "On now"}</span>`) : html;
 }
 function talkCard({ s, st }) {   // Phone and online: the ticket card (next.js ticketCard) with when you can get through in the stub
-  const k = KINDS[kindOf(s)];
   const modes = split(s.mode).filter(m => m !== "in-person").map(m => m === "phone" ? "Phone" : "Online").sort((a, b) => a === "Phone" ? -1 : 1);
   const how = [...modes, s.area === "national" ? "UK-wide" : "Local"].join(" · ");
   // An opened card: the Call (or Text, or Email) button, as on In person, and the full phone line when it says more than the
@@ -58,7 +57,6 @@ $("kindrow-talk").addEventListener("click", e => {
   if (KINDS.every((_, i) => off.has(i) || !T.some(x => kindOf(x) === i))) off.clear();   // all unticked: show all
   renderTalk();
 });
-function nServices(n) { return `${n} ${n === 1 ? "service" : "services"}`; }
 function renderTalk() {
   setTimeout(syncLink, 0);   // keep the address bar in step with the filters
   if (!ALL.length) { panelMessage(liveMsg); return; }

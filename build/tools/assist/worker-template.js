@@ -45,17 +45,19 @@ let cache = { at: 0, recs: null };
 const hits = new Map();
 const badCodes = new Map();
 const MAX_BAD_CODES = 10;              // wrong codes per visitor per hour
+const daily = new Map();               // task -> { day, n }: answers given today, for a task with a daily cap
 
 // ---------- tasks ----------
 // What each of the relay's addresses does. The relay itself (below) does what every task shares: only the site's own pages,
 // the access code where it's needed, the per-visitor limit and reading the request. A new AI feature is a new entry here.
 //   code: needs the access code;  limit: counts toward the per-visitor limit;  body: reads a JSON body (default true)
+//   daily: at most this many answers a day for everyone together (for a task open to the public, so its cost stays capped)
 //   run(body, { env, reply, cors }) gives the Response
 const TASKS = {
   verify: { code: true, limit: false, body: false, run: (body, { reply }) => reply({ ok: true }) },   // the Assist tab's unlock check: no AI
   plan: { code: true, limit: true, run: planTask },                                                    // Assist's support plan
   web: { code: true, limit: true, run: (body, { env, reply }) => webSearch(body, env, reply) },         // Assist's online search for the gap
-  tags: { code: true, limit: true, run: tagsTask },   // the landing page: words -> support types (code needed while it's tested)
+  tags: { code: false, limit: true, daily: TAGS_SET.daily_cap, run: tagsTask },   // the landing page: words -> support types (open to all)
 };
 // The address's last part names the task (".../web", ".../verify"); anything else is a plan, as the Assist page has always asked
 function taskFor(url) { const last = new URL(url).pathname.replace(/\/+$/, "").split("/").pop(); return Object.hasOwn(TASKS, last) ? last : "plan"; }
@@ -94,6 +96,12 @@ export default {
       const mine = (hits.get(ip) || []).filter(t => ms - t < hour);
       if (mine.length >= MAX_PER_HOUR) return reply({ error: "rate_limited" }, 429);
       mine.push(ms); hits.set(ip, mine);
+    }
+    if (task.daily) {   // the daily cap, counted by UTC day (best effort, as above: each Cloudflare instance keeps its own count)
+      const day = new Date(ms).toISOString().slice(0, 10), name = taskFor(request.url);
+      const used = daily.get(name)?.day === day ? daily.get(name).n : 0;
+      if (used >= task.daily) return reply({ error: "busy" }, 429);
+      daily.set(name, { day, n: used + 1 });
     }
     let body = {};
     if (task.body !== false) { try { body = await request.json(); } catch { return reply({ error: "bad_request" }, 400); } }
