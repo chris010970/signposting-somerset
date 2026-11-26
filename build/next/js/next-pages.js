@@ -111,7 +111,7 @@ function drawAsk() {
       <select id="h-town"><option value="">All of Somerset</option>${h.where && h.where.lat && !h.where.town ? `<option value="__me" selected>Your location</option>` : ""}${towns.map(t => `<option${h.where && h.where.town === t ? " selected" : ""}>${esc(t)}</option>`).join("")}</select>
       <button type="button" class="hloc" id="h-loc">${L_ICON('<circle cx="12" cy="12" r="3.2"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3"/><circle cx="12" cy="12" r="7.5"/>')}Use my location</button></div>
     ${h.note ? `<p class="asknote">${h.note}</p>` : ""}
-    <p class="askfine">${L_ICON('<rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/>')}We don't keep what you type.</p>
+    <p class="askfine">${L_ICON('<rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/>')}No names, addresses or contact details, please.</p>
     ${h.needCode ? `<p class="askcode"><label>Access code (while we test) <input id="ask-code" type="password" autocomplete="off"></label></p>` : ""}</form>`;
   $("ask-form").onsubmit = e => { e.preventDefault(); askTags(); };
   $("ask-text").oninput = e => { h.text = e.target.value; };
