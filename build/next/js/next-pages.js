@@ -77,7 +77,25 @@ function drawHome() {
   if (help && !help.querySelector(".hlinks")) help.insertAdjacentHTML("beforeend", `<nav class="hlinks" aria-label="More">
     <a href="${PAGE_URL.about}">About this directory</a><a href="${PAGE_URL.about}">How we keep it up to date</a><a href="${TOOLS_URL}">For support workers</a></nav>`);
   drawAsk();
+  fitHome();
 }
+// Computers: the picture's height leaves exactly the room the topics and the ways in take below it (--below), so the
+// page fits the window. Measured, not guessed, as those rows grow with the window; a few passes, as the rows move with it.
+let fitQueued = false;
+function fitHome() {
+  const body = document.body, ways = document.querySelector(".hways");
+  if (!body.classList.contains("landing") || !ways) return;
+  if (!matchMedia("(min-width: 701px)").matches) { body.style.removeProperty("--below"); return; }
+  let below = parseFloat(body.style.getPropertyValue("--below")) || 125;
+  for (let i = 0; i < 6; i++) {
+    const over = ways.getBoundingClientRect().bottom + scrollY - innerHeight + 1;   /* (a pixel spare, against rounding) */
+    if (over <= 0 && over > -3) break;
+    below = Math.max(60, below + Math.ceil(over));
+    body.style.setProperty("--below", below + "px");
+  }
+}
+addEventListener("resize", () => { if (!fitQueued) { fitQueued = true; requestAnimationFrame(() => { fitQueued = false; fitHome(); }); } });
+if (document.fonts) document.fonts.ready.then(fitHome);
 function drawAsk() {
   const box = $("ask"), h = home;
   const towns = [...$("f-town").options].filter(o => PLACE[o.value]).map(o => o.value);
