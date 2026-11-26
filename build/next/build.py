@@ -1,7 +1,8 @@
-"""Build the preview of the next design: /next/directory/, standalone from the live and test directories.
+r"""Build the preview of the next design: /next/directory/, standalone from the live and test directories.
 
 Usage: python build/next/build.py      (build_all.py runs it too)
-Writes build/next/github/next/directory/index.html; copy it to docs/next/directory/index.html.
+Writes build/next/github/next/ (index.html, directory/, courses/, about/: one template, four pages, js/next-pages.js);
+copy it to docs/next/ (xcopy /E /Y build\next\github\next docs\next\).
 
 What's whose:
   build/next/template.html   the page itself (started as a copy of build/directory/template.html); change it freely
@@ -52,7 +53,17 @@ page = put(page, "<!--ROBOTS-->", NOINDEX)
 page = put(page, f'<link rel="canonical" href="{LIVE}/directory/">\n', "")
 page = put(page, 'new URL("places/", location.href).pathname', json.dumps(BASE + "/test/directory/places/"))
 
-out = HERE / "github" / "next" / "directory"
-out.mkdir(parents=True, exist_ok=True)
-(out / "index.html").write_text(rebase(page), encoding="utf-8")
-print(f"{out.relative_to(HERE)}/index.html ({len(page) // 1024} KB)")
+# The pages (js/next-pages.js): the same page four times, each opening its own part; every page's title and illustration go home
+PAGES = {"home": "", "directory": "directory/", "courses": "courses/", "about": "about/"}
+TITLES = {"home": "", "directory": "", "courses": ": courses", "about": ": about"}
+for name, path in PAGES.items():
+    one = page
+    for mark, value in (("/*NEXT_PAGE*/", name), ("<title>Signposting Somerset (next design)</title>", f"<title>Signposting Somerset{TITLES[name]} (next design)</title>")):
+        one = put(one, mark, value)
+    one = one.replace("/*WORKER_URL*/", (HERE.parent / "tools" / "assist" / "worker_url.txt").read_text().strip())
+    for key, p in PAGES.items():
+        one = one.replace(f"/*{key.upper()}_URL*/", BASE + "/next/" + p)
+    out = HERE / "github" / "next" / path
+    out.mkdir(parents=True, exist_ok=True)
+    (out / "index.html").write_text(rebase(one), encoding="utf-8")
+    print(f"{(out / 'index.html').relative_to(HERE)} ({len(one) // 1024} KB)")

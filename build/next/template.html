@@ -14,6 +14,7 @@
 <meta name="twitter:card" content="summary_large_image">
 <script type="application/ld+json">{"@context":"https://schema.org","@type":"WebSite","name":"Signposting Somerset","url":"https://signpostingsomerset.org.uk/","description":"Discover mental health and wellbeing support across Somerset, North Somerset and B&NES: what's on, when and where."}</script>
 <!--@core:html/head.html-->
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600&display=swap">   <!-- the landing page's title and question -->
 <style>/*LEAFLET_CSS*/</style>
 <style>
 /*@core:css/base.css*/
@@ -35,16 +36,18 @@
   <div class="inner">
     <div class="masthead">
       <div class="illus" role="img" aria-label="Watercolour illustration: a path with map pins winding through Somerset fields towards Glastonbury Tor, people meeting and walking together, and a signpost to drop-ins, peer support, advice and community"></div>
+      <a class="homeart" href="/*HOME_URL*/" tabindex="-1" aria-hidden="true"></a>
       <div class="hero">
-        <h1 class="brand">Signposting Somerset <span class="sub">Local mental health and wellbeing support</span></h1>
+        <h1 class="brand"><a class="homelink" href="/*HOME_URL*/">Signposting Somerset</a> <span class="sub">Local mental health and wellbeing support</span></h1>
       </div>
       <p class="datasrc" id="datasrc" hidden></p>
       <span id="copy-live" role="status" aria-live="polite" style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)"></span>
       <nav class="sitetabs" aria-label="Site">
       <span class="tgrp"><button type="button" id="tab-near" aria-controls="panel-near">In person</button>
       <button type="button" id="tab-talk" aria-controls="panel-talk"><span class="lg">Phone and online</span><span class="sh">Phone &amp; online</span></button>
-      <button type="button" id="tab-places" aria-controls="panel-places">Places</button><button type="button" id="tab-course" aria-controls="panel-course">Courses</button></span>
+      <button type="button" id="tab-places" aria-controls="panel-places">Places</button><button type="button" id="tab-course" aria-controls="panel-course">Courses</button><button type="button" id="tab-training" aria-controls="panel-training">Training</button></span>
       <button type="button" id="tab-about" aria-controls="panel-about">About</button>
+      <span class="sitelinks"><a href="/*COURSES_URL*/">Courses</a><a href="/*ABOUT_URL*/">About</a></span>
       </nav>
     </div>
     <!-- The filter boxes (selects) have autocomplete="off": on Back, the browser mustn't put old values back in them (the page keeps
@@ -72,6 +75,8 @@
       <div hidden><select id="c-fmt"><option value=""></option><option value="in-person"></option><option value="online"></option></select><label id="q-cfmt"></label><label id="q-cbook"><input type="checkbox" id="c-book"></label></div>
     </div>
     <div id="hdr-about" hidden></div>
+    <div id="hdr-training" hidden></div>
+    <div id="hdr-home" hidden></div>
     <div id="hdr-places" hidden><div id="hdr-towns"></div>
       <div class="krow"><div class="kindrow" id="kindrow-places" role="group" aria-label="Show these kinds of support"></div></div>
     </div>
@@ -115,6 +120,8 @@
 <main id="panel-about" class="pane" aria-labelledby="tab-about" hidden tabindex="-1"><div class="talk gut" id="about-page"></div></main>
 <main id="panel-places" class="pane" aria-labelledby="tab-places" hidden tabindex="-1"><div class="talk gut"><div class="bmain" id="places-main"></div></div></main>
 <main id="panel-course" class="pane" aria-labelledby="tab-course" hidden tabindex="-1"><div class="talk gut" id="courses"></div></main>
+<main id="panel-training" class="pane" aria-labelledby="tab-training" hidden tabindex="-1"><div class="talk gut" id="training"></div></main>
+<main id="panel-home" class="pane" hidden tabindex="-1"><div class="talk gut" id="home"></div></main>
 <main id="panel-near" aria-labelledby="tab-near" hidden tabindex="-1">
 
 <div id="main">
@@ -154,6 +161,7 @@
 /*@page:js/about.js*/
 /*@page:js/places-tab.js*/
 /*@page:js/tabs.js*/
+/*@next:js/next-pages.js*/
 /*@page:js/links.js*/
 /*@page:js/live.js*/
 /*@next:js/next-late.js*/

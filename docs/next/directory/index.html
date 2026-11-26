@@ -24,6 +24,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Literata:opsz,wght@7..72,600;7..72,700&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600&display=swap">   <!-- the landing page's title and question -->
 <style>/* required styles */
 
 .leaflet-pane,
@@ -1409,6 +1410,163 @@ header.top { background: var(--cream); border-bottom: 0; }
 header.top:has(#tab-about[aria-current="page"]) { padding-bottom: 0; }
 #about-page.talk { padding-top: 0; }
 
+/* ---------- The pages (js/next-pages.js): home, directory, courses, about ---------- */
+/* Home: the title and the illustration (its visible right-hand part, clear of the tabs) */
+.masthead .brand .homelink { color: inherit; text-decoration: none; }
+.masthead .brand .homelink:hover { text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 4px; }
+.masthead .homeart { position: absolute; z-index: 1; top: -10px; bottom: 0; right: calc(50% - 50vw); width: min(38vw, 620px); }
+@media (max-width: 600px) { .masthead .homeart { display: none; } }
+/* The directory's links to its neighbours, at the end of the tab row (computers; on phones they're on the home page) */
+.masthead .sitetabs .sitelinks { display: inline-flex; gap: 14px; margin-left: 10px; }
+.masthead .sitetabs .sitelinks a { color: var(--b700); font-size: 13.5px; font-weight: 500; text-decoration: none; padding: 8px 2px; }
+.masthead .sitetabs .sitelinks a:hover { text-decoration: underline; }
+body:not([data-page="directory"]) .sitetabs .sitelinks { display: none; }
+@media (max-width: 600px) { .masthead .sitetabs .sitelinks { display: none; } }
+/* Narrow phones: tighter tabs, so four (with For you) still fit */
+@media (max-width: 380px) { .masthead .sitetabs button { padding: 7px 7px; } }
+/* Training and home: a card in line with the dropdowns on the other pages, as About */
+header.top:has(#tab-training[aria-current="page"]) { padding-bottom: 0; }
+#training.talk { padding-top: 0; }
+.soon { background: var(--white); border: 1px solid var(--line); border-radius: 16px; padding: 22px 24px 26px; }
+.soon p { color: var(--tx2); max-width: 70ch; }
+.soon .note { font-size: 13px; color: var(--tx3); margin-top: 18px; }
+
+/* ---------- Home: the landing page. The whole watercolour as the hero, the question set into its meadow ---------- */
+body.landing header.top, body.landing #hdr-home { display: none; }
+#home.talk { padding: 0; margin: 0; max-width: none; width: auto; }
+.lhero { position: relative; width: 100vw; margin-left: calc(50% - 50vw); }
+.lhero { min-height: calc(max(440px, 38.5vw) - 70px); }   /* (the topics below the picture, clear of the path, on wide screens) */
+@media (max-width: 700px) { .lhero { min-height: 0; } }   /* (full width however wide the screen) */
+.lhero .heroart { position: absolute; inset: 0 0 auto 0; height: max(440px, 38.5vw); background: url("/assets/hero.webp") center bottom / cover no-repeat; }
+.lhero .heroart::after { content: ""; position: absolute; inset: auto 0 0 0; height: 110px; background: linear-gradient(to bottom, rgba(249, 249, 247, 0), var(--cream)); }
+.herotitle { position: relative; z-index: 1; max-width: var(--maxw, 1250px); margin: 0 auto; padding: 22px 24px 0; display: flex; align-items: center; gap: 18px; flex-wrap: wrap; }
+.herotitle .homelink { font: 700 38px/1.1 var(--serif); color: var(--b900); text-decoration: none; }
+.herotitle span { font-size: 15px; color: var(--b800); border-left: 1.5px solid rgba(35, 64, 49, 0.35); padding-left: 16px; max-width: 260px; line-height: 1.35; }
+/* The question: small and see-through (frosted), so the picture shows around and through it */
+/* In the middle of the meadow, the people on the left, the path and its pins on the right */
+.ask { position: relative; z-index: 1; width: min(540px, calc(100% - 32px)); margin: max(80px, calc(15.2vw - 20px)) auto 0;
+  background: rgba(255, 255, 255, 0.72); -webkit-backdrop-filter: blur(8px) saturate(1.1); backdrop-filter: blur(8px) saturate(1.1);
+  border: 1px solid rgba(255, 255, 255, 0.7); border-radius: 22px; box-shadow: 0 10px 34px rgba(27, 49, 38, 0.12); padding: 18px 22px 16px; }
+.askh { display: block; font: 700 22px/1.25 var(--serif); color: var(--b900); margin: 0 0 10px; }
+.askh.big { font-size: 24px; margin-bottom: 2px; }
+.ask textarea { width: 100%; box-sizing: border-box; font: 15px/1.4 var(--sans); color: var(--ink); border: 1.5px solid rgba(47, 84, 65, 0.25); border-radius: 12px; padding: 9px 12px; resize: none; background: rgba(255, 255, 255, 0.9); }
+.ask textarea::placeholder { font-style: italic; color: #6B645F; }
+.ask textarea:focus { outline: none; border-color: var(--b700); box-shadow: 0 0 0 3px rgba(46, 107, 79, 0.15); }
+.askrow { display: flex; align-items: center; gap: 14px; margin-top: 10px; flex-wrap: wrap; }
+.ask .tbtn.pri { height: 40px; padding: 0 18px; font-size: 15px; gap: 8px; }
+.ask .tbtn.pri svg { width: 17px; height: 17px; }
+.ask .tbtn.pri[disabled] { opacity: 0.5; }
+.askfine { display: inline-flex; align-items: center; gap: 6px; font-size: 12.5px; color: var(--tx2); }
+.askfine svg { width: 15px; height: 15px; }
+.asknote { margin: 8px 0 0; font-size: 14px; color: #8A4B10; }
+.askcode { margin: 10px 0 0; font-size: 13px; color: var(--tx3); }
+.askcode input { margin-left: 6px; height: 30px; border: 1px solid var(--line); border-radius: 8px; padding: 0 8px; }
+.hsub { margin: 0 0 10px; font-size: 13.5px; color: var(--tx2); }
+/* Where?: under the text box, so it's clear the place needn't be typed */
+.hwhere { display: flex; align-items: center; gap: 8px; margin-top: 8px; font-size: 14px; color: var(--tx2); flex-wrap: wrap; }
+.hwhere > svg { width: 17px; height: 17px; color: var(--b700); }
+.hwhere select { height: 34px; max-width: 190px; border: 1.5px solid rgba(47, 84, 65, 0.25); border-radius: 10px; padding: 0 10px; font: 600 14px var(--sans); color: var(--b900); background: rgba(255, 255, 255, 0.9); }
+.hloc { display: inline-flex; align-items: center; gap: 6px; height: 34px; padding: 0 10px; border: 0; background: none; color: var(--b700); font: 600 13.5px var(--sans); cursor: pointer; border-radius: 10px; }
+.hloc:hover { background: rgba(47, 84, 65, 0.08); }
+.hloc svg { width: 17px; height: 17px; }
+.hcrisis { background: #FDF6EC; border: 1px solid #EBC88F; border-left: 4px solid #B7791F; border-radius: 12px; padding: 10px 14px; margin: 0 0 14px; font-size: 14px; line-height: 1.5; color: #44403C; }
+.hcrisis a { color: inherit; font-weight: 700; }
+/* Or explore by topic */
+.hexplore { position: relative; z-index: 1; width: min(1000px, calc(100% - 32px)); margin: 40px auto 0; padding-bottom: 10px; }
+.hor { display: flex; align-items: center; gap: 14px; margin: 0 0 14px; color: var(--tx2); font-size: 15px; }
+.hor::before, .hor::after { content: ""; flex: 1; height: 1px; background: #D6D3D1; }
+.htopics { display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; }
+.htopic { display: inline-flex; align-items: center; gap: 7px; height: 38px; padding: 0 14px; white-space: nowrap; border-radius: 999px; border: 1px solid #DAD6CF; background: #fff; font: 600 13.5px var(--sans); color: var(--b900); cursor: pointer; box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04); }
+.htopic:hover { border-color: var(--b700); }
+.htopic svg { width: 17px; height: 17px; color: var(--b600); }
+/* The ways in */
+.hways { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); column-gap: 12px; margin: 46px 0 0; padding: 34px max(24px, calc(50% - 680px)) 30px; background: linear-gradient(to bottom, var(--b50), #EEF3EC); border-radius: 50% 50% 0 0 / 28px 28px 0 0; }
+.hway { display: flex; gap: 14px; padding: 14px 18px; text-decoration: none; color: inherit; border-radius: 16px; transition: background 0.15s; }
+.hway:hover { background: rgba(47, 84, 65, 0.07); }
+.hway > svg { width: 34px; height: 34px; flex: none; color: var(--b600); margin-top: 2px; }
+.hway b { display: block; font: 600 20px var(--display, var(--serif)); white-space: nowrap; color: var(--b900); margin-bottom: 5px; }
+.hway span span { font-size: 15px; color: var(--tx2); line-height: 1.4; }
+/* The helpline bar's extra links (landing page) */
+.help .hlinks { display: flex; gap: 22px; margin-left: auto; }
+.help .hlinks a { color: #fff; font-size: 14px; }
+body:not(.landing) .help .hlinks { display: none; }
+@media (max-width: 900px) {
+  .hways { grid-template-columns: repeat(2, minmax(0, 1fr)); row-gap: 18px; }
+  .help .hlinks { display: none; }
+}
+@media (max-width: 700px) {
+  /* Phones: the same header as the other pages, no hero; the question card just below it */
+  body.landing header.top { display: block; }
+  .lhero .heroart, .herotitle { display: none; }
+  .ask { margin: 10px auto 0; padding: 16px 16px 14px; border-radius: 18px; background: var(--white); border: 1px solid var(--line); box-shadow: 0 4px 18px rgba(27, 49, 38, 0.08); -webkit-backdrop-filter: none; backdrop-filter: none; }
+  .askh.big { font-size: 22px; }
+  .askrow { gap: 10px; }
+  .hways { grid-template-columns: minmax(0, 1fr); padding: 20px 16px 24px; }
+  .hway { padding: 10px 8px; }
+}
+/* Phones: the topics scroll sideways in one row rather than stacking */
+@media (max-width: 700px) {
+  .htopics { flex-wrap: nowrap; justify-content: flex-start; overflow-x: auto; padding: 2px 16px 8px; margin: 0 -16px; scrollbar-width: none; }
+  .htopics::-webkit-scrollbar { display: none; }
+}
+
+/* The question's text box carries its own send arrow (Enter sends too) */
+.askbox { position: relative; }
+.askbox textarea { padding-right: 54px; }
+.askgo { position: absolute; right: 7px; bottom: 7px; width: 38px; height: 38px; border-radius: 50%; border: 0; background: var(--b700); color: #fff; display: grid; place-items: center; cursor: pointer; }
+.askgo:hover { background: var(--b800); }
+.askgo[disabled] { opacity: 0.6; cursor: default; }
+.askgo[disabled] svg { animation: askspin 0.9s linear infinite; }
+@keyframes askspin { to { transform: rotate(360deg); } }
+.askgo svg { width: 20px; height: 20px; }
+.ask .askfine { margin: 8px 0 0; }
+.ask .askfine svg { flex: none; }
+@media (max-width: 700px) { .askbox textarea { min-height: 92px; } .hwhere select { max-width: 170px; } .hloc { padding: 0 4px; } }   /* (phones: room for the example, and Use my location beside the town) */
+
+/* Computers: the question card larger and calmer (a creamier, more solid card; bigger type), and larger topic chips.
+   Everything scales with the width, so the card keeps its place in the meadow at any size */
+@media (min-width: 701px) {
+  /* Centred, and placed against the path in the picture: between 44% and 84% of the picture's height the path's nearest
+     edge is at 66% of the width, so the card sits in that band (top at 44%) and is at most 27% wide (right edge at 63.5%) */
+  .lhero > .ask { position: absolute; left: 0; right: 0; top: calc(max(440px, 38.5vw) * 0.44); width: clamp(352px, 27vw, 540px); margin: 0 auto;
+    padding: 0.9vw 1.4vw 0.8vw; border-radius: 24px; background: rgba(253, 251, 242, 0.9); }
+  .askh.big { font-size: clamp(22px, 2vw, 38px); margin-bottom: 0.3vw; }
+  .ask .hsub { font-size: clamp(11.5px, 0.8vw, 15.5px); margin-bottom: 0.55vw; white-space: nowrap; }
+  .ask textarea { font-size: clamp(12.5px, 0.88vw, 17px); padding: 0.55vw 58px 0.55vw 0.8vw; border-radius: 16px; }
+  .askgo { width: clamp(38px, 2.5vw, 48px); height: clamp(38px, 2.5vw, 48px); right: 10px; bottom: 50%; transform: translateY(50%); }
+  .askgo svg { width: 22px; height: 22px; }
+  .hwhere { font-size: clamp(12.5px, 0.88vw, 16px); margin-top: 0.55vw; gap: 6px; flex-wrap: nowrap; }
+  .hwhere select { height: clamp(34px, 2.3vw, 44px); width: clamp(162px, 9.5vw, 200px); max-width: none; font-size: clamp(13.5px, 0.95vw, 17px); border-radius: 12px; padding: 0 12px; }
+  .hloc { padding: 0 2px; font-size: clamp(12.5px, 0.88vw, 16px); color: var(--ink); height: auto; white-space: nowrap; }
+  .hloc svg, .hwhere > svg { width: 20px; height: 20px; color: var(--ink); flex: none; }
+  .ask .askfine { font-size: clamp(12px, 0.8vw, 15px); margin-top: 0.5vw; color: var(--b900); font-weight: 500; }
+  .ask .askfine svg { width: 17px; height: 17px; }
+  .hexplore { width: min(1300px, calc(100% - 32px)); }
+  .hor { font-weight: 700; color: var(--ink); font-size: clamp(14px, 0.95vw, 17px); }
+  .htopics { gap: 0.75vw; flex-wrap: nowrap; }
+  .htopic { height: clamp(40px, 2.7vw, 52px); padding: 0 clamp(14px, 1.1vw, 22px); font: 600 clamp(13.5px, 0.95vw, 17px) var(--sans); gap: 10px; box-shadow: 0 2px 6px rgba(0, 0, 0, 0.06); }
+  .htopic svg { width: 20px; height: 20px; color: var(--b600); }
+}
+
+/* The landing page's title: Fraunces (soft and weighty), on the left of the sky with the tagline beneath, leaving the Tor
+   on its own in the middle. The question's heading uses it too. */
+:root { --display: "Fraunces", "Literata", Georgia, serif; }
+@media (min-width: 701px) {
+  .herotitle { max-width: none; margin: 0; padding: 18px 0 0 5.5vw; flex-direction: column; align-items: flex-start; gap: 10px; }
+  .herotitle .homelink { font: 600 clamp(44px, 3.5vw, 66px)/1.05 var(--display); letter-spacing: -0.5px; }
+  .herotitle span { font-size: clamp(15px, 1.05vw, 19px); max-width: none; border-left: 0; padding-left: 3px; line-height: 1.3; }
+  .ask .askh.big { font-family: var(--display); font-weight: 600; font-size: clamp(20px, 1.65vw, 32px); white-space: nowrap; }
+}
+/* Narrower computers (under 1200px): the picture is too small to hold the card clear of the path, so it sits just below it */
+@media (min-width: 701px) and (max-width: 1199px) {
+  .lhero > .ask { position: relative; top: auto; margin: 0 auto; width: min(560px, calc(100% - 32px)); }
+  .lhero { min-height: 0; } .lhero .heroart { position: relative; }
+  .herotitle { position: absolute; top: 0; left: 0; }
+}
+@media (min-width: 701px) and (max-width: 1399px) { .lhero > .ask { padding-left: 14px; padding-right: 14px; } }
+@media (min-width: 701px) and (max-width: 1599px) { .hwhere > label { display: none; } }   /* (the pin says "near"; room for Use my location) */
+body.landing footer.help { padding-block: 14px calc(14px + env(safe-area-inset-bottom, 0px)); }   /* (the helpline bar: a little more room on the landing page) */
+
 </style>
 </head>
 <body>
@@ -1425,16 +1583,18 @@ header.top:has(#tab-about[aria-current="page"]) { padding-bottom: 0; }
   <div class="inner">
     <div class="masthead">
       <div class="illus" role="img" aria-label="Watercolour illustration: a path with map pins winding through Somerset fields towards Glastonbury Tor, people meeting and walking together, and a signpost to drop-ins, peer support, advice and community"></div>
+      <a class="homeart" href="/next/" tabindex="-1" aria-hidden="true"></a>
       <div class="hero">
-        <h1 class="brand">Signposting Somerset <span class="sub">Local mental health and wellbeing support</span></h1>
+        <h1 class="brand"><a class="homelink" href="/next/">Signposting Somerset</a> <span class="sub">Local mental health and wellbeing support</span></h1>
       </div>
       <p class="datasrc" id="datasrc" hidden></p>
       <span id="copy-live" role="status" aria-live="polite" style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)"></span>
       <nav class="sitetabs" aria-label="Site">
       <span class="tgrp"><button type="button" id="tab-near" aria-controls="panel-near">In person</button>
       <button type="button" id="tab-talk" aria-controls="panel-talk"><span class="lg">Phone and online</span><span class="sh">Phone &amp; online</span></button>
-      <button type="button" id="tab-places" aria-controls="panel-places">Places</button><button type="button" id="tab-course" aria-controls="panel-course">Courses</button></span>
+      <button type="button" id="tab-places" aria-controls="panel-places">Places</button><button type="button" id="tab-course" aria-controls="panel-course">Courses</button><button type="button" id="tab-training" aria-controls="panel-training">Training</button></span>
       <button type="button" id="tab-about" aria-controls="panel-about">About</button>
+      <span class="sitelinks"><a href="/next/courses/">Courses</a><a href="/next/about/">About</a></span>
       </nav>
     </div>
     <!-- The filter boxes (selects) have autocomplete="off": on Back, the browser mustn't put old values back in them (the page keeps
@@ -1462,6 +1622,8 @@ header.top:has(#tab-about[aria-current="page"]) { padding-bottom: 0; }
       <div hidden><select id="c-fmt"><option value=""></option><option value="in-person"></option><option value="online"></option></select><label id="q-cfmt"></label><label id="q-cbook"><input type="checkbox" id="c-book"></label></div>
     </div>
     <div id="hdr-about" hidden></div>
+    <div id="hdr-training" hidden></div>
+    <div id="hdr-home" hidden></div>
     <div id="hdr-places" hidden><div id="hdr-towns"></div>
       <div class="krow"><div class="kindrow" id="kindrow-places" role="group" aria-label="Show these kinds of support"></div></div>
     </div>
@@ -1505,6 +1667,8 @@ header.top:has(#tab-about[aria-current="page"]) { padding-bottom: 0; }
 <main id="panel-about" class="pane" aria-labelledby="tab-about" hidden tabindex="-1"><div class="talk gut" id="about-page"></div></main>
 <main id="panel-places" class="pane" aria-labelledby="tab-places" hidden tabindex="-1"><div class="talk gut"><div class="bmain" id="places-main"></div></div></main>
 <main id="panel-course" class="pane" aria-labelledby="tab-course" hidden tabindex="-1"><div class="talk gut" id="courses"></div></main>
+<main id="panel-training" class="pane" aria-labelledby="tab-training" hidden tabindex="-1"><div class="talk gut" id="training"></div></main>
+<main id="panel-home" class="pane" hidden tabindex="-1"><div class="talk gut" id="home"></div></main>
 <main id="panel-near" aria-labelledby="tab-near" hidden tabindex="-1">
 
 <div id="main">
@@ -2891,7 +3055,7 @@ function renderAbout() {
     </section>
     </div></div>
     <p class="small">Service information belongs to the providers listed. Map data © <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap</a> contributors, © <a href="https://carto.com/attributions" target="_blank" rel="noopener">CARTO</a>.</p>
-    <p class="small" id="site-version">Version: next 2026-11-25 20:14</p>
+    <p class="small" id="site-version">Version: next 2026-11-26 18:48</p>
   </article>`;
 }
 /* ---------- Places: the town listings, as a tab of the directory ----------
@@ -2976,6 +3140,140 @@ $("skip").onclick = e => { e.preventDefault(); $("panel-" + tab).focus(); };
   nav.addEventListener("scroll", edge, { passive: true }); addEventListener("resize", edge); setTimeout(edge, 0);
 }
 addEventListener("resize", () => map && map.invalidateSize());
+/* ---------- The next design's pages: one template, four pages (build/next/build.py builds it once for each) ----------
+   home       /next/            a stand-in for the landing page: links to everything (the text box and Where? come later)
+   directory  /next/directory/  In person, Phone and online, Places (For you joins them with the Welcome work)
+   courses    /next/courses/    Courses, and Training (a placeholder until there are records)
+   about      /next/about/      About
+   The title and the illustration go home from every page. Runs after tabs.js, before links.js opens the page. */
+const NEXT_PAGE = "directory";
+const PAGE_URL = { home: "/next/", courses: "/next/courses/", about: "/next/about/", directory: "/next/directory/" };
+const PAGE_TABS = { home: ["home"], directory: ["near", "talk", "places"], courses: ["course", "training"], about: ["about"] }[NEXT_PAGE];
+// Old links to the directory's Courses or About tab: to their own pages, with their filters
+if (NEXT_PAGE === "directory" && ["#course", "#about"].includes(location.hash))
+  location.replace((location.hash === "#course" ? PAGE_URL.courses : PAGE_URL.about) + location.search + location.hash);
+document.body.dataset.page = NEXT_PAGE;
+// Only this page's tabs: the others' buttons go (their panels stay, hidden, as the shared code expects them)
+for (const k of [...SITE_TABS, "training", "home"]) if (!PAGE_TABS.includes(k)) { $("tab-" + k)?.remove(); $("panel-" + k).hidden = $("hdr-" + k).hidden = true; }
+SITE_TABS.splice(0, SITE_TABS.length, ...PAGE_TABS);
+// The tabs this design adds (Training, Home) have no list of their own: shown here. Any other tab name opens the page's first.
+{
+  const shared = setSiteTab;
+  setSiteTab = t => {
+    if (!SITE_TABS.includes(t)) t = SITE_TABS[0];
+    if (t === "training" || t === "home") {
+      tab = t;
+      for (const k of SITE_TABS) { if ($("tab-" + k)) currentTab($("tab-" + k), k === t); $("panel-" + k).hidden = k !== t; $("hdr-" + k).hidden = k !== t; }
+      (t === "home" ? drawHome : drawTraining)();
+      try { history.replaceState(null, "", location.pathname + (t === "home" ? "" : "#" + t)); } catch (e) {}
+      return;
+    }
+    if (tab === "training" || tab === "home") tab = t;   // (nothing to remember about where those were scrolled)
+    shared(t);
+  };
+}
+const tabTraining = $("tab-training");
+if (tabTraining) tabTraining.onclick = () => setSiteTab("training");
+function drawTraining() {
+  $("training").innerHTML = `<div class="soon"><h1 class="bt">Training</h1>
+    <p>Training for people who support others: support workers, volunteers, carers and employers. For example, Mental Health First
+    Aid, suicide awareness and safeguarding. Coming soon.</p></div>`;
+}
+// ---------- Home: the landing page (a first working version; the look comes last) ----------
+// Someone says what's going on in their own words; the worker's tags task (Haiku) turns it into topics, a place and flags;
+// they can change the topics and the place; "Show me" opens the directory with those set. What they type goes only to the
+// worker, isn't kept, and never goes in an address. While the tags task is tested it needs the access code: asked once in
+// this browser tab, kept in this tab only (as Assist).
+const TAGS_URL = "https://signposting-assist.c-r-williams0109.workers.dev".replace(/\/$/, "") + "/tags";
+const ALL_TAGS = GROUPS.flatMap(g => g[1]);
+let home = { busy: false, text: "", where: null, note: "", risk: false };   // where: the town chosen, or their location
+const homeCode = { get: () => { try { return sessionStorage.getItem("assist-code") || ""; } catch (e) { return ""; } },
+  set: v => { try { v ? sessionStorage.setItem("assist-code", v) : sessionStorage.removeItem("assist-code"); } catch (e) {} } };
+// Small line icons for the landing page (topics and the ways in)
+const L_ICON = p => `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${p}</svg>`;
+const HOME_TOPICS = [   // "Or explore by topic": a few to tap without typing (More shows them all)
+  ["connect", '<circle cx="9" cy="8" r="3"/><circle cx="17" cy="9" r="2.4"/><path d="M3.5 19c.6-3.2 2.8-5 5.5-5s4.9 1.8 5.5 5M14.5 14.6c.8-.4 1.6-.6 2.5-.6 2.3 0 4 1.5 4.5 4.5"/>'],
+  ["low mood", '<path d="M5 19c0-8 6-13 14-14-1 8-6 14-14 14z"/><path d="M5 19l7-7"/>'],
+  ["finances", '<ellipse cx="12" cy="6.5" rx="6" ry="2.5"/><path d="M6 6.5v4c0 1.4 2.7 2.5 6 2.5s6-1.1 6-2.5v-4M6 10.5v4c0 1.4 2.7 2.5 6 2.5s6-1.1 6-2.5v-4M6 14.5v3c0 1.4 2.7 2.5 6 2.5s6-1.1 6-2.5v-3"/>'],
+  ["bereavement", '<path d="M12 20s-7-4.4-7-10a4 4 0 0 1 7-2.6A4 4 0 0 1 19 10c0 5.6-7 10-7 10z"/>'],
+  ["be active", '<path d="M4 16c3 0 4-1 6-4l2-3c1 2 3 3 5 3h3v3a2 2 0 0 1-2 2H6a2 2 0 0 1-2-1z"/><path d="M4 16v1"/>']];
+// The four ways in, below the topics: the directory (its tabs lead everywhere in it), courses and training, Assist, analytics
+const HOME_WAYS = [
+  [() => PAGE_URL.directory, "Directory", "Groups, drop-ins, helplines and what's on in your town", '<path d="M12 21s-6.5-6.2-6.5-11.2a6.5 6.5 0 0 1 13 0C18.5 14.8 12 21 12 21z"/><circle cx="12" cy="9.8" r="2.3"/>'],
+  [() => PAGE_URL.courses, "Courses and training", "Courses with set dates, and training for people who support others", '<path d="M2 9l10-4 10 4-10 4z"/><path d="M6 11v5c0 1 2.7 3 6 3s6-2 6-3v-5M22 9v5"/>'],
+  [() => TOOLS_URL + "#assist", "For support workers", "Assist: a support plan from the directory, in a few minutes", '<circle cx="9" cy="8" r="3.2"/><path d="M3.5 19c.6-3.3 2.8-5.2 5.5-5.2s4.9 1.9 5.5 5.2"/><path d="M15.5 11.5l2 2 4-4.5"/>'],
+  [() => TOOLS_URL + "#analytics", "Analytics", "Where support is, and where the gaps are, across Somerset", '<path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/>']];
+function drawHome() {
+  document.body.classList.add("landing");
+  $("home").innerHTML = `<section class="lhero"><div class="heroart" role="img" aria-label="A watercolour of Somerset: Glastonbury Tor above fields, a path with map pins, people meeting and walking, two people talking under the trees, and a signpost saying Connect, Be active and Take notice"></div>
+      <div class="herotitle"><a class="homelink" href="${PAGE_URL.home}">Signposting Somerset</a><span>Local mental health and wellbeing support across Somerset</span></div>
+      <div class="ask" id="ask" aria-live="polite"></div></section>
+    <section class="hexplore" id="hexplore"><p class="hor"><span>Or explore by topic</span></p><div class="htopics">
+      ${HOME_TOPICS.map(([t, i]) => `<button type="button" class="htopic" data-t="${esc(t)}">${L_ICON(i)}${esc(cap(t))}</button>`).join("")}
+      <button type="button" class="htopic" data-t="">${L_ICON('<path d="M12 5v14M5 12h14"/>')}More</button></div></section>
+    <section class="hways">${HOME_WAYS.map(([url, title, text, i]) => `<a class="hway" href="${url()}">${L_ICON(i)}<span><b>${title}</b><span>${text}</span></span></a>`).join("")}</section>`;
+  // A topic: straight to the directory with it (and the town, if they've chosen one); More: everything
+  $("hexplore").querySelectorAll(".htopic").forEach(b => b.onclick = () => goShow(b.dataset.t ? [b.dataset.t] : [], home.where));
+  // The helpline bar at the foot gains the links that aren't ways in
+  const help = document.querySelector("#help .inner");
+  if (help && !help.querySelector(".hlinks")) help.insertAdjacentHTML("beforeend", `<nav class="hlinks" aria-label="More">
+    <a href="${PAGE_URL.about}">About this directory</a><a href="${PAGE_URL.about}">How we keep it up to date</a><a href="${TOOLS_URL}">For support workers</a></nav>`);
+  drawAsk();
+}
+function drawAsk() {
+  const box = $("ask"), h = home;
+  const towns = [...$("f-town").options].filter(o => PLACE[o.value]).map(o => o.value);
+  const crisis = h.risk ? `<div class="hcrisis"><b>If you or someone else is in danger now, call 999.</b> For urgent mental health support, call
+    NHS 111 and choose option 2, or talk to Samaritans any time, free, on <a href="tel:116123">116 123</a>. Under 19? Childline: <a href="tel:08001111">0800 1111</a>.
+    <div class="askrow"><button type="button" class="tbtn pri" id="h-go">See support near you</button></div></div>` : "";
+  box.innerHTML = `${crisis}<form id="ask-form"${h.risk ? " hidden" : ""}><label for="ask-text" class="askh big">What would help you today?</label>
+    <p class="hsub">Tell us in your own words and we'll suggest places nearby.</p>
+    <div class="askbox"><textarea id="ask-text" rows="2" maxlength="500" placeholder="For example: I've recently been bereaved, I'm feeling quite alone and money is tight">${esc(h.text)}</textarea>
+      <button type="submit" class="askgo" aria-label="Find support and activities" title="Find support and activities" ${h.busy ? "disabled" : ""}>${h.busy
+        ? L_ICON('<path d="M12 3a9 9 0 1 0 9 9"/>') : L_ICON('<path d="M5 12h14M13 6l6 6-6 6"/>')}</button></div>
+    <div class="hwhere">${L_ICON('<path d="M12 21s-6.5-6.2-6.5-11.2a6.5 6.5 0 0 1 13 0C18.5 14.8 12 21 12 21z"/><circle cx="12" cy="9.8" r="2.3"/>')}<label for="h-town">Near</label>
+      <select id="h-town"><option value="">All of Somerset</option>${h.where && h.where.lat && !h.where.town ? `<option value="__me" selected>Your location</option>` : ""}${towns.map(t => `<option${h.where && h.where.town === t ? " selected" : ""}>${esc(t)}</option>`).join("")}</select>
+      <button type="button" class="hloc" id="h-loc">${L_ICON('<circle cx="12" cy="12" r="3.2"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3"/><circle cx="12" cy="12" r="7.5"/>')}Use my location</button></div>
+    ${h.note ? `<p class="asknote">${h.note}</p>` : ""}
+    <p class="askfine">${L_ICON('<rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/>')}We don't keep what you type.</p>
+    ${h.needCode ? `<p class="askcode"><label>Access code (while we test) <input id="ask-code" type="password" autocomplete="off"></label></p>` : ""}</form>`;
+  $("ask-form").onsubmit = e => { e.preventDefault(); askTags(); };
+  $("ask-text").oninput = e => { h.text = e.target.value; };
+  $("ask-text").onkeydown = e => { if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); askTags(); } };   // Enter sends; Shift+Enter, a new line
+  $("h-town").onchange = e => { const t = e.target.value; if (t !== "__me") h.where = t ? { town: t, lat: PLACE[t][0], lon: PLACE[t][1] } : null; };
+  $("h-loc").onclick = () => navigator.geolocation && navigator.geolocation.getCurrentPosition(p => {
+    h.where = { lat: p.coords.latitude, lon: p.coords.longitude }; drawAsk(); },
+    () => { h.note = "We couldn't get your location: choose a town instead."; drawAsk(); }, { timeout: 10000 });
+  if ($("h-go")) $("h-go").onclick = () => goShow(h.tags, h.place);
+}
+async function askTags() {
+  const h = home, text = h.text.trim();
+  if (!text) { h.note = "Tell us a little about what's going on, or choose a topic below."; drawAsk(); return; }
+  if ($("ask-code")?.value) homeCode.set($("ask-code").value.trim());
+  h.busy = true; h.note = ""; drawAsk();
+  let d = {}, status = 0;
+  try { const r = await fetch(TAGS_URL, { method: "POST", headers: { "Content-Type": "application/json", "X-Access-Code": homeCode.get() }, body: JSON.stringify({ text }) });
+    status = r.status; d = await r.json().catch(() => ({})); } catch (e) { d = { error: "offline" }; }
+  h.busy = false;
+  if (status === 401 || d.error === "bad_code" || d.error === "no_code") { homeCode.set(""); Object.assign(h, { needCode: true, note: "This is being tested: enter the access code." }); drawAsk(); return; }
+  if (d.error) { h.note = d.error === "rate_limited" ? "Lots of requests just now: please try again in a few minutes, or choose a topic below." : "Sorry, that didn't work. Please try again, or choose a topic below."; drawAsk(); return; }
+  if (d.off_topic) { h.note = "We couldn't find anything in that we can help with. Try telling us what's going on, or choose a topic below."; drawAsk(); return; }
+  // Where: a place in their words wins (it's probably what they meant), then the town or location they chose, else anywhere
+  const said = d.place && d.place.lat ? { town: d.place.town, lat: d.place.lat, lon: d.place.lon } : null;
+  Object.assign(h, { tags: d.tags || [], place: said || h.where, risk: !!d.risk });
+  try { if (h.risk) sessionStorage.setItem("ss-risk", "1"); } catch (e) {}
+  if (h.risk) { drawAsk(); $("ask").scrollIntoView({ block: "nearest" }); return; }   // the crisis note first, then on
+  goShow(h.tags, h.place);
+}
+// To the directory with the topics and the place (none: everything, anywhere). For you will take this over.
+function goShow(tags, where) {
+  const q = new URLSearchParams();
+  if (tags && tags.length) q.set("support", tags.join(","));
+  if (where && where.town && [...$("f-town").options].some(o => o.value === where.town)) q.set("town", where.town);
+  else if (where && where.lat) { q.set("lat", (+where.lat).toFixed(3)); q.set("lon", (+where.lon).toFixed(3)); q.set("label", where.town || "your location"); }
+  location.href = PAGE_URL.directory + (String(q) ? "?" + q : "") + "#near";
+}
+
 /* ---------- links that open the directory already filtered ----------
    e.g. /directory/?support=bereavement&town=Frome#near · ?lat=51.21&lon=-3.6&label=near%20Porlock#near · ?support=anxiety#talk
    · ?place=wells&support=low-mood#places
