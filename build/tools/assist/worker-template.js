@@ -395,13 +395,14 @@ Reply with only this JSON:
 // Answers { tags: up to 3 of the sheet's support types, most important first; place: { name, town, lat, lon } or null
 // (town and its centre only when it's one of ours); risk; off_topic }. The tags are checked against the sheet's list
 // whatever the model says, and risk words always count. If the AI can't answer, the same shape comes back with no tags
-// and "fallback", so the page can still go on (to the general Welcome). Nothing typed is stored or logged.
+// and "fallback", so the page can still go on (to the general Welcome). "model" says which model was asked (run_tags.py
+// shows it). Nothing typed is stored or logged.
 async function tagsTask(body, { env, reply }) {
   const text = String(body.text || "").replace(/\s+/g, " ").trim().slice(0, TAGS_SET.max_chars);
   if (!text) return reply({ error: "no_text" }, 400);
-  const riskWords = RISK.test(text);
-  const empty = why => reply({ tags: [], place: null, risk: riskWords, off_topic: false, fallback: why });
-  const res = await ask(env, { model: modelFor(env, "tags"), max_tokens: 300, timeout: 20000, system: tagsPrompt(),
+  const riskWords = RISK.test(text), model = modelFor(env, "tags");
+  const empty = why => reply({ tags: [], place: null, risk: riskWords, off_topic: false, fallback: why, model });
+  const res = await ask(env, { model, max_tokens: 300, timeout: 20000, system: tagsPrompt(),
     messages: [{ role: "user", content: `<text>${text.replace(/<\/?text>/gi, "")}</text>` }] });
   if (res.error) return empty(res.error);
   const said = (res.data?.content || []).filter(b => b.type === "text").map(b => b.text).join("");
@@ -412,7 +413,7 @@ async function tagsTask(body, { env, reply }) {
   const name = String(out.place || "").replace(/[^\p{L}\p{N} '.,-]/gu, "").trim().slice(0, 60);
   const town = name && Object.keys(TOWNS).find(t => t.toLowerCase() === name.toLowerCase());
   return reply({ tags, place: name ? { name, town: town || null, ...(town ? { lat: TOWNS[town][0], lon: TOWNS[town][1] } : {}) } : null,
-    risk: riskWords || out.risk === true, off_topic: out.off_topic === true && !tags.length });
+    risk: riskWords || out.risk === true, off_topic: out.off_topic === true && !tags.length, model });
 }
 function tagsPrompt() {
   return `You turn what someone typed on Signposting Somerset (a free directory of mental health and wellbeing support, activities and practical help in Somerset, UK) into a search.

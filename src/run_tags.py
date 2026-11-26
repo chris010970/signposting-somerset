@@ -13,7 +13,8 @@ Usage:
   python src\\run_tags.py --text "lonely in Wells, money worries"   # one phrase of your own
 
 Each phrase costs a fraction of a penny with Haiku. The worker allows 30 requests an hour from one computer (shared with
-Assist), so the script waits between phrases after the 28th. Results: tags-<date>.md beside this file.
+Assist), so the script waits between phrases after the 28th. Results: tags-<date>.md beside this file, with the model that
+answered (from the worker's reply).
 """
 import argparse, json, os, sys, time
 from datetime import datetime
@@ -73,11 +74,12 @@ def main():
     S = json.load(open(a.scenarios, encoding="utf-8"))["scenarios"]
     if a.ids:
         S = [s for s in S if s["id"] in a.ids.split(",")]
-    rows, passed = [], 0
+    rows, passed, models = [], 0, set()
     for i, s in enumerate(S):
         if i >= 28:
             time.sleep(125)   # the worker's limit: 30 an hour from one computer
         out = ask(s["text"], code)
+        models.add(out.get("model") or "(not given: worker before 26 Nov)")
         notes = check(s, out)
         passed += not notes
         place = out.get("place") or {}
@@ -86,10 +88,11 @@ def main():
         line = f"{s['id']}  {'PASS' if not notes else 'FAIL'}  {', '.join(out.get('tags', []))} | {where} | {flags}"
         print(line + (f"   <- {'; '.join(notes)}" if notes else "") + f"  [{out['_seconds']}s]")
         rows.append(f"| {s['id']} | {'pass' if not notes else '**fail**'} | {s['text']} | {', '.join(out.get('tags', []))} | {where} | {flags} | {'; '.join(notes)} |")
-    print(f"\n{passed} of {len(S)} passed")
+    model = ", ".join(sorted(models))
+    print(f"\n{passed} of {len(S)} passed (model: {model})")
     path = os.path.join(HERE, f"tags-{datetime.now():%Y-%m-%d-%H%M}.md")
     with open(path, "w", encoding="utf-8") as f:
-        f.write(f"# Tags task, {datetime.now():%d %b %Y %H:%M}: {passed} of {len(S)} passed\n\n"
+        f.write(f"# Tags task, {datetime.now():%d %b %Y %H:%M}: {passed} of {len(S)} passed\n\nModel: {model}\n\n"
                 "| id | result | text | tags | place | flags | notes |\n|---|---|---|---|---|---|---|\n" + "\n".join(rows) + "\n")
     print("Saved", path)
 

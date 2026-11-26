@@ -188,6 +188,8 @@ test("tags: only the sheet's support types come back, at most 3, in the model's 
 test("tags: MODEL_TAGS picks the model; the access code is needed while it's tested; empty text is refused", async () => {
   await tagsFor("feeling low", '{"tags": ["low mood"]}', { MODEL: "model-all", MODEL_TAGS: "claude-haiku-5-5" });
   assert.equal(asked.at(-1).model, "claude-haiku-5-5");
+  const said = await (await tagsFor("feeling low", '{"tags": ["low mood"]}', { MODEL_TAGS: "claude-haiku-5-5" })).json();
+  assert.equal(said.model, "claude-haiku-5-5", "the reply says which model answered");
   const noCode = await worker.fetch(new Request("https://relay.test/tags", { method: "POST", headers: { Origin: ORIGIN, "Content-Type": "application/json",
     "CF-Connecting-IP": "10.0.2." + ++ip }, body: JSON.stringify({ text: "feeling low" }) }), ENV);
   assert.equal(noCode.status, 401);
@@ -231,6 +233,6 @@ test("tags: when the AI fails or talks nonsense, the same shape comes back with 
     const r = await tagsFor("I want to die", answer);
     assert.equal(r.status, 200, why);
     const out = await r.json();
-    assert.deepEqual([out.tags, out.place, out.risk, out.off_topic, out.fallback], [[], null, true, false, why], why);
+    assert.deepEqual([out.tags, out.place, out.risk, out.off_topic, out.fallback, out.model], [[], null, true, false, why, "claude-sonnet-5-5"], why);
   }
 });
