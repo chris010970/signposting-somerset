@@ -55,12 +55,12 @@ const HOME_TOPICS = [   // "Or explore by topic": a few to tap without typing (M
   ["finances", '<ellipse cx="12" cy="6.5" rx="6" ry="2.5"/><path d="M6 6.5v4c0 1.4 2.7 2.5 6 2.5s6-1.1 6-2.5v-4M6 10.5v4c0 1.4 2.7 2.5 6 2.5s6-1.1 6-2.5v-4M6 14.5v3c0 1.4 2.7 2.5 6 2.5s6-1.1 6-2.5v-3"/>'],
   ["bereavement", '<path d="M12 20s-7-4.4-7-10a4 4 0 0 1 7-2.6A4 4 0 0 1 19 10c0 5.6-7 10-7 10z"/>'],
   ["be active", '<path d="M4 16c3 0 4-1 6-4l2-3c1 2 3 3 5 3h3v3a2 2 0 0 1-2 2H6a2 2 0 0 1-2-1z"/><path d="M4 16v1"/>']];
-// The four ways in, below the topics: the directory (its tabs lead everywhere in it), courses and training, Assist, analytics
+// The four ways in, below the topics: the directory (its tabs lead everywhere in it), courses and training, support planning, analytics
 const HOME_WAYS = [
-  [() => PAGE_URL.directory, "Directory", "Groups, drop-ins, helplines and what's on in your town", '<path d="M12 21s-6.5-6.2-6.5-11.2a6.5 6.5 0 0 1 13 0C18.5 14.8 12 21 12 21z"/><circle cx="12" cy="9.8" r="2.3"/>'],
-  [() => PAGE_URL.courses, "Courses and training", "Courses with set dates, and training for people who support others", '<path d="M2 9l10-4 10 4-10 4z"/><path d="M6 11v5c0 1 2.7 3 6 3s6-2 6-3v-5M22 9v5"/>'],
-  [() => TOOLS_URL + "#assist", "For support workers", "Assist: a support plan from the directory, in a few minutes", '<circle cx="9" cy="8" r="3.2"/><path d="M3.5 19c.6-3.3 2.8-5.2 5.5-5.2s4.9 1.9 5.5 5.2"/><path d="M15.5 11.5l2 2 4-4.5"/>'],
-  [() => TOOLS_URL + "#analytics", "Analytics", "Where support is, and where the gaps are, across Somerset", '<path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/>']];
+  [() => PAGE_URL.directory, "Directory", "Groups, drop-ins, helplines and activities near you", '<path d="M12 21s-6.5-6.2-6.5-11.2a6.5 6.5 0 0 1 13 0C18.5 14.8 12 21 12 21z"/><circle cx="12" cy="9.8" r="2.3"/>'],
+  [() => PAGE_URL.courses, "Courses and training", "Opportunities for learning and personal development", '<path d="M2 9l10-4 10 4-10 4z"/><path d="M6 11v5c0 1 2.7 3 6 3s6-2 6-3v-5M22 9v5"/>'],
+  [() => TOOLS_URL + "#assist", "Support planning", "Personalised support plans for support workers and volunteers", '<circle cx="9" cy="8" r="3.2"/><path d="M3.5 19c.6-3.3 2.8-5.2 5.5-5.2s4.9 1.9 5.5 5.2"/><path d="M15.5 11.5l2 2 4-4.5"/>'],
+  [() => TOOLS_URL + "#analytics", "Analytics", "Explore maps of mental health and wellbeing support", '<path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/>']];
 function drawHome() {
   document.body.classList.add("landing");
   $("home").innerHTML = `<section class="lhero"><div class="heroart" role="img" aria-label="A watercolour of Somerset: Glastonbury Tor above fields, a path with map pins, people meeting and walking, two people talking under the trees, and a signpost saying Connect, Be active and Take notice"></div>
@@ -86,7 +86,7 @@ function drawAsk() {
     <div class="askrow"><button type="button" class="tbtn pri" id="h-go">See support near you</button></div></div>` : "";
   box.innerHTML = `${crisis}<form id="ask-form"${h.risk ? " hidden" : ""}><label for="ask-text" class="askh big">What would help you today?</label>
     <p class="hsub">Tell us in your own words and we'll suggest places nearby.</p>
-    <div class="askbox"><textarea id="ask-text" rows="2" maxlength="500" placeholder="For example: I've recently been bereaved, I'm feeling quite alone and money is tight">${esc(h.text)}</textarea>
+    <div class="askbox"><textarea id="ask-text" rows="2" maxlength="500" placeholder="For example: I've recently been bereaved, I feel alone and money is tight">${esc(h.text)}</textarea>
       <button type="submit" class="askgo" aria-label="Find support and activities" title="Find support and activities" ${h.busy ? "disabled" : ""}>${h.busy
         ? L_ICON('<path d="M12 3a9 9 0 1 0 9 9"/>') : L_ICON('<path d="M5 12h14M13 6l6 6-6 6"/>')}</button></div>
     <div class="hwhere">${L_ICON('<path d="M12 21s-6.5-6.2-6.5-11.2a6.5 6.5 0 0 1 13 0C18.5 14.8 12 21 12 21z"/><circle cx="12" cy="9.8" r="2.3"/>')}<label for="h-town">Near</label>
