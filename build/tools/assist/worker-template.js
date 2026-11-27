@@ -476,13 +476,13 @@ function wordTags(text) {
   return found.filter(t => TAG_LIST.includes(t)).slice(0, TAGS_SET.max_tags);
 }
 // The activities the model gave, only the sheet's (in its order, without repeats, at most max_activities); and the person's own words
-// for them, only where they're in what was typed (so nothing is made up), short, at most max_activities
+// for them, only where they're in what was typed (so nothing is made up), at most three words each, at most max_activities
 function tagActivities(out, text) {
   const names = ACTIVITIES.map(a => a.value), list = v => Array.isArray(v) ? v : [];
   const activities = [...new Set(list(out.activities).map(a => String(a).toLowerCase().trim()))].filter(a => names.includes(a)).slice(0, TAGS_SET.max_activities);
   const said = text.toLowerCase();
   const activity_terms = [...new Set(list(out.activity_terms).map(t => String(t).toLowerCase().replace(/[^\p{L}\p{N} '&-]/gu, "").trim()))]
-    .filter(t => t && t.length <= 30 && said.includes(t)).slice(0, TAGS_SET.max_activities);
+    .filter(t => t && t.length <= 30 && t.split(" ").length <= 3 && said.includes(t)).slice(0, TAGS_SET.max_activities);
   return { activities, activity_terms };
 }
 // The preferences the model gave, kept only where the name and value are in tags.json (one value, or a list if "many")
@@ -531,9 +531,9 @@ off_topic: true only if the text has nothing to do with their wellbeing, support
 safety: the groups of risk in what they wrote, from this list, spelled exactly as here; [] if none, which is most messages. Only what they say, never a guess, and not figures of speech ("this job is killing me", "I could murder a curry") or other people's past experiences they mention in passing. A past assault or abuse is at_risk, not urgent.
 ${Object.entries(TAGS_SET.safety).map(([k, c]) => `- ${k}: ${c.hint}`).join("\n")}
 
-activities: up to ${TAGS_SET.max_activities} things they'd like to do, from this list, spelled exactly as here. Only when they ask for one or clearly say they enjoy it or would like to ("I used to love gardening" counts); never from a passing mention ("I live near a park", "my neighbour gardens"), and never for the help they need (someone to talk to, advice or counselling aren't activities). [] if none, which is many messages.
+activities: up to ${TAGS_SET.max_activities} things they'd like to do, from this list, spelled exactly as here. Only when they ask for one or clearly say they enjoy it, used to enjoy it or would like to ("I used to love gardening" counts, even if they say they don't feel like anything now); never from a passing mention ("I live near a park", "my neighbour gardens"), and never for the help they need (someone to talk to, advice or counselling aren't activities). [] if none, which is many messages.
 ${ACTIVITIES.map(a => `- ${a.value}: ${a.hint}`).join("\n")}
-activity_terms: their own words for those activities, copied exactly from the text, a word or two each ("choir", "knitting", "allotment"); [] if none.
+activity_terms: their own words for those activities, copied exactly from the text, at most three words each ("choir", "knitting", "allotment"); [] if none.
 
 prefs: what they said about how they'd like support. Only what they actually said about themselves now: never guess, never assume from their situation (someone grieving hasn't asked for a group), and leave out anything they only mention about the past or about someone else. Leave a preference out unless they said it; {} if they said none. Only these names and values, spelled exactly as here:
 ${Object.entries(TAGS_SET.preferences).map(([k, p]) => `- ${k}: ${p.many ? "a list of " : "one of "}${p.values.map(v => `"${v}"`).join(", ")}. ${p.hint}`).join("\n")}`;

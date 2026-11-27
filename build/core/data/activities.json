@@ -23,7 +23,7 @@
   {"value": "cooking", "hint": "learning to cook, baking"},
   {"value": "making and mending", "hint": "a men's or community shed, woodwork, a repair café, fixing things"},
   {"value": "volunteering", "hint": "volunteering, helping out, giving something back"},
-  {"value": "digital skills", "hint": "help with a phone, tablet or computer, getting online"},
+  {"value": "digital skills", "hint": "learning to use a phone, tablet or computer, getting online (counts even when they ask for help with it)"},
   {"value": "heritage", "hint": "local history, museums, family history"},
   {"value": "play", "hint": "toddler groups, stay and play, youth clubs"}
  ]

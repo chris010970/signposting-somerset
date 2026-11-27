@@ -881,6 +881,16 @@
    "risk": false,
    "off_topic": false,
    "prefs": {}
+  },
+  {
+   "id": "H37",
+   "text": "I'd like to try tai chi, my balance isn't great",
+   "must": [],
+   "not": [],
+   "place": "",
+   "risk": false,
+   "off_topic": false,
+   "prefs": {}
   }
  ]
 }

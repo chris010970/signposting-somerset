@@ -187,9 +187,9 @@ test("tags: activities only from the sheet's list (in order, no repeats, at most
   const ACTS = JSON.parse(readFileSync(join(HERE, "..", "core", "data", "activities.json"), "utf8")).values;
   assert.ok(ACTS.every(a => a.value && a.hint), "every activity has everyday words for the AI");
   const out = await (await tagsFor("I'd love to join a Choir, or a knitting group in Frome", JSON.stringify({ tags: ["connect"],
-    activities: ["singing", "Crafts", "bowling", "singing", "art", "music"], activity_terms: ["choir", "Knitting group", "pottery", "x".repeat(40)] }))).json();
+    activities: ["singing", "Crafts", "bowling", "singing", "art", "music"], activity_terms: ["choir", "Knitting group", "pottery", "x".repeat(40), "or a knitting group"] }))).json();
   assert.deepEqual(out.activities, ["singing", "crafts", "art"], "bowling isn't one; a repeat counts once; at most max_activities");
-  assert.deepEqual(out.activity_terms, ["choir", "knitting group"], "pottery wasn't typed; too long is dropped");
+  assert.deepEqual(out.activity_terms, ["choir", "knitting group"], "pottery wasn't typed; too long, or more than three words, is dropped");
   const none = await (await tagsFor("lonely", '{"tags": ["connect"]}')).json();
   assert.deepEqual([none.activities, none.activity_terms], [[], []]);
   const fallback = await (await tagsFor("lonely, I like singing", "not json")).json();
