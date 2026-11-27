@@ -538,3 +538,15 @@ body.landing footer.help { padding-block: 14px calc(14px + env(safe-area-inset-b
 @media (min-width: 701px) { .hways { border-radius: 0; } }   /* (the sage band: a plain rectangle) */
 @media (min-width: 701px) and (max-width: 1439px) { .hway span span { font-size: 12.5px; letter-spacing: -0.1px; } .hway { padding-right: 34px; } }   /* (two lines for the longest description) */
 @media (min-width: 701px) and (max-width: 1179px) { .hway span span { font-size: 12px; } .hway { padding-right: 30px; } .hway::after { right: 7px; } .hways { column-gap: 8px; } }
+
+/* ---------- For you (js/for-you.js): the picks, each with a sentence saying why, then links to everything ---------- */
+#foryou { max-width: 860px; }
+.fyhead { margin: 6px 0 14px; }
+.fyhead .bt { margin: 0 0 4px; }
+.fyhead p { margin: 0; color: var(--tx2); }
+.fypicks { display: grid; gap: 18px; }
+.fypick { margin: 0; }
+.fywhy { margin: 0 0 8px; font: 600 15px/1.35 var(--sans); color: var(--b800); }
+#foryou .tpin { display: none; }   /* (no map on this tab) */
+.fylinks { list-style: none; margin: 22px 0 10px; padding: 14px 16px; background: var(--sage); border-radius: 12px; display: grid; gap: 8px; font-size: 14.5px; }
+.fylinks a { color: var(--b700); font-weight: 600; }

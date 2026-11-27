@@ -1639,6 +1639,18 @@ body.landing footer.help { padding-block: 14px calc(14px + env(safe-area-inset-b
 @media (min-width: 701px) and (max-width: 1439px) { .hway span span { font-size: 12.5px; letter-spacing: -0.1px; } .hway { padding-right: 34px; } }   /* (two lines for the longest description) */
 @media (min-width: 701px) and (max-width: 1179px) { .hway span span { font-size: 12px; } .hway { padding-right: 30px; } .hway::after { right: 7px; } .hways { column-gap: 8px; } }
 
+/* ---------- For you (js/for-you.js): the picks, each with a sentence saying why, then links to everything ---------- */
+#foryou { max-width: 860px; }
+.fyhead { margin: 6px 0 14px; }
+.fyhead .bt { margin: 0 0 4px; }
+.fyhead p { margin: 0; color: var(--tx2); }
+.fypicks { display: grid; gap: 18px; }
+.fypick { margin: 0; }
+.fywhy { margin: 0 0 8px; font: 600 15px/1.35 var(--sans); color: var(--b800); }
+#foryou .tpin { display: none; }   /* (no map on this tab) */
+.fylinks { list-style: none; margin: 22px 0 10px; padding: 14px 16px; background: var(--sage); border-radius: 12px; display: grid; gap: 8px; font-size: 14.5px; }
+.fylinks a { color: var(--b700); font-weight: 600; }
+
 </style>
 </head>
 <body>
@@ -1662,7 +1674,7 @@ body.landing footer.help { padding-block: 14px calc(14px + env(safe-area-inset-b
       <p class="datasrc" id="datasrc" hidden></p>
       <span id="copy-live" role="status" aria-live="polite" style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)"></span>
       <nav class="sitetabs" aria-label="Site">
-      <span class="tgrp"><button type="button" id="tab-near" aria-controls="panel-near">In person</button>
+      <span class="tgrp"><button type="button" id="tab-foryou" aria-controls="panel-foryou">For you</button><button type="button" id="tab-near" aria-controls="panel-near">In person</button>
       <button type="button" id="tab-talk" aria-controls="panel-talk"><span class="lg">Phone and online</span><span class="sh">Phone &amp; online</span></button>
       <button type="button" id="tab-places" aria-controls="panel-places">Places</button><button type="button" id="tab-course" aria-controls="panel-course">Courses</button><button type="button" id="tab-training" aria-controls="panel-training">Training</button></span>
       <button type="button" id="tab-about" aria-controls="panel-about">About</button>
@@ -1696,6 +1708,7 @@ body.landing footer.help { padding-block: 14px calc(14px + env(safe-area-inset-b
     <div id="hdr-about" hidden></div>
     <div id="hdr-training" hidden></div>
     <div id="hdr-home" hidden></div>
+    <div id="hdr-foryou" hidden></div>
     <div id="hdr-places" hidden><div id="hdr-towns"></div>
       <div class="krow"><div class="kindrow" id="kindrow-places" role="group" aria-label="Show these kinds of support"></div></div>
     </div>
@@ -1741,6 +1754,7 @@ body.landing footer.help { padding-block: 14px calc(14px + env(safe-area-inset-b
 <main id="panel-course" class="pane" aria-labelledby="tab-course" hidden tabindex="-1"><div class="talk gut" id="courses"></div></main>
 <main id="panel-training" class="pane" aria-labelledby="tab-training" hidden tabindex="-1"><div class="talk gut" id="training"></div></main>
 <main id="panel-home" class="pane" hidden tabindex="-1"><div class="talk gut" id="home"></div></main>
+<main id="panel-foryou" class="pane" aria-labelledby="tab-foryou" hidden tabindex="-1"><div class="talk gut" id="foryou"></div></main>
 <main id="panel-near" aria-labelledby="tab-near" hidden tabindex="-1">
 
 <div id="main">
@@ -3127,7 +3141,7 @@ function renderAbout() {
     </section>
     </div></div>
     <p class="small">Service information belongs to the providers listed. Map data © <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap</a> contributors, © <a href="https://carto.com/attributions" target="_blank" rel="noopener">CARTO</a>.</p>
-    <p class="small" id="site-version">Version: next 2026-11-26 23:46</p>
+    <p class="small" id="site-version">Version: next 2026-11-27 00:09</p>
   </article>`;
 }
 /* ---------- Places: the town listings, as a tab of the directory ----------
@@ -3214,38 +3228,41 @@ $("skip").onclick = e => { e.preventDefault(); $("panel-" + tab).focus(); };
 addEventListener("resize", () => map && map.invalidateSize());
 /* ---------- The next design's pages: one template, four pages (build/next/build.py builds it once for each) ----------
    home       /next/            a stand-in for the landing page: links to everything (the text box and Where? come later)
-   directory  /next/directory/  In person, Phone and online, Places (For you joins them with the Welcome work)
+   directory  /next/directory/  For you (only when the landing page sent topics), In person, Phone and online, Places
    courses    /next/courses/    Courses, and Training (a placeholder until there are records)
    about      /next/about/      About
    The title and the illustration go home from every page. Runs after tabs.js, before links.js opens the page. */
 const NEXT_PAGE = "home";
 const PAGE_URL = { home: "/next/", courses: "/next/courses/", about: "/next/about/", directory: "/next/directory/" };
-const PAGE_TABS = { home: ["home"], directory: ["near", "talk", "places"], courses: ["course", "training"], about: ["about"] }[NEXT_PAGE];
+// For you: only when the landing page sent topics or a place (its address: ?support=...&town=...#foryou)
+const FOR_YOU = NEXT_PAGE === "directory" && location.hash === "#foryou" && /[?&](support|town|lat)=/.test(location.search);
+const PAGE_TABS = { home: ["home"], directory: FOR_YOU ? ["foryou", "near", "talk", "places"] : ["near", "talk", "places"], courses: ["course", "training"], about: ["about"] }[NEXT_PAGE];
 // Old links to the directory's Courses or About tab: to their own pages, with their filters
 if (NEXT_PAGE === "directory" && ["#course", "#about"].includes(location.hash))
   location.replace((location.hash === "#course" ? PAGE_URL.courses : PAGE_URL.about) + location.search + location.hash);
 document.body.dataset.page = NEXT_PAGE;
 // Only this page's tabs: the others' buttons go (their panels stay, hidden, as the shared code expects them)
-for (const k of [...SITE_TABS, "training", "home"]) if (!PAGE_TABS.includes(k)) { $("tab-" + k)?.remove(); $("panel-" + k).hidden = $("hdr-" + k).hidden = true; }
+for (const k of [...SITE_TABS, "training", "home", "foryou"]) if (!PAGE_TABS.includes(k)) { $("tab-" + k)?.remove(); $("panel-" + k).hidden = $("hdr-" + k).hidden = true; }
 SITE_TABS.splice(0, SITE_TABS.length, ...PAGE_TABS);
-// The tabs this design adds (Training, Home) have no list of their own: shown here. Any other tab name opens the page's first.
+// The tabs this design adds (Training, Home, For you) have no list of their own: shown here. Any other tab name opens the page's first.
+const OWN_TABS = { training: () => drawTraining(), home: () => drawHome(), foryou: () => drawForYou() };
 {
   const shared = setSiteTab;
   setSiteTab = t => {
     if (!SITE_TABS.includes(t)) t = SITE_TABS[0];
-    if (t === "training" || t === "home") {
+    if (OWN_TABS[t]) {
       tab = t;
       for (const k of SITE_TABS) { if ($("tab-" + k)) currentTab($("tab-" + k), k === t); $("panel-" + k).hidden = k !== t; $("hdr-" + k).hidden = k !== t; }
-      (t === "home" ? drawHome : drawTraining)();
-      try { history.replaceState(null, "", location.pathname + (t === "home" ? "" : "#" + t)); } catch (e) {}
+      OWN_TABS[t]();
+      // (For you keeps its topics in the address, so it can be reloaded or shared)
+      try { history.replaceState(null, "", location.pathname + (t === "foryou" ? location.search + "#foryou" : t === "home" ? "" : "#" + t)); } catch (e) {}
       return;
     }
-    if (tab === "training" || tab === "home") tab = t;   // (nothing to remember about where those were scrolled)
+    if (OWN_TABS[tab]) tab = t;   // (nothing to remember about where those were scrolled)
     shared(t);
   };
 }
-const tabTraining = $("tab-training");
-if (tabTraining) tabTraining.onclick = () => setSiteTab("training");
+for (const k of ["training", "foryou"]) if ($("tab-" + k)) $("tab-" + k).onclick = () => setSiteTab(k);
 function drawTraining() {
   $("training").innerHTML = `<div class="soon"><h1 class="bt">Training</h1>
     <p>Training for people who support others: support workers, volunteers, carers and employers. For example, Mental Health First
@@ -3349,14 +3366,158 @@ async function askTags() {
   if (h.risk) { drawAsk(); $("ask").scrollIntoView({ block: "nearest" }); return; }   // the crisis note first, then on
   goShow(h.tags, h.place);
 }
-// To the directory with the topics and the place (none: everything, anywhere). For you will take this over.
+// To the directory's For you tab with the topics and the place (none: everything, anywhere)
 function goShow(tags, where) {
   const q = new URLSearchParams();
   if (tags && tags.length) q.set("support", tags.join(","));
   if (where && where.town && [...$("f-town").options].some(o => o.value === where.town)) q.set("town", where.town);
   else if (where && where.lat) { q.set("lat", (+where.lat).toFixed(3)); q.set("lon", (+where.lon).toFixed(3)); q.set("label", where.town || "your location"); }
-  location.href = PAGE_URL.directory + (String(q) ? "?" + q : "") + "#near";
+  location.href = PAGE_URL.directory + (String(q) ? "?" + q + "#foryou" : "#near");
 }
+
+/* ---------- For you: 2-3 picks for what someone told the landing page (build/next/for-you.json has the rules and words) ----------
+   The landing page sends the topics (?support=a,b,c, most important first), the place (?town= or ?lat=&lon=&label=) and, in this
+   tab only, whether the words suggested risk (sessionStorage "ss-risk"). The picks are made by simple rules, no AI:
+     risk     a phone line for crisis support first
+     match    for each topic, the best in-person service: open to them, within the first radius (then the next), the easiest to
+              get to first (drop in, sign up...), then the soonest, then the nearest
+     phone    a topic with nothing in person nearby: its best phone or online service (open now or 24/7 first)
+     gentle   for low mood, grief and the like, one nearby Five Ways activity (connect, be active, take notice)
+     another  one topic only: a second option for it
+   Never a service with a notice that stops people joining ("Currently full..."), as the cards show it (core/js/cards.js).
+   Never two picks from the same provider. Under the picks: links to every service for each topic, with the filters set. */
+const FY = ({
+ "_about": "The For you tab (/next/directory/#foryou, opened from the landing page): 2-3 picks by simple rules, each under a short line saying why (the card itself has the when, where and how). Read by build/next/js/for-you.js. Change the numbers, lists and sentences freely; {placeholders} are filled from the record. No AI here: the landing page's words only chose the topics and the place.",
+ "max_picks": 3,
+ "radius_miles": [
+  10,
+  20
+ ],
+ "days_ahead": 28,
+ "access_order": [
+  "drop in",
+  "sign up",
+  "book",
+  "call",
+  "referral"
+ ],
+ "easy_access": [
+  "drop in",
+  "sign up"
+ ],
+ "leave_out_who_only": [
+  "young people"
+ ],
+ "gentle_for": [
+  "low mood",
+  "anxiety",
+  "bereavement",
+  "caring for someone",
+  "long-term pain"
+ ],
+ "five_ways": [
+  "connect",
+  "be active",
+  "take notice"
+ ],
+ "crisis_tag": "crisis prevention",
+ "heading": "Here's where we'd start",
+ "intro": "Based on what you told us{near}. You can change anything using the tabs above.",
+ "near": " and where you are: {place}",
+ "sentences": {
+  "risk": "If you need to talk to someone now",
+  "match": "Because you mentioned {topic}",
+  "another": "Another option for {topic}",
+  "gentle": "Something gentle for your wellbeing",
+  "phone": "Nothing in person nearby for {topic}, so here's a phone or online option"
+ },
+ "none": "We couldn't find a good match for that. Try the tabs above, or talk to someone straight away using the helplines below.",
+ "see_all": "{Topic}:",
+ "see_near": "everything near {place}",
+ "see_anywhere": "everything in person",
+ "see_phone": "by phone or online"
+}
+);
+const FY_Q = FOR_YOU ? location.search.slice(1) : "";   // the landing page's choices, kept in the address while this tab shows
+{ const shared = linkFor; linkFor = t => t === "foryou" ? FY_Q : shared(t); }
+
+function fyChoices() {
+  const q = new URLSearchParams(FY_Q);
+  const tags = (q.get("support") || "").split(",").map(t => t.trim().toLowerCase()).filter(t => LABEL[t] || GROUPS.some(g => g[1].includes(t)));
+  let point = null;
+  const town = q.get("town"), lat = parseFloat(q.get("lat")), lon = parseFloat(q.get("lon"));
+  if (town && PLACE[town]) point = { lat: PLACE[town][0], lon: PLACE[town][1], label: town, town };
+  else if (lat > 50.5 && lat < 51.7 && lon > -4.2 && lon < -1.9)
+    point = { lat, lon, label: (q.get("label") || "your location").replace(/[<>"]/g, "").slice(0, 60) };
+  let risk = false; try { risk = sessionStorage.getItem("ss-risk") === "1"; } catch (e) {}
+  return { tags, point, risk };
+}
+const fyFill = (tpl, v) => tpl.replace(/\{(\w+)\}/g, (m, k) => v[k] ?? "");
+const fyTopic = t => (LABEL[t] || t).toLowerCase();
+
+function fyPicker(point, now) {
+  const used = new Set(), providers = new Set();
+  const youthOnly = s => { const w = split(s.who); return w.length && w.every(x => FY.leave_out_who_only.includes(x)); };
+  const free = s => !used.has(s.id) && !(s.provider && providers.has(s.provider.toLowerCase())) && !noticeText(s) && !youthOnly(s);
+  const take = (r, why, topic) => { used.add(r.s.id); if (r.s.provider) providers.add(r.s.provider.toLowerCase()); return { ...r, why, topic }; };
+  const rank = s => { const i = FY.access_order.indexOf(s.access); return i < 0 ? FY.access_order.length : i; };
+  const horizon = now.getTime() + FY.days_ahead * 864e5;
+  // The best in-person service for a topic, or null
+  function inPerson(tag) {
+    const all = S.filter(s => s._sf.includes(tag) && free(s)).map(s => ({ s, d: point && !isNaN(s.lat) ? miles(point, s) : null, nx: nextText(s, now) }))
+      .filter(r => r.nx.at && r.nx.at.getTime() <= horizon);
+    const order = (a, b) => (FY.easy_access.includes(b.s.access) - FY.easy_access.includes(a.s.access)) || (a.nx.at - b.nx.at) || ((a.d ?? 0) - (b.d ?? 0)) || (rank(a.s) - rank(b.s));
+    for (const r of point ? FY.radius_miles : [Infinity]) {
+      const near = all.filter(x => !point || (x.d != null && x.d <= r)).sort(order);
+      if (near.length) return near[0];
+    }
+    return null;
+  }
+  // The best phone or online service for a topic: open now or 24/7 first, local before UK-wide
+  function byPhone(tag) {
+    const all = T.filter(s => s._sf.includes(tag) && free(s)).map(s => ({ s, st: openState(s, now) }));
+    all.sort((a, b) => (b.st.open - a.st.open) || ((a.s.area === "national") - (b.s.area === "national")) || a.s.name.localeCompare(b.s.name));
+    return all[0] || null;
+  }
+  return { inPerson, byPhone, take };
+}
+
+function fyPicks({ tags, point, risk }, now = new Date()) {
+  const P = fyPicker(point, now), picks = [], room = () => picks.length < FY.max_picks;
+  if (risk) { const r = P.byPhone(FY.crisis_tag); if (r) picks.push(P.take(r, "risk", FY.crisis_tag)); }
+  for (const t of tags) {
+    if (!room()) break;
+    const r = P.inPerson(t);
+    if (r) picks.push(P.take(r, "match", t));
+    else { const p = P.byPhone(t); if (p) picks.push(P.take(p, "phone", t)); }
+  }
+  if (room() && tags.some(t => FY.gentle_for.includes(t)))
+    for (const w of FY.five_ways.filter(w => !tags.includes(w))) { const r = P.inPerson(w); if (r) { picks.push(P.take(r, "gentle", w)); break; } }
+  if (room() && tags.length === 1) { const r = P.inPerson(tags[0]); if (r) picks.push(P.take(r, "another", tags[0])); }
+  return picks;
+}
+
+// The line above a pick: why it's there (the card under it says when, where and how)
+const fySentence = p => fyFill(FY.sentences[p.why], { topic: esc(fyTopic(p.topic)) });
+
+function drawForYou() {
+  const box = $("foryou");
+  if (!ALL.length) { box.innerHTML = `<div class="empty">${liveMsg}</div>`; return; }
+  const c = fyChoices(), picks = fyPicks(c);
+  const intro = fyFill(FY.intro, { near: c.point ? fyFill(FY.near, { place: esc(c.point.label) }) : "" });
+  const cards = picks.map(p => `<section class="fypick"><h2 class="fywhy">${fySentence(p)}</h2>${p.st ? talkCard(p) : serviceCard(p, "h2", false)}</section>`).join("");
+  const q = t => { const u = new URLSearchParams(); u.set("support", t);
+    if (c.point && c.point.town) u.set("town", c.point.town);
+    else if (c.point) { u.set("lat", c.point.lat.toFixed(4)); u.set("lon", c.point.lon.toFixed(4)); u.set("label", c.point.label); }
+    return PAGE_URL.directory + "?" + u + "#near"; };
+  const links = c.tags.map(t => `<li><b>${esc(fyFill(FY.see_all, { Topic: cap(fyTopic(t)) }))}</b> <a href="${q(t)}">${
+    c.point ? fyFill(FY.see_near, { place: esc(c.point.label) }) : esc(FY.see_anywhere)}</a> · <a href="${PAGE_URL.directory}?support=${encodeURIComponent(t)}#talk">${esc(FY.see_phone)}</a></li>`).join("");
+  box.innerHTML = `<div class="fyhead"><h1 class="bt">${esc(FY.heading)}</h1><p>${intro}</p></div>` +
+    (picks.length ? `<div class="fypicks">${cards}</div>` : `<div class="empty">${esc(FY.none)}</div>`) +
+    (links ? `<ul class="fylinks">${links}</ul>` : "");
+}
+// A card opens and closes as in the other tabs (links, Copy and Directions do their own thing)
+$("foryou").addEventListener("click", e => { const c = e.target.closest(".card"); if (c && !e.target.closest("a, button:not(.cbtn)")) toggleCard(c); });
 
 /* ---------- links that open the directory already filtered ----------
    e.g. /directory/?support=bereavement&town=Frome#near · ?lat=51.21&lon=-3.6&label=near%20Porlock#near · ?support=anxiety#talk

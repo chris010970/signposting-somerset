@@ -1,0 +1,51 @@
+{
+ "_about": "The For you tab (/next/directory/#foryou, opened from the landing page): 2-3 picks by simple rules, each under a short line saying why (the card itself has the when, where and how). Read by build/next/js/for-you.js. Change the numbers, lists and sentences freely; {placeholders} are filled from the record. No AI here: the landing page's words only chose the topics and the place.",
+ "max_picks": 3,
+ "radius_miles": [
+  10,
+  20
+ ],
+ "days_ahead": 28,
+ "access_order": [
+  "drop in",
+  "sign up",
+  "book",
+  "call",
+  "referral"
+ ],
+ "easy_access": [
+  "drop in",
+  "sign up"
+ ],
+ "leave_out_who_only": [
+  "young people"
+ ],
+ "gentle_for": [
+  "low mood",
+  "anxiety",
+  "bereavement",
+  "caring for someone",
+  "long-term pain"
+ ],
+ "five_ways": [
+  "connect",
+  "be active",
+  "take notice"
+ ],
+ "crisis_tag": "crisis prevention",
+ "heading": "Here's where we'd start",
+ "intro": "Based on what you told us{near}. You can change anything using the tabs above.",
+ "near": " and where you are: {place}",
+ "sentences": {
+  "risk": "If you need to talk to someone now",
+  "match": "Because you mentioned {topic}",
+  "another": "Another option for {topic}",
+  "gentle": "Something gentle for your wellbeing",
+  "phone": "Nothing in person nearby for {topic}, so here's a phone or online option"
+ },
+ "none": "We couldn't find a good match for that. Try the tabs above, or talk to someone straight away using the helplines below.",
+ "see_all": "{Topic}:",
+ "see_near": "everything near {place}",
+ "see_anywhere": "everything in person",
+ "see_phone": "by phone or online"
+}

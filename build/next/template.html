@@ -43,7 +43,7 @@
       <p class="datasrc" id="datasrc" hidden></p>
       <span id="copy-live" role="status" aria-live="polite" style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)"></span>
       <nav class="sitetabs" aria-label="Site">
-      <span class="tgrp"><button type="button" id="tab-near" aria-controls="panel-near">In person</button>
+      <span class="tgrp"><button type="button" id="tab-foryou" aria-controls="panel-foryou">For you</button><button type="button" id="tab-near" aria-controls="panel-near">In person</button>
       <button type="button" id="tab-talk" aria-controls="panel-talk"><span class="lg">Phone and online</span><span class="sh">Phone &amp; online</span></button>
       <button type="button" id="tab-places" aria-controls="panel-places">Places</button><button type="button" id="tab-course" aria-controls="panel-course">Courses</button><button type="button" id="tab-training" aria-controls="panel-training">Training</button></span>
       <button type="button" id="tab-about" aria-controls="panel-about">About</button>
@@ -77,6 +77,7 @@
     <div id="hdr-about" hidden></div>
     <div id="hdr-training" hidden></div>
     <div id="hdr-home" hidden></div>
+    <div id="hdr-foryou" hidden></div>
     <div id="hdr-places" hidden><div id="hdr-towns"></div>
       <div class="krow"><div class="kindrow" id="kindrow-places" role="group" aria-label="Show these kinds of support"></div></div>
     </div>
@@ -122,6 +123,7 @@
 <main id="panel-course" class="pane" aria-labelledby="tab-course" hidden tabindex="-1"><div class="talk gut" id="courses"></div></main>
 <main id="panel-training" class="pane" aria-labelledby="tab-training" hidden tabindex="-1"><div class="talk gut" id="training"></div></main>
 <main id="panel-home" class="pane" hidden tabindex="-1"><div class="talk gut" id="home"></div></main>
+<main id="panel-foryou" class="pane" aria-labelledby="tab-foryou" hidden tabindex="-1"><div class="talk gut" id="foryou"></div></main>
 <main id="panel-near" aria-labelledby="tab-near" hidden tabindex="-1">
 
 <div id="main">
@@ -162,6 +164,7 @@
 /*@page:js/places-tab.js*/
 /*@page:js/tabs.js*/
 /*@next:js/next-pages.js*/
+/*@next:js/for-you.js*/
 /*@page:js/links.js*/
 /*@page:js/live.js*/
 /*@next:js/next-late.js*/

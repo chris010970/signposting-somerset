@@ -1,37 +1,40 @@
 /* ---------- The next design's pages: one template, four pages (build/next/build.py builds it once for each) ----------
    home       /next/            a stand-in for the landing page: links to everything (the text box and Where? come later)
-   directory  /next/directory/  In person, Phone and online, Places (For you joins them with the Welcome work)
+   directory  /next/directory/  For you (only when the landing page sent topics), In person, Phone and online, Places
    courses    /next/courses/    Courses, and Training (a placeholder until there are records)
    about      /next/about/      About
    The title and the illustration go home from every page. Runs after tabs.js, before links.js opens the page. */
 const NEXT_PAGE = "/*NEXT_PAGE*/";
 const PAGE_URL = { home: "/*HOME_URL*/", courses: "/*COURSES_URL*/", about: "/*ABOUT_URL*/", directory: "/*DIRECTORY_URL*/" };
-const PAGE_TABS = { home: ["home"], directory: ["near", "talk", "places"], courses: ["course", "training"], about: ["about"] }[NEXT_PAGE];
+// For you: only when the landing page sent topics or a place (its address: ?support=...&town=...#foryou)
+const FOR_YOU = NEXT_PAGE === "directory" && location.hash === "#foryou" && /[?&](support|town|lat)=/.test(location.search);
+const PAGE_TABS = { home: ["home"], directory: FOR_YOU ? ["foryou", "near", "talk", "places"] : ["near", "talk", "places"], courses: ["course", "training"], about: ["about"] }[NEXT_PAGE];
 // Old links to the directory's Courses or About tab: to their own pages, with their filters
 if (NEXT_PAGE === "directory" && ["#course", "#about"].includes(location.hash))
   location.replace((location.hash === "#course" ? PAGE_URL.courses : PAGE_URL.about) + location.search + location.hash);
 document.body.dataset.page = NEXT_PAGE;
 // Only this page's tabs: the others' buttons go (their panels stay, hidden, as the shared code expects them)
-for (const k of [...SITE_TABS, "training", "home"]) if (!PAGE_TABS.includes(k)) { $("tab-" + k)?.remove(); $("panel-" + k).hidden = $("hdr-" + k).hidden = true; }
+for (const k of [...SITE_TABS, "training", "home", "foryou"]) if (!PAGE_TABS.includes(k)) { $("tab-" + k)?.remove(); $("panel-" + k).hidden = $("hdr-" + k).hidden = true; }
 SITE_TABS.splice(0, SITE_TABS.length, ...PAGE_TABS);
-// The tabs this design adds (Training, Home) have no list of their own: shown here. Any other tab name opens the page's first.
+// The tabs this design adds (Training, Home, For you) have no list of their own: shown here. Any other tab name opens the page's first.
+const OWN_TABS = { training: () => drawTraining(), home: () => drawHome(), foryou: () => drawForYou() };
 {
   const shared = setSiteTab;
   setSiteTab = t => {
     if (!SITE_TABS.includes(t)) t = SITE_TABS[0];
-    if (t === "training" || t === "home") {
+    if (OWN_TABS[t]) {
       tab = t;
       for (const k of SITE_TABS) { if ($("tab-" + k)) currentTab($("tab-" + k), k === t); $("panel-" + k).hidden = k !== t; $("hdr-" + k).hidden = k !== t; }
-      (t === "home" ? drawHome : drawTraining)();
-      try { history.replaceState(null, "", location.pathname + (t === "home" ? "" : "#" + t)); } catch (e) {}
+      OWN_TABS[t]();
+      // (For you keeps its topics in the address, so it can be reloaded or shared)
+      try { history.replaceState(null, "", location.pathname + (t === "foryou" ? location.search + "#foryou" : t === "home" ? "" : "#" + t)); } catch (e) {}
       return;
     }
-    if (tab === "training" || tab === "home") tab = t;   // (nothing to remember about where those were scrolled)
+    if (OWN_TABS[tab]) tab = t;   // (nothing to remember about where those were scrolled)
     shared(t);
   };
 }
-const tabTraining = $("tab-training");
-if (tabTraining) tabTraining.onclick = () => setSiteTab("training");
+for (const k of ["training", "foryou"]) if ($("tab-" + k)) $("tab-" + k).onclick = () => setSiteTab(k);
 function drawTraining() {
   $("training").innerHTML = `<div class="soon"><h1 class="bt">Training</h1>
     <p>Training for people who support others: support workers, volunteers, carers and employers. For example, Mental Health First
@@ -135,11 +138,11 @@ async function askTags() {
   if (h.risk) { drawAsk(); $("ask").scrollIntoView({ block: "nearest" }); return; }   // the crisis note first, then on
   goShow(h.tags, h.place);
 }
-// To the directory with the topics and the place (none: everything, anywhere). For you will take this over.
+// To the directory's For you tab with the topics and the place (none: everything, anywhere)
 function goShow(tags, where) {
   const q = new URLSearchParams();
   if (tags && tags.length) q.set("support", tags.join(","));
   if (where && where.town && [...$("f-town").options].some(o => o.value === where.town)) q.set("town", where.town);
   else if (where && where.lat) { q.set("lat", (+where.lat).toFixed(3)); q.set("lon", (+where.lon).toFixed(3)); q.set("label", where.town || "your location"); }
-  location.href = PAGE_URL.directory + (String(q) ? "?" + q : "") + "#near";
+  location.href = PAGE_URL.directory + (String(q) ? "?" + q + "#foryou" : "#near");
 }
