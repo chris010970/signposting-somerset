@@ -273,11 +273,11 @@ function recordsFromCSV(text) {
   }
   return { recs };
 }
-const VERSION = "2026-11-27 13:14";        // set when the worker is built; shown on the Assist tab
+const VERSION = "2026-11-27 13:29";        // set when the worker is built; shown on the Assist tab
 const DEFAULT_MODEL = "claude-sonnet-5-5";
 const MAX_PER_HOUR = 30;               // per visitor, shared by the tasks with limit: true (best effort: counts reset when Cloudflare restarts the Worker)
 const TAGS_SET = ({
- "_about": "The tags task (POST .../tags): what someone types on the landing page, turned into up to max_tags support types (the sheet's tags, build/core/data/support-types.json), a place and two flags. daily_cap: at most this many answers a day, for everyone together (the task is open to the public, without the access code, so this caps its cost; past it, the page takes people straight to the directory). per_hour: at most this many from one visitor an hour, counted apart from Assist; 0: no hourly limit (for now, so run_tags.py can run all its phrases; the daily cap still holds). max_chars: text beyond this is cut before the AI sees it. preferences: what they said about how they'd like support (how to get in touch, groups, getting out, when, travel, under 18, the kind of help): each with its allowed values (many: more than one allowed) and what the AI is told to look for; only what they said, never a guess, and the Worker drops anything not in values. hints: a few everyday words for each tag, given to the AI so it can match how people talk; change them freely (every tag needs one). The prompt itself is in worker-template.js (tagsPrompt). fallback_words: for each tag, words (a regular expression) that count as it when the AI can't answer even after a second try, so the page can still offer For you; the tags come back in the order they appear in the text (crisis prevention first), with fallback: \"words\". safety: the kinds of risk the page responds to, most serious first; for each, what the AI looks for (hint) and words (a regular expression) for when the AI can't answer. always: the words count even when the AI answers (only where showing help by mistake costs little: emergency, self, from_others). risk: true when any safety category comes back (or the risk words match).",
+ "_about": "The tags task (POST .../tags): what someone types on the landing page, turned into up to max_tags support types (the sheet's tags, build/core/data/support-types.json), a place and two flags. daily_cap: at most this many answers a day, for everyone together (the task is open to the public, without the access code, so this caps its cost; past it, the page takes people straight to the directory). per_hour: at most this many from one visitor an hour, counted apart from Assist; 0: no hourly limit (for now, so run_tags.py can run all its phrases; the daily cap still holds). max_chars: text beyond this is cut before the AI sees it. preferences: what they said about how they'd like support (how to get in touch, groups, getting out, when, travel, under 18, the kind of help): each with its allowed values (many: more than one allowed) and what the AI is told to look for; only what they said, never a guess, and the Worker drops anything not in values. hints: a few everyday words for each tag, given to the AI so it can match how people talk; change them freely (every tag needs one). The prompt itself is in worker-template.js (tagsPrompt). fallback_words: for each tag, words (a regular expression) that count as it when the AI can't answer even after a second try, so the page can still offer For you; the tags come back in the order they appear in the text (crisis prevention first), with fallback: \"words\". safety: the kinds of risk the page responds to, most serious first; for each, what the AI looks for (hint) and words (a regular expression) for when the AI can't answer. always: the words count even when the AI answers (only where showing help by mistake costs little: emergency, self, from others, eating danger, addiction danger). risk: true when any safety category comes back (or the risk words match).",
  "daily_cap": 300,
  "per_hour": 0,
  "max_chars": 500,
@@ -392,7 +392,7 @@ const TAGS_SET = ({
   "from_others": {
    "always": true,
    "hint": "being hurt, threatened, assaulted, raped or abused by someone, now or in the past, including coercive control: frightened of a partner or family member, being checked on or tracked, not allowed out or to see friends, money controlled, threats if they leave",
-   "words": "hits me|hit me|beats? me|hurts me|scared of (him|her|my (husband|wife|partner|boyfriend|girlfriend|dad|mum|ex))|frightened of (him|her|what (he|she)|my (husband|wife|partner|boyfriend|girlfriend|dad|mum|ex))|scared (of what|to go home)|checks (my phone|where i am|up on me)|tell him where i am|won'?t let me (go out|see|leave|have)|takes my (bank card|money)|controls? (my money|everything)|if i leave (him|her|he|she)|\\braped?\\b|sexual(ly)? assault|abused me"
+   "words": "hits me|hit me|beats? me|hurts me|scared of (him|her|my (husband|wife|partner|boyfriend|girlfriend|dad|mum|ex))|frightened of (him|her|what (he|she)|my (husband|wife|partner|boyfriend|girlfriend|dad|mum|ex))|scared (of what|to go home)|checks (my phone|where i am)|tell him where i am|won'?t let me (go out|see|leave|have)|takes my (bank card|money)|controls? (my money|everything)|if i leave (him|her|he|she)|\\braped?\\b|sexual(ly)? assault|abused me|not allowed (out|my own phone|a phone|to see (my )?friends)"
   },
   "to_others": {
    "always": false,
@@ -410,12 +410,12 @@ const TAGS_SET = ({
    "words": "sexual (thoughts|feelings|urges) (about|towards|involving) (children|kids|a child)|attracted to (children|kids)"
   },
   "eating_danger": {
-   "always": false,
+   "always": true,
    "hint": "an eating disorder with physical danger now: not eating for days, fainting, chest pains, making themselves sick many times a day",
    "words": "(haven'?t|not) eaten (for|in) (days|\\w+ days)|keep fainting|chest pains? after"
   },
   "addiction_danger": {
-   "always": false,
+   "always": true,
    "hint": "drink or drugs with physical danger: withdrawal (shaking, seeing things, fits) after stopping heavy drinking, planning to stop heavy drinking suddenly, someone who has taken too much",
    "words": "shaking and seeing things|seeing things after|cold turkey|(stopped|stop|stopping) drinking[^.]{0,40}(shak|seeing|fit)|taken too much"
   }

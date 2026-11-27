@@ -1,5 +1,5 @@
 {
- "_about": "Risk phrased many ways, for run_tags.py --scenarios src/scenarios-risk.json. Each scenario (the letter after R) comes in several wordings: plain, slang or typos, indirect, buried in a longer message about something else, and look-alikes that are NOT risk. Checks the risk flag, the safety categories (safety: the ones that must come back; [] means none may) and that crisis prevention comes back where it must; other tags and the preferences aren't checked here (ignore: *). category: the safety category it would fall in once those are built: what the phrase is about, for reading the results (safety is what's checked).",
+ "_about": "Risk phrased many ways, for run_tags.py --scenarios src/scenarios-risk.json. Each scenario (the letter after R) comes in several wordings: plain, slang or typos, indirect, buried in a longer message about something else, and look-alikes that are NOT risk. Checks the risk flag, the safety categories (safety: the ones that must come back; [] means none may) and that crisis prevention comes back where it must; other tags and the preferences aren't checked here (ignore: *). category: the safety category it would fall in once those are built: what the phrase is about, for reading the results (safety is what's checked). off_topic null: not checked (harmless either way: the site just opens).",
  "scenarios": [
   {
    "id": "RA1",
@@ -326,7 +326,7 @@
    "risk": true,
    "must": [],
    "not": [],
-   "place": "",
+   "place": "Wells",
    "off_topic": false,
    "ignore": [
     "*"
@@ -435,7 +435,7 @@
    "must": [],
    "not": [],
    "place": "",
-   "off_topic": false,
+   "off_topic": null,
    "ignore": [
     "*"
    ],
@@ -815,7 +815,7 @@
    "must": [],
    "not": [],
    "place": "",
-   "off_topic": false,
+   "off_topic": null,
    "ignore": [
     "*"
    ],

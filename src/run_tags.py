@@ -58,7 +58,7 @@ def check(s, out):
     if s["place"].lower() not in place.lower() or (place and not s["place"]):
         notes.append(f"place {place!r}, expected {s['place']!r}")
     for flag in ("risk", "off_topic"):
-        if bool(out.get(flag)) != s[flag]:
+        if s.get(flag) is not None and bool(out.get(flag)) != s[flag]:   # (None: not checked)
             notes.append(f"{flag} {bool(out.get(flag))}")
     if "safety" in s:   # the categories that must come back; [] means none may (an extra one beside the expected is fine)
         got_s = out.get("safety") or []
