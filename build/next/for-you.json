@@ -1,5 +1,5 @@
 {
- "_about": "The For you tab (/next/directory/#foryou, opened from the landing page): what the landing page's AI read in someone's words (topics, place, preferences, safety: build/tools/assist/tags.json) turned into picks and buttons by the rules here. No AI here. Read by build/next/js/for-you.js. topics: for each topic, its line, the service types that make a good first step, words in a name or description that make one better (prefer_words), the groups (who) it suits (groups_ok) and a short name for buttons. open_to_all: the who values that mean anyone can go: the picks only use services open to all (or to a group the topic suits, groups_ok), since we don't know who's asking. score: each candidate gets days until it next runs + miles x per_mile, plus a penalty for each way it fits less well; the lowest wins. help_types: the kinds of help someone can ask for, as the sheet's types. when_hours: what daytime and evenings mean (a session's start time) and which days are weekends. safety: the panel for each risk group (most serious first), its words and the services (sheet record ids) it shows, with more by topic or for under-18s; picks: whether the usual picks show beneath (none, or relevant: only their topics, nothing added). explore: the buttons beside the picks; kind_titles: a button's title for each kind of service.",
+ "_about": "The For you tab (/next/directory/#foryou, opened from the landing page): what the landing page's AI read in someone's words (topics, place, preferences, safety: build/tools/assist/tags.json) turned into picks and buttons by the rules here. No AI here. Read by build/next/js/for-you.js. topics: for each topic, its line, the service types that make a good first step, words in a name or description that make one better (prefer_words), the groups (who) it suits (groups_ok) and a short name for buttons. open_to_all: the who values that mean anyone can go: the picks only use services open to all (or to a group the topic suits, groups_ok), since we don't know who's asking. score: each candidate gets days until it next runs + miles x per_mile, plus a penalty for each way it fits less well (other_area: a service in another area; check_first: one restricted to people we can't tell they are; exact_words: less when it has their own words for an activity; activity_on_the_side: more, for an activity, when the service isn't one of activity_types (a breakfast drop-in with a sing-along, rather than a singing group); not_weekly: more for something that meets less than weekly, so a weekly group beats a monthly one that happens to be today; in_name: less again when the activity or their words are in its name, so it's what the group is for); the lowest wins. roles, main_lines and restrictions: what each pick is for, the established lines for each topic and area, and who a service is only for (each has its own _about). help_types: the kinds of help someone can ask for, as the sheet's types. when_hours: what daytime and evenings mean (a session's start time) and which days are weekends. safety: the panel for each risk group (most serious first), its words and the services (sheet record ids) it shows, with more by topic or for under-18s; picks: whether the usual picks show beneath (none, or relevant: only their topics, nothing added). explore: the buttons beside the picks; kind_titles: a button's title for each kind of service.",
  "max_picks": 3,
  "radius_miles": [
   10,
@@ -22,7 +22,12 @@
   "prefer_words": -5,
   "phone_closed": 4,
   "uk_wide": 1,
-  "eligibility": 4
+  "other_area": 8,
+  "exact_words": -20,
+  "check_first": 6,
+  "in_name": -6,
+  "not_weekly": 4,
+  "activity_on_the_side": 3
  },
  "gentle_for": [
   "low mood",
@@ -117,6 +122,10 @@
     "Peer group",
     "Community",
     "Activity group"
+   ],
+   "groups_ok": [
+    "carers",
+    "older people"
    ]
   },
   "caring for someone": {
@@ -192,7 +201,13 @@
  "lines": {
   "phone": "{line}, by phone or online",
   "gentle": "For your overall wellbeing",
-  "another": "Another place to try"
+  "another": "Another place to try",
+  "activity": "Because you mentioned {what}",
+  "gap": "We couldn't find {what} near {place}, so here's somewhere to meet people",
+  "gap_anywhere": "We couldn't find {what}, so here's somewhere to meet people",
+  "relaxed": "Nothing nearby at the times you said, so this is the soonest",
+  "activity_related": "We couldn't find {what} near {place}, but this has {activity}",
+  "online": "{line}, online at the times you said"
  },
  "details": "Details",
  "none": "We couldn't find a good match for that. Try the tabs above, or talk to someone straight away using the helplines below.",
@@ -329,5 +344,259 @@
  },
  "also": "Showing places near {place}. You also mentioned {also}:",
  "also_link": "show places near {also} instead",
- "also_heading": "For what you asked about"
+ "also_heading": "For what you asked about",
+ "roles": {
+  "_about": "For each topic, what its picks are for, in order (each topic takes its first role, then the next topic its first, and so on, up to max_picks). place: the best in-person service for the topic (by phone or online if they'd rather, or there's no place); line: the next of the topic's main lines (main_lines) for their area, then national ones; any topic not here: place, place.",
+  "connect": [
+   "place",
+   "place",
+   "line"
+  ],
+  "low mood": [
+   "place",
+   "line",
+   "line"
+  ],
+  "anxiety": [
+   "place",
+   "line",
+   "line"
+  ],
+  "bereavement": [
+   "line",
+   "place",
+   "line"
+  ],
+  "finances": [
+   "place",
+   "line",
+   "line"
+  ],
+  "housing": [
+   "line",
+   "place"
+  ],
+  "food": [
+   "place",
+   "place"
+  ],
+  "caring for someone": [
+   "place",
+   "line"
+  ],
+  "dementia": [
+   "place",
+   "line"
+  ],
+  "addiction": [
+   "line",
+   "place"
+  ],
+  "eating disorders": [
+   "line",
+   "place"
+  ],
+  "hearing voices": [
+   "place",
+   "line"
+  ],
+  "long-term pain": [
+   "place",
+   "place"
+  ]
+ },
+ "main_lines": {
+  "_about": "The established phone and online services for each topic, by the person's area (Somerset when we don't know it), then national (a national one can come first in an area's own list): sheet record ids, tried in order. Each is still checked against the live record (there, no notice, open to them) and never two from one provider. why: the reason they're here, for whoever maintains this.",
+  "low mood": {
+   "why": "NHS talking therapy (self-referral) and the area's listening line",
+   "Somerset": [
+    "R0356",
+    "R0219"
+   ],
+   "Bath and North East Somerset": [
+    "R0988",
+    "R0972"
+   ],
+   "North Somerset": [
+    "R0950"
+   ],
+   "national": [
+    "R1016"
+   ]
+  },
+  "anxiety": {
+   "why": "NHS talking therapy, the area's listening line, then the national anxiety line",
+   "Somerset": [
+    "R0356",
+    "R0219"
+   ],
+   "Bath and North East Somerset": [
+    "R0988",
+    "R0972"
+   ],
+   "North Somerset": [
+    "R0950"
+   ],
+   "national": [
+    "R1015"
+   ]
+  },
+  "bereavement": {
+   "why": "Cruse, the national bereavement charity; the area's bereavement line; practical help after a death",
+   "Somerset": [
+    "R0317",
+    "R0318",
+    "R0850"
+   ],
+   "national": [
+    "R0317",
+    "R0318",
+    "R1460"
+   ]
+  },
+  "finances": {
+   "why": "the area's Citizens Advice line, then the national debt charities",
+   "Somerset": [
+    "R0671"
+   ],
+   "Bath and North East Somerset": [
+    "R0971"
+   ],
+   "national": [
+    "R0319",
+    "R0321"
+   ]
+  },
+  "housing": {
+   "why": "the council's housing and homelessness line, then Shelter",
+   "Somerset": [
+    "R0223"
+   ],
+   "Bath and North East Somerset": [
+    "R0969"
+   ],
+   "North Somerset": [
+    "R0952"
+   ],
+   "national": [
+    "R0222"
+   ]
+  },
+  "caring for someone": {
+   "why": "the area's carers' service, then Carers UK",
+   "Somerset": [
+    "R0631"
+   ],
+   "Bath and North East Somerset": [
+    "R1095"
+   ],
+   "North Somerset": [
+    "R0858"
+   ],
+   "national": [
+    "R1564"
+   ]
+  },
+  "dementia": {
+   "why": "the area's dementia support line, then Alzheimer's Society's national line",
+   "Somerset": [
+    "R0709"
+   ],
+   "North Somerset": [
+    "R0953"
+   ],
+   "national": [
+    "R0576",
+    "R0577",
+    "R0578"
+   ]
+  },
+  "addiction": {
+   "why": "the area's drug and alcohol service, then the national gambling line",
+   "Somerset": [
+    "R0329"
+   ],
+   "Bath and North East Somerset": [
+    "R1094"
+   ],
+   "North Somerset": [
+    "R0951"
+   ],
+   "national": [
+    "R0600"
+   ]
+  },
+  "eating disorders": {
+   "why": "Beat, the national eating disorder charity",
+   "national": [
+    "R0621"
+   ]
+  },
+  "hearing voices": {
+   "why": "online peer groups",
+   "Somerset": [
+    "R0100"
+   ],
+   "national": [
+    "R0712",
+    "R0711"
+   ]
+  },
+  "connect": {
+   "why": "befriending by phone (age limits shown)",
+   "national": [
+    "R1623",
+    "R1017"
+   ]
+  }
+ },
+ "restrictions": {
+  "_about": "Who a service is only for (the sheet's restricted_to). area: an area restriction and the area it means: fine when it's their area (from their town; Somerset when we don't know), otherwise never picked. with_topic: fine when they asked about one of these topics (a carer asking about dementia can go to a memory café). check: we can't tell, so it can be picked, after open ones, with this line under it. Anything else (veterans, sight loss, other and so on): never picked, since we don't know who's asking; the directory still shows it. GP practice beside an area value is just the area. who_check: a group (the sheet's who) we can't tell they're in, picked after open ones with this line. who_words: a group they named in their own words for an activity (a men's shed), so it can be picked.",
+  "area": {
+   "Somerset (home or GP)": "Somerset",
+   "B&NES (home or GP)": "Bath and North East Somerset",
+   "North Somerset (home or GP)": "North Somerset"
+  },
+  "default_area": "Somerset",
+  "with_topic": {
+   "memory problems or dementia": [
+    "dementia"
+   ],
+   "homelessness": [
+    "housing"
+   ],
+   "low income": [
+    "food",
+    "finances"
+   ],
+   "health condition or disability": [
+    "long-term pain"
+   ]
+  },
+  "check": {
+   "age 50+": "For people aged 50 or over",
+   "age 55+": "For people aged 55 or over",
+   "age 60+": "For people aged 60 or over",
+   "age 65+": "For people aged 65 or over",
+   "GP practice": "For patients of some GP practices: check with them",
+   "local area": "For people living locally: check with them",
+   "members": "Membership needed: check with them",
+   "low income": "For people on a low income"
+  },
+  "who_check": {
+   "older people": "For older people"
+  },
+  "who_words": {
+   "men": "\\bmen\\b|men's|\\bmale\\b|\\bdads?\\b",
+   "women": "women|ladies|\\bfemale\\b|\\bmums?\\b",
+   "young people": "young|teen|youth",
+   "new families": "baby|babies|toddler|\\bmums?\\b|\\bdads?\\b|parent"
+  }
+ },
+ "show": "Show in directory",
+ "activity_types": [
+  "Activity group",
+  "Course",
+  "Volunteering"
+ ]
 }

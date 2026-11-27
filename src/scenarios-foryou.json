@@ -1,0 +1,289 @@
+{
+ "_about": "Test cases for For you (the picks and buttons), run by build/tests/run_foryou.mjs on the real page code, with the sheet's data in docs/assets/services.csv and a fixed date. Each says what the landing page's AI would have read (tags, town, prefs, safety, activities, terms: as in scenarios-tags.json and scenarios-activities.json) and good: record ids a support worker would be happy to see (the reference picks; others can be fine too). Checks for every case: nothing they can't go to (restricted_to), never two from one provider, an activity they asked for comes first or the page says it couldn't find one, nothing from another area when their own area has the same kind of thing.",
+ "scenarios": [
+  {
+   "id": "F01",
+   "text": "Widow in Wells: lost my husband, money tight, lonely, no car, don't want a group",
+   "tags": [
+    "bereavement",
+    "finances",
+    "connect"
+   ],
+   "town": "Wells",
+   "prefs": {
+    "travel": "nearby only",
+    "groups": "avoid"
+   },
+   "good": [
+    "R0317",
+    "R0318",
+    "R1147",
+    "R1460",
+    "R0850"
+   ]
+  },
+  {
+   "id": "F02",
+   "text": "Looking for a choir in Wells... my husband checks where I am and I'm frightened",
+   "tags": [
+    "abuse",
+    "connect"
+   ],
+   "town": "Wells",
+   "safety": [
+    "at_risk"
+   ],
+   "activities": [
+    "singing"
+   ],
+   "terms": [
+    "choir"
+   ],
+   "good": [
+    "R1204"
+   ]
+  },
+  {
+   "id": "F03",
+   "text": "Can't face going out, would like someone to talk to about my anxiety (no place)",
+   "tags": [
+    "anxiety"
+   ],
+   "prefs": {
+    "contact": "phone or online",
+    "help": [
+     "one-to-one and therapy"
+    ]
+   },
+   "good": [
+    "R0356",
+    "R0219",
+    "R1015"
+   ]
+  },
+  {
+   "id": "F04",
+   "text": "Work full time so evenings only, struggling with stress, Frome",
+   "tags": [
+    "anxiety"
+   ],
+   "town": "Frome",
+   "prefs": {
+    "when": [
+     "evenings"
+    ]
+   },
+   "good": [
+    "R0076",
+    "R0356",
+    "R0219",
+    "R1283"
+   ]
+  },
+  {
+   "id": "F05",
+   "text": "Knitting group in Frome... some nights I think about ending it",
+   "tags": [
+    "crisis prevention",
+    "low mood",
+    "take notice"
+   ],
+   "town": "Frome",
+   "safety": [
+    "at_risk"
+   ],
+   "activities": [
+    "crafts"
+   ],
+   "terms": [
+    "knitting"
+   ],
+   "good": [
+    "R0583",
+    "R1284"
+   ]
+  },
+  {
+   "id": "F06",
+   "text": "I'm so lonely, Taunton",
+   "tags": [
+    "connect"
+   ],
+   "town": "Taunton",
+   "good": [
+    "R0015",
+    "R0040",
+    "R1622",
+    "R0028",
+    "R0031",
+    "R0032",
+    "R0049"
+   ]
+  },
+  {
+   "id": "F07",
+   "text": "Help with benefits forms please, Yeovil",
+   "tags": [
+    "finances"
+   ],
+   "town": "Yeovil",
+   "prefs": {
+    "help": [
+     "advice and practical help"
+    ]
+   },
+   "good": [
+    "R1296",
+    "R0671",
+    "R0319",
+    "R0055"
+   ]
+  },
+  {
+   "id": "F08",
+   "text": "Mum has dementia, I'm her carer, Minehead",
+   "tags": [
+    "caring for someone",
+    "dementia"
+   ],
+   "town": "Minehead",
+   "good": [
+    "R1132",
+    "R0119",
+    "R0709",
+    "R0631"
+   ]
+  },
+  {
+   "id": "F09",
+   "text": "I'd love to join a choir in Wells",
+   "town": "Wells",
+   "activities": [
+    "singing"
+   ],
+   "terms": [
+    "choir"
+   ],
+   "good": [
+    "R1204",
+    "R0687",
+    "R0065"
+   ]
+  },
+  {
+   "id": "F10",
+   "text": "Anything like a men's shed round Chard?",
+   "town": "Chard",
+   "activities": [
+    "making and mending"
+   ],
+   "terms": [
+    "men's shed"
+   ],
+   "good": []
+  },
+  {
+   "id": "F11",
+   "text": "Used to enjoy gardening but don't feel like anything now, Bridgwater",
+   "tags": [
+    "low mood"
+   ],
+   "town": "Bridgwater",
+   "activities": [
+    "gardening"
+   ],
+   "terms": [
+    "gardening"
+   ],
+   "good": []
+  },
+  {
+   "id": "F12",
+   "text": "Walking groups near Taunton? Also I took a lot of my meds tonight",
+   "tags": [
+    "crisis prevention",
+    "be active"
+   ],
+   "town": "Taunton",
+   "safety": [
+    "urgent",
+    "at_risk"
+   ],
+   "prefs": {
+    "when": [
+     "weekends"
+    ]
+   },
+   "good": []
+  },
+  {
+   "id": "F13",
+   "text": "Worried about my thoughts about children, want help to stop (no topic, no place)",
+   "safety": [
+    "own_behaviour"
+   ],
+   "good": []
+  },
+  {
+   "id": "F14",
+   "text": "I'm 14 and my dad hurts me",
+   "tags": [
+    "abuse"
+   ],
+   "safety": [
+    "at_risk"
+   ],
+   "prefs": {
+    "under_18": "yes"
+   },
+   "good": []
+  },
+  {
+   "id": "F15",
+   "text": "Can anyone help me use my new tablet? Frome",
+   "town": "Frome",
+   "activities": [
+    "digital skills"
+   ],
+   "terms": [
+    "tablet"
+   ],
+   "good": []
+  },
+  {
+   "id": "F16",
+   "text": "Anxious all the time, Bath",
+   "tags": [
+    "anxiety"
+   ],
+   "town": "Bath",
+   "good": [
+    "R0988",
+    "R0972"
+   ]
+  },
+  {
+   "id": "F17",
+   "text": "Feeling low, Weston-super-Mare",
+   "tags": [
+    "low mood"
+   ],
+   "town": "Weston-super-Mare",
+   "good": [
+    "R0950"
+   ]
+  },
+  {
+   "id": "F18",
+   "text": "Walking football for over 50s near Bath",
+   "town": "Bath",
+   "activities": [
+    "sport"
+   ],
+   "terms": [
+    "walking football"
+   ],
+   "good": []
+  }
+ ]
+}

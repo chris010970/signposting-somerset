@@ -37,7 +37,9 @@ function fyChoices() {
   const safety = (Array.isArray(more.safety) ? more.safety : []).filter(g => g !== "note" && FY.safety[g]);
   // also: a place they typed that wasn't used ({ label, lat, lon }), offered in one tap
   const also = more.also && more.also.label && !isNaN(more.also.lat) && more.also.label !== (point && point.label) ? more.also : null;
-  return { tags, point, safety, prefs: more.prefs || {}, also };
+  const acts = (Array.isArray(more.activities) ? more.activities : []).filter(a => typeof a === "string").slice(0, 3);
+  const terms = (Array.isArray(more.activity_terms) ? more.activity_terms : []).filter(t => typeof t === "string").map(t => t.toLowerCase()).slice(0, 3);
+  return { tags, point, safety, prefs: more.prefs || {}, also, activities: acts, terms, area: fyArea(point) };
 }
 const fyFill = (tpl, v) => tpl.replace(/\{(\w+)\}/g, (m, k) => v[k] ?? "");
 const fyTopic = t => (LABEL[t] || t).toLowerCase();
@@ -57,66 +59,148 @@ function fyWhenOK(start, when) {
     : w === "evenings" ? h >= FY.when_hours.evenings[0] && h < FY.when_hours.evenings[1] : true);
 }
 
+// Their area: their town's (the nearest of our towns to a point), else the default (Somerset)
+function fyArea(point) {
+  if (!point) return FY.restrictions.default_area;
+  let best = null;
+  for (const [area, places] of PLACES) for (const [n, lat, lon] of places) {
+    const d = n === point.town ? -1 : miles(point, { lat, lon }); if (!best || d < best.d) best = { area, d }; }
+  return best ? best.area : FY.restrictions.default_area;
+}
+// Can they go? (restricted_to: for-you.json's restrictions) null: never for a pick; else { line } (a line to show under it, or "")
+function fyRestrict(s, c) {
+  const R = FY.restrictions, vals = split(s.restricted_to || ""), areas = vals.filter(v => R.area[v]);
+  if (areas.length && !areas.some(v => R.area[v] === c.area)) return null;
+  let line = "";
+  for (const v of vals) {
+    if (R.area[v] || (v === "GP practice" && areas.length)) continue;
+    if ((R.with_topic[v] || []).some(t => c.tags.includes(t))) continue;
+    if (R.check[v]) { line = line || R.check[v]; continue; }
+    return null;
+  }
+  return { line };
+}
+// Their own words for an activity, in a name or description (a plural matches too)
+const fyRoot = w => w.replace(/(ing|s)$/, "");
+const fyHasWords = (s, terms) => { const t = `${s.name} ${s.description}`.toLowerCase();
+  return terms.some(w => t.includes(w) || t.includes(fyRoot(w))); };
+
 function fyPicker(c, now, shown = []) {
   const { point, prefs } = c, used = new Set(shown), providers = new Set(), W = FY.score;
   // Open to all: who is empty, or has anyone or adults (young people too for under-18s), or a group the topic suits
   const openTo = (s, tag) => { const w = split(s.who), ok = [...FY.open_to_all, ...(fyTopicSet(tag).groups_ok || []), ...(prefs.under_18 === "yes" ? ["young people"] : [])];
     return !w.length || w.some(x => ok.includes(x)); };
-  const free = (s, tag) => !used.has(s.id) && !(s.provider && providers.has(s.provider.toLowerCase())) && !noticeText(s) && openTo(s, tag);
-  const take = (r, why, topic) => { used.add(r.s.id); if (r.s.provider) providers.add(r.s.provider.toLowerCase()); return { ...r, why, topic }; };
+  // (their own words for the group, "men's shed", "walking football for over 50s": who it's for is theirs to judge; restricted_to still holds)
+  const R = FY.restrictions, named = w => c.terms.some(t => new RegExp(R.who_words[w] || "^$", "i").test(t));
+  const whoOK = (s, tag, activity) => openTo(s, tag) || split(s.who).some(w => R.who_check[w] || (activity && named(w)));
+  const free = (s, tag, activity) => !used.has(s.id) && !(s.provider && providers.has(s.provider.toLowerCase())) && !noticeText(s)
+    && whoOK(s, tag, activity) && fyRestrict(s, c);
+  const whoLine = (s, tag) => openTo(s, tag) ? "" : (split(s.who).map(w => R.who_check[w]).find(Boolean) || "");
+  const take = (r, why, topic, note) => { used.add(r.s.id); if (r.s.provider) providers.add(r.s.provider.toLowerCase());
+    return { ...r, why, topic, note: note || (r.relaxed ? FY.lines.relaxed : ""), check: fyRestrict(r.s, c).line || whoLine(r.s, topic) }; };
   const horizon = now.getTime() + FY.days_ahead * 864e5, asked = fyHelpTypes(prefs);
-  function score(r, tag) {
-    const set = fyTopicSet(tag), s = r.s, who = split(s.who), text = `${s.name} ${s.description}`.toLowerCase();
+  // The lower the better: days until it runs (in person) or open now (phone), distance, and a penalty for each way it fits less well
+  function score(r, tag, activity) {
+    const set = fyTopicSet(tag), s = r.s, text = `${s.name} ${s.description}`.toLowerCase();
     const firstStep = asked.length ? asked : set.first_step;
     let v = r.st ? (r.st.open ? 0 : W.phone_closed) + (s.area === "national" ? W.uk_wide : 0)   // phone or online
-      : (r.at - now) / 864e5 + r.d * W.per_mile;                                                  // in person
-    if (firstStep.length && !firstStep.includes(s.type)) v += W.not_first_step;
-    if (who.length && !who.some(w => FY.open_to_all.includes(w))) v += W.not_open_to_all;   // (a group the topic suits: allowed, but after open ones)
-    if ((s.eligibility || "").trim()) v += W.eligibility;   // (conditions to join: "people with MS", "Somerset Council area only")
-    if (!FY.easy_access.includes(s.access)) v += W.not_easy_access;
+      : (r.at - now) / 864e5 + r.d * W.per_mile + (FY.easy_access.includes(s.access) ? 0 : W.not_easy_access)   // in person
+        + ([...sessions(s, now, 28)].length < 4 ? W.not_weekly : 0);
+    if (activity) { if (fyHasWords(s, c.terms)) v += W.exact_words;
+      if (!FY.activity_types.includes(s.type)) v += W.activity_on_the_side;
+      if ([...c.terms, ...c.activities].some(w => s.name.toLowerCase().includes(fyRoot(w)))) v += W.in_name; }
+    else if (firstStep.length && !firstStep.includes(s.type)) v += W.not_first_step;
+    if (split(s.who).length && !split(s.who).some(w => FY.open_to_all.includes(w))) v += W.not_open_to_all;   // (a group the topic suits: after open ones)
+    if (s.area !== "national" && s.area !== c.area) v += W.other_area;
+    if (fyRestrict(s, c).line || whoLine(s, tag)) v += W.check_first;
     if ((set.prefer_words || []).some(w => text.includes(w))) v += W.prefer_words;
     if (prefs.groups === "avoid" && s.type === "Peer group") v += FY.avoid_groups_penalty;
     return v;
   }
+  // Best first: the score, then their own area, then nearer, then the name (so a tie is never just the alphabet)
+  const order = (a, b) => (a.v - b.v) || ((a.s.area === c.area) ? -1 : (b.s.area === c.area) ? 1 : 0) || ((a.d || 0) - (b.d || 0)) || a.s.name.localeCompare(b.s.name);
   // The first session that suits the times they said, within days_ahead (null: none)
   const suits = (s, when) => { for (const o of sessions(s, now, FY.days_ahead)) if (o.en > now && fyWhenOK(o.st, when)) return o.st; return null; };
-  // The best in-person service for a topic, or null: within each radius in turn, at their times first, then any time
-  function inPerson(tag) {
+  // The best in-person service for a topic (or for an activity), or null: within each radius in turn, at their times first, then
+  // (unless strict) any time, marked relaxed
+  function inPerson(tag, { activity = false, strict = false } = {}) {
     if (!point) return null;
-    const near = S.filter(s => s._sf.includes(tag) && free(s, tag) && !isNaN(s.lat)).map(s => ({ s, d: miles(point, s) }));
+    const fits = s => activity ? split(s.activities || "").some(a => c.activities.includes(a)) : s._sf.includes(tag);
+    const near = S.filter(s => fits(s) && free(s, tag, activity) && !isNaN(s.lat)).map(s => ({ s, d: miles(point, s) }));
     const radii = prefs.travel === "nearby only" ? FY.radius_nearby : FY.radius_miles;
-    for (const when of prefs.when && prefs.when.length ? [prefs.when, null] : [null])
+    const times = prefs.when && prefs.when.length ? (strict ? [prefs.when] : [prefs.when, null]) : [null];
+    for (const when of times)
       for (const radius of radii) {
         const ok = near.filter(x => x.d <= radius).map(x => ({ ...x, at: suits(x.s, when) })).filter(x => x.at && x.at.getTime() <= horizon)
-          .map(x => ({ ...x, nx: nextText(x.s, now) })).map(x => ({ ...x, v: score(x, tag) })).sort((a, b) => a.v - b.v);
+          .map(x => ({ ...x, nx: nextText(x.s, now), relaxed: !!prefs.when && !!prefs.when.length && !when })).map(x => ({ ...x, v: score(x, tag, activity) })).sort(order);
         if (ok.length) return ok[0];
       }
     return null;
   }
-  // The best phone or online service for a topic, scored the same way (open now, local, a good first step, open to all)
-  function byPhone(tag) {
-    const all = T.filter(s => s._sf.includes(tag) && free(s, tag)).map(s => ({ s, st: openState(s, now) })).map(x => ({ ...x, v: score(x, tag) }));
-    all.sort((a, b) => (a.v - b.v) || a.s.name.localeCompare(b.s.name));
-    return all[0] || null;
+  // The best phone or online service for a topic (or an activity), scored the same way
+  function byPhone(tag, { activity = false } = {}) {
+    const fits = s => activity ? split(s.activities || "").some(a => c.activities.includes(a)) : s._sf.includes(tag);
+    const all = T.filter(s => fits(s) && free(s, tag, activity)).map(s => ({ s, st: openState(s, now) })).map(x => ({ ...x, v: score(x, tag, activity) }));
+    return all.sort(order)[0] || null;
   }
-  return { inPerson, byPhone, take };
+  // When nothing in person suits their times: an online or phone group in their area (or UK-wide) at those times, if any
+  function onlineAt(tag) {
+    if (!prefs.when || !prefs.when.length) return null;
+    const all = T.filter(s => s._sf.includes(tag) && free(s, tag) && isGroupType(s)).map(s => ({ s, at: suits(s, prefs.when), st: openState(s, now) }))
+      .filter(x => x.at && x.at.getTime() <= horizon && (x.s.area === c.area || x.s.area === "national")).map(x => ({ ...x, v: score(x, tag) }));
+    return all.sort(order)[0] || null;
+  }
+  // The topic's next main line for their area, then national ones (main_lines), if it's there and open to them
+  function line(tag) {
+    const L = FY.main_lines[tag]; if (!L) return null;
+    for (const id of [...(L[c.area] || []), ...(L.national || [])]) {
+      const s = ALL.find(x => x.record_id === id);
+      if (s && free(s, tag)) return { s, st: openState(s, now) };
+    }
+    return null;
+  }
+  return { inPerson, byPhone, onlineAt, line, take };
 }
 
+// The picks: an activity they asked for first (or an honest gap and somewhere to meet people instead); then each topic's roles in
+// turn (its first role, then the next topic's first...); the gentle Five Ways pick for low mood and the like; at most max_picks
 function fyPicks(c, now = new Date(), shown = []) {
   const P = fyPicker(c, now, shown), picks = [], room = () => picks.length < FY.max_picks, g = fySafety(c);
   if (g && FY.safety[g].picks === "none") return [];
   // Under a panel, no picks for what it already covers: the crisis lines, and its topics' services (abuse: the abuse lines)
-  const tags = c.tags.filter(t => !(g && (t === FY.crisis_tag || (FY.safety[g].by_topic || {})[t])));
-  const phoneFirst = c.prefs.contact === "phone or online";
-  for (const t of tags) {
-    if (!room()) break;
-    const r = phoneFirst ? P.byPhone(t) || P.inPerson(t) : P.inPerson(t) || (c.prefs.contact === "in person" && c.point ? null : P.byPhone(t));
-    if (r) picks.push(P.take(r, r.st && !phoneFirst && c.point ? "phone" : "match", t));
+  let tags = c.tags.filter(t => !(g && (t === FY.crisis_tag || (FY.safety[g].by_topic || {})[t])));
+  const phoneFirst = c.prefs.contact === "phone or online", inPersonOnly = c.prefs.contact === "in person" && c.point;
+  const what = c.terms[0] || c.activities[0] || "";
+  let gap = "";
+  if (c.activities.length) {
+    const at = tags[0] || "connect", r = phoneFirst || !c.point ? P.byPhone(at, { activity: true }) || P.inPerson(at, { activity: true }) : P.inPerson(at, { activity: true });
+    // (a craft group when they asked for knitting: say so)
+    const related = x => c.terms.length && !fyHasWords(x.s, c.terms), say = x => fyFill(related(x) ? FY.lines.activity_related : FY.lines.activity,
+      { what, place: c.point ? c.point.label : "", activity: split(x.s.activities).find(a => c.activities.includes(a)) || what });
+    if (r) picks.push(P.take(r, "activity", at, say(r)));
+    // A second one like it: for a light request (no topic), or when the first is only related (two to choose from, as neither is quite it)
+    if (r && (!tags.length || related(r))) { const r2 = c.point ? P.inPerson(at, { activity: true }) : P.byPhone(at, { activity: true });
+      if (r2 && related(r2) === related(r)) picks.push(P.take(r2, "activity", at, say(r2))); }
+    if (!r) gap = fyFill(c.point ? FY.lines.gap : FY.lines.gap_anywhere, { what, place: c.point ? c.point.label : "" });
+    if ((!tags.length || gap) && !g && !tags.includes("connect")) tags = [...tags, "connect"];   // a light request, or no match: somewhere to meet people
   }
+  const roles = t => (FY.roles[t] || ["place", "place"]);
+  for (let i = 0; i < FY.max_picks && room(); i++)
+    for (const t of tags) {
+      if (!room()) break;
+      const role = roles(t)[i]; if (!role) continue;
+      let r = null, why = "match";
+      if (role === "line" && !inPersonOnly) { r = P.line(t); why = "line"; }
+      if (!r) { why = "match"; r = phoneFirst || !c.point ? P.byPhone(t) || P.inPerson(t) : P.inPerson(t) || (inPersonOnly ? null : P.byPhone(t));
+        const o = r && r.relaxed && !inPersonOnly ? P.onlineAt(t) : null;   // (an online group at their times beats a daytime one in person)
+        if (o) { r = o; why = "online"; } }
+      if (!r && !inPersonOnly) { r = P.line(t); why = "line"; }
+      if (r) picks.push(P.take(r, r.st && why === "match" && !phoneFirst && c.point ? "phone" : why, t,
+        t === "connect" && gap && !picks.some(p => p.topic === "connect" && p.why !== "activity") ? gap : ""));
+    }
   if (g) return picks;   // at_risk: only their own topics, nothing added
   if (c.point && room() && !phoneFirst && (c.prefs.get_out === "yes" || tags.some(t => FY.gentle_for.includes(t))))
-    for (const w of FY.five_ways.filter(w => !tags.includes(w))) { const r = P.inPerson(w); if (r) { picks.push(P.take(r, "gentle", w)); break; } }
-  if (room() && tags.length === 1) { const r = phoneFirst ? P.byPhone(tags[0]) : P.inPerson(tags[0]) || P.byPhone(tags[0]); if (r) picks.push(P.take(r, "another", tags[0])); }
+    for (const w of FY.five_ways.filter(w => !tags.includes(w))) { const r = P.inPerson(w, { strict: true }); if (r) { picks.push(P.take(r, "gentle", w)); break; } }
   return picks;
 }
 
@@ -128,8 +212,23 @@ const FY_ICONS = {
 // The line above a pick: what it's for (the card under it says when, where and how)
 function fyLine(p) {
   const line = fyTopicSet(p.topic).line;
-  const text = p.why === "match" ? line : fyFill(FY.lines[p.why], { line });
-  return `<h2 class="fywhy">${fyIcon(p.why === "gentle" ? "low mood" : p.topic)}<span>${esc(text)}</span></h2>`;
+  const text = p.why === "activity" ? p.note : p.why === "match" || p.why === "line" ? line : fyFill(FY.lines[p.why], { line });   // (online: at their times)
+  const note = p.why !== "activity" && p.note ? `<p class="fynote">${esc(p.note)}</p>` : "";
+  const check = p.check ? `<p class="fycheck">${esc(p.check)}</p>` : "";
+  return `<h2 class="fywhy">${fyIcon(p.why === "gentle" ? "low mood" : p.topic)}<span>${esc(text)}</span></h2>${note}${check}`;
+}
+// "Show in directory": the pick among everything else, in In person (their place, a distance that reaches it, any time; its card
+// opened and its pin shown) or in Phone and online (its card opened). next-late.js does the showing (show= in the address)
+function fyShow(p, c) {
+  const u = new URLSearchParams(), inPerson = !p.st;
+  if (inPerson && c.point) {
+    if (c.point.town) u.set("town", c.point.town); else { u.set("lat", c.point.lat.toFixed(4)); u.set("lon", c.point.lon.toFixed(4)); u.set("label", c.point.label); }
+    const d = miles(c.point, p.s), w = [2, 5, 10, 20].find(x => x >= d) || 0;
+    if (w !== 10) u.set("within", w);
+  }
+  if (inPerson) u.set("when", "any");
+  u.set("show", p.s.record_id);
+  return `<a class="fyshow" href="${PAGE_URL.directory}?${u}#${inPerson ? "near" : "talk"}">${esc(FY.show)}</a>`;
 }
 
 // The safety panel: the group's words and its services (by record id: under-18s first, then by topic, then the group's own),
@@ -180,7 +279,8 @@ function fyButtons(c, g) {
   const links = [];
   if (g === "urgent" || g === "own_behaviour") links.push(button(href("talk"), FY_ICONS.phone, E.safety_phone.title, E.safety_phone.text));
   else {
-    const tags = c.tags.filter(t => !(g && t === FY.crisis_tag));
+    const tags = (c.tags.length ? c.tags : c.activities.length ? ["connect"] : []).filter(t => !(g && t === FY.crisis_tag));
+    let phoned = !!g;   // (at most one phone button)
     if (g) links.push(phoneButton(c.tags.includes(FY.crisis_tag) || !tags[0] ? FY.crisis_tag : tags[0]));   // at_risk: the lines first
     tags.forEach((t, i) => {
       const types = fyHelpTypes(c.prefs).length ? fyHelpTypes(c.prefs) : fyTopicSet(t).first_step;
@@ -188,11 +288,12 @@ function fyButtons(c, g) {
       if (c.prefs.groups === "avoid") kinds = kinds.filter(k => !KINDS[k][2].includes("Peer group"));
       if (c.prefs.get_out === "yes") kinds.sort((a, b) => KINDS[b][2].includes("Activity group") - KINDS[a][2].includes("Activity group"));
       const mine = c.point ? kinds.slice(0, i ? 1 : 2).map(k => kindButton(t, k)).filter(Boolean) : [];
-      const phone = c.prefs.contact !== "in person" && (i === 0 || !mine.length) ? [phoneButton(t)] : [];
+      const phone = c.prefs.contact !== "in person" && !phoned && !FY.five_ways.includes(t) && (i === 0 || !mine.length) ? [phoneButton(t)] : [];
+      if (phone.length && phone[0]) phoned = true;
       links.push(...(c.prefs.contact === "phone or online" ? [...phone, ...mine] : [...mine, ...phone]));
     });
   }
-  const shown = [...new Set(links.filter(Boolean))].slice(0, E.max_links);
+  const titles = new Set(), shown = links.filter(Boolean).filter(b => { const t = b.match(/<b>(.*?)<\/b>/)[1]; return !titles.has(t) && titles.add(t); }).slice(0, E.max_links);
   shown.push(button(href("near"), FY_ICONS.search, E.browse.title, place ? fyFill(E.browse.text_near, { place }) : E.browse.text_anywhere));
   return shown.join("");
 }
@@ -202,7 +303,7 @@ function drawForYou() {
   if (!ALL.length) { box.innerHTML = `<div class="empty">${liveMsg}</div>`; return; }
   const now = new Date(), c = fyChoices(), g = fySafety(c), panel = fyPanelRecs(c, g, now), picks = fyPicks(c, now, panel.map(r => r.s.id));
   box.style.setProperty("--fy-details", JSON.stringify(FY.details));
-  const cards = picks.map(p => `<section class="fypick">${fyLine(p)}${p.st ? talkCard(p) : serviceCard(p, "h2", false)}</section>`).join("");
+  const cards = picks.map(p => `<section class="fypick">${fyLine(p)}${p.st ? talkCard(p) : serviceCard(p, "h2", false)}${fyShow(p, c)}</section>`).join("");
   const E = FY.explore, place = c.point ? c.point.label : "";
   // No place: a town picker (it reopens this tab with the town); a place they typed that wasn't used: one tap to it
   const towns = place ? "" : `<label class="fytown">${esc(E.choose_place)}<select id="fy-town"><option value="">Choose a town</option>${

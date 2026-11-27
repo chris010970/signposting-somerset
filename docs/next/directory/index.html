@@ -1646,6 +1646,9 @@ body.landing footer.help { padding-block: 14px calc(14px + env(safe-area-inset-b
 .fypick { margin: 0; }
 .fywhy { display: flex; align-items: center; gap: 8px; margin: 0 0 8px; font: 600 17px/1.3 var(--display); color: var(--b800); }
 .fywhy svg { width: 22px; height: 22px; flex: none; color: var(--b700); }
+.fypick .fynote { margin: -4px 0 8px 30px; font-size: 14px; color: var(--tx3); }
+.fyshow { display: inline-block; margin: 6px 0 0 2px; font-size: 14px; font-weight: 600; color: var(--b700); }
+.fycheck { margin: -4px 0 8px 30px; font-size: 14px; font-weight: 600; color: var(--b800); }
 #foryou .tpin { display: none; }   /* (no map on this tab) */
 #foryou .tfold { width: auto; padding: 0 8px 0 10px; gap: 2px; display: inline-flex; align-items: center; font: 600 13px var(--sans); color: var(--b700); }
 #foryou .tfold::before { content: var(--fy-details); }   /* ("Details" by the chevron: the card opens) */
@@ -3167,7 +3170,7 @@ function renderAbout() {
     </section>
     </div></div>
     <p class="small">Service information belongs to the providers listed. Map data © <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap</a> contributors, © <a href="https://carto.com/attributions" target="_blank" rel="noopener">CARTO</a>.</p>
-    <p class="small" id="site-version">Version: next 2026-11-27 14:46</p>
+    <p class="small" id="site-version">Version: next 2026-11-27 19:04</p>
   </article>`;
 }
 /* ---------- Places: the town listings, as a tab of the directory ----------
@@ -3261,7 +3264,7 @@ addEventListener("resize", () => map && map.invalidateSize());
 const NEXT_PAGE = "directory";
 const PAGE_URL = { home: "/next/", courses: "/next/courses/", about: "/next/about/", directory: "/next/directory/" };
 // For you: only when the landing page sent topics or a place (its address: ?support=...&town=...#foryou)
-const FOR_YOU = NEXT_PAGE === "directory" && location.hash === "#foryou" && /[?&](support|town|lat)=/.test(location.search);
+const FOR_YOU = NEXT_PAGE === "directory" && location.hash === "#foryou" && /[?&](support|town|lat|fy)=/.test(location.search);
 const PAGE_TABS = { home: ["home"], directory: FOR_YOU ? ["foryou", "near", "talk", "places"] : ["near", "talk", "places"], courses: ["course", "training"], about: ["about"] }[NEXT_PAGE];
 // Old links to the directory's Courses or About tab: to their own pages, with their filters
 if (NEXT_PAGE === "directory" && ["#course", "#about"].includes(location.hash))
@@ -3387,16 +3390,18 @@ async function askTags() {
   const said = d.place && d.place.lat ? { town: d.place.town, lat: d.place.lat, lon: d.place.lon } : null;
   Object.assign(h, { tags: d.tags || [], place: h.where || said, risk: !!d.risk });
   // What else the AI read (safety, preferences) goes to For you in this tab's session only, never in the address
-  try { sessionStorage.setItem("ss-foryou", JSON.stringify({ safety: d.safety || [], prefs: d.prefs || {},
+  try { sessionStorage.setItem("ss-foryou", JSON.stringify({ safety: d.safety || [], prefs: d.prefs || {}, activities: d.activities || [], activity_terms: d.activity_terms || [],
     also: h.where && said && said.town !== h.where.town ? { label: said.town || d.place.name, lat: said.lat, lon: said.lon } : null })); } catch (e) {}
-  goShow(h.tags, h.place);
+  goShow(h.tags, h.place, (d.safety || []).length > 0 || (d.activities || []).length > 0);
 }
 // To the directory's For you tab with the topics and the place (none: everything, anywhere)
-function goShow(tags, where) {
+// fy: For you even with no topic or place (a safety group, or an activity, still has something to show)
+function goShow(tags, where, fy) {
   const q = new URLSearchParams();
   if (tags && tags.length) q.set("support", tags.join(","));
   if (where && where.town && [...$("f-town").options].some(o => o.value === where.town)) q.set("town", where.town);
   else if (where && where.lat) { q.set("lat", (+where.lat).toFixed(3)); q.set("lon", (+where.lon).toFixed(3)); q.set("label", where.town || "your location"); }
+  if (fy && !String(q)) q.set("fy", "1");
   location.href = PAGE_URL.directory + (String(q) ? "?" + q + "#foryou" : "#near");
 }
 
@@ -3423,7 +3428,7 @@ function goShow(tags, where) {
    eligibility conditions ranks lower; groups: avoid ranks peer groups far down. Beside the picks (below on phones): buttons into the directory set up from the same
    results (the kinds of help for each topic, the place, the distance), each checked so it never opens on an empty list. */
 const FY = ({
- "_about": "The For you tab (/next/directory/#foryou, opened from the landing page): what the landing page's AI read in someone's words (topics, place, preferences, safety: build/tools/assist/tags.json) turned into picks and buttons by the rules here. No AI here. Read by build/next/js/for-you.js. topics: for each topic, its line, the service types that make a good first step, words in a name or description that make one better (prefer_words), the groups (who) it suits (groups_ok) and a short name for buttons. open_to_all: the who values that mean anyone can go: the picks only use services open to all (or to a group the topic suits, groups_ok), since we don't know who's asking. score: each candidate gets days until it next runs + miles x per_mile, plus a penalty for each way it fits less well; the lowest wins. help_types: the kinds of help someone can ask for, as the sheet's types. when_hours: what daytime and evenings mean (a session's start time) and which days are weekends. safety: the panel for each risk group (most serious first), its words and the services (sheet record ids) it shows, with more by topic or for under-18s; picks: whether the usual picks show beneath (none, or relevant: only their topics, nothing added). explore: the buttons beside the picks; kind_titles: a button's title for each kind of service.",
+ "_about": "The For you tab (/next/directory/#foryou, opened from the landing page): what the landing page's AI read in someone's words (topics, place, preferences, safety: build/tools/assist/tags.json) turned into picks and buttons by the rules here. No AI here. Read by build/next/js/for-you.js. topics: for each topic, its line, the service types that make a good first step, words in a name or description that make one better (prefer_words), the groups (who) it suits (groups_ok) and a short name for buttons. open_to_all: the who values that mean anyone can go: the picks only use services open to all (or to a group the topic suits, groups_ok), since we don't know who's asking. score: each candidate gets days until it next runs + miles x per_mile, plus a penalty for each way it fits less well (other_area: a service in another area; check_first: one restricted to people we can't tell they are; exact_words: less when it has their own words for an activity; activity_on_the_side: more, for an activity, when the service isn't one of activity_types (a breakfast drop-in with a sing-along, rather than a singing group); not_weekly: more for something that meets less than weekly, so a weekly group beats a monthly one that happens to be today; in_name: less again when the activity or their words are in its name, so it's what the group is for); the lowest wins. roles, main_lines and restrictions: what each pick is for, the established lines for each topic and area, and who a service is only for (each has its own _about). help_types: the kinds of help someone can ask for, as the sheet's types. when_hours: what daytime and evenings mean (a session's start time) and which days are weekends. safety: the panel for each risk group (most serious first), its words and the services (sheet record ids) it shows, with more by topic or for under-18s; picks: whether the usual picks show beneath (none, or relevant: only their topics, nothing added). explore: the buttons beside the picks; kind_titles: a button's title for each kind of service.",
  "max_picks": 3,
  "radius_miles": [
   10,
@@ -3446,7 +3451,12 @@ const FY = ({
   "prefer_words": -5,
   "phone_closed": 4,
   "uk_wide": 1,
-  "eligibility": 4
+  "other_area": 8,
+  "exact_words": -20,
+  "check_first": 6,
+  "in_name": -6,
+  "not_weekly": 4,
+  "activity_on_the_side": 3
  },
  "gentle_for": [
   "low mood",
@@ -3541,6 +3551,10 @@ const FY = ({
     "Peer group",
     "Community",
     "Activity group"
+   ],
+   "groups_ok": [
+    "carers",
+    "older people"
    ]
   },
   "caring for someone": {
@@ -3616,7 +3630,13 @@ const FY = ({
  "lines": {
   "phone": "{line}, by phone or online",
   "gentle": "For your overall wellbeing",
-  "another": "Another place to try"
+  "another": "Another place to try",
+  "activity": "Because you mentioned {what}",
+  "gap": "We couldn't find {what} near {place}, so here's somewhere to meet people",
+  "gap_anywhere": "We couldn't find {what}, so here's somewhere to meet people",
+  "relaxed": "Nothing nearby at the times you said, so this is the soonest",
+  "activity_related": "We couldn't find {what} near {place}, but this has {activity}",
+  "online": "{line}, online at the times you said"
  },
  "details": "Details",
  "none": "We couldn't find a good match for that. Try the tabs above, or talk to someone straight away using the helplines below.",
@@ -3753,7 +3773,261 @@ const FY = ({
  },
  "also": "Showing places near {place}. You also mentioned {also}:",
  "also_link": "show places near {also} instead",
- "also_heading": "For what you asked about"
+ "also_heading": "For what you asked about",
+ "roles": {
+  "_about": "For each topic, what its picks are for, in order (each topic takes its first role, then the next topic its first, and so on, up to max_picks). place: the best in-person service for the topic (by phone or online if they'd rather, or there's no place); line: the next of the topic's main lines (main_lines) for their area, then national ones; any topic not here: place, place.",
+  "connect": [
+   "place",
+   "place",
+   "line"
+  ],
+  "low mood": [
+   "place",
+   "line",
+   "line"
+  ],
+  "anxiety": [
+   "place",
+   "line",
+   "line"
+  ],
+  "bereavement": [
+   "line",
+   "place",
+   "line"
+  ],
+  "finances": [
+   "place",
+   "line",
+   "line"
+  ],
+  "housing": [
+   "line",
+   "place"
+  ],
+  "food": [
+   "place",
+   "place"
+  ],
+  "caring for someone": [
+   "place",
+   "line"
+  ],
+  "dementia": [
+   "place",
+   "line"
+  ],
+  "addiction": [
+   "line",
+   "place"
+  ],
+  "eating disorders": [
+   "line",
+   "place"
+  ],
+  "hearing voices": [
+   "place",
+   "line"
+  ],
+  "long-term pain": [
+   "place",
+   "place"
+  ]
+ },
+ "main_lines": {
+  "_about": "The established phone and online services for each topic, by the person's area (Somerset when we don't know it), then national (a national one can come first in an area's own list): sheet record ids, tried in order. Each is still checked against the live record (there, no notice, open to them) and never two from one provider. why: the reason they're here, for whoever maintains this.",
+  "low mood": {
+   "why": "NHS talking therapy (self-referral) and the area's listening line",
+   "Somerset": [
+    "R0356",
+    "R0219"
+   ],
+   "Bath and North East Somerset": [
+    "R0988",
+    "R0972"
+   ],
+   "North Somerset": [
+    "R0950"
+   ],
+   "national": [
+    "R1016"
+   ]
+  },
+  "anxiety": {
+   "why": "NHS talking therapy, the area's listening line, then the national anxiety line",
+   "Somerset": [
+    "R0356",
+    "R0219"
+   ],
+   "Bath and North East Somerset": [
+    "R0988",
+    "R0972"
+   ],
+   "North Somerset": [
+    "R0950"
+   ],
+   "national": [
+    "R1015"
+   ]
+  },
+  "bereavement": {
+   "why": "Cruse, the national bereavement charity; the area's bereavement line; practical help after a death",
+   "Somerset": [
+    "R0317",
+    "R0318",
+    "R0850"
+   ],
+   "national": [
+    "R0317",
+    "R0318",
+    "R1460"
+   ]
+  },
+  "finances": {
+   "why": "the area's Citizens Advice line, then the national debt charities",
+   "Somerset": [
+    "R0671"
+   ],
+   "Bath and North East Somerset": [
+    "R0971"
+   ],
+   "national": [
+    "R0319",
+    "R0321"
+   ]
+  },
+  "housing": {
+   "why": "the council's housing and homelessness line, then Shelter",
+   "Somerset": [
+    "R0223"
+   ],
+   "Bath and North East Somerset": [
+    "R0969"
+   ],
+   "North Somerset": [
+    "R0952"
+   ],
+   "national": [
+    "R0222"
+   ]
+  },
+  "caring for someone": {
+   "why": "the area's carers' service, then Carers UK",
+   "Somerset": [
+    "R0631"
+   ],
+   "Bath and North East Somerset": [
+    "R1095"
+   ],
+   "North Somerset": [
+    "R0858"
+   ],
+   "national": [
+    "R1564"
+   ]
+  },
+  "dementia": {
+   "why": "the area's dementia support line, then Alzheimer's Society's national line",
+   "Somerset": [
+    "R0709"
+   ],
+   "North Somerset": [
+    "R0953"
+   ],
+   "national": [
+    "R0576",
+    "R0577",
+    "R0578"
+   ]
+  },
+  "addiction": {
+   "why": "the area's drug and alcohol service, then the national gambling line",
+   "Somerset": [
+    "R0329"
+   ],
+   "Bath and North East Somerset": [
+    "R1094"
+   ],
+   "North Somerset": [
+    "R0951"
+   ],
+   "national": [
+    "R0600"
+   ]
+  },
+  "eating disorders": {
+   "why": "Beat, the national eating disorder charity",
+   "national": [
+    "R0621"
+   ]
+  },
+  "hearing voices": {
+   "why": "online peer groups",
+   "Somerset": [
+    "R0100"
+   ],
+   "national": [
+    "R0712",
+    "R0711"
+   ]
+  },
+  "connect": {
+   "why": "befriending by phone (age limits shown)",
+   "national": [
+    "R1623",
+    "R1017"
+   ]
+  }
+ },
+ "restrictions": {
+  "_about": "Who a service is only for (the sheet's restricted_to). area: an area restriction and the area it means: fine when it's their area (from their town; Somerset when we don't know), otherwise never picked. with_topic: fine when they asked about one of these topics (a carer asking about dementia can go to a memory café). check: we can't tell, so it can be picked, after open ones, with this line under it. Anything else (veterans, sight loss, other and so on): never picked, since we don't know who's asking; the directory still shows it. GP practice beside an area value is just the area. who_check: a group (the sheet's who) we can't tell they're in, picked after open ones with this line. who_words: a group they named in their own words for an activity (a men's shed), so it can be picked.",
+  "area": {
+   "Somerset (home or GP)": "Somerset",
+   "B&NES (home or GP)": "Bath and North East Somerset",
+   "North Somerset (home or GP)": "North Somerset"
+  },
+  "default_area": "Somerset",
+  "with_topic": {
+   "memory problems or dementia": [
+    "dementia"
+   ],
+   "homelessness": [
+    "housing"
+   ],
+   "low income": [
+    "food",
+    "finances"
+   ],
+   "health condition or disability": [
+    "long-term pain"
+   ]
+  },
+  "check": {
+   "age 50+": "For people aged 50 or over",
+   "age 55+": "For people aged 55 or over",
+   "age 60+": "For people aged 60 or over",
+   "age 65+": "For people aged 65 or over",
+   "GP practice": "For patients of some GP practices: check with them",
+   "local area": "For people living locally: check with them",
+   "members": "Membership needed: check with them",
+   "low income": "For people on a low income"
+  },
+  "who_check": {
+   "older people": "For older people"
+  },
+  "who_words": {
+   "men": "\\bmen\\b|men's|\\bmale\\b|\\bdads?\\b",
+   "women": "women|ladies|\\bfemale\\b|\\bmums?\\b",
+   "young people": "young|teen|youth",
+   "new families": "baby|babies|toddler|\\bmums?\\b|\\bdads?\\b|parent"
+  }
+ },
+ "show": "Show in directory",
+ "activity_types": [
+  "Activity group",
+  "Course",
+  "Volunteering"
+ ]
 }
 );
 const FY_Q = FOR_YOU ? location.search.slice(1) : "";   // the landing page's choices, kept in the address while this tab shows
@@ -3772,7 +4046,9 @@ function fyChoices() {
   const safety = (Array.isArray(more.safety) ? more.safety : []).filter(g => g !== "note" && FY.safety[g]);
   // also: a place they typed that wasn't used ({ label, lat, lon }), offered in one tap
   const also = more.also && more.also.label && !isNaN(more.also.lat) && more.also.label !== (point && point.label) ? more.also : null;
-  return { tags, point, safety, prefs: more.prefs || {}, also };
+  const acts = (Array.isArray(more.activities) ? more.activities : []).filter(a => typeof a === "string").slice(0, 3);
+  const terms = (Array.isArray(more.activity_terms) ? more.activity_terms : []).filter(t => typeof t === "string").map(t => t.toLowerCase()).slice(0, 3);
+  return { tags, point, safety, prefs: more.prefs || {}, also, activities: acts, terms, area: fyArea(point) };
 }
 const fyFill = (tpl, v) => tpl.replace(/\{(\w+)\}/g, (m, k) => v[k] ?? "");
 const fyTopic = t => (LABEL[t] || t).toLowerCase();
@@ -3792,66 +4068,148 @@ function fyWhenOK(start, when) {
     : w === "evenings" ? h >= FY.when_hours.evenings[0] && h < FY.when_hours.evenings[1] : true);
 }
 
+// Their area: their town's (the nearest of our towns to a point), else the default (Somerset)
+function fyArea(point) {
+  if (!point) return FY.restrictions.default_area;
+  let best = null;
+  for (const [area, places] of PLACES) for (const [n, lat, lon] of places) {
+    const d = n === point.town ? -1 : miles(point, { lat, lon }); if (!best || d < best.d) best = { area, d }; }
+  return best ? best.area : FY.restrictions.default_area;
+}
+// Can they go? (restricted_to: for-you.json's restrictions) null: never for a pick; else { line } (a line to show under it, or "")
+function fyRestrict(s, c) {
+  const R = FY.restrictions, vals = split(s.restricted_to || ""), areas = vals.filter(v => R.area[v]);
+  if (areas.length && !areas.some(v => R.area[v] === c.area)) return null;
+  let line = "";
+  for (const v of vals) {
+    if (R.area[v] || (v === "GP practice" && areas.length)) continue;
+    if ((R.with_topic[v] || []).some(t => c.tags.includes(t))) continue;
+    if (R.check[v]) { line = line || R.check[v]; continue; }
+    return null;
+  }
+  return { line };
+}
+// Their own words for an activity, in a name or description (a plural matches too)
+const fyRoot = w => w.replace(/(ing|s)$/, "");
+const fyHasWords = (s, terms) => { const t = `${s.name} ${s.description}`.toLowerCase();
+  return terms.some(w => t.includes(w) || t.includes(fyRoot(w))); };
+
 function fyPicker(c, now, shown = []) {
   const { point, prefs } = c, used = new Set(shown), providers = new Set(), W = FY.score;
   // Open to all: who is empty, or has anyone or adults (young people too for under-18s), or a group the topic suits
   const openTo = (s, tag) => { const w = split(s.who), ok = [...FY.open_to_all, ...(fyTopicSet(tag).groups_ok || []), ...(prefs.under_18 === "yes" ? ["young people"] : [])];
     return !w.length || w.some(x => ok.includes(x)); };
-  const free = (s, tag) => !used.has(s.id) && !(s.provider && providers.has(s.provider.toLowerCase())) && !noticeText(s) && openTo(s, tag);
-  const take = (r, why, topic) => { used.add(r.s.id); if (r.s.provider) providers.add(r.s.provider.toLowerCase()); return { ...r, why, topic }; };
+  // (their own words for the group, "men's shed", "walking football for over 50s": who it's for is theirs to judge; restricted_to still holds)
+  const R = FY.restrictions, named = w => c.terms.some(t => new RegExp(R.who_words[w] || "^$", "i").test(t));
+  const whoOK = (s, tag, activity) => openTo(s, tag) || split(s.who).some(w => R.who_check[w] || (activity && named(w)));
+  const free = (s, tag, activity) => !used.has(s.id) && !(s.provider && providers.has(s.provider.toLowerCase())) && !noticeText(s)
+    && whoOK(s, tag, activity) && fyRestrict(s, c);
+  const whoLine = (s, tag) => openTo(s, tag) ? "" : (split(s.who).map(w => R.who_check[w]).find(Boolean) || "");
+  const take = (r, why, topic, note) => { used.add(r.s.id); if (r.s.provider) providers.add(r.s.provider.toLowerCase());
+    return { ...r, why, topic, note: note || (r.relaxed ? FY.lines.relaxed : ""), check: fyRestrict(r.s, c).line || whoLine(r.s, topic) }; };
   const horizon = now.getTime() + FY.days_ahead * 864e5, asked = fyHelpTypes(prefs);
-  function score(r, tag) {
-    const set = fyTopicSet(tag), s = r.s, who = split(s.who), text = `${s.name} ${s.description}`.toLowerCase();
+  // The lower the better: days until it runs (in person) or open now (phone), distance, and a penalty for each way it fits less well
+  function score(r, tag, activity) {
+    const set = fyTopicSet(tag), s = r.s, text = `${s.name} ${s.description}`.toLowerCase();
     const firstStep = asked.length ? asked : set.first_step;
     let v = r.st ? (r.st.open ? 0 : W.phone_closed) + (s.area === "national" ? W.uk_wide : 0)   // phone or online
-      : (r.at - now) / 864e5 + r.d * W.per_mile;                                                  // in person
-    if (firstStep.length && !firstStep.includes(s.type)) v += W.not_first_step;
-    if (who.length && !who.some(w => FY.open_to_all.includes(w))) v += W.not_open_to_all;   // (a group the topic suits: allowed, but after open ones)
-    if ((s.eligibility || "").trim()) v += W.eligibility;   // (conditions to join: "people with MS", "Somerset Council area only")
-    if (!FY.easy_access.includes(s.access)) v += W.not_easy_access;
+      : (r.at - now) / 864e5 + r.d * W.per_mile + (FY.easy_access.includes(s.access) ? 0 : W.not_easy_access)   // in person
+        + ([...sessions(s, now, 28)].length < 4 ? W.not_weekly : 0);
+    if (activity) { if (fyHasWords(s, c.terms)) v += W.exact_words;
+      if (!FY.activity_types.includes(s.type)) v += W.activity_on_the_side;
+      if ([...c.terms, ...c.activities].some(w => s.name.toLowerCase().includes(fyRoot(w)))) v += W.in_name; }
+    else if (firstStep.length && !firstStep.includes(s.type)) v += W.not_first_step;
+    if (split(s.who).length && !split(s.who).some(w => FY.open_to_all.includes(w))) v += W.not_open_to_all;   // (a group the topic suits: after open ones)
+    if (s.area !== "national" && s.area !== c.area) v += W.other_area;
+    if (fyRestrict(s, c).line || whoLine(s, tag)) v += W.check_first;
     if ((set.prefer_words || []).some(w => text.includes(w))) v += W.prefer_words;
     if (prefs.groups === "avoid" && s.type === "Peer group") v += FY.avoid_groups_penalty;
     return v;
   }
+  // Best first: the score, then their own area, then nearer, then the name (so a tie is never just the alphabet)
+  const order = (a, b) => (a.v - b.v) || ((a.s.area === c.area) ? -1 : (b.s.area === c.area) ? 1 : 0) || ((a.d || 0) - (b.d || 0)) || a.s.name.localeCompare(b.s.name);
   // The first session that suits the times they said, within days_ahead (null: none)
   const suits = (s, when) => { for (const o of sessions(s, now, FY.days_ahead)) if (o.en > now && fyWhenOK(o.st, when)) return o.st; return null; };
-  // The best in-person service for a topic, or null: within each radius in turn, at their times first, then any time
-  function inPerson(tag) {
+  // The best in-person service for a topic (or for an activity), or null: within each radius in turn, at their times first, then
+  // (unless strict) any time, marked relaxed
+  function inPerson(tag, { activity = false, strict = false } = {}) {
     if (!point) return null;
-    const near = S.filter(s => s._sf.includes(tag) && free(s, tag) && !isNaN(s.lat)).map(s => ({ s, d: miles(point, s) }));
+    const fits = s => activity ? split(s.activities || "").some(a => c.activities.includes(a)) : s._sf.includes(tag);
+    const near = S.filter(s => fits(s) && free(s, tag, activity) && !isNaN(s.lat)).map(s => ({ s, d: miles(point, s) }));
     const radii = prefs.travel === "nearby only" ? FY.radius_nearby : FY.radius_miles;
-    for (const when of prefs.when && prefs.when.length ? [prefs.when, null] : [null])
+    const times = prefs.when && prefs.when.length ? (strict ? [prefs.when] : [prefs.when, null]) : [null];
+    for (const when of times)
       for (const radius of radii) {
         const ok = near.filter(x => x.d <= radius).map(x => ({ ...x, at: suits(x.s, when) })).filter(x => x.at && x.at.getTime() <= horizon)
-          .map(x => ({ ...x, nx: nextText(x.s, now) })).map(x => ({ ...x, v: score(x, tag) })).sort((a, b) => a.v - b.v);
+          .map(x => ({ ...x, nx: nextText(x.s, now), relaxed: !!prefs.when && !!prefs.when.length && !when })).map(x => ({ ...x, v: score(x, tag, activity) })).sort(order);
         if (ok.length) return ok[0];
       }
     return null;
   }
-  // The best phone or online service for a topic, scored the same way (open now, local, a good first step, open to all)
-  function byPhone(tag) {
-    const all = T.filter(s => s._sf.includes(tag) && free(s, tag)).map(s => ({ s, st: openState(s, now) })).map(x => ({ ...x, v: score(x, tag) }));
-    all.sort((a, b) => (a.v - b.v) || a.s.name.localeCompare(b.s.name));
-    return all[0] || null;
+  // The best phone or online service for a topic (or an activity), scored the same way
+  function byPhone(tag, { activity = false } = {}) {
+    const fits = s => activity ? split(s.activities || "").some(a => c.activities.includes(a)) : s._sf.includes(tag);
+    const all = T.filter(s => fits(s) && free(s, tag, activity)).map(s => ({ s, st: openState(s, now) })).map(x => ({ ...x, v: score(x, tag, activity) }));
+    return all.sort(order)[0] || null;
   }
-  return { inPerson, byPhone, take };
+  // When nothing in person suits their times: an online or phone group in their area (or UK-wide) at those times, if any
+  function onlineAt(tag) {
+    if (!prefs.when || !prefs.when.length) return null;
+    const all = T.filter(s => s._sf.includes(tag) && free(s, tag) && isGroupType(s)).map(s => ({ s, at: suits(s, prefs.when), st: openState(s, now) }))
+      .filter(x => x.at && x.at.getTime() <= horizon && (x.s.area === c.area || x.s.area === "national")).map(x => ({ ...x, v: score(x, tag) }));
+    return all.sort(order)[0] || null;
+  }
+  // The topic's next main line for their area, then national ones (main_lines), if it's there and open to them
+  function line(tag) {
+    const L = FY.main_lines[tag]; if (!L) return null;
+    for (const id of [...(L[c.area] || []), ...(L.national || [])]) {
+      const s = ALL.find(x => x.record_id === id);
+      if (s && free(s, tag)) return { s, st: openState(s, now) };
+    }
+    return null;
+  }
+  return { inPerson, byPhone, onlineAt, line, take };
 }
 
+// The picks: an activity they asked for first (or an honest gap and somewhere to meet people instead); then each topic's roles in
+// turn (its first role, then the next topic's first...); the gentle Five Ways pick for low mood and the like; at most max_picks
 function fyPicks(c, now = new Date(), shown = []) {
   const P = fyPicker(c, now, shown), picks = [], room = () => picks.length < FY.max_picks, g = fySafety(c);
   if (g && FY.safety[g].picks === "none") return [];
   // Under a panel, no picks for what it already covers: the crisis lines, and its topics' services (abuse: the abuse lines)
-  const tags = c.tags.filter(t => !(g && (t === FY.crisis_tag || (FY.safety[g].by_topic || {})[t])));
-  const phoneFirst = c.prefs.contact === "phone or online";
-  for (const t of tags) {
-    if (!room()) break;
-    const r = phoneFirst ? P.byPhone(t) || P.inPerson(t) : P.inPerson(t) || (c.prefs.contact === "in person" && c.point ? null : P.byPhone(t));
-    if (r) picks.push(P.take(r, r.st && !phoneFirst && c.point ? "phone" : "match", t));
+  let tags = c.tags.filter(t => !(g && (t === FY.crisis_tag || (FY.safety[g].by_topic || {})[t])));
+  const phoneFirst = c.prefs.contact === "phone or online", inPersonOnly = c.prefs.contact === "in person" && c.point;
+  const what = c.terms[0] || c.activities[0] || "";
+  let gap = "";
+  if (c.activities.length) {
+    const at = tags[0] || "connect", r = phoneFirst || !c.point ? P.byPhone(at, { activity: true }) || P.inPerson(at, { activity: true }) : P.inPerson(at, { activity: true });
+    // (a craft group when they asked for knitting: say so)
+    const related = x => c.terms.length && !fyHasWords(x.s, c.terms), say = x => fyFill(related(x) ? FY.lines.activity_related : FY.lines.activity,
+      { what, place: c.point ? c.point.label : "", activity: split(x.s.activities).find(a => c.activities.includes(a)) || what });
+    if (r) picks.push(P.take(r, "activity", at, say(r)));
+    // A second one like it: for a light request (no topic), or when the first is only related (two to choose from, as neither is quite it)
+    if (r && (!tags.length || related(r))) { const r2 = c.point ? P.inPerson(at, { activity: true }) : P.byPhone(at, { activity: true });
+      if (r2 && related(r2) === related(r)) picks.push(P.take(r2, "activity", at, say(r2))); }
+    if (!r) gap = fyFill(c.point ? FY.lines.gap : FY.lines.gap_anywhere, { what, place: c.point ? c.point.label : "" });
+    if ((!tags.length || gap) && !g && !tags.includes("connect")) tags = [...tags, "connect"];   // a light request, or no match: somewhere to meet people
   }
+  const roles = t => (FY.roles[t] || ["place", "place"]);
+  for (let i = 0; i < FY.max_picks && room(); i++)
+    for (const t of tags) {
+      if (!room()) break;
+      const role = roles(t)[i]; if (!role) continue;
+      let r = null, why = "match";
+      if (role === "line" && !inPersonOnly) { r = P.line(t); why = "line"; }
+      if (!r) { why = "match"; r = phoneFirst || !c.point ? P.byPhone(t) || P.inPerson(t) : P.inPerson(t) || (inPersonOnly ? null : P.byPhone(t));
+        const o = r && r.relaxed && !inPersonOnly ? P.onlineAt(t) : null;   // (an online group at their times beats a daytime one in person)
+        if (o) { r = o; why = "online"; } }
+      if (!r && !inPersonOnly) { r = P.line(t); why = "line"; }
+      if (r) picks.push(P.take(r, r.st && why === "match" && !phoneFirst && c.point ? "phone" : why, t,
+        t === "connect" && gap && !picks.some(p => p.topic === "connect" && p.why !== "activity") ? gap : ""));
+    }
   if (g) return picks;   // at_risk: only their own topics, nothing added
   if (c.point && room() && !phoneFirst && (c.prefs.get_out === "yes" || tags.some(t => FY.gentle_for.includes(t))))
-    for (const w of FY.five_ways.filter(w => !tags.includes(w))) { const r = P.inPerson(w); if (r) { picks.push(P.take(r, "gentle", w)); break; } }
-  if (room() && tags.length === 1) { const r = phoneFirst ? P.byPhone(tags[0]) : P.inPerson(tags[0]) || P.byPhone(tags[0]); if (r) picks.push(P.take(r, "another", tags[0])); }
+    for (const w of FY.five_ways.filter(w => !tags.includes(w))) { const r = P.inPerson(w, { strict: true }); if (r) { picks.push(P.take(r, "gentle", w)); break; } }
   return picks;
 }
 
@@ -3863,8 +4221,23 @@ const FY_ICONS = {
 // The line above a pick: what it's for (the card under it says when, where and how)
 function fyLine(p) {
   const line = fyTopicSet(p.topic).line;
-  const text = p.why === "match" ? line : fyFill(FY.lines[p.why], { line });
-  return `<h2 class="fywhy">${fyIcon(p.why === "gentle" ? "low mood" : p.topic)}<span>${esc(text)}</span></h2>`;
+  const text = p.why === "activity" ? p.note : p.why === "match" || p.why === "line" ? line : fyFill(FY.lines[p.why], { line });   // (online: at their times)
+  const note = p.why !== "activity" && p.note ? `<p class="fynote">${esc(p.note)}</p>` : "";
+  const check = p.check ? `<p class="fycheck">${esc(p.check)}</p>` : "";
+  return `<h2 class="fywhy">${fyIcon(p.why === "gentle" ? "low mood" : p.topic)}<span>${esc(text)}</span></h2>${note}${check}`;
+}
+// "Show in directory": the pick among everything else, in In person (their place, a distance that reaches it, any time; its card
+// opened and its pin shown) or in Phone and online (its card opened). next-late.js does the showing (show= in the address)
+function fyShow(p, c) {
+  const u = new URLSearchParams(), inPerson = !p.st;
+  if (inPerson && c.point) {
+    if (c.point.town) u.set("town", c.point.town); else { u.set("lat", c.point.lat.toFixed(4)); u.set("lon", c.point.lon.toFixed(4)); u.set("label", c.point.label); }
+    const d = miles(c.point, p.s), w = [2, 5, 10, 20].find(x => x >= d) || 0;
+    if (w !== 10) u.set("within", w);
+  }
+  if (inPerson) u.set("when", "any");
+  u.set("show", p.s.record_id);
+  return `<a class="fyshow" href="${PAGE_URL.directory}?${u}#${inPerson ? "near" : "talk"}">${esc(FY.show)}</a>`;
 }
 
 // The safety panel: the group's words and its services (by record id: under-18s first, then by topic, then the group's own),
@@ -3915,7 +4288,8 @@ function fyButtons(c, g) {
   const links = [];
   if (g === "urgent" || g === "own_behaviour") links.push(button(href("talk"), FY_ICONS.phone, E.safety_phone.title, E.safety_phone.text));
   else {
-    const tags = c.tags.filter(t => !(g && t === FY.crisis_tag));
+    const tags = (c.tags.length ? c.tags : c.activities.length ? ["connect"] : []).filter(t => !(g && t === FY.crisis_tag));
+    let phoned = !!g;   // (at most one phone button)
     if (g) links.push(phoneButton(c.tags.includes(FY.crisis_tag) || !tags[0] ? FY.crisis_tag : tags[0]));   // at_risk: the lines first
     tags.forEach((t, i) => {
       const types = fyHelpTypes(c.prefs).length ? fyHelpTypes(c.prefs) : fyTopicSet(t).first_step;
@@ -3923,11 +4297,12 @@ function fyButtons(c, g) {
       if (c.prefs.groups === "avoid") kinds = kinds.filter(k => !KINDS[k][2].includes("Peer group"));
       if (c.prefs.get_out === "yes") kinds.sort((a, b) => KINDS[b][2].includes("Activity group") - KINDS[a][2].includes("Activity group"));
       const mine = c.point ? kinds.slice(0, i ? 1 : 2).map(k => kindButton(t, k)).filter(Boolean) : [];
-      const phone = c.prefs.contact !== "in person" && (i === 0 || !mine.length) ? [phoneButton(t)] : [];
+      const phone = c.prefs.contact !== "in person" && !phoned && !FY.five_ways.includes(t) && (i === 0 || !mine.length) ? [phoneButton(t)] : [];
+      if (phone.length && phone[0]) phoned = true;
       links.push(...(c.prefs.contact === "phone or online" ? [...phone, ...mine] : [...mine, ...phone]));
     });
   }
-  const shown = [...new Set(links.filter(Boolean))].slice(0, E.max_links);
+  const titles = new Set(), shown = links.filter(Boolean).filter(b => { const t = b.match(/<b>(.*?)<\/b>/)[1]; return !titles.has(t) && titles.add(t); }).slice(0, E.max_links);
   shown.push(button(href("near"), FY_ICONS.search, E.browse.title, place ? fyFill(E.browse.text_near, { place }) : E.browse.text_anywhere));
   return shown.join("");
 }
@@ -3937,7 +4312,7 @@ function drawForYou() {
   if (!ALL.length) { box.innerHTML = `<div class="empty">${liveMsg}</div>`; return; }
   const now = new Date(), c = fyChoices(), g = fySafety(c), panel = fyPanelRecs(c, g, now), picks = fyPicks(c, now, panel.map(r => r.s.id));
   box.style.setProperty("--fy-details", JSON.stringify(FY.details));
-  const cards = picks.map(p => `<section class="fypick">${fyLine(p)}${p.st ? talkCard(p) : serviceCard(p, "h2", false)}</section>`).join("");
+  const cards = picks.map(p => `<section class="fypick">${fyLine(p)}${p.st ? talkCard(p) : serviceCard(p, "h2", false)}${fyShow(p, c)}</section>`).join("");
   const E = FY.explore, place = c.point ? c.point.label : "";
   // No place: a town picker (it reopens this tab with the town); a place they typed that wasn't used: one tap to it
   const towns = place ? "" : `<label class="fytown">${esc(E.choose_place)}<select id="fy-town"><option value="">Choose a town</option>${
@@ -4661,6 +5036,29 @@ $("courses").addEventListener("click", e => { if (e.target.closest("#course-show
 $("places-main").addEventListener("click", e => { if (e.target.closest("a.mapchip")) {
   kindsOff.clear(); placesKindsOff().forEach(k => kindsOff.add(k));   /* In person shows the same kinds as the section (this click only) */
   window.LINK_NEEDS = true; setTimeout(() => { window.LINK_NEEDS = false; }, 0); } }, true);
+// "Show in directory" from For you (show=<record id> in the address): once the records are in and the tab is drawn, that card in
+// In person or Phone and online, scrolled to, opened and flashed, and (In person) its pin centred on the map. Once only.
+// (A short wait rather than a hook: the records can arrive from this visit's copy, the site's copy or the live sheet.)
+(function () {
+  const want = START_ADDRESS.get("show");   // (as the page opened: the filters soon rewrite the address)
+  if (!want) return;
+  let tries = 0;
+  const wait = setInterval(() => {
+    if (++tries > 75) return clearInterval(wait);   // (15 seconds: the records never came)
+    const s = ALL.find(x => x.record_id === want); if (!s) return;
+    const c = tab === "near" ? $("c" + s.id) : tab === "talk" ? document.querySelector(`#talk-list .tcard[data-key="${CSS.escape(cardKey(s))}"]`) : null;
+    if (!c) return;
+    clearInterval(wait);
+    if (tab === "near") {
+      showCard(s.id);
+      if (typeof map !== "undefined" && map && !isNaN(s.lat)) setTimeout(() => map.flyTo([s.lat, s.lon], 14, { duration: .6 }), 700);
+    } else {
+      c.scrollIntoView({ behavior: "smooth", block: "center" });
+      if (!c.classList.contains("open")) toggleCard(c);
+      c.classList.add("flash"); setTimeout(() => c.classList.remove("flash"), 1200);
+    }
+  }, 200);
+})();
 
 </script>
 

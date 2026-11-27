@@ -526,3 +526,26 @@ $("courses").addEventListener("click", e => { if (e.target.closest("#course-show
 $("places-main").addEventListener("click", e => { if (e.target.closest("a.mapchip")) {
   kindsOff.clear(); placesKindsOff().forEach(k => kindsOff.add(k));   /* In person shows the same kinds as the section (this click only) */
   window.LINK_NEEDS = true; setTimeout(() => { window.LINK_NEEDS = false; }, 0); } }, true);
+// "Show in directory" from For you (show=<record id> in the address): once the records are in and the tab is drawn, that card in
+// In person or Phone and online, scrolled to, opened and flashed, and (In person) its pin centred on the map. Once only.
+// (A short wait rather than a hook: the records can arrive from this visit's copy, the site's copy or the live sheet.)
+(function () {
+  const want = START_ADDRESS.get("show");   // (as the page opened: the filters soon rewrite the address)
+  if (!want) return;
+  let tries = 0;
+  const wait = setInterval(() => {
+    if (++tries > 75) return clearInterval(wait);   // (15 seconds: the records never came)
+    const s = ALL.find(x => x.record_id === want); if (!s) return;
+    const c = tab === "near" ? $("c" + s.id) : tab === "talk" ? document.querySelector(`#talk-list .tcard[data-key="${CSS.escape(cardKey(s))}"]`) : null;
+    if (!c) return;
+    clearInterval(wait);
+    if (tab === "near") {
+      showCard(s.id);
+      if (typeof map !== "undefined" && map && !isNaN(s.lat)) setTimeout(() => map.flyTo([s.lat, s.lon], 14, { duration: .6 }), 700);
+    } else {
+      c.scrollIntoView({ behavior: "smooth", block: "center" });
+      if (!c.classList.contains("open")) toggleCard(c);
+      c.classList.add("flash"); setTimeout(() => c.classList.remove("flash"), 1200);
+    }
+  }, 200);
+})();

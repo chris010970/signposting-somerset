@@ -7,7 +7,7 @@
 const NEXT_PAGE = "/*NEXT_PAGE*/";
 const PAGE_URL = { home: "/*HOME_URL*/", courses: "/*COURSES_URL*/", about: "/*ABOUT_URL*/", directory: "/*DIRECTORY_URL*/" };
 // For you: only when the landing page sent topics or a place (its address: ?support=...&town=...#foryou)
-const FOR_YOU = NEXT_PAGE === "directory" && location.hash === "#foryou" && /[?&](support|town|lat)=/.test(location.search);
+const FOR_YOU = NEXT_PAGE === "directory" && location.hash === "#foryou" && /[?&](support|town|lat|fy)=/.test(location.search);
 const PAGE_TABS = { home: ["home"], directory: FOR_YOU ? ["foryou", "near", "talk", "places"] : ["near", "talk", "places"], courses: ["course", "training"], about: ["about"] }[NEXT_PAGE];
 // Old links to the directory's Courses or About tab: to their own pages, with their filters
 if (NEXT_PAGE === "directory" && ["#course", "#about"].includes(location.hash))
@@ -133,15 +133,17 @@ async function askTags() {
   const said = d.place && d.place.lat ? { town: d.place.town, lat: d.place.lat, lon: d.place.lon } : null;
   Object.assign(h, { tags: d.tags || [], place: h.where || said, risk: !!d.risk });
   // What else the AI read (safety, preferences) goes to For you in this tab's session only, never in the address
-  try { sessionStorage.setItem("ss-foryou", JSON.stringify({ safety: d.safety || [], prefs: d.prefs || {},
+  try { sessionStorage.setItem("ss-foryou", JSON.stringify({ safety: d.safety || [], prefs: d.prefs || {}, activities: d.activities || [], activity_terms: d.activity_terms || [],
     also: h.where && said && said.town !== h.where.town ? { label: said.town || d.place.name, lat: said.lat, lon: said.lon } : null })); } catch (e) {}
-  goShow(h.tags, h.place);
+  goShow(h.tags, h.place, (d.safety || []).length > 0 || (d.activities || []).length > 0);
 }
 // To the directory's For you tab with the topics and the place (none: everything, anywhere)
-function goShow(tags, where) {
+// fy: For you even with no topic or place (a safety group, or an activity, still has something to show)
+function goShow(tags, where, fy) {
   const q = new URLSearchParams();
   if (tags && tags.length) q.set("support", tags.join(","));
   if (where && where.town && [...$("f-town").options].some(o => o.value === where.town)) q.set("town", where.town);
   else if (where && where.lat) { q.set("lat", (+where.lat).toFixed(3)); q.set("lon", (+where.lon).toFixed(3)); q.set("label", where.town || "your location"); }
+  if (fy && !String(q)) q.set("fy", "1");
   location.href = PAGE_URL.directory + (String(q) ? "?" + q + "#foryou" : "#near");
 }
