@@ -113,7 +113,7 @@
   },
   "own_behaviour": {
    "always": false,
-   "hint": "worried about their own behaviour towards others: thoughts of seriously harming someone, their own violence or abuse towards a partner or child, or sexual thoughts or behaviour towards children, including looking at images of children (never figures of speech like 'I could murder a curry')",
+   "hint": "worried about their own behaviour towards OTHER people, never themselves (harm to themselves, such as self-harm, overdose or making themselves sick, is at_risk or urgent): thoughts of seriously harming someone, their own violence or abuse towards a partner or child, or sexual thoughts or behaviour towards children, including looking at images of children (never figures of speech like 'I could murder a curry')",
    "words": "could kill (him|her|them)|want to (kill|hurt) (him|her|them|someone)|(thoughts|scared|afraid) (of|about) (hurting|harming)|hurting my (baby|child|kids|son|daughter)|lose it with (my|him|her)|smash things|sexual (thoughts|feelings|urges) (about|towards|involving) (children|kids|a child)|attracted to (children|kids)|shouldn'?t[^.]{0,40}(kids|children|child)|images of (children|kids)"
   }
  },

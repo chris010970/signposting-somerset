@@ -273,7 +273,7 @@ function recordsFromCSV(text) {
   }
   return { recs };
 }
-const VERSION = "2026-11-27 13:43";        // set when the worker is built; shown on the Assist tab
+const VERSION = "2026-11-27 13:58";        // set when the worker is built; shown on the Assist tab
 const DEFAULT_MODEL = "claude-sonnet-5-5";
 const MAX_PER_HOUR = 30;               // per visitor, shared by the tasks with limit: true (best effort: counts reset when Cloudflare restarts the Worker)
 const TAGS_SET = ({
@@ -391,7 +391,7 @@ const TAGS_SET = ({
   },
   "own_behaviour": {
    "always": false,
-   "hint": "worried about their own behaviour towards others: thoughts of seriously harming someone, their own violence or abuse towards a partner or child, or sexual thoughts or behaviour towards children, including looking at images of children (never figures of speech like 'I could murder a curry')",
+   "hint": "worried about their own behaviour towards OTHER people, never themselves (harm to themselves, such as self-harm, overdose or making themselves sick, is at_risk or urgent): thoughts of seriously harming someone, their own violence or abuse towards a partner or child, or sexual thoughts or behaviour towards children, including looking at images of children (never figures of speech like 'I could murder a curry')",
    "words": "could kill (him|her|them)|want to (kill|hurt) (him|her|them|someone)|(thoughts|scared|afraid) (of|about) (hurting|harming)|hurting my (baby|child|kids|son|daughter)|lose it with (my|him|her)|smash things|sexual (thoughts|feelings|urges) (about|towards|involving) (children|kids|a child)|attracted to (children|kids)|shouldn'?t[^.]{0,40}(kids|children|child)|images of (children|kids)"
   }
  },
@@ -830,7 +830,8 @@ async function tagsTask(body, { env, reply }) {
   if (!out) return empty("unreadable");
   const tags = [...new Set((Array.isArray(out.tags) ? out.tags : []).map(t => String(t).toLowerCase().trim()))]
     .filter(t => TAG_LIST.includes(t)).slice(0, TAGS_SET.max_tags);
-  const name = String(out.place || "").replace(/[^\p{L}\p{N} '.,-]/gu, "").trim().slice(0, 60);
+  const name = String(out.place || "").replace(/[^\p{L}\p{N} '.,-]/gu, "").trim().slice(0, 60)
+    .replace(/^(unknown|none|n\/?a|null|not (given|known|specified|stated|mentioned)|no place( given)?|nowhere|-+)$/i, "");   // (a placeholder: no place)
   const town = name && Object.keys(TOWNS).find(t => t.toLowerCase() === name.toLowerCase());
   return reply({ tags, place: name ? { name, town: town || null, ...(town ? { lat: TOWNS[town][0], lon: TOWNS[town][1] } : {}) } : null,
     ...(() => { const safety = tagSafety(out.safety, alwaysSafety);
@@ -890,7 +891,8 @@ function tagsTool() {
   return { name: "label", description: "The search for what the person typed: support tags, place, flags, preferences and safety.",
     input_schema: { type: "object", required: ["tags", "place", "risk", "off_topic", "prefs", "safety"], properties: {
       tags: { type: "array", items: { type: "string", enum: TAG_LIST }, maxItems: TAGS_SET.max_tags },
-      place: { type: "string" }, risk: { type: "boolean" }, off_topic: { type: "boolean" },
+      place: { type: "string", description: "the place they name, as they wrote it; an empty string if they didn't name one" },
+      risk: { type: "boolean" }, off_topic: { type: "boolean" },
       prefs: { type: "object", properties: prefs },
       safety: { type: "array", items: { type: "string", enum: Object.keys(TAGS_SET.safety) } } } } };
 }

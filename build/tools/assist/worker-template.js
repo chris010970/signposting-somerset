@@ -430,7 +430,8 @@ async function tagsTask(body, { env, reply }) {
   if (!out) return empty("unreadable");
   const tags = [...new Set((Array.isArray(out.tags) ? out.tags : []).map(t => String(t).toLowerCase().trim()))]
     .filter(t => TAG_LIST.includes(t)).slice(0, TAGS_SET.max_tags);
-  const name = String(out.place || "").replace(/[^\p{L}\p{N} '.,-]/gu, "").trim().slice(0, 60);
+  const name = String(out.place || "").replace(/[^\p{L}\p{N} '.,-]/gu, "").trim().slice(0, 60)
+    .replace(/^(unknown|none|n\/?a|null|not (given|known|specified|stated|mentioned)|no place( given)?|nowhere|-+)$/i, "");   // (a placeholder: no place)
   const town = name && Object.keys(TOWNS).find(t => t.toLowerCase() === name.toLowerCase());
   return reply({ tags, place: name ? { name, town: town || null, ...(town ? { lat: TOWNS[town][0], lon: TOWNS[town][1] } : {}) } : null,
     ...(() => { const safety = tagSafety(out.safety, alwaysSafety);
@@ -490,7 +491,8 @@ function tagsTool() {
   return { name: "label", description: "The search for what the person typed: support tags, place, flags, preferences and safety.",
     input_schema: { type: "object", required: ["tags", "place", "risk", "off_topic", "prefs", "safety"], properties: {
       tags: { type: "array", items: { type: "string", enum: TAG_LIST }, maxItems: TAGS_SET.max_tags },
-      place: { type: "string" }, risk: { type: "boolean" }, off_topic: { type: "boolean" },
+      place: { type: "string", description: "the place they name, as they wrote it; an empty string if they didn't name one" },
+      risk: { type: "boolean" }, off_topic: { type: "boolean" },
       prefs: { type: "object", properties: prefs },
       safety: { type: "array", items: { type: "string", enum: Object.keys(TAGS_SET.safety) } } } } };
 }

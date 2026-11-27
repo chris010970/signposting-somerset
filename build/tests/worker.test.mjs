@@ -209,6 +209,12 @@ test("tags: the answer comes on the label tool (forced), with the allowed values
   assert.deepEqual(schema.prefs.properties.when.items.enum, TAG_SETTINGS.preferences.when.values);
 });
 
+test("tags: a placeholder place (unknown, none, not given) counts as no place", async () => {
+  for (const ph of ["UNKNOWN", "none", "N/A", "not specified", "-"])
+    assert.equal((await (await tagsFor("I'm 14 and my dad hurts me", JSON.stringify({ tags: ["abuse"], place: ph }))).json()).place, null, ph);
+  assert.equal((await (await tagsFor("lonely in Wells", '{"tags": ["connect"], "place": "Wells"}')).json()).place.town, "Wells");
+});
+
 test("tags: safety groups only from tags.json, in its order; the always words add theirs; risk follows", async () => {
   assert.deepEqual(Object.keys(TAG_SETTINGS.safety), ["urgent", "at_risk", "own_behaviour"]);
   let out = await (await tagsFor("I'm worried about something", '{"tags": [], "safety": ["own_behaviour", "made_up", "URGENT"]}')).json();

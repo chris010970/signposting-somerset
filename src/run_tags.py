@@ -63,7 +63,9 @@ def check(s, out):
     if "safety" in s:   # the categories that must come back; [] means none may (an extra one beside the expected is fine)
         got_s = out.get("safety") or []
         missing = [c for c in s["safety"] if c not in got_s]
-        if missing or (not s["safety"] and got_s):
+        # an extra group beside the expected is fine, except own_behaviour: shown by mistake it would do real harm
+        wrong_own = "own_behaviour" in got_s and "own_behaviour" not in s["safety"]
+        if missing or wrong_own or (not s["safety"] and got_s):
             notes.append(f"safety {show(got_s)}, expected {show(s['safety'])}")
     for k in pref_misses(s, out):
         notes.append(f"{k} {show(out.get('prefs', {}).get(k))}, expected {show(s.get('prefs', {}).get(k))}")
