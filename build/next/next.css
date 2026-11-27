@@ -538,7 +538,7 @@ body.landing footer.help { padding-block: 14px calc(14px + env(safe-area-inset-b
 @media (min-width: 701px) and (max-width: 1179px) { .hway span span { font-size: 12px; } .hway { padding-right: 30px; } .hway::after { right: 7px; } .hways { column-gap: 8px; } }
 
 /* ---------- For you (js/for-you.js): the picks, each under a line saying what it's for, then "Want to explore more?" ---------- */
-.fyhead { margin: 6px 0 18px; }
+.fyhead { margin: 0 0 18px; }
 .fyhead .bt { margin: 0 0 4px; }
 .fyhead p { margin: 0; color: var(--tx2); }
 .fyhead .fynote { margin-top: 6px; color: var(--tx3); font-size: 14px; }
@@ -552,8 +552,11 @@ body.landing footer.help { padding-block: 14px calc(14px + env(safe-area-inset-b
 #foryou .tpin { display: none; }   /* (no map on this tab) */
 #foryou .tfold { width: auto; padding: 0 8px 0 10px; gap: 2px; display: inline-flex; align-items: center; font: 600 13px var(--sans); color: var(--b700); }
 #foryou .tfold::before { content: var(--fy-details); }   /* ("Details" by the chevron: the card opens) */
-#foryou { max-width: 1240px; display: grid; grid-template-columns: minmax(0, 65fr) minmax(0, 35fr); gap: 32px; align-items: start; }
-.fyexplore { position: sticky; top: 12px; margin-top: 6px; padding: 18px; background: var(--sage); border-radius: 16px; display: grid; gap: 10px; }
+/* Its top in line with the dropdowns on the other tabs, as About (the header's 10px foot and the list's 14px top taken off), and
+   spanning to the banner's right edge, as they do */
+header.top:has(#tab-foryou[aria-current="page"]) { padding-bottom: 0; }
+#foryou.talk { padding-top: 0; display: grid; grid-template-columns: minmax(0, 65fr) minmax(0, 35fr); gap: 32px; align-items: start; }
+.fyexplore { position: sticky; top: 0; margin-top: 0; padding: 18px; background: var(--sage); border-radius: 16px; display: grid; gap: 10px; }
 .fyexplore h2 { display: flex; align-items: center; gap: 8px; margin: 0 0 4px; font: 600 20px/1.25 var(--display); color: var(--b800); }
 .fyexplore h2 svg { width: 24px; height: 24px; flex: none; color: var(--b700); }
 .fyx { display: flex; align-items: center; gap: 12px; padding: 12px 14px; background: var(--cream); border: 1px solid #DCE3CF; border-radius: 12px;
@@ -565,10 +568,10 @@ body.landing footer.help { padding-block: 14px calc(14px + env(safe-area-inset-b
 .fyx span span { display: block; font-size: 13.5px; color: var(--tx2); }
 .fytown { display: grid; gap: 6px; font-size: 14px; color: var(--tx2); }
 .fytown select { font: 500 15px var(--sans); padding: 8px 10px; border: 1px solid var(--edge); border-radius: 10px; background: var(--cream); }
-@media (max-width: 900px) { #foryou { grid-template-columns: 1fr; gap: 20px; } .fyexplore { position: static; } }
+@media (max-width: 900px) { #foryou.talk { grid-template-columns: 1fr; gap: 20px; } .fyexplore { position: static; } }
 
 /* For you's safety panel (for-you.js fyPanel): calm, clearly first, its services as the usual phone cards */
-.fypanel { margin: 6px 0 22px; padding: 18px 18px 14px; border-radius: 16px; background: #FDF6EC; border: 1px solid #EBC88F; }
+.fypanel { margin: 0 0 22px; padding: 18px 18px 14px; border-radius: 16px; background: #FDF6EC; border: 1px solid #EBC88F; }
 .fypanel.fy-urgent { background: #FCEDEA; border-color: #E8B4A8; }
 .fypanel .bt { margin: 0 0 6px; }
 .fypanel > p { margin: 0 0 12px; color: var(--tx2); }

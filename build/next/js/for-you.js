@@ -359,4 +359,5 @@ function drawForYou() {
     location.href = location.pathname + "?" + q + "#foryou"; };
 }
 // A card opens and closes as in the other tabs (links, Copy and Directions do their own thing)
-$("foryou").addEventListener("click", e => { const c = e.target.closest(".card"); if (c && !e.target.closest("a, button:not(.cbtn)")) toggleCard(c); });
+// (both kinds: in-person cards and the phone and online ones, in the picks and the safety panel)
+$("foryou").addEventListener("click", e => { const c = e.target.closest(".card, .tcard"); if (c && !e.target.closest("a, button:not(.cbtn)")) toggleCard(c); });
