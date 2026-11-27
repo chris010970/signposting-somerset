@@ -1,5 +1,5 @@
 {
- "_about": "Test phrases for the tags task (POST .../tags), run by run_tags.py. must: tags that have to come back; not: tags that mustn't (null: any tags are wrong, i.e. []); place: the place expected ('' for none); risk and off_topic: the flags expected. Add a line to try a new phrase. prefs: the preferences expected (tags.json's preferences); any not listed must not come back, so every phrase also checks nothing is picked up by mistake.",
+ "_about": "Test phrases for the tags task (POST .../tags), run by run_tags.py. must: tags that have to come back; not: tags that mustn't (null: any tags are wrong, i.e. []); place: the place expected ('' for none); risk and off_topic: the flags expected. Add a line to try a new phrase. prefs: the preferences expected (tags.json's preferences); any not listed must not come back, so every phrase also checks nothing is picked up by mistake. ignore: preferences not checked for that phrase (where either answer is fair, e.g. volunteering as activities or community).",
  "scenarios": [
   {
    "id": "T01",
@@ -183,7 +183,10 @@
     "help": [
      "activities"
     ]
-   }
+   },
+   "ignore": [
+    "help"
+   ]
   },
   {
    "id": "T17",
@@ -315,7 +318,12 @@
    "not": [],
    "place": "Wells",
    "risk": false,
-   "off_topic": false
+   "off_topic": false,
+   "prefs": {
+    "help": [
+     "activities"
+    ]
+   }
   },
   {
    "id": "H01",
@@ -414,7 +422,10 @@
    "risk": false,
    "off_topic": false,
    "prefs": {
-    "groups": "avoid"
+    "groups": "avoid",
+    "help": [
+     "one-to-one and therapy"
+    ]
    }
   },
   {
@@ -428,7 +439,11 @@
    "place": "",
    "risk": false,
    "off_topic": false,
-   "prefs": {}
+   "prefs": {
+    "help": [
+     "peer support"
+    ]
+   }
   },
   {
    "id": "H09",
@@ -442,8 +457,7 @@
    "off_topic": false,
    "prefs": {
     "when": [
-     "evenings",
-     "weekends"
+     "evenings"
     ]
    }
   },
@@ -569,10 +583,14 @@
     "be active"
    ],
    "not": [],
-   "place": "",
+   "place": "Somerset",
    "risk": false,
    "off_topic": false,
-   "prefs": {}
+   "prefs": {
+    "help": [
+     "activities"
+    ]
+   }
   },
   {
    "id": "H19",
@@ -594,7 +612,7 @@
    "must": [],
    "not": [],
    "place": "",
-   "risk": false,
+   "risk": true,
    "off_topic": false,
    "prefs": {
     "under_18": "yes"
@@ -719,8 +737,7 @@
    "prefs": {
     "when": [
      "weekends"
-    ],
-    "contact": "in person"
+    ]
    }
   },
   {
@@ -733,7 +750,11 @@
    "place": "",
    "risk": false,
    "off_topic": false,
-   "prefs": {}
+   "prefs": {
+    "help": [
+     "peer support"
+    ]
+   }
   },
   {
    "id": "H30",

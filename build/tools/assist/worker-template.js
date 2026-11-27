@@ -405,26 +405,51 @@ Reply with only this JSON:
 // Answers { tags: up to 3 of the sheet's support types, most important first; place: { name, town, lat, lon } or null
 // (town and its centre only when it's one of ours); risk; off_topic; prefs: what they said about how they'd like support,
 // only the names and values in tags.json's preferences (anything else is dropped) }. The tags are checked against the sheet's list
-// whatever the model says, and risk words always count. If the AI can't answer, the same shape comes back with no tags
-// and "fallback", so the page can still go on (to the general Welcome). "model" says which model was asked (run_tags.py
+// whatever the model says, and risk words always count. An answer that can't be read is asked for once more; if the AI still
+// can't answer, the tags come from fallback_words (tags.json) with fallback: "words", or none with fallback: the reason, so the
+// page can still go on (For you from the words, else the directory as it opens normally). "model" says which model was asked (run_tags.py
 // shows it). Nothing typed is stored or logged.
 async function tagsTask(body, { env, reply }) {
   const text = String(body.text || "").replace(/\s+/g, " ").trim().slice(0, TAGS_SET.max_chars);
   if (!text) return reply({ error: "no_text" }, 400);
   const riskWords = RISK.test(text), model = modelFor(env, "tags");
-  const empty = why => reply({ tags: [], place: null, risk: riskWords, off_topic: false, prefs: {}, fallback: why, model });
-  const res = await ask(env, { model, max_tokens: 450, timeout: 20000, system: tagsPrompt(),
-    messages: [{ role: "user", content: `<text>${text.replace(/<\/?text>/gi, "")}</text>` }] });
+  // The AI can't answer, even on a second try: the tags from fallback_words (none: the page just opens the directory)
+  const empty = why => { const tags = wordTags(text);
+    return reply({ tags, place: null, risk: riskWords, off_topic: false, prefs: {}, fallback: tags.length ? "words" : why, model }); };
+  const asking = { model, max_tokens: 450, timeout: 20000, system: tagsPrompt(),
+    messages: [{ role: "user", content: `<text>${text.replace(/<\/?text>/gi, "")}</text>` }] };
+  let res = await ask(env, asking), out = res.error ? null : jsonIn(res);
+  if (!res.error && !out)   // something around the JSON, or none: once more, firmly
+    out = jsonIn(res = await ask(env, { ...asking, system: asking.system + "\n\nReply with the JSON object only: no other words before or after it." }));
   if (res.error) return empty(res.error);
-  const said = (res.data?.content || []).filter(b => b.type === "text").map(b => b.text).join("");
-  let out;
-  try { out = JSON.parse(said.slice(said.indexOf("{"), said.lastIndexOf("}") + 1)); } catch { return empty("unreadable"); }
+  if (!out) return empty("unreadable");
   const tags = [...new Set((Array.isArray(out.tags) ? out.tags : []).map(t => String(t).toLowerCase().trim()))]
     .filter(t => TAG_LIST.includes(t)).slice(0, TAGS_SET.max_tags);
   const name = String(out.place || "").replace(/[^\p{L}\p{N} '.,-]/gu, "").trim().slice(0, 60);
   const town = name && Object.keys(TOWNS).find(t => t.toLowerCase() === name.toLowerCase());
   return reply({ tags, place: name ? { name, town: town || null, ...(town ? { lat: TOWNS[town][0], lon: TOWNS[town][1] } : {}) } : null,
     risk: riskWords || out.risk === true, off_topic: out.off_topic === true && !tags.length, prefs: tagPrefs(out.prefs), model });
+}
+// The first JSON object in the model's answer that reads, even with words around it (null: none)
+function jsonIn(res) {
+  const said = (res.data?.content || []).filter(b => b.type === "text").map(b => b.text).join("");
+  for (let i = said.indexOf("{"); i >= 0; i = said.indexOf("{", i + 1)) {
+    let depth = 0, quoted = false;
+    for (let j = i; j < said.length; j++) {
+      const c = said[j];
+      if (quoted) { if (c === "\\") j++; else if (c === '"') quoted = false; continue; }
+      if (c === '"') quoted = true; else if (c === "{") depth++;
+      else if (c === "}" && --depth === 0) { try { const o = JSON.parse(said.slice(i, j + 1)); if (o && typeof o === "object" && !Array.isArray(o)) return o; } catch {} break; }
+    }
+  }
+  return null;
+}
+// Tags from fallback_words, in the order they appear in the text (crisis prevention first), at most max_tags
+function wordTags(text) {
+  const found = Object.entries(TAGS_SET.fallback_words).map(([t, w]) => [t, text.search(new RegExp(w, "i"))])
+    .map(([t, at]) => [t, t === "crisis prevention" && at < 0 && RISK.test(text) ? 0 : at]).filter(([, at]) => at >= 0)   // (the risk words always count)
+    .sort((a, b) => (b[0] === "crisis prevention") - (a[0] === "crisis prevention") || a[1] - b[1]).map(([t]) => t);
+  return found.filter(t => TAG_LIST.includes(t)).slice(0, TAGS_SET.max_tags);
 }
 // The preferences the model gave, kept only where the name and value are in tags.json (one value, or a list if "many")
 function tagPrefs(got) {
