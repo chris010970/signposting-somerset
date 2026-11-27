@@ -368,8 +368,6 @@ body.landing header.top, body.landing #hdr-home { display: none; }
 .hloc { display: inline-flex; align-items: center; gap: 6px; height: 34px; padding: 0 10px; border: 0; background: none; color: var(--b700); font: 600 13.5px var(--sans); cursor: pointer; border-radius: 10px; }
 .hloc:hover { background: rgba(47, 84, 65, 0.08); }
 .hloc svg { width: 17px; height: 17px; }
-.hcrisis { background: #FDF6EC; border: 1px solid #EBC88F; border-left: 4px solid #B7791F; border-radius: 12px; padding: 10px 14px; margin: 0 0 14px; font-size: 14px; line-height: 1.5; color: #44403C; }
-.hcrisis a { color: inherit; font-weight: 700; }
 /* Or explore by topic */
 .hexplore { position: relative; z-index: 1; width: min(1000px, calc(100% - 32px)); margin: 40px auto 0; padding-bottom: 10px; }
 .hor { display: flex; align-items: center; gap: 14px; margin: 0 0 14px; color: var(--tx2); font-size: 15px; }
@@ -539,14 +537,42 @@ body.landing footer.help { padding-block: 14px calc(14px + env(safe-area-inset-b
 @media (min-width: 701px) and (max-width: 1439px) { .hway span span { font-size: 12.5px; letter-spacing: -0.1px; } .hway { padding-right: 34px; } }   /* (two lines for the longest description) */
 @media (min-width: 701px) and (max-width: 1179px) { .hway span span { font-size: 12px; } .hway { padding-right: 30px; } .hway::after { right: 7px; } .hways { column-gap: 8px; } }
 
-/* ---------- For you (js/for-you.js): the picks, each with a sentence saying why, then links to everything ---------- */
-#foryou { max-width: 860px; }
-.fyhead { margin: 6px 0 14px; }
+/* ---------- For you (js/for-you.js): the picks, each under a line saying what it's for, then "Want to explore more?" ---------- */
+.fyhead { margin: 6px 0 18px; }
 .fyhead .bt { margin: 0 0 4px; }
 .fyhead p { margin: 0; color: var(--tx2); }
-.fypicks { display: grid; gap: 18px; }
+.fyhead .fynote { margin-top: 6px; color: var(--tx3); font-size: 14px; }
+.fypicks { display: grid; gap: 20px; }
 .fypick { margin: 0; }
-.fywhy { margin: 0 0 8px; font: 600 15px/1.35 var(--sans); color: var(--b800); }
+.fywhy { display: flex; align-items: center; gap: 8px; margin: 0 0 8px; font: 600 17px/1.3 var(--display); color: var(--b800); }
+.fywhy svg { width: 22px; height: 22px; flex: none; color: var(--b700); }
 #foryou .tpin { display: none; }   /* (no map on this tab) */
-.fylinks { list-style: none; margin: 22px 0 10px; padding: 14px 16px; background: var(--sage); border-radius: 12px; display: grid; gap: 8px; font-size: 14.5px; }
-.fylinks a { color: var(--b700); font-weight: 600; }
+#foryou .tfold { width: auto; padding: 0 8px 0 10px; gap: 2px; display: inline-flex; align-items: center; font: 600 13px var(--sans); color: var(--b700); }
+#foryou .tfold::before { content: var(--fy-details); }   /* ("Details" by the chevron: the card opens) */
+#foryou { max-width: 1240px; display: grid; grid-template-columns: minmax(0, 65fr) minmax(0, 35fr); gap: 32px; align-items: start; }
+.fyexplore { position: sticky; top: 12px; margin-top: 6px; padding: 18px; background: var(--sage); border-radius: 16px; display: grid; gap: 10px; }
+.fyexplore h2 { display: flex; align-items: center; gap: 8px; margin: 0 0 4px; font: 600 20px/1.25 var(--display); color: var(--b800); }
+.fyexplore h2 svg { width: 24px; height: 24px; flex: none; color: var(--b700); }
+.fyx { display: flex; align-items: center; gap: 12px; padding: 12px 14px; background: var(--cream); border: 1px solid #DCE3CF; border-radius: 12px;
+  color: var(--b800); text-decoration: none; transition: transform .12s, box-shadow .12s; }
+.fyx:hover, .fyx:focus-visible { transform: translateY(-1px); box-shadow: 0 3px 10px rgba(40, 60, 30, .10); }
+.fyx > svg:first-child { width: 26px; height: 26px; flex: none; color: var(--b700); }
+.fyx > svg:last-child { width: 18px; height: 18px; flex: none; margin-left: auto; color: var(--b700); }
+.fyx b { display: block; font: 600 15.5px/1.3 var(--sans); }
+.fyx span span { display: block; font-size: 13.5px; color: var(--tx2); }
+.fytown { display: grid; gap: 6px; font-size: 14px; color: var(--tx2); }
+.fytown select { font: 500 15px var(--sans); padding: 8px 10px; border: 1px solid var(--edge); border-radius: 10px; background: var(--cream); }
+@media (max-width: 900px) { #foryou { grid-template-columns: 1fr; gap: 20px; } .fyexplore { position: static; } }
+
+/* For you's safety panel (for-you.js fyPanel): calm, clearly first, its services as the usual phone cards */
+.fypanel { margin: 6px 0 22px; padding: 18px 18px 14px; border-radius: 16px; background: #FDF6EC; border: 1px solid #EBC88F; }
+.fypanel.fy-urgent { background: #FCEDEA; border-color: #E8B4A8; }
+.fypanel .bt { margin: 0 0 6px; }
+.fypanel > p { margin: 0 0 12px; color: var(--tx2); }
+.fypanel .fynote { margin: 12px 0 0; font-size: 13.5px; color: var(--tx3); }
+.fy999 { display: flex; align-items: center; gap: 10px; margin: 6px 0 12px; padding: 12px 14px; border-radius: 12px; background: #8F2D1F; color: #fff;
+  font: 700 16px/1.35 var(--sans); text-decoration: none; }
+.fy999 svg { width: 24px; height: 24px; flex: none; }
+.fysub { margin: 4px 0 10px; font: 600 18px/1.3 var(--display); color: var(--b800); }
+.fyalso { margin: 8px 0 0; font-size: 14px; color: var(--tx2); }
+.fyalso a { color: var(--b700); font-weight: 600; }

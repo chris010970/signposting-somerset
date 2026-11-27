@@ -193,6 +193,7 @@ function linkFor(t) {   // (replaces links.js's: the same, with the ticked needs
     else if (n === "__pt" && searchPoint && searchPoint.link) { q.set("lat", searchPoint.lat.toFixed(4)); q.set("lon", searchPoint.lon.toFixed(4)); q.set("label", searchPoint.label); }
     if (searchPoint && $("within").value !== "10") q.set("within", $("within").value);
     if ($("f-when").value !== "week") q.set("when", $("f-when").value);
+    if (kindsOff.size) q.set("types", KINDS.filter((k, i) => !kindsOff.has(i)).flatMap(k => k[2]).join(","));   // (the kinds ticked: links.js)
   } else if (t === "places") placesQuery(q);
   else if (t === "talk" && needs("talk")) q.set("support", needs("talk"));
   else if (t === "course" && needs("course")) q.set("support", needs("course"));

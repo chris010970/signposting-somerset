@@ -39,6 +39,9 @@ function applyLinkNear(link) {   // In person's filters from a link's settings (
     searchPoint = { lat, lon, label, link: true }; setPtLabel(cap(label)); $("f-town").value = "__pt"; sortBy = "near";
   }
   pickOpt($("within"), link.get("within")); pickOpt($("f-when"), link.get("when"));
+  // types: the kinds to show (the sheet's types, e.g. types=Peer group,Community): every other kind unticked
+  const types = (link.get("types") || "").toLowerCase().split(",").map(t => t.trim()).filter(Boolean);
+  if (types.length) { kindsOff.clear(); KINDS.forEach((k, i) => { if (!k[2].some(t => types.includes(t.toLowerCase()))) kindsOff.add(i); }); }
   fitPending = true;
 }
 function restoreOthers() {   // the other tabs' choices from earlier in this visit (In person's come back through LINK)
@@ -65,6 +68,7 @@ function linkFor(t) {   // the current filters, as the part of the address after
     else if (n === "__pt" && searchPoint && searchPoint.link) { q.set("lat", searchPoint.lat.toFixed(4)); q.set("lon", searchPoint.lon.toFixed(4)); q.set("label", searchPoint.label); }
     if (searchPoint && $("within").value !== "10") q.set("within", $("within").value);
     if ($("f-when").value !== "week") q.set("when", $("f-when").value);
+    if (kindsOff.size) q.set("types", KINDS.filter((k, i) => !kindsOff.has(i)).flatMap(k => k[2]).join(","));
   } else if (t === "places") placesQuery(q);
   else if (t === "talk" && $("t-support").value) q.set("support", $("t-support").value);
   else if (t === "course" && $("c-support").value) q.set("support", $("c-support").value);

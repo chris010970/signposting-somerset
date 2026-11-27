@@ -42,7 +42,7 @@ function drawTraining() {
 }
 // ---------- Home: the landing page (a first working version; the look comes last) ----------
 // Someone says what's going on in their own words; the worker's tags task (Haiku) turns it into topics, a place and flags;
-// they can change the topics and the place; "Show me" opens the directory with those set. What they type goes only to the
+// For you (for-you.js) opens with those set, and with what else it read (safety, preferences) in this tab's session. What they type goes only to the
 // worker, isn't kept, and never goes in an address. No access code: the worker caps the task's answers a day instead.
 const TAGS_URL = "/*WORKER_URL*/".replace(/\/$/, "") + "/tags";
 let home = { busy: false, text: "", where: null, note: "", risk: false };   // where: the town chosen, or their location
@@ -98,10 +98,7 @@ if (document.fonts) document.fonts.ready.then(fitHome);
 function drawAsk() {
   const box = $("ask"), h = home;
   const towns = [...$("f-town").options].filter(o => PLACE[o.value]).map(o => o.value);
-  const crisis = h.risk ? `<div class="hcrisis"><b>If you or someone else is in danger now, call 999.</b> For urgent mental health support, call
-    NHS 111 and choose option 2, or talk to Samaritans any time, free, on <a href="tel:116123">116 123</a>. Under 19? Childline: <a href="tel:08001111">0800 1111</a>.
-    <div class="askrow"><button type="button" class="tbtn pri" id="h-go">See support near you</button></div></div>` : "";
-  box.innerHTML = `${crisis}<form id="ask-form"${h.risk ? " hidden" : ""}><label for="ask-text" class="askh big">What would help you today?</label>
+  box.innerHTML = `<form id="ask-form"><label for="ask-text" class="askh big">What would help you today?</label>
     <p class="hsub">Tell us in your own words and we'll suggest places nearby.</p>
     <div class="askbox"><textarea id="ask-text" rows="2" maxlength="500" placeholder="For example: I've recently been bereaved, I feel alone and money is tight">${esc(h.text)}</textarea>
       <button type="submit" class="askgo" aria-label="Find support and activities" title="Find support and activities" ${h.busy ? "disabled" : ""}>${h.busy
@@ -118,7 +115,6 @@ function drawAsk() {
   $("h-loc").onclick = () => navigator.geolocation && navigator.geolocation.getCurrentPosition(p => {
     h.where = { lat: p.coords.latitude, lon: p.coords.longitude }; drawAsk(); },
     () => { h.note = "We couldn't get your location: choose a town instead."; drawAsk(); }, { timeout: 10000 });
-  if ($("h-go")) $("h-go").onclick = () => goShow(h.tags, h.place);
 }
 async function askTags() {
   const h = home, text = h.text.trim();
@@ -130,12 +126,15 @@ async function askTags() {
   h.busy = false;
   // Busy (the daily cap or the per-visitor limit) or not working: never stuck, straight to the directory with their place
   if (d.error || !status || status >= 400) { goShow([], h.where); return; }
-  if (d.off_topic) { h.note = "We couldn't find anything in that we can help with. Try telling us what's going on, or choose a topic below."; drawAsk(); return; }
-  // Where: a place in their words wins (it's probably what they meant), then the town or location they chose, else anywhere
+  // Off topic (a story, a test): the directory as it opens normally
+  if (d.off_topic && !(d.safety || []).length) { goShow([], h.where); return; }
+  // Where: the town or location they chose wins (they set it); else a place in their words; else anywhere. A place they typed
+  // that wasn't used goes along as "also", so For you can offer it in one tap
   const said = d.place && d.place.lat ? { town: d.place.town, lat: d.place.lat, lon: d.place.lon } : null;
-  Object.assign(h, { tags: d.tags || [], place: said || h.where, risk: !!d.risk });
-  try { if (h.risk) sessionStorage.setItem("ss-risk", "1"); } catch (e) {}
-  if (h.risk) { drawAsk(); $("ask").scrollIntoView({ block: "nearest" }); return; }   // the crisis note first, then on
+  Object.assign(h, { tags: d.tags || [], place: h.where || said, risk: !!d.risk });
+  // What else the AI read (safety, preferences) goes to For you in this tab's session only, never in the address
+  try { sessionStorage.setItem("ss-foryou", JSON.stringify({ safety: d.safety || [], prefs: d.prefs || {},
+    also: h.where && said && said.town !== h.where.town ? { label: said.town || d.place.name, lat: said.lat, lon: said.lon } : null })); } catch (e) {}
   goShow(h.tags, h.place);
 }
 // To the directory's For you tab with the topics and the place (none: everything, anywhere)

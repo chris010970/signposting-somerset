@@ -1,25 +1,29 @@
 {
- "_about": "The For you tab (/next/directory/#foryou, opened from the landing page): 2-3 picks by simple rules, each under a short line saying why (the card itself has the when, where and how). Read by build/next/js/for-you.js. Change the numbers, lists and sentences freely; {placeholders} are filled from the record. No AI here: the landing page's words only chose the topics and the place.",
+ "_about": "The For you tab (/next/directory/#foryou, opened from the landing page): what the landing page's AI read in someone's words (topics, place, preferences, safety: build/tools/assist/tags.json) turned into picks and buttons by the rules here. No AI here. Read by build/next/js/for-you.js. topics: for each topic, its line, the service types that make a good first step, words in a name or description that make one better (prefer_words), the groups (who) it suits (groups_ok) and a short name for buttons. open_to_all: the who values that mean anyone can go: the picks only use services open to all (or to a group the topic suits, groups_ok), since we don't know who's asking. score: each candidate gets days until it next runs + miles x per_mile, plus a penalty for each way it fits less well; the lowest wins. help_types: the kinds of help someone can ask for, as the sheet's types. when_hours: what daytime and evenings mean (a session's start time) and which days are weekends. safety: the panel for each risk group (most serious first), its words and the services (sheet record ids) it shows, with more by topic or for under-18s; picks: whether the usual picks show beneath (none, or relevant: only their topics, nothing added). explore: the buttons beside the picks; kind_titles: a button's title for each kind of service.",
  "max_picks": 3,
  "radius_miles": [
   10,
   20
  ],
  "days_ahead": 28,
- "access_order": [
-  "drop in",
-  "sign up",
-  "book",
-  "call",
-  "referral"
- ],
  "easy_access": [
   "drop in",
   "sign up"
  ],
- "leave_out_who_only": [
-  "young people"
+ "open_to_all": [
+  "anyone",
+  "adults"
  ],
+ "score": {
+  "per_mile": 0.7,
+  "not_first_step": 6,
+  "not_open_to_all": 10,
+  "not_easy_access": 3,
+  "prefer_words": -5,
+  "phone_closed": 4,
+  "uk_wide": 1,
+  "eligibility": 4
+ },
  "gentle_for": [
   "low mood",
   "anxiety",
@@ -33,19 +37,297 @@
   "take notice"
  ],
  "crisis_tag": "crisis prevention",
- "heading": "Here's where we'd start",
- "intro": "Based on what you told us{near}. You can change anything using the tabs above.",
- "near": " and where you are: {place}",
- "sentences": {
-  "risk": "If you need to talk to someone now",
-  "match": "Because you mentioned {topic}",
-  "another": "Another option for {topic}",
-  "gentle": "Something gentle for your wellbeing",
-  "phone": "Nothing in person nearby for {topic}, so here's a phone or online option"
+ "topics": {
+  "connect": {
+   "line": "For company and connection",
+   "first_step": [
+    "Community",
+    "Activity group",
+    "Peer group"
+   ]
+  },
+  "be active": {
+   "line": "For getting out and moving",
+   "first_step": [
+    "Activity group"
+   ]
+  },
+  "take notice": {
+   "line": "For time to slow down and notice",
+   "first_step": [
+    "Activity group",
+    "Community"
+   ]
+  },
+  "keep learning": {
+   "line": "For learning something new",
+   "first_step": [
+    "Course",
+    "Activity group"
+   ]
+  },
+  "giving": {
+   "line": "For giving something back",
+   "first_step": [
+    "Volunteering",
+    "Community"
+   ]
+  },
+  "low mood": {
+   "line": "For when you're feeling low",
+   "first_step": [
+    "Peer group",
+    "Community",
+    "Activity group"
+   ]
+  },
+  "anxiety": {
+   "line": "For anxiety and worry",
+   "first_step": [
+    "Peer group",
+    "Course",
+    "Community"
+   ]
+  },
+  "crisis prevention": {
+   "line": "For when things feel too much",
+   "first_step": [
+    "Helpline",
+    "Community",
+    "One-to-one support"
+   ]
+  },
+  "bereavement": {
+   "line": "For support with grief",
+   "first_step": [
+    "Peer group",
+    "Community"
+   ]
+  },
+  "addiction": {
+   "line": "For support with drink, drugs or gambling",
+   "first_step": [
+    "Peer group",
+    "One-to-one support"
+   ]
+  },
+  "dementia": {
+   "line": "For living with dementia",
+   "first_step": [
+    "Peer group",
+    "Community",
+    "Activity group"
+   ]
+  },
+  "caring for someone": {
+   "line": "For support as a carer",
+   "first_step": [
+    "Peer group",
+    "Practical support"
+   ],
+   "groups_ok": [
+    "carers"
+   ]
+  },
+  "long-term pain": {
+   "line": "For living with long-term pain",
+   "first_step": [
+    "Peer group",
+    "Activity group"
+   ]
+  },
+  "eating disorders": {
+   "line": "For support with eating",
+   "first_step": [
+    "Peer group",
+    "One-to-one support"
+   ]
+  },
+  "hearing voices": {
+   "line": "For hearing voices",
+   "first_step": [
+    "Peer group"
+   ]
+  },
+  "abuse": {
+   "line": "For support with abuse",
+   "first_step": [
+    "Advocacy",
+    "One-to-one support"
+   ]
+  },
+  "food": {
+   "line": "For help with food",
+   "first_step": [
+    "Practical support"
+   ]
+  },
+  "finances": {
+   "line": "For practical help with money",
+   "first_step": [
+    "Practical support",
+    "Advocacy"
+   ],
+   "prefer_words": [
+    "advice",
+    "debt",
+    "benefit"
+   ]
+  },
+  "housing": {
+   "line": "For help with housing",
+   "first_step": [
+    "Advocacy",
+    "Practical support"
+   ],
+   "prefer_words": [
+    "advice",
+    "housing"
+   ]
+  }
  },
+ "heading": "A few places to start",
+ "intro": "Based on what you've shared, here are some options that might help. You can explore them in any order.",
+ "no_place": "Choose a town to see places near you. For now, here are some you can phone or use online.",
+ "lines": {
+  "phone": "{line}, by phone or online",
+  "gentle": "For your overall wellbeing",
+  "another": "Another place to try"
+ },
+ "details": "Details",
  "none": "We couldn't find a good match for that. Try the tabs above, or talk to someone straight away using the helplines below.",
- "see_all": "{Topic}:",
- "see_near": "everything near {place}",
- "see_anywhere": "everything in person",
- "see_phone": "by phone or online"
+ "explore": {
+  "heading_near": "Find more support in {place}",
+  "heading_anywhere": "Explore more support",
+  "heading_safety": "More support",
+  "choose_place": "Choose a town to see places near you",
+  "max_links": 4,
+  "phone": {
+   "title": "Phone and online support",
+   "text": "{line}"
+  },
+  "browse": {
+   "title": "Browse the full directory",
+   "text_near": "All services and support in {place}",
+   "text_anywhere": "All services and support across Somerset"
+  },
+  "safety_phone": {
+   "title": "Phone and online support",
+   "text": "Helplines, chat and online support"
+  },
+  "near": "near {place}",
+  "anywhere": "across Somerset"
+ },
+ "radius_nearby": [
+  2,
+  5
+ ],
+ "avoid_groups_penalty": 20,
+ "help_types": {
+  "peer support": [
+   "Peer group"
+  ],
+  "activities": [
+   "Activity group",
+   "Volunteering"
+  ],
+  "community": [
+   "Community"
+  ],
+  "advice and practical help": [
+   "Advocacy",
+   "Practical support"
+  ],
+  "one-to-one and therapy": [
+   "One-to-one support",
+   "Counselling or therapy"
+  ],
+  "courses": [
+   "Course"
+  ]
+ },
+ "when_hours": {
+  "daytime": [
+   8,
+   17
+  ],
+  "evenings": [
+   17,
+   24
+  ],
+  "weekend_days": [
+   0,
+   6
+  ]
+ },
+ "safety": {
+  "urgent": {
+   "heading": "If you need help now",
+   "call999": "If you or someone else is in danger, or has taken an overdose, call 999 now.",
+   "text": "For urgent advice that isn't an emergency, call NHS 111 and choose option 2.",
+   "picks": "none",
+   "services": [
+    "R0354"
+   ],
+   "by_topic": {
+    "eating disorders": [
+     "R0621"
+    ],
+    "addiction": [
+     "R0329",
+     "R0323"
+    ],
+    "crisis prevention": [
+     "R0219"
+    ]
+   }
+  },
+  "at_risk": {
+   "heading": "You don't have to deal with this alone",
+   "text": "You can talk to someone now, in confidence.",
+   "picks": "relevant",
+   "services": [
+    "R0219",
+    "R0220"
+   ],
+   "by_topic": {
+    "abuse": [
+     "R0677",
+     "R0680"
+    ],
+    "eating disorders": [
+     "R0621"
+    ],
+    "addiction": [
+     "R0329"
+    ]
+   },
+   "under_18": [
+    "R0615"
+   ]
+  },
+  "own_behaviour": {
+   "heading": "Confidential help is available",
+   "text": "Talking to someone can help, and these services won't judge you. You don't have to give your name.",
+   "picks": "none",
+   "services": [
+    "R1634",
+    "R1635",
+    "R1636",
+    "R0220"
+   ]
+  },
+  "note": "We're a directory, not a support service. If you or someone else is in danger, call 999."
+ },
+ "kind_titles": {
+  "Activities": "Activities",
+  "Peer support": "Peer support groups",
+  "Community": "Community groups and cafés",
+  "Advice and practical help": "Advice and practical help",
+  "One-to-one and therapy": "One-to-one support",
+  "Courses": "Courses"
+ },
+ "also": "Showing places near {place}. You also mentioned {also}:",
+ "also_link": "show places near {also} instead",
+ "also_heading": "For what you asked about"
 }
