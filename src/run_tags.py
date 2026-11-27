@@ -46,7 +46,7 @@ def check(s, out):
     if out.get("error"):
         return [f"error {out['error']} (HTTP {out['_status']})"]
     got, notes = out.get("tags", []), []
-    if out.get("fallback"):
+    if out.get("fallback") and out["fallback"] != "words":   # (words: the AI didn't answer, but the word lists did: judged on the outcome)
         notes.append(f"fallback: {out['fallback']}")
     missing = [t for t in s["must"] if t not in got]
     if missing:
@@ -103,6 +103,7 @@ def main():
     tally = {}   # each preference: [right, phrases where it was expected or came back]
     safe = {}    # each safety category: [found, phrases where expected]; and look-alikes kept clear
     clear = [0, 0]
+    words_n = [0, 0]   # answers from the word lists (the AI didn't answer), and how many of those were right
     for i, s in enumerate(S):
         if PER_HOUR and i >= PER_HOUR - 2:   # the worker's limit for this task, from one computer (0: none)
             print(f"  (waiting 2 minutes: the limit of {PER_HOUR} an hour; {len(S) - i} to go)", flush=True)
@@ -123,11 +124,16 @@ def main():
         where = place.get("name", "") + (f" ({place['town']})" if place.get("town") else (" (not ours)" if place else ""))
         flags = " ".join([f for f in ("risk", "off_topic") if out.get(f)] + ([f"safety={show(out['safety'])}"] if out.get("safety") else [])
                          + [f"{k}={show(v)}" for k, v in (out.get("prefs") or {}).items()])
-        line = f"{s['id']}  {'PASS' if not notes else 'FAIL'}  {', '.join(out.get('tags', []))} | {where} | {flags}"
+        words = out.get("fallback") == "words"
+        words_n[0] += words; words_n[1] += words and not notes
+        line = f"{s['id']}  {('PASS' if not notes else 'FAIL') + (' (words)' if words else '')}  {', '.join(out.get('tags', []))} | {where} | {flags}"
         print(line + (f"   <- {'; '.join(notes)}" if notes else "") + f"  [{out['_seconds']}s]")
-        rows.append(f"| {s['id']} | {'pass' if not notes else '**fail**'} | {s['text']} | {', '.join(out.get('tags', []))} | {where} | {flags} | {'; '.join(notes)} |")
+        rows.append(f"| {s['id']} | {('pass' if not notes else '**fail**') + (' (words)' if words else '')} | {s['text']} | {', '.join(out.get('tags', []))} | {where} | {flags} | {'; '.join(notes)} |")
     model = ", ".join(sorted(models))
     print(f"\n{passed} of {len(S)} passed (model: {model})")
+    words_line = f"The AI answered {len(S) - words_n[0]} of {len(S)}; the word lists answered {words_n[0]} ({words_n[1]} right)" if words_n[0] else ""
+    if words_line:
+        print(words_line)
     prefs_line = ", ".join(f"{k} {r}/{n}" for k, (r, n) in sorted(tally.items()))
     if prefs_line:
         print("Preferences (right / phrases where expected or given):", prefs_line)
@@ -139,6 +145,7 @@ def main():
         f.write(f"# Tags task, {datetime.now():%d %b %Y %H:%M}: {passed} of {len(S)} passed\n\nModel: {model}\n\n"
                 + (f"Preferences (right / phrases where expected or given): {prefs_line}\n\n" if prefs_line else "")
                 + (f"Safety (found / expected): {safe_line}\n\n" if safe else "")
+                + (f"{words_line}\n\n" if words_line else "")
                 + 
                 "| id | result | text | tags | place | flags | notes |\n|---|---|---|---|---|---|---|\n" + "\n".join(rows) + "\n")
     print("Saved", path)

@@ -193,37 +193,59 @@ test("tags: its own hourly limit per visitor (per_hour; 0: none), counted apart 
   assert.equal((await go("verify")).status, 200, "Assist still has its own 30");
 });
 
-test("tags: safety categories only from tags.json, in its order; the always words add theirs; risk follows", async () => {
-  let out = await (await tagsFor("I'm worried about something", '{"tags": [], "safety": ["child", "from_others", "made_up", "EMERGENCY"]}')).json();
-  assert.deepEqual([out.safety, out.risk], [Object.keys(TAG_SETTINGS.safety).filter(c => ["child", "from_others", "emergency"].includes(c)), true]);
+
+
+
+test("tags: the answer comes on the label tool (forced), with the allowed values; its answer is read before any text", async () => {
+  let req = null; ai = r => { req = r; return new Response(JSON.stringify({ content: [{ type: "text", text: "I'm so sorry." },
+    { type: "tool_use", id: "t1", name: "label", input: { tags: ["eating disorders"], place: "", risk: false, off_topic: false, prefs: {}, safety: ["urgent"] } }] }), { status: 200 }); };
+  const out = await (await worker.fetch(new Request("https://relay.test/tags", { method: "POST", headers: { Origin: ORIGIN, "Content-Type": "application/json",
+    "CF-Connecting-IP": "10.0.2." + ++ip }, body: JSON.stringify({ text: "chest pains after I make myself sick" }) }), ENV)).json();
+  assert.deepEqual([out.tags, out.safety, out.fallback], [["eating disorders"], ["urgent"], undefined]);
+  assert.deepEqual(req.tool_choice, { type: "tool", name: "label" });
+  const schema = req.tools[0].input_schema.properties;
+  assert.deepEqual(schema.safety.items.enum, Object.keys(TAG_SETTINGS.safety));
+  assert.deepEqual([...schema.tags.items.enum].sort(), [...TAG_LIST].sort());
+  assert.deepEqual(schema.prefs.properties.when.items.enum, TAG_SETTINGS.preferences.when.values);
+});
+
+test("tags: safety groups only from tags.json, in its order; the always words add theirs; risk follows", async () => {
+  assert.deepEqual(Object.keys(TAG_SETTINGS.safety), ["urgent", "at_risk", "own_behaviour"]);
+  let out = await (await tagsFor("I'm worried about something", '{"tags": [], "safety": ["own_behaviour", "made_up", "URGENT"]}')).json();
+  assert.deepEqual([out.safety, out.risk], [["urgent", "own_behaviour"], true]);
   out = await (await tagsFor("Looking for a choir in Wells, I'm frightened of what he'll do if he finds out", '{"tags": ["take notice"], "safety": []}')).json();
-  assert.deepEqual([out.safety, out.risk, out.tags], [["from_others"], true, ["take notice"]], "from_others words always count, beside the AI's tags");
+  assert.deepEqual([out.safety, out.risk, out.tags], [["at_risk"], true, ["take notice"]], "at_risk words always count, beside the AI's tags");
+  out = await (await tagsFor("get chest pains after I make myself sick", '{"tags": [], "safety": []}')).json();
+  assert.deepEqual(out.safety, ["urgent"], "urgent words always count");
   out = await (await tagsFor("I'm worried about my sexual thoughts about children", '{"tags": ["anxiety"], "safety": []}')).json();
-  assert.deepEqual(out.safety, [], "words for the categories without always don't count while the AI answers");
+  assert.deepEqual(out.safety, [], "own_behaviour words don't count while the AI answers");
   out = await (await tagsFor("lonely in Frome", '{"tags": ["connect"]}')).json();
   assert.deepEqual([out.safety, out.risk], [[], false]);
-  out = await (await tagsFor("tell me a story", '{"tags": [], "off_topic": true, "safety": ["self"]}')).json();
-  assert.equal(out.off_topic, false, "never off topic with a safety category");
+  out = await (await tagsFor("tell me a story", '{"tags": [], "off_topic": true, "safety": ["at_risk"]}')).json();
+  assert.equal(out.off_topic, false, "never off topic with a safety group");
 });
 
-test("tags: when the AI can't answer, every safety category whose words match counts", async () => {
-  const out = await (await tagsFor("I'm worried about my sexual thoughts about children", "Sorry, I can't help with that.")).json();
-  assert.deepEqual([out.safety, out.risk, out.fallback], [["child_sexual_thoughts"], true, "words"]);
+test("tags: when the AI can't answer, every safety group whose words match counts, and suicide words add the crisis tag", async () => {
+  let out = await (await tagsFor("I've been looking at things online I shouldn't involving kids", "Sorry, I can't help with that.")).json();
+  assert.deepEqual([out.safety, out.risk, out.fallback], [["own_behaviour"], true, "words"]);
+  out = await (await tagsFor("he hits me", "Sorry.")).json();
+  assert.deepEqual([out.safety, out.tags], [["at_risk"], ["abuse"]], "abuse words aren't crisis words");
+  out = await (await tagsFor("I don't want to be here any more", "Sorry.")).json();
+  assert.deepEqual([out.safety, out.tags[0]], [["at_risk"], "crisis prevention"]);
 });
 
-test("tags: every safety category has a hint and words that read as a regular expression; the prompt lists them", async () => {
+test("tags: every safety group has a hint and words that read as a regular expression; the prompt lists them", async () => {
   for (const [k, c] of Object.entries(TAG_SETTINGS.safety)) { assert.ok(c.hint && typeof c.always === "boolean", k); new RegExp(c.words, "i"); }
+  new RegExp(TAG_SETTINGS.crisis_words, "i");
   let system = ""; ai = req => { system = req.system; return whole('{"tags": []}'); };
-  await tagsFor("hello", () => { return whole('{"tags": []}'); });
-  ai = req => { system = req.system; return whole('{"tags": []}'); };
   await worker.fetch(new Request("https://relay.test/tags", { method: "POST", headers: { Origin: ORIGIN, "Content-Type": "application/json",
     "CF-Connecting-IP": "10.0.2." + ++ip }, body: JSON.stringify({ text: "hello" }) }), ENV);
   for (const k of Object.keys(TAG_SETTINGS.safety)) assert.ok(system.includes(`- ${k}: `), k);
-  assert.ok(system.includes("still reply with the JSON only") && system.includes("Read all of it"));
+  assert.ok(system.includes("still answer only by filling in the label tool") && system.includes("Read all of it"));
   const t = (text, k) => new RegExp(TAG_SETTINGS.safety[k].words, "i").test(text);
-  assert.ok(t("I took a whole pack of paracetamol", "emergency") && !t("I took my tablets this morning", "emergency"));
-  assert.ok(!t("my husband worries when I'm out late, which is sweet", "from_others") && t("he checks where I am", "from_others"));
-  assert.ok(!t("I could murder a curry", "to_others"));
+  assert.ok(t("I took a whole pack of paracetamol", "urgent") && !t("I took my tablets this morning", "urgent"));
+  assert.ok(!t("my husband worries when I'm out late, which is sweet", "at_risk") && t("he checks where I am", "at_risk"));
+  assert.ok(!t("my mum checks up on me a lot since my operation", "at_risk") && !t("I could murder a curry", "own_behaviour"));
 });
 
 test("tags: the prompt lists every preference with its values", async () => {
@@ -328,7 +350,7 @@ test("tags: an answer with words around the JSON is read; one that can't be read
   out = await (await worker.fetch(new Request("https://relay.test/tags", { method: "POST", headers: { Origin: ORIGIN, "Content-Type": "application/json",
     "CF-Connecting-IP": "10.0.2." + ++ip }, body: JSON.stringify({ text: "I make myself sick after eating" }) }), ENV)).json();
   assert.deepEqual([out.tags, out.fallback, n], [["eating disorders"], undefined, 2]);
-  assert.ok(sent[1].endsWith("no other words before or after it.") && !sent[0].endsWith("after it."));
+  assert.ok(sent[1].endsWith("filling in the label tool: no other words.") && !sent[0].endsWith("no other words."));
 });
 
 test("tags: every support type has fallback words, and each reads as a regular expression", () => {
