@@ -408,7 +408,10 @@
    "risk": false,
    "off_topic": false,
    "prefs": {
-    "groups": "avoid"
+    "groups": "avoid",
+    "help": [
+     "one-to-one and therapy"
+    ]
    }
   },
   {
@@ -737,6 +740,9 @@
    "prefs": {
     "when": [
      "weekends"
+    ],
+    "help": [
+     "activities"
     ]
    }
   },

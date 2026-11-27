@@ -11,6 +11,7 @@ Usage:
   python src\\run_tags.py                    # all the phrases in scenarios-tags.json
   python src\\run_tags.py --ids T02,T09      # some
   python src\\run_tags.py --ids H*          # the preference phrases only (H01-H36)
+  python src\\run_tags.py --scenarios src\\scenarios-risk.json   # risk phrased many ways (the risk flag only)
   python src\\run_tags.py --text "lonely in Wells, money worries"   # one phrase of your own
 
 Each phrase costs a fraction of a penny with Haiku. The worker allows per_hour requests an hour from one computer for this
@@ -77,7 +78,7 @@ def show(v):
 def pref_misses(s, out):
     """The preferences the answer got wrong: expected ones missing or different, and any not expected that came back."""
     want, got = s.get("prefs", {}), out.get("prefs", {}) or {}
-    return [k for k in sorted(set(want) | set(got)) if k not in s.get("ignore", []) and not same(want.get(k), got.get(k))]
+    return [k for k in sorted(set(want) | set(got)) if k not in s.get("ignore", []) and "*" not in s.get("ignore", []) and not same(want.get(k), got.get(k))]
 
 
 def main():
@@ -104,7 +105,7 @@ def main():
         notes = check(s, out)
         passed += not notes
         if not out.get("error"):
-            for k in (set(s.get("prefs", {})) | set(out.get("prefs", {}) or {})) - set(s.get("ignore", [])):
+            for k in ([] if "*" in s.get("ignore", []) else (set(s.get("prefs", {})) | set(out.get("prefs", {}) or {})) - set(s.get("ignore", []))):
                 t = tally.setdefault(k, [0, 0]); t[1] += 1; t[0] += k not in pref_misses(s, out)
         place = out.get("place") or {}
         where = place.get("name", "") + (f" ({place['town']})" if place.get("town") else (" (not ours)" if place else ""))
