@@ -59,7 +59,7 @@
    "values": [
     "nearby only"
    ],
-   "hint": "they can't travel far: no car, can't drive, rely on the bus, can't walk far, mobility problems"
+   "hint": "they can't travel far: no car, can't drive, rely on the bus, can't walk far, mobility problems (living near a place isn't a travel limit)"
   },
   "under_18": {
    "values": [

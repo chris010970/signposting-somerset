@@ -273,7 +273,7 @@ function recordsFromCSV(text) {
   }
   return { recs };
 }
-const VERSION = "2026-11-27 17:40";        // set when the worker is built; shown on the Assist tab
+const VERSION = "2026-11-27 18:39";        // set when the worker is built; shown on the Assist tab
 const DEFAULT_MODEL = "claude-sonnet-5-5";
 const MAX_PER_HOUR = 30;               // per visitor, shared by the tasks with limit: true (best effort: counts reset when Cloudflare restarts the Worker)
 const TAGS_SET = ({
@@ -337,7 +337,7 @@ const TAGS_SET = ({
    "values": [
     "nearby only"
    ],
-   "hint": "they can't travel far: no car, can't drive, rely on the bus, can't walk far, mobility problems"
+   "hint": "they can't travel far: no car, can't drive, rely on the bus, can't walk far, mobility problems (living near a place isn't a travel limit)"
   },
   "under_18": {
    "values": [
@@ -964,6 +964,7 @@ ${Object.entries(TAGS_SET.safety).map(([k, c]) => `- ${k}: ${c.hint}`).join("\n"
 activities: up to ${TAGS_SET.max_activities} things they'd like to do, from this list, spelled exactly as here. Only when they ask for one or clearly say they enjoy it, used to enjoy it or would like to ("I used to love gardening" counts, even if they say they don't feel like anything now); never from a passing mention ("I live near a park", "my neighbour gardens"), and never for the help they need (someone to talk to, advice or counselling aren't activities). [] if none, which is many messages.
 ${ACTIVITIES.map(a => `- ${a.value}: ${a.hint}`).join("\n")}
 activity_terms: their own words for those activities, copied exactly from the text, at most three words each ("choir", "knitting", "allotment"); [] if none.
+Activities come as well as the tags and prefs, never instead of them: still give the tags an activity suggests (walking: be active; volunteering: giving; a choir: connect), and help: "activities" when they ask for something to do or a hobby.
 
 prefs: what they said about how they'd like support. Only what they actually said about themselves now: never guess, never assume from their situation (someone grieving hasn't asked for a group), and leave out anything they only mention about the past or about someone else. Leave a preference out unless they said it; {} if they said none. Only these names and values, spelled exactly as here:
 ${Object.entries(TAGS_SET.preferences).map(([k, p]) => `- ${k}: ${p.many ? "a list of " : "one of "}${p.values.map(v => `"${v}"`).join(", ")}. ${p.hint}`).join("\n")}`;

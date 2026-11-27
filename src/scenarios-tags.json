@@ -1,5 +1,5 @@
 {
- "_about": "Test phrases for the tags task (POST .../tags), run by run_tags.py. must: tags that have to come back; not: tags that mustn't (null: any tags are wrong, i.e. []); place: the place expected ('' for none); risk and off_topic: the flags expected. Add a line to try a new phrase. prefs: the preferences expected (tags.json's preferences); any not listed must not come back, so every phrase also checks nothing is picked up by mistake. ignore: preferences not checked for that phrase (where either answer is fair, e.g. volunteering as activities or community).",
+ "_about": "Test phrases for the tags task (POST .../tags), run by run_tags.py. must: tags that have to come back; not: tags that mustn't (null: any tags are wrong, i.e. []); place: the place expected ('' for none; left out: not checked); risk and off_topic: the flags expected. Add a line to try a new phrase. prefs: the preferences expected (tags.json's preferences); any not listed must not come back, so every phrase also checks nothing is picked up by mistake. ignore: preferences not checked for that phrase (where either answer is fair, e.g. volunteering as activities or community).",
  "scenarios": [
   {
    "id": "T01",
@@ -593,7 +593,6 @@
     "be active"
    ],
    "not": [],
-   "place": "Somerset",
    "risk": false,
    "off_topic": false,
    "prefs": {
@@ -603,7 +602,8 @@
    },
    "ignore": [
     "help"
-   ]
+   ],
+   "_note": "place not checked: 'anywhere in Somerset' isn't where they are, so no place is fair too"
   },
   {
    "id": "H19",
@@ -816,11 +816,11 @@
    "place": "",
    "risk": false,
    "off_topic": false,
-   "prefs": {
-    "help": [
-     "activities"
-    ]
-   }
+   "prefs": {},
+   "ignore": [
+    "help"
+   ],
+   "_note": "help not checked: the activities field (art, crafts) carries 'something to do', and For you treats any activity as help: activities"
   },
   {
    "id": "H33",
