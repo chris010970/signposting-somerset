@@ -196,6 +196,18 @@ test("tags: activities only from the sheet's list (in order, no repeats, at most
   assert.deepEqual([fallback.activities, fallback.activity_terms], [[], []], "the fallback has them too");
 });
 
+test("tags: circumstances only from the sheet's list (kind circumstance), at most max_circumstances; an age only if a person could be it", async () => {
+  const C = JSON.parse(readFileSync(join(HERE, "..", "core", "data", "restrictions.json"), "utf8")).values.filter(v => v.kind === "circumstance");
+  assert.ok(C.every(c => c.hint), "every circumstance has everyday words for the AI");
+  const out = await (await tagsFor("I'm a veteran, 82, and my son took his own life", JSON.stringify({ tags: ["bereavement"],
+    circumstances: ["Armed Forces community", "bereaved by suicide", "Somerset (home or GP)", "astronaut"], age: 82 }))).json();
+  assert.deepEqual([out.circumstances, out.age], [["Armed Forces community", "bereaved by suicide"], 82], "an area or an unknown value isn't a circumstance");
+  for (const age of [3, 200, "82", 82.5]) assert.equal((await (await tagsFor("hi", JSON.stringify({ tags: ["connect"], age }))).json()).age, null, String(age));
+  const none = await (await tagsFor("lonely", "not json")).json();
+  assert.deepEqual([none.circumstances, none.age], [[], null], "the fallback has them too");
+  assert.deepEqual(TAG_SETTINGS.preferences.addiction.values, ["alcohol", "drugs", "gambling"]);
+});
+
 test("tags: its own hourly limit per visitor (per_hour; 0: none), counted apart from Assist's", async () => {
   const me = "10.0.9.1", go = path => worker.fetch(new Request("https://relay.test/" + path, { method: "POST",
     headers: { Origin: ORIGIN, "X-Access-Code": CODE, "Content-Type": "application/json", "CF-Connecting-IP": me }, body: JSON.stringify({ text: "lonely" }) }), ENV);
@@ -220,6 +232,7 @@ test("tags: the answer comes on the label tool (forced), with the allowed values
   assert.deepEqual(schema.safety.items.enum, Object.keys(TAG_SETTINGS.safety));
   assert.deepEqual([...schema.tags.items.enum].sort(), [...TAG_LIST].sort());
   assert.deepEqual(schema.prefs.properties.when.items.enum, TAG_SETTINGS.preferences.when.values);
+  assert.deepEqual(schema.circumstances.items.enum, JSON.parse(readFileSync(join(HERE, "..", "core", "data", "restrictions.json"), "utf8")).values.filter(v => v.kind === "circumstance").map(c => c.value));
   assert.deepEqual(schema.activities.items.enum, JSON.parse(readFileSync(join(HERE, "..", "core", "data", "activities.json"), "utf8")).values.map(a => a.value));
 });
 

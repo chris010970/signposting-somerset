@@ -35,8 +35,11 @@ let passed = 0, goodN = 0, goodOf = 0;
 for (const sc of cases) {
   const out = await page.evaluate(sc => {
     const point = sc.town && PLACE[sc.town] ? { lat: PLACE[sc.town][0], lon: PLACE[sc.town][1], label: sc.town, town: sc.town } : null;
-    const c = { tags: sc.tags || [], point, safety: sc.safety || [], prefs: sc.prefs || {}, also: null,
-      activities: sc.activities || [], terms: (sc.terms || []).map(t => t.toLowerCase()), area: fyArea(point) };
+    // (as fyChoices reads the landing page's session)
+    sessionStorage.setItem("ss-foryou", JSON.stringify({ safety: sc.safety || [], prefs: sc.prefs || {}, activities: sc.activities || [],
+      activity_terms: sc.terms || [], circumstances: sc.circumstances || [], age: sc.age ?? null }));
+    const c = { ...fyChoices(), tags: sc.tags || [], point, also: null };
+    c.area = fyArea(point);
     const now = new Date(), g = fySafety(c), panel = fyPanelRecs(c, g, now), picks = fyPicks(c, now, panel.map(r => r.s.id));
     const buttons = [...new DOMParser().parseFromString(fyButtons(c, g), "text/html").querySelectorAll("a.fyx")]
       .map(a => a.querySelector("b").textContent + ": " + a.querySelector("span span").textContent);

@@ -38,8 +38,14 @@ function fyChoices() {
   // also: a place they typed that wasn't used ({ label, lat, lon }), offered in one tap
   const also = more.also && more.also.label && !isNaN(more.also.lat) && more.also.label !== (point && point.label) ? more.also : null;
   const acts = (Array.isArray(more.activities) ? more.activities : []).filter(a => typeof a === "string").slice(0, 3);
-  const terms = (Array.isArray(more.activity_terms) ? more.activity_terms : []).filter(t => typeof t === "string").map(t => t.toLowerCase()).slice(0, 3);
-  return { tags, point, safety, prefs: more.prefs || {}, also, activities: acts, terms, area: fyArea(point) };
+  // (their words without "group", "club" and the like: "walking group" matches "walks")
+  const said = (Array.isArray(more.activity_terms) ? more.activity_terms : []).filter(t => typeof t === "string").map(t => t.toLowerCase()).slice(0, 3);
+  const terms = said
+    .map(t => t.toLowerCase().replace(new RegExp(FY.generic_words, "g"), "").replace(/\s+/g, " ").trim()).filter(Boolean).slice(0, 3);
+  const circumstances = (Array.isArray(more.circumstances) ? more.circumstances : []).filter(x => typeof x === "string");
+  const age = Number.isInteger(more.age) ? more.age : null, prefs = { ...(more.prefs || {}) };
+  if (age !== null && age < 18) prefs.under_18 = "yes";
+  return { tags, point, safety, prefs, also, activities: acts, terms, said, circumstances, age, area: fyArea(point) };
 }
 const fyFill = (tpl, v) => tpl.replace(/\{(\w+)\}/g, (m, k) => v[k] ?? "");
 const fyTopic = t => (LABEL[t] || t).toLowerCase();
@@ -68,19 +74,26 @@ function fyArea(point) {
   return best ? best.area : FY.restrictions.default_area;
 }
 // Can they go? (restricted_to: for-you.json's restrictions) null: never for a pick; else { line } (a line to show under it, or "")
+// theirs: it's for people like them (a circumstance they said)
 function fyRestrict(s, c) {
   const R = FY.restrictions, vals = split(s.restricted_to || ""), areas = vals.filter(v => R.area[v]);
   if (areas.length && !areas.some(v => R.area[v] === c.area)) return null;
-  let line = "";
+  let line = "", theirs = false;
   for (const v of vals) {
     if (R.area[v] || (v === "GP practice" && areas.length)) continue;
+    if ((c.circumstances || []).includes(v)) { theirs = true; continue; }
+    const min = /^age (\d+)\+$/.exec(v);
+    if (min && c.age !== null && c.age !== undefined) { if (c.age >= +min[1]) continue; return null; }
+    if (min && c.prefs.under_18 === "yes") return null;
     if ((R.with_topic[v] || []).some(t => c.tags.includes(t))) continue;
     if (R.check[v]) { line = line || R.check[v]; continue; }
     return null;
   }
-  return { line };
+  return { line, theirs };
 }
 // Their own words for an activity, in a name or description (a plural matches too)
+// Days until it runs, as the score counts them: within soon_days only per_day_soon a day, then a whole point a day
+const fyDays = d => Math.min(d, FY.soon_days) * FY.score.per_day_soon + Math.max(0, d - FY.soon_days);
 const fyRoot = w => w.replace(/(ing|s)$/, "");
 const fyHasWords = (s, terms) => { const t = `${s.name} ${s.description}`.toLowerCase();
   return terms.some(w => t.includes(w) || t.includes(fyRoot(w))); };
@@ -88,13 +101,21 @@ const fyHasWords = (s, terms) => { const t = `${s.name} ${s.description}`.toLowe
 function fyPicker(c, now, shown = []) {
   const { point, prefs } = c, used = new Set(shown), providers = new Set(), W = FY.score;
   // Open to all: who is empty, or has anyone or adults (young people too for under-18s), or a group the topic suits
-  const openTo = (s, tag) => { const w = split(s.who), ok = [...FY.open_to_all, ...(fyTopicSet(tag).groups_ok || []), ...(prefs.under_18 === "yes" ? ["young people"] : [])];
+  // (under 18: young people's services, never adults only; 60 or over by their own word: older people's too)
+  const young = prefs.under_18 === "yes", old = c.age !== null && c.age !== undefined && c.age >= 60;
+  const openTo = (s, tag) => { const w = split(s.who), ok = [...FY.open_to_all.filter(x => !(young && x === "adults")), ...(fyTopicSet(tag).groups_ok || []),
+    ...(young ? ["young people"] : []), ...(old ? ["older people"] : [])];
     return !w.length || w.some(x => ok.includes(x)); };
   // (their own words for the group, "men's shed", "walking football for over 50s": who it's for is theirs to judge; restricted_to still holds)
   const R = FY.restrictions, named = w => c.terms.some(t => new RegExp(R.who_words[w] || "^$", "i").test(t));
-  const whoOK = (s, tag, activity) => openTo(s, tag) || split(s.who).some(w => R.who_check[w] || (activity && named(w)));
+  const whoOK = (s, tag, activity) => openTo(s, tag) || split(s.who).some(w => (R.who_check[w] && !young) || (activity && named(w)));
+  // When they said what the addiction is: never a service only for another kind (addiction_words)
+  const AW = FY.addiction_words, kinds = (prefs.addiction || []).filter(k => AW[k]);
+  const kindOK = (s, tag) => { if (tag !== "addiction" || !kinds.length) return true;
+    const t = `${s.name} ${s.description}`.toLowerCase(), is = k => new RegExp(AW[k], "i").test(t);
+    return kinds.some(is) || !Object.keys(AW).filter(k => k !== "_about" && !kinds.includes(k)).some(is); };
   const free = (s, tag, activity) => !used.has(s.id) && !(s.provider && providers.has(s.provider.toLowerCase())) && !noticeText(s)
-    && whoOK(s, tag, activity) && fyRestrict(s, c);
+    && whoOK(s, tag, activity) && fyRestrict(s, c) && kindOK(s, tag) && !(prefs.groups === "avoid" && s.type === "Peer group");
   const whoLine = (s, tag) => openTo(s, tag) ? "" : (split(s.who).map(w => R.who_check[w]).find(Boolean) || "");
   const take = (r, why, topic, note) => { used.add(r.s.id); if (r.s.provider) providers.add(r.s.provider.toLowerCase());
     return { ...r, why, topic, note: note || (r.relaxed ? FY.lines.relaxed : ""), check: fyRestrict(r.s, c).line || whoLine(r.s, topic) }; };
@@ -104,7 +125,7 @@ function fyPicker(c, now, shown = []) {
     const set = fyTopicSet(tag), s = r.s, text = `${s.name} ${s.description}`.toLowerCase();
     const firstStep = asked.length ? asked : set.first_step;
     let v = r.st ? (r.st.open ? 0 : W.phone_closed) + (s.area === "national" ? W.uk_wide : 0)   // phone or online
-      : (r.at - now) / 864e5 + r.d * W.per_mile + (FY.easy_access.includes(s.access) ? 0 : W.not_easy_access)   // in person
+      : fyDays((r.at - now) / 864e5) + r.d * W.per_mile + (FY.easy_access.includes(s.access) ? 0 : W.not_easy_access)   // in person
         + ([...sessions(s, now, 28)].length < 4 ? W.not_weekly : 0);
     if (activity) { if (fyHasWords(s, c.terms)) v += W.exact_words;
       if (!FY.activity_types.includes(s.type)) v += W.activity_on_the_side;
@@ -113,6 +134,8 @@ function fyPicker(c, now, shown = []) {
     if (split(s.who).length && !split(s.who).some(w => FY.open_to_all.includes(w))) v += W.not_open_to_all;   // (a group the topic suits: after open ones)
     if (s.area !== "national" && s.area !== c.area) v += W.other_area;
     if (fyRestrict(s, c).line || whoLine(s, tag)) v += W.check_first;
+    if (fyRestrict(s, c).theirs) v += W.theirs;
+    if (young && split(s.who).includes("young people")) v += W.young;
     if ((set.prefer_words || []).some(w => text.includes(w))) v += W.prefer_words;
     if (prefs.groups === "avoid" && s.type === "Peer group") v += FY.avoid_groups_penalty;
     return v;
@@ -127,12 +150,18 @@ function fyPicker(c, now, shown = []) {
     if (!point) return null;
     const fits = s => activity ? split(s.activities || "").some(a => c.activities.includes(a)) : s._sf.includes(tag);
     const near = S.filter(s => fits(s) && free(s, tag, activity) && !isNaN(s.lat)).map(s => ({ s, d: miles(point, s) }));
-    const radii = prefs.travel === "nearby only" ? FY.radius_nearby : FY.radius_miles;
+    // (an activity: only the first distance, then an honest "couldn't find"; their own area has this kind of thing at all, even
+    // already picked: never another area's)
+    const radii = (prefs.travel === "nearby only" ? FY.radius_nearby : FY.radius_miles).slice(0, activity ? 1 : 2);
+    const ownHas = r => S.some(s => fits(s) && (s.area === c.area || s.area === "national") && !isNaN(s.lat) && miles(point, s) <= r);
     const times = prefs.when && prefs.when.length ? (strict ? [prefs.when] : [prefs.when, null]) : [null];
     for (const when of times)
       for (const radius of radii) {
-        const ok = near.filter(x => x.d <= radius).map(x => ({ ...x, at: suits(x.s, when) })).filter(x => x.at && x.at.getTime() <= horizon)
+        // (one for people like them with no set times, such as a monthly meet-up: still a pick, its card says to check the times)
+        let ok = near.filter(x => x.d <= radius).map(x => ({ ...x, at: suits(x.s, when) || (fyRestrict(x.s, c).theirs && !(x.s.times || "").trim() ? new Date(now.getTime() + 14 * 864e5) : null) }))
+          .filter(x => x.at && x.at.getTime() <= horizon)
           .map(x => ({ ...x, nx: nextText(x.s, now), relaxed: !!prefs.when && !!prefs.when.length && !when })).map(x => ({ ...x, v: score(x, tag, activity) })).sort(order);
+        if (ownHas(radius)) ok = ok.filter(x => x.s.area === c.area || x.s.area === "national");   // (another area's only when their own has none)
         if (ok.length) return ok[0];
       }
     return null;
@@ -151,9 +180,13 @@ function fyPicker(c, now, shown = []) {
     return all.sort(order)[0] || null;
   }
   // The topic's next main line for their area, then national ones (main_lines), if it's there and open to them
+  // (first: lines for people like them, then young people's for under-18s, when they fit the topic)
   function line(tag) {
-    const L = FY.main_lines[tag]; if (!L) return null;
-    for (const id of [...(L[c.area] || []), ...(L.national || [])]) {
+    const L = FY.main_lines[tag] || {}, U = FY.under_18_lines;
+    const fit = id => { const s = ALL.find(x => x.record_id === id); return s && s._sf.includes(tag) ? id : null; };
+    const ids = [...(c.circumstances || []).flatMap(x => FY.circumstance_lines[x] || []).filter(fit),
+      ...(young ? [...(U[c.area] || []), ...(U.national || [])].filter(fit) : []), ...(L[c.area] || []), ...(L.national || [])];
+    for (const id of ids) {
       const s = ALL.find(x => x.record_id === id);
       if (s && free(s, tag)) return { s, st: openState(s, now) };
     }
@@ -170,7 +203,7 @@ function fyPicks(c, now = new Date(), shown = []) {
   // Under a panel, no picks for what it already covers: the crisis lines, and its topics' services (abuse: the abuse lines)
   let tags = c.tags.filter(t => !(g && (t === FY.crisis_tag || (FY.safety[g].by_topic || {})[t])));
   const phoneFirst = c.prefs.contact === "phone or online", inPersonOnly = c.prefs.contact === "in person" && c.point;
-  const what = c.terms[0] || c.activities[0] || "";
+  const what = (c.said || [])[0] || c.terms[0] || c.activities[0] || "";   // (their words as they said them, for the line)
   let gap = "";
   if (c.activities.length) {
     const at = tags[0] || "connect", r = phoneFirst || !c.point ? P.byPhone(at, { activity: true }) || P.inPerson(at, { activity: true }) : P.inPerson(at, { activity: true });
@@ -182,7 +215,7 @@ function fyPicks(c, now = new Date(), shown = []) {
     if (r && (!tags.length || related(r))) { const r2 = c.point ? P.inPerson(at, { activity: true }) : P.byPhone(at, { activity: true });
       if (r2 && related(r2) === related(r)) picks.push(P.take(r2, "activity", at, say(r2))); }
     if (!r) gap = fyFill(c.point ? FY.lines.gap : FY.lines.gap_anywhere, { what, place: c.point ? c.point.label : "" });
-    if ((!tags.length || gap) && !g && !tags.includes("connect")) tags = [...tags, "connect"];   // a light request, or no match: somewhere to meet people
+    if ((!tags.length || gap) && !g) tags = gap ? ["connect", ...tags.filter(t => t !== "connect")] : [...tags, "connect"];   // a light request, or no match: somewhere to meet people (first, after a gap, so the line says why)
   }
   const roles = t => (FY.roles[t] || ["place", "place"]);
   for (let i = 0; i < FY.max_picks && room(); i++)

@@ -133,7 +133,7 @@ async function askTags() {
   const said = d.place && d.place.lat ? { town: d.place.town, lat: d.place.lat, lon: d.place.lon } : null;
   Object.assign(h, { tags: d.tags || [], place: h.where || said, risk: !!d.risk });
   // What else the AI read (safety, preferences) goes to For you in this tab's session only, never in the address
-  try { sessionStorage.setItem("ss-foryou", JSON.stringify({ safety: d.safety || [], prefs: d.prefs || {}, activities: d.activities || [], activity_terms: d.activity_terms || [],
+  try { sessionStorage.setItem("ss-foryou", JSON.stringify({ safety: d.safety || [], prefs: d.prefs || {}, activities: d.activities || [], activity_terms: d.activity_terms || [], circumstances: d.circumstances || [], age: d.age ?? null,
     also: h.where && said && said.town !== h.where.town ? { label: said.town || d.place.name, lat: said.lat, lon: said.lon } : null })); } catch (e) {}
   goShow(h.tags, h.place, (d.safety || []).length > 0 || (d.activities || []).length > 0);
 }

@@ -1,0 +1,323 @@
+{
+ "_about": "Test phrases for who someone is, as the tags task reads it (POST .../tags), run by run_tags.py --scenarios src/scenarios-circumstances.json. circumstances: exactly these must come back ([]: none may: a family member mentioned in passing, a documentary, a friend's dad aren't theirs); age: their age (null: none); prefs here checks only addiction (what the addiction is). Tags and place aren't checked (scenarios-tags.json does that).",
+ "scenarios": [
+  {
+   "id": "C01",
+   "text": "I'm a veteran and my anxiety is bad since I left the army, Yeovil",
+   "circumstances": [
+    "Armed Forces community"
+   ],
+   "age": null,
+   "prefs": {},
+   "ignore": [
+    "contact",
+    "groups",
+    "get_out",
+    "when",
+    "travel",
+    "under_18",
+    "help"
+   ]
+  },
+  {
+   "id": "C02",
+   "text": "I'm autistic and lonely, Bath",
+   "circumstances": [
+    "neurodivergent"
+   ],
+   "age": null,
+   "prefs": {},
+   "ignore": [
+    "contact",
+    "groups",
+    "get_out",
+    "when",
+    "travel",
+    "under_18",
+    "help"
+   ]
+  },
+  {
+   "id": "C03",
+   "text": "My son took his own life last year",
+   "circumstances": [
+    "bereaved by suicide"
+   ],
+   "age": null,
+   "prefs": {},
+   "ignore": [
+    "contact",
+    "groups",
+    "get_out",
+    "when",
+    "travel",
+    "under_18",
+    "help"
+   ]
+  },
+  {
+   "id": "C04",
+   "text": "My husband had a stroke and I'm caring for him",
+   "circumstances": [
+    "stroke"
+   ],
+   "age": null,
+   "prefs": {},
+   "ignore": [
+    "contact",
+    "groups",
+    "get_out",
+    "when",
+    "travel",
+    "under_18",
+    "help"
+   ]
+  },
+  {
+   "id": "C05",
+   "text": "I'm 82, I don't go out much and can't walk far",
+   "circumstances": [],
+   "age": 82,
+   "prefs": {},
+   "ignore": [
+    "contact",
+    "groups",
+    "get_out",
+    "when",
+    "travel",
+    "under_18",
+    "help"
+   ]
+  },
+  {
+   "id": "C06",
+   "text": "I'm 16 and anxious all the time",
+   "circumstances": [],
+   "age": 16,
+   "prefs": {},
+   "ignore": [
+    "contact",
+    "groups",
+    "get_out",
+    "when",
+    "travel",
+    "under_18",
+    "help"
+   ]
+  },
+  {
+   "id": "C07",
+   "text": "I drink every day and want to stop",
+   "circumstances": [],
+   "age": null,
+   "prefs": {
+    "addiction": [
+     "alcohol"
+    ]
+   },
+   "ignore": [
+    "contact",
+    "groups",
+    "get_out",
+    "when",
+    "travel",
+    "under_18",
+    "help"
+   ]
+  },
+  {
+   "id": "C08",
+   "text": "My gambling has got out of hand and I'm in debt",
+   "circumstances": [],
+   "age": null,
+   "prefs": {
+    "addiction": [
+     "gambling"
+    ]
+   },
+   "ignore": [
+    "contact",
+    "groups",
+    "get_out",
+    "when",
+    "travel",
+    "under_18",
+    "help"
+   ]
+  },
+  {
+   "id": "C09",
+   "text": "My son is using drugs and I don't know how to help",
+   "circumstances": [],
+   "age": null,
+   "prefs": {
+    "addiction": [
+     "drugs"
+    ]
+   },
+   "ignore": [
+    "contact",
+    "groups",
+    "get_out",
+    "when",
+    "travel",
+    "under_18",
+    "help"
+   ]
+  },
+  {
+   "id": "C10",
+   "text": "I'm a farmer and things are really hard at the moment",
+   "circumstances": [
+    "farming"
+   ],
+   "age": null,
+   "prefs": {},
+   "ignore": [
+    "contact",
+    "groups",
+    "get_out",
+    "when",
+    "travel",
+    "under_18",
+    "help"
+   ]
+  },
+  {
+   "id": "C11",
+   "text": "I've been sleeping rough for a month",
+   "circumstances": [
+    "homelessness"
+   ],
+   "age": null,
+   "prefs": {},
+   "ignore": [
+    "contact",
+    "groups",
+    "get_out",
+    "when",
+    "travel",
+    "under_18",
+    "help"
+   ]
+  },
+  {
+   "id": "C12",
+   "text": "My daughter has autism and I'm exhausted, Frome",
+   "circumstances": [
+    "SEND families"
+   ],
+   "age": null,
+   "prefs": {},
+   "ignore": [
+    "contact",
+    "groups",
+    "get_out",
+    "when",
+    "travel",
+    "under_18",
+    "help"
+   ]
+  },
+  {
+   "id": "C13",
+   "text": "My mum has dementia and I'm her carer",
+   "circumstances": [
+    "memory problems or dementia"
+   ],
+   "age": null,
+   "prefs": {},
+   "ignore": [
+    "contact",
+    "groups",
+    "get_out",
+    "when",
+    "travel",
+    "under_18",
+    "help"
+   ]
+  },
+  {
+   "id": "C14",
+   "text": "I'm losing my sight and feel very low",
+   "circumstances": [
+    "sight loss"
+   ],
+   "age": null,
+   "prefs": {},
+   "ignore": [
+    "contact",
+    "groups",
+    "get_out",
+    "when",
+    "travel",
+    "under_18",
+    "help"
+   ]
+  },
+  {
+   "id": "C15",
+   "text": "My grandad was in the navy, I'm just lonely",
+   "circumstances": [],
+   "age": null,
+   "prefs": {},
+   "ignore": [
+    "contact",
+    "groups",
+    "get_out",
+    "when",
+    "travel",
+    "under_18",
+    "help"
+   ]
+  },
+  {
+   "id": "C16",
+   "text": "I watched a documentary about autism and I'm anxious",
+   "circumstances": [],
+   "age": null,
+   "prefs": {},
+   "ignore": [
+    "contact",
+    "groups",
+    "get_out",
+    "when",
+    "travel",
+    "under_18",
+    "help"
+   ]
+  },
+  {
+   "id": "C17",
+   "text": "I'm 45 and feeling low",
+   "circumstances": [],
+   "age": 45,
+   "prefs": {},
+   "ignore": [
+    "contact",
+    "groups",
+    "get_out",
+    "when",
+    "travel",
+    "under_18",
+    "help"
+   ]
+  },
+  {
+   "id": "C18",
+   "text": "My friend's dad had a stroke, anyway I'm stressed at work",
+   "circumstances": [],
+   "age": null,
+   "prefs": {},
+   "ignore": [
+    "contact",
+    "groups",
+    "get_out",
+    "when",
+    "travel",
+    "under_18",
+    "help"
+   ]
+  }
+ ]
+}

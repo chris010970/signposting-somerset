@@ -1,5 +1,5 @@
 {
- "_about": "The For you tab (/next/directory/#foryou, opened from the landing page): what the landing page's AI read in someone's words (topics, place, preferences, safety: build/tools/assist/tags.json) turned into picks and buttons by the rules here. No AI here. Read by build/next/js/for-you.js. topics: for each topic, its line, the service types that make a good first step, words in a name or description that make one better (prefer_words), the groups (who) it suits (groups_ok) and a short name for buttons. open_to_all: the who values that mean anyone can go: the picks only use services open to all (or to a group the topic suits, groups_ok), since we don't know who's asking. score: each candidate gets days until it next runs + miles x per_mile, plus a penalty for each way it fits less well (other_area: a service in another area; check_first: one restricted to people we can't tell they are; exact_words: less when it has their own words for an activity; activity_on_the_side: more, for an activity, when the service isn't one of activity_types (a breakfast drop-in with a sing-along, rather than a singing group); not_weekly: more for something that meets less than weekly, so a weekly group beats a monthly one that happens to be today; in_name: less again when the activity or their words are in its name, so it's what the group is for); the lowest wins. roles, main_lines and restrictions: what each pick is for, the established lines for each topic and area, and who a service is only for (each has its own _about). help_types: the kinds of help someone can ask for, as the sheet's types. when_hours: what daytime and evenings mean (a session's start time) and which days are weekends. safety: the panel for each risk group (most serious first), its words and the services (sheet record ids) it shows, with more by topic or for under-18s; picks: whether the usual picks show beneath (none, or relevant: only their topics, nothing added). explore: the buttons beside the picks; kind_titles: a button's title for each kind of service.",
+ "_about": "The For you tab (/next/directory/#foryou, opened from the landing page): what the landing page's AI read in someone's words (topics, place, preferences, safety: build/tools/assist/tags.json) turned into picks and buttons by the rules here. No AI here. Read by build/next/js/for-you.js. topics: for each topic, its line, the service types that make a good first step, words in a name or description that make one better (prefer_words), the groups (who) it suits (groups_ok) and a short name for buttons. open_to_all: the who values that mean anyone can go: the picks only use services open to all (or to a group the topic suits, groups_ok), since we don't know who's asking. score: each candidate gets days until it next runs (within soon_days, only per_day_soon a day, so a group in three weeks isn't far behind one tomorrow) + miles x per_mile, plus a penalty for each way it fits less well (other_area: a service in another area; check_first: one restricted to people we can't tell they are; exact_words: less when it has their own words for an activity; theirs: less for a service for people like them (a veteran's line for a veteran); young: less for a young people's service for someone under 18; activity_on_the_side: more, for an activity, when the service isn't one of activity_types (a breakfast drop-in with a sing-along, rather than a singing group); not_weekly: more for something that meets less than weekly, so a weekly group beats a monthly one that happens to be today; in_name: less again when the activity or their words are in its name, so it's what the group is for); the lowest wins. generic_words: left out of their own words for an activity before matching (\"walking group\" matches \"walks\"). roles, main_lines, circumstance_lines, under_18_lines, addiction_words and restrictions: what each pick is for, the established lines for each topic and area, and who a service is only for (each has its own _about). help_types: the kinds of help someone can ask for, as the sheet's types. when_hours: what daytime and evenings mean (a session's start time) and which days are weekends. safety: the panel for each risk group (most serious first), its words and the services (sheet record ids) it shows, with more by topic or for under-18s; picks: whether the usual picks show beneath (none, or relevant: only their topics, nothing added). explore: the buttons beside the picks; kind_titles: a button's title for each kind of service.",
  "max_picks": 3,
  "radius_miles": [
   10,
@@ -27,7 +27,10 @@
   "check_first": 6,
   "in_name": -6,
   "not_weekly": 4,
-  "activity_on_the_side": 3
+  "activity_on_the_side": 3,
+  "theirs": -15,
+  "young": -6,
+  "per_day_soon": 0.3
  },
  "gentle_for": [
   "low mood",
@@ -67,7 +70,6 @@
   "keep learning": {
    "line": "For learning something new",
    "first_step": [
-    "Course",
     "Activity group"
    ]
   },
@@ -90,7 +92,6 @@
    "line": "For anxiety and worry",
    "first_step": [
     "Peer group",
-    "Course",
     "Community"
    ]
   },
@@ -256,9 +257,6 @@
   "one-to-one and therapy": [
    "One-to-one support",
    "Counselling or therapy"
-  ],
-  "courses": [
-   "Course"
   ]
  },
  "when_hours": {
@@ -512,9 +510,10 @@
    ]
   },
   "addiction": {
-   "why": "the area's drug and alcohol service, then the national gambling line",
+   "why": "the area's drug and alcohol service, then gambling support (each only for the addiction they said, when they said one)",
    "Somerset": [
-    "R0329"
+    "R0329",
+    "R0644"
    ],
    "Bath and North East Somerset": [
     "R1094"
@@ -551,7 +550,7 @@
   }
  },
  "restrictions": {
-  "_about": "Who a service is only for (the sheet's restricted_to). area: an area restriction and the area it means: fine when it's their area (from their town; Somerset when we don't know), otherwise never picked. with_topic: fine when they asked about one of these topics (a carer asking about dementia can go to a memory café). check: we can't tell, so it can be picked, after open ones, with this line under it. Anything else (veterans, sight loss, other and so on): never picked, since we don't know who's asking; the directory still shows it. GP practice beside an area value is just the area. who_check: a group (the sheet's who) we can't tell they're in, picked after open ones with this line. who_words: a group they named in their own words for an activity (a men's shed), so it can be picked.",
+  "_about": "Who a service is only for (the sheet's restricted_to). area: an area restriction and the area it means: fine when it's their area (from their town; Somerset when we don't know), otherwise never picked. with_topic: fine when they asked about one of these topics (a carer asking about dementia can go to a memory café). check: we can't tell, so it can be picked, after open ones, with this line under it. Anything else (veterans, sight loss, other and so on): never picked, since we don't know who's asking; the directory still shows it. GP practice beside an area value is just the area. who_check: a group (the sheet's who) we can't tell they're in, picked after open ones with this line. who_words: a group they named in their own words for an activity (a men's shed), so it can be picked. A circumstance the person said (a veteran: Armed Forces community) is fine and preferred; an age limit is fine if their age is enough, never if it isn't, and a check line if we don't know it.",
   "area": {
    "Somerset (home or GP)": "Somerset",
    "B&NES (home or GP)": "Bath and North East Somerset",
@@ -598,5 +597,49 @@
   "Activity group",
   "Course",
   "Volunteering"
- ]
+ ],
+ "soon_days": 28,
+ "circumstance_lines": {
+  "_about": "Lines for people in a particular circumstance (the AI's circumstances: build/core/data/restrictions.json), tried before the topic's own main lines when they fit the topic. Sheet record ids, checked like the main lines.",
+  "Armed Forces community": [
+   "R0611",
+   "R0610",
+   "R1484",
+   "R1485",
+   "R0612"
+  ],
+  "bereaved by suicide": [
+   "R0731",
+   "R0795"
+  ],
+  "stroke": [
+   "R0753",
+   "R0754"
+  ],
+  "farming": [
+   "R0749",
+   "R0750"
+  ],
+  "sight loss": [
+   "R1477"
+  ],
+  "neurodivergent": [
+   "R0625"
+  ]
+ },
+ "under_18_lines": {
+  "_about": "For someone under 18: young people's lines first, by area then national (sheet record ids).",
+  "Somerset": [
+   "R0614",
+   "R1456"
+  ],
+  "national": []
+ },
+ "addiction_words": {
+  "_about": "When they said what the addiction is (the AI's addiction preference): words in a service's name or description that show which it's for. A service that's only for another kind (Gamblers Anonymous for someone who drinks) isn't picked.",
+  "alcohol": "alcohol|drink|\\baa\\b|alcoholics",
+  "drugs": "drug|narcotics|cocaine|heroin",
+  "gambling": "gambl|gamcare|betting"
+ },
+ "generic_words": "\\b(groups?|clubs?|class(es)?|sessions?|meet-?ups?)\\b"
 }

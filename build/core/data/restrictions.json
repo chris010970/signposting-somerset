@@ -1,0 +1,30 @@
+{
+ "_about": "Who a service is only for (the sheet's restricted_to column), each with its kind: circumstance (something about the person: the landing page's AI picks these out when someone says them about themselves, or about the person they care for, with hint as everyday words), age (an age limit), area (where they live or their GP), access (membership, a GP practice, living locally), other (rare one-offs: never picked). For you's rules for each are in build/next/for-you.json (restrictions); the AI's part is in build/tools/assist/tags.json.",
+ "values": [
+  {"value": "Armed Forces community", "kind": "circumstance", "hint": "a veteran, serving in the forces, ex-army, navy or RAF, or their family"},
+  {"value": "farming", "kind": "circumstance", "hint": "a farmer or farm worker, or their family"},
+  {"value": "sight loss", "kind": "circumstance", "hint": "blind, partially sighted, losing their sight"},
+  {"value": "hearing loss", "kind": "circumstance", "hint": "deaf, hard of hearing"},
+  {"value": "learning disability", "kind": "circumstance", "hint": "has a learning disability"},
+  {"value": "neurodivergent", "kind": "circumstance", "hint": "autistic, ADHD, neurodivergent"},
+  {"value": "memory problems or dementia", "kind": "circumstance", "hint": "has dementia or memory problems, or cares for someone who has"},
+  {"value": "stroke", "kind": "circumstance", "hint": "has had a stroke, or cares for someone who has"},
+  {"value": "cancer", "kind": "circumstance", "hint": "has cancer or has had it, or someone close to them has"},
+  {"value": "health condition or disability", "kind": "circumstance", "hint": "a long-term condition (Parkinson's, MS, COPD, a stoma, a brain injury) or a physical disability"},
+  {"value": "bereaved by suicide", "kind": "circumstance", "hint": "someone close to them died by suicide"},
+  {"value": "homelessness", "kind": "circumstance", "hint": "homeless, sleeping rough, sofa surfing"},
+  {"value": "SEND families", "kind": "circumstance", "hint": "a parent or carer of a child with special educational needs or a disability"},
+  {"value": "low income", "kind": "circumstance", "hint": "on a low income or benefits, can't afford food or bills"},
+  {"value": "age 50+", "kind": "age"},
+  {"value": "age 55+", "kind": "age"},
+  {"value": "age 60+", "kind": "age"},
+  {"value": "age 65+", "kind": "age"},
+  {"value": "Somerset (home or GP)", "kind": "area"},
+  {"value": "B&NES (home or GP)", "kind": "area"},
+  {"value": "North Somerset (home or GP)", "kind": "area"},
+  {"value": "members", "kind": "access"},
+  {"value": "GP practice", "kind": "access"},
+  {"value": "local area", "kind": "access"},
+  {"value": "other", "kind": "other"}
+ ]
+}

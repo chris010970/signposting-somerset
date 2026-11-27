@@ -1,5 +1,5 @@
 {
- "_about": "Test cases for For you (the picks and buttons), run by build/tests/run_foryou.mjs on the real page code, with the sheet's data in docs/assets/services.csv and a fixed date. Each says what the landing page's AI would have read (tags, town, prefs, safety, activities, terms: as in scenarios-tags.json and scenarios-activities.json) and good: record ids a support worker would be happy to see (the reference picks; others can be fine too). Checks for every case: nothing they can't go to (restricted_to), never two from one provider, an activity they asked for comes first or the page says it couldn't find one, nothing from another area when their own area has the same kind of thing.",
+ "_about": "Test cases for For you (the picks and buttons), run by build/tests/run_foryou.mjs on the real page code, with the sheet's data in docs/assets/services.csv and a fixed date. Each says what the landing page's AI would have read (tags, town, prefs, safety, activities, terms, circumstances, age: as in scenarios-tags.json and scenarios-activities.json) and F cases were written with hand-picked answers; G cases are new ones, to see how the rules cope with situations they weren't tuned on. good: record ids a support worker would be happy to see (the reference picks; others can be fine too). Checks for every case: nothing they can't go to (restricted_to), never two from one provider, an activity they asked for comes first or the page says it couldn't find one, nothing from another area when their own area has the same kind of thing.",
  "scenarios": [
   {
    "id": "F01",
@@ -283,6 +283,266 @@
    "terms": [
     "walking football"
    ],
+   "good": []
+  },
+  {
+   "id": "G01",
+   "text": "Feeling low, only free at weekends, Yeovil",
+   "tags": [
+    "low mood"
+   ],
+   "town": "Yeovil",
+   "prefs": {
+    "when": [
+     "weekends"
+    ]
+   },
+   "good": []
+  },
+  {
+   "id": "G02",
+   "text": "I drink every day and want to stop, I'd rather see someone one-to-one than a group, Bridgwater",
+   "tags": [
+    "addiction"
+   ],
+   "town": "Bridgwater",
+   "prefs": {
+    "groups": "avoid",
+    "help": [
+     "one-to-one and therapy"
+    ],
+    "addiction": [
+     "alcohol"
+    ]
+   },
+   "good": []
+  },
+  {
+   "id": "G03",
+   "text": "My gambling has got out of hand and I'm in debt, Taunton",
+   "tags": [
+    "addiction",
+    "finances"
+   ],
+   "town": "Taunton",
+   "good": [],
+   "prefs": {
+    "addiction": [
+     "gambling"
+    ]
+   }
+  },
+  {
+   "id": "G04",
+   "text": "I'm 82, I don't go out much and can't walk far, Minehead",
+   "tags": [
+    "connect"
+   ],
+   "town": "Minehead",
+   "prefs": {
+    "travel": "nearby only"
+   },
+   "good": [],
+   "age": 82
+  },
+  {
+   "id": "G05",
+   "text": "New mum, struggling, would love a baby group, Chard",
+   "tags": [
+    "low mood",
+    "connect"
+   ],
+   "town": "Chard",
+   "activities": [
+    "play"
+   ],
+   "terms": [
+    "baby group"
+   ],
+   "good": []
+  },
+  {
+   "id": "G06",
+   "text": "I hear voices and would like to talk to others who do, Glastonbury",
+   "tags": [
+    "hearing voices"
+   ],
+   "town": "Glastonbury",
+   "prefs": {
+    "help": [
+     "peer support"
+    ]
+   },
+   "good": []
+  },
+  {
+   "id": "G07",
+   "text": "I think I have an eating disorder, Wells",
+   "tags": [
+    "eating disorders"
+   ],
+   "town": "Wells",
+   "good": []
+  },
+  {
+   "id": "G08",
+   "text": "My husband had a stroke and I'm caring for him, Burnham-on-Sea",
+   "tags": [
+    "caring for someone"
+   ],
+   "town": "Burnham-on-Sea",
+   "good": [],
+   "circumstances": [
+    "stroke"
+   ]
+  },
+  {
+   "id": "G09",
+   "text": "Constant back pain, it gets me down, Frome",
+   "tags": [
+    "long-term pain",
+    "low mood"
+   ],
+   "town": "Frome",
+   "good": []
+  },
+  {
+   "id": "G10",
+   "text": "My son took his own life last year, Bath",
+   "tags": [
+    "bereavement"
+   ],
+   "town": "Bath",
+   "good": [],
+   "circumstances": [
+    "bereaved by suicide"
+   ]
+  },
+  {
+   "id": "G11",
+   "text": "Behind on rent and the landlord wants me out, Weston-super-Mare",
+   "tags": [
+    "housing",
+    "finances"
+   ],
+   "town": "Weston-super-Mare",
+   "good": []
+  },
+  {
+   "id": "G12",
+   "text": "No food in the house till payday, Taunton",
+   "tags": [
+    "food",
+    "finances"
+   ],
+   "town": "Taunton",
+   "good": []
+  },
+  {
+   "id": "G13",
+   "text": "So lonely out here, Dulverton",
+   "tags": [
+    "connect"
+   ],
+   "town": "Dulverton",
+   "good": []
+  },
+  {
+   "id": "G14",
+   "text": "I'm a veteran and my anxiety is bad since I left the army, Yeovil",
+   "tags": [
+    "anxiety"
+   ],
+   "town": "Yeovil",
+   "good": [],
+   "circumstances": [
+    "Armed Forces community"
+   ]
+  },
+  {
+   "id": "G15",
+   "text": "I'm 16 and anxious all the time, Wincanton",
+   "tags": [
+    "anxiety"
+   ],
+   "town": "Wincanton",
+   "prefs": {
+    "under_18": "yes"
+   },
+   "good": [],
+   "age": 16
+  },
+  {
+   "id": "G16",
+   "text": "I'd like to volunteer, Langport",
+   "tags": [
+    "giving"
+   ],
+   "town": "Langport",
+   "activities": [
+    "volunteering"
+   ],
+   "terms": [
+    "volunteer"
+   ],
+   "good": []
+  },
+  {
+   "id": "G17",
+   "text": "Feeling low, can't face going out, evenings are worst (no place)",
+   "tags": [
+    "low mood"
+   ],
+   "prefs": {
+    "contact": "phone or online",
+    "when": [
+     "evenings"
+    ]
+   },
+   "good": []
+  },
+  {
+   "id": "G18",
+   "text": "I'm autistic and lonely, Bath",
+   "tags": [
+    "connect"
+   ],
+   "town": "Bath",
+   "good": [],
+   "circumstances": [
+    "neurodivergent"
+   ]
+  },
+  {
+   "id": "G19",
+   "text": "A walking group at weekends near Frome",
+   "tags": [
+    "be active"
+   ],
+   "town": "Frome",
+   "activities": [
+    "walking"
+   ],
+   "terms": [
+    "walking group"
+   ],
+   "prefs": {
+    "when": [
+     "weekends"
+    ]
+   },
+   "good": []
+  },
+  {
+   "id": "G20",
+   "text": "Panic attacks, I'd rather talk to someone face to face, Bridgwater",
+   "tags": [
+    "anxiety"
+   ],
+   "town": "Bridgwater",
+   "prefs": {
+    "contact": "in person"
+   },
    "good": []
   }
  ]

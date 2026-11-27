@@ -13,6 +13,7 @@ Usage:
   python src\\run_tags.py --ids H*          # the preference phrases only (H01-H36)
   python src\\run_tags.py --scenarios src\\scenarios-risk.json   # risk phrased many ways (the risk flag only)
   python src\\run_tags.py --scenarios src\\scenarios-activities.json   # activities and their own words for them
+  python src\\run_tags.py --scenarios src\\scenarios-circumstances.json   # who they are (a veteran, autistic), their age, the addiction
   python src\\run_tags.py --text "lonely in Wells, money worries"   # one phrase of your own
 
 Each phrase costs a fraction of a penny with Haiku. The worker allows per_hour requests an hour from one computer for this
@@ -70,6 +71,10 @@ def check(s, out):
             notes.append(f"safety {show(got_s)}, expected {show(s['safety'])}")
     if "activities" in s and not same(s["activities"], out.get("activities")):   # exactly these ([]: none)
         notes.append(f"activities {show(out.get('activities'))}, expected {show(s['activities'])}")
+    if "circumstances" in s and not same(s["circumstances"], out.get("circumstances")):   # exactly these ([]: none)
+        notes.append(f"circumstances {show(out.get('circumstances'))}, expected {show(s['circumstances'])}")
+    if "age" in s and out.get("age") != s["age"]:   # (null: no age)
+        notes.append(f"age {out.get('age')}, expected {s['age']}")
     terms = out.get("activity_terms") or []
     lost = [t for t in s.get("terms", []) if not any(t in g or g in t for g in terms)]   # each of their words, or part of it
     if lost:
@@ -137,6 +142,8 @@ def main():
         flags = " ".join([f for f in ("risk", "off_topic") if out.get(f)] + ([f"safety={show(out['safety'])}"] if out.get("safety") else [])
                          + ([f"activities={show(out['activities'])}"] if out.get("activities") else [])
                          + ([f"words={show(out['activity_terms'])}"] if out.get("activity_terms") else [])
+                         + ([f"circumstances={show(out['circumstances'])}"] if out.get("circumstances") else [])
+                         + ([f"age={out['age']}"] if out.get("age") is not None else [])
                          + [f"{k}={show(v)}" for k, v in (out.get("prefs") or {}).items()])
         words = out.get("fallback") == "words"
         words_n[0] += words; words_n[1] += words and not notes
