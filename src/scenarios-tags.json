@@ -1,5 +1,5 @@
 {
- "_about": "Test phrases for the tags task (POST .../tags), run by run_tags.py. must: tags that have to come back; not: tags that mustn't (null: any tags are wrong, i.e. []); place: the place expected ('' for none); risk and off_topic: the flags expected. Add a line to try a new phrase.",
+ "_about": "Test phrases for the tags task (POST .../tags), run by run_tags.py. must: tags that have to come back; not: tags that mustn't (null: any tags are wrong, i.e. []); place: the place expected ('' for none); risk and off_topic: the flags expected. Add a line to try a new phrase. prefs: the preferences expected (tags.json's preferences); any not listed must not come back, so every phrase also checks nothing is picked up by mistake.",
  "scenarios": [
   {
    "id": "T01",
@@ -47,7 +47,10 @@
    "not": [],
    "place": "Frome",
    "risk": false,
-   "off_topic": false
+   "off_topic": false,
+   "prefs": {
+    "get_out": "yes"
+   }
   },
   {
    "id": "T05",
@@ -175,7 +178,12 @@
    "not": [],
    "place": "Pilton",
    "risk": false,
-   "off_topic": false
+   "off_topic": false,
+   "prefs": {
+    "help": [
+     "activities"
+    ]
+   }
   },
   {
    "id": "T17",
@@ -197,7 +205,10 @@
    "not": [],
    "place": "",
    "risk": true,
-   "off_topic": false
+   "off_topic": false,
+   "prefs": {
+    "under_18": "yes"
+   }
   },
   {
    "id": "T19",
@@ -231,7 +242,13 @@
    "not": [],
    "place": "Taunton",
    "risk": false,
-   "off_topic": false
+   "off_topic": false,
+   "prefs": {
+    "help": [
+     "activities",
+     "courses"
+    ]
+   }
   },
   {
    "id": "T22",
@@ -299,6 +316,530 @@
    "place": "Wells",
    "risk": false,
    "off_topic": false
+  },
+  {
+   "id": "H01",
+   "text": "I can't face going out at the moment but I'd like someone to talk to about my anxiety",
+   "must": [
+    "anxiety"
+   ],
+   "not": [],
+   "place": "",
+   "risk": false,
+   "off_topic": false,
+   "prefs": {
+    "contact": "phone or online",
+    "help": [
+     "one-to-one and therapy"
+    ]
+   }
+  },
+  {
+   "id": "H02",
+   "text": "I'm stuck indoors all day and really need to get out and meet people",
+   "must": [
+    "connect"
+   ],
+   "not": [],
+   "place": "",
+   "risk": false,
+   "off_topic": false,
+   "prefs": {
+    "get_out": "yes"
+   }
+  },
+  {
+   "id": "H03",
+   "text": "I'd prefer to talk to someone face to face rather than on the phone, I'm in Taunton",
+   "must": [],
+   "not": [],
+   "place": "Taunton",
+   "risk": false,
+   "off_topic": false,
+   "prefs": {
+    "contact": "in person"
+   }
+  },
+  {
+   "id": "H04",
+   "text": "anything online for people with depression? I don't really leave the house",
+   "must": [
+    "low mood"
+   ],
+   "not": [],
+   "place": "",
+   "risk": false,
+   "off_topic": false,
+   "prefs": {
+    "contact": "phone or online"
+   }
+  },
+  {
+   "id": "H05",
+   "text": "I feel low but I also love walking and would like to get out more",
+   "must": [
+    "low mood",
+    "be active"
+   ],
+   "not": [],
+   "place": "",
+   "risk": false,
+   "off_topic": false,
+   "prefs": {
+    "get_out": "yes"
+   }
+  },
+  {
+   "id": "H06",
+   "text": "my dad died last month. I don't want to sit in a group with strangers, I'd rather talk to one person",
+   "must": [
+    "bereavement"
+   ],
+   "not": [],
+   "place": "",
+   "risk": false,
+   "off_topic": false,
+   "prefs": {
+    "groups": "avoid"
+   }
+  },
+  {
+   "id": "H07",
+   "text": "I'd like one-to-one help with my drinking, not a meeting",
+   "must": [
+    "addiction"
+   ],
+   "not": [],
+   "place": "",
+   "risk": false,
+   "off_topic": false,
+   "prefs": {
+    "groups": "avoid"
+   }
+  },
+  {
+   "id": "H08",
+   "text": "a support group for carers would be great, my wife has dementia",
+   "must": [
+    "caring for someone",
+    "dementia"
+   ],
+   "not": [],
+   "place": "",
+   "risk": false,
+   "off_topic": false,
+   "prefs": {}
+  },
+  {
+   "id": "H09",
+   "text": "I work full time so it would have to be evenings. Struggling with stress",
+   "must": [
+    "anxiety"
+   ],
+   "not": [],
+   "place": "",
+   "risk": false,
+   "off_topic": false,
+   "prefs": {
+    "when": [
+     "evenings",
+     "weekends"
+    ]
+   }
+  },
+  {
+   "id": "H10",
+   "text": "only free on Saturdays, would love to meet new people in Frome",
+   "must": [
+    "connect"
+   ],
+   "not": [],
+   "place": "Frome",
+   "risk": false,
+   "off_topic": false,
+   "prefs": {
+    "when": [
+     "weekends"
+    ]
+   }
+  },
+  {
+   "id": "H11",
+   "text": "I'm at home with my toddler all week and feeling really isolated, anything in the daytime?",
+   "must": [
+    "connect"
+   ],
+   "not": [],
+   "place": "",
+   "risk": false,
+   "off_topic": false,
+   "prefs": {
+    "when": [
+     "daytime"
+    ]
+   }
+  },
+  {
+   "id": "H12",
+   "text": "I work nights so I'm free during the day, feeling down",
+   "must": [
+    "low mood"
+   ],
+   "not": [],
+   "place": "",
+   "risk": false,
+   "off_topic": false,
+   "prefs": {
+    "when": [
+     "daytime"
+    ]
+   }
+  },
+  {
+   "id": "H13",
+   "text": "I used to work evenings but I'm retired now and lonely",
+   "must": [
+    "connect"
+   ],
+   "not": [],
+   "place": "",
+   "risk": false,
+   "off_topic": false,
+   "prefs": {}
+  },
+  {
+   "id": "H14",
+   "text": "I don't drive and the buses here are terrible, I live near Wiveliscombe and I'm so lonely",
+   "must": [
+    "connect"
+   ],
+   "not": [],
+   "place": "Wiveliscombe",
+   "risk": false,
+   "off_topic": false,
+   "prefs": {
+    "travel": "nearby only"
+   }
+  },
+  {
+   "id": "H15",
+   "text": "I've got bad legs and can't walk far but I'd like to meet people",
+   "must": [
+    "connect"
+   ],
+   "not": [],
+   "place": "",
+   "risk": false,
+   "off_topic": false,
+   "prefs": {
+    "travel": "nearby only"
+   }
+  },
+  {
+   "id": "H16",
+   "text": "no car, money is really tight and I'm behind on rent",
+   "must": [
+    "finances",
+    "housing"
+   ],
+   "not": [],
+   "place": "",
+   "risk": false,
+   "off_topic": false,
+   "prefs": {
+    "travel": "nearby only"
+   }
+  },
+  {
+   "id": "H17",
+   "text": "I used to drive but now I just feel flat all the time",
+   "must": [
+    "low mood"
+   ],
+   "not": [],
+   "place": "",
+   "risk": false,
+   "off_topic": false,
+   "prefs": {}
+  },
+  {
+   "id": "H18",
+   "text": "I'm happy to travel anywhere in Somerset for a good walking group",
+   "must": [
+    "be active"
+   ],
+   "not": [],
+   "place": "",
+   "risk": false,
+   "off_topic": false,
+   "prefs": {}
+  },
+  {
+   "id": "H19",
+   "text": "I'm 15 and I feel sad all the time and my mum doesn't understand",
+   "must": [
+    "low mood"
+   ],
+   "not": [],
+   "place": "",
+   "risk": false,
+   "off_topic": false,
+   "prefs": {
+    "under_18": "yes"
+   }
+  },
+  {
+   "id": "H20",
+   "text": "i'm in year 10 and getting bullied and i can't tell my teacher",
+   "must": [],
+   "not": [],
+   "place": "",
+   "risk": false,
+   "off_topic": false,
+   "prefs": {
+    "under_18": "yes"
+   }
+  },
+  {
+   "id": "H21",
+   "text": "my 15 year old son is struggling at school and won't talk to me",
+   "must": [],
+   "not": [],
+   "place": "",
+   "risk": false,
+   "off_topic": false,
+   "prefs": {}
+  },
+  {
+   "id": "H22",
+   "text": "I'm 17, can't stop worrying about exams, can only do after school",
+   "must": [
+    "anxiety"
+   ],
+   "not": [],
+   "place": "",
+   "risk": false,
+   "off_topic": false,
+   "prefs": {
+    "under_18": "yes",
+    "when": [
+     "evenings"
+    ]
+   }
+  },
+  {
+   "id": "H23",
+   "text": "I'm 19 and at college and feel really alone",
+   "must": [
+    "connect"
+   ],
+   "not": [],
+   "place": "",
+   "risk": false,
+   "off_topic": false,
+   "prefs": {}
+  },
+  {
+   "id": "H24",
+   "text": "lost my job, no car anymore, and I can't face groups. Evenings are best",
+   "must": [
+    "finances"
+   ],
+   "not": [],
+   "place": "",
+   "risk": false,
+   "off_topic": false,
+   "prefs": {
+    "travel": "nearby only",
+    "groups": "avoid",
+    "when": [
+     "evenings"
+    ]
+   }
+  },
+  {
+   "id": "H25",
+   "text": "I'd like to volunteer at weekends, somewhere I can get to on the bus from Bridgwater",
+   "must": [
+    "giving"
+   ],
+   "not": [],
+   "place": "Bridgwater",
+   "risk": false,
+   "off_topic": false,
+   "prefs": {
+    "when": [
+     "weekends"
+    ],
+    "travel": "nearby only"
+   }
+  },
+  {
+   "id": "H26",
+   "text": "grieving my mum, would like to get out of the house, but I can't drive",
+   "must": [
+    "bereavement"
+   ],
+   "not": [],
+   "place": "",
+   "risk": false,
+   "off_topic": false,
+   "prefs": {
+    "get_out": "yes",
+    "travel": "nearby only"
+   }
+  },
+  {
+   "id": "H27",
+   "text": "I'm a carer and can only get away for an hour or two in the daytime, I'd rather chat on the phone",
+   "must": [
+    "caring for someone"
+   ],
+   "not": [],
+   "place": "",
+   "risk": false,
+   "off_topic": false,
+   "prefs": {
+    "when": [
+     "daytime"
+    ],
+    "contact": "phone or online"
+   }
+  },
+  {
+   "id": "H28",
+   "text": "is there a walking group on Sunday mornings near Wells?",
+   "must": [
+    "be active"
+   ],
+   "not": [],
+   "place": "Wells",
+   "risk": false,
+   "off_topic": false,
+   "prefs": {
+    "when": [
+     "weekends"
+    ],
+    "contact": "in person"
+   }
+  },
+  {
+   "id": "H29",
+   "text": "I want to talk to people who've been through the same thing, my son died",
+   "must": [
+    "bereavement"
+   ],
+   "not": [],
+   "place": "",
+   "risk": false,
+   "off_topic": false,
+   "prefs": {}
+  },
+  {
+   "id": "H30",
+   "text": "panic attacks on buses, so I can't really go far",
+   "must": [
+    "anxiety"
+   ],
+   "not": [],
+   "place": "",
+   "risk": false,
+   "off_topic": false,
+   "prefs": {
+    "travel": "nearby only"
+   }
+  },
+  {
+   "id": "H31",
+   "text": "I'd like to meet other people who've lost a child, I live near Yeovil",
+   "must": [
+    "bereavement"
+   ],
+   "not": [],
+   "place": "Yeovil",
+   "risk": false,
+   "off_topic": false,
+   "prefs": {
+    "help": [
+     "peer support"
+    ]
+   }
+  },
+  {
+   "id": "H32",
+   "text": "feeling a bit flat, would love a hobby, maybe something creative",
+   "must": [
+    "low mood"
+   ],
+   "not": [],
+   "place": "",
+   "risk": false,
+   "off_topic": false,
+   "prefs": {
+    "help": [
+     "activities"
+    ]
+   }
+  },
+  {
+   "id": "H33",
+   "text": "I need advice about benefits and help filling in the forms",
+   "must": [
+    "finances"
+   ],
+   "not": [],
+   "place": "",
+   "risk": false,
+   "off_topic": false,
+   "prefs": {
+    "help": [
+     "advice and practical help"
+    ]
+   }
+  },
+  {
+   "id": "H34",
+   "text": "I think I need proper counselling for my anxiety",
+   "must": [
+    "anxiety"
+   ],
+   "not": [],
+   "place": "",
+   "risk": false,
+   "off_topic": false,
+   "prefs": {
+    "help": [
+     "one-to-one and therapy"
+    ]
+   }
+  },
+  {
+   "id": "H35",
+   "text": "is there a course where I can learn to manage panic attacks?",
+   "must": [
+    "anxiety"
+   ],
+   "not": [],
+   "place": "",
+   "risk": false,
+   "off_topic": false,
+   "prefs": {
+    "help": [
+     "courses"
+    ]
+   }
+  },
+  {
+   "id": "H36",
+   "text": "my sister says I should try a support group but I'm not sure, I just feel down",
+   "must": [
+    "low mood"
+   ],
+   "not": [],
+   "place": "",
+   "risk": false,
+   "off_topic": false,
+   "prefs": {}
   }
  ]
 }
