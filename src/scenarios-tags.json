@@ -251,7 +251,10 @@
      "activities",
      "courses"
     ]
-   }
+   },
+   "ignore": [
+    "help"
+   ]
   },
   {
    "id": "T22",
@@ -272,7 +275,7 @@
    ],
    "not": [],
    "place": "",
-   "risk": false,
+   "risk": true,
    "off_topic": false
   },
   {
@@ -323,7 +326,10 @@
     "help": [
      "activities"
     ]
-   }
+   },
+   "ignore": [
+    "help"
+   ]
   },
   {
    "id": "H01",
@@ -379,7 +385,8 @@
    "risk": false,
    "off_topic": false,
    "prefs": {
-    "contact": "phone or online"
+    "contact": "phone or online",
+    "get_out": "yes"
    }
   },
   {
@@ -593,7 +600,10 @@
     "help": [
      "activities"
     ]
-   }
+   },
+   "ignore": [
+    "help"
+   ]
   },
   {
    "id": "H19",
@@ -724,7 +734,8 @@
     "when": [
      "daytime"
     ],
-    "contact": "phone or online"
+    "contact": "phone or online",
+    "travel": "nearby only"
    }
   },
   {
@@ -744,7 +755,10 @@
     "help": [
      "activities"
     ]
-   }
+   },
+   "ignore": [
+    "help"
+   ]
   },
   {
    "id": "H29",

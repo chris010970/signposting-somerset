@@ -613,9 +613,9 @@
   },
   {
    "id": "RG3",
-   "category": "none",
+   "category": "self",
    "text": "I make myself sick after eating and hate my body",
-   "risk": false,
+   "risk": true,
    "must": [],
    "not": [],
    "place": "",
@@ -623,7 +623,9 @@
    "ignore": [
     "*"
    ],
-   "safety": []
+   "safety": [
+    "at_risk"
+   ]
   },
   {
    "id": "RG4",

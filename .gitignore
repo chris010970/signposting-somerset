@@ -27,3 +27,4 @@ build/tests/node_modules/
 checks/
 monitor-*
 *.zip
+src/tags*.md
