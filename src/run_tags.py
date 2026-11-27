@@ -12,6 +12,7 @@ Usage:
   python src\\run_tags.py --ids T02,T09      # some
   python src\\run_tags.py --ids H*          # the preference phrases only (H01-H36)
   python src\\run_tags.py --scenarios src\\scenarios-risk.json   # risk phrased many ways (the risk flag only)
+  python src\\run_tags.py --scenarios src\\scenarios-activities.json   # activities and their own words for them
   python src\\run_tags.py --text "lonely in Wells, money worries"   # one phrase of your own
 
 Each phrase costs a fraction of a penny with Haiku. The worker allows per_hour requests an hour from one computer for this
@@ -48,14 +49,14 @@ def check(s, out):
     got, notes = out.get("tags", []), []
     if out.get("fallback") and out["fallback"] != "words":   # (words: the AI didn't answer, but the word lists did: judged on the outcome)
         notes.append(f"fallback: {out['fallback']}")
-    missing = [t for t in s["must"] if t not in got]
+    missing = [t for t in s.get("must", []) if t not in got]
     if missing:
         notes.append("missing " + ", ".join(missing))
-    wrong = got if s["not"] is None else [t for t in got if t in s["not"]]
+    wrong = got if s.get("not", []) is None else [t for t in got if t in s.get("not", [])]
     if wrong:
         notes.append("shouldn't have " + ", ".join(wrong))
     place = (out.get("place") or {}).get("name", "")
-    if s["place"].lower() not in place.lower() or (place and not s["place"]):
+    if s.get("place") is not None and (s["place"].lower() not in place.lower() or (place and not s["place"])):   # (no place key: not checked)
         notes.append(f"place {place!r}, expected {s['place']!r}")
     for flag in ("risk", "off_topic"):
         if s.get(flag) is not None and bool(out.get(flag)) != s[flag]:   # (None: not checked)
@@ -67,6 +68,12 @@ def check(s, out):
         wrong_own = "own_behaviour" in got_s and "own_behaviour" not in s["safety"]
         if missing or wrong_own or (not s["safety"] and got_s):
             notes.append(f"safety {show(got_s)}, expected {show(s['safety'])}")
+    if "activities" in s and not same(s["activities"], out.get("activities")):   # exactly these ([]: none)
+        notes.append(f"activities {show(out.get('activities'))}, expected {show(s['activities'])}")
+    terms = out.get("activity_terms") or []
+    lost = [t for t in s.get("terms", []) if not any(t in g or g in t for g in terms)]   # each of their words, or part of it
+    if lost:
+        notes.append(f"their words {show(terms)}, expected {show(s['terms'])}")
     for k in pref_misses(s, out):
         notes.append(f"{k} {show(out.get('prefs', {}).get(k))}, expected {show(s.get('prefs', {}).get(k))}")
     return notes
@@ -106,6 +113,7 @@ def main():
     safe = {}    # each safety category: [found, phrases where expected]; and look-alikes kept clear
     clear = [0, 0]
     words_n = [0, 0]   # answers from the word lists (the AI didn't answer), and how many of those were right
+    acts = [0, 0]      # phrases where the activities were checked, right / checked
     for i, s in enumerate(S):
         if PER_HOUR and i >= PER_HOUR - 2:   # the worker's limit for this task, from one computer (0: none)
             print(f"  (waiting 2 minutes: the limit of {PER_HOUR} an hour; {len(S) - i} to go)", flush=True)
@@ -122,9 +130,13 @@ def main():
         if not out.get("error"):
             for k in ([] if "*" in s.get("ignore", []) else (set(s.get("prefs", {})) | set(out.get("prefs", {}) or {})) - set(s.get("ignore", []))):
                 t = tally.setdefault(k, [0, 0]); t[1] += 1; t[0] += k not in pref_misses(s, out)
+        if not out.get("error") and "activities" in s:
+            acts[1] += 1; acts[0] += same(s["activities"], out.get("activities"))
         place = out.get("place") or {}
         where = place.get("name", "") + (f" ({place['town']})" if place.get("town") else (" (not ours)" if place else ""))
         flags = " ".join([f for f in ("risk", "off_topic") if out.get(f)] + ([f"safety={show(out['safety'])}"] if out.get("safety") else [])
+                         + ([f"activities={show(out['activities'])}"] if out.get("activities") else [])
+                         + ([f"words={show(out['activity_terms'])}"] if out.get("activity_terms") else [])
                          + [f"{k}={show(v)}" for k, v in (out.get("prefs") or {}).items()])
         words = out.get("fallback") == "words"
         words_n[0] += words; words_n[1] += words and not notes
@@ -139,6 +151,9 @@ def main():
     prefs_line = ", ".join(f"{k} {r}/{n}" for k, (r, n) in sorted(tally.items()))
     if prefs_line:
         print("Preferences (right / phrases where expected or given):", prefs_line)
+    acts_line = f"Activities right: {acts[0]}/{acts[1]}" if acts[1] else ""
+    if acts_line:
+        print(acts_line)
     safe_line = ", ".join(f"{c} {r}/{n}" for c, (r, n) in safe.items()) + (f"; look-alikes kept clear {clear[0]}/{clear[1]}" if clear[1] else "")
     if safe:
         print("Safety (found / expected):", safe_line)
@@ -148,6 +163,7 @@ def main():
                 + (f"Preferences (right / phrases where expected or given): {prefs_line}\n\n" if prefs_line else "")
                 + (f"Safety (found / expected): {safe_line}\n\n" if safe else "")
                 + (f"{words_line}\n\n" if words_line else "")
+                + (f"{acts_line}\n\n" if acts_line else "")
                 + 
                 "| id | result | text | tags | place | flags | notes |\n|---|---|---|---|---|---|---|\n" + "\n".join(rows) + "\n")
     print("Saved", path)

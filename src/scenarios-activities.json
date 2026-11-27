@@ -1,0 +1,392 @@
+{
+ "_about": "Test phrases for the activities the tags task picks out (POST .../tags), run by run_tags.py --scenarios src/scenarios-activities.json. activities: exactly these must come back ([]: none may: a passing mention, someone else's hobby or a kind of help isn't an activity); terms: their own words that must come back among activity_terms (a word or part of it). Tags, place and preferences aren't checked here (ignore *): scenarios-tags.json does that.",
+ "scenarios": [
+  {
+   "id": "A01",
+   "text": "I'd love to join a choir in Wells",
+   "activities": [
+    "singing"
+   ],
+   "terms": [
+    "choir"
+   ],
+   "ignore": [
+    "*"
+   ]
+  },
+  {
+   "id": "A02",
+   "text": "Is there a knitting group in Frome? I've just retired and feel a bit lost",
+   "activities": [
+    "crafts"
+   ],
+   "terms": [
+    "knitting"
+   ],
+   "ignore": [
+    "*"
+   ]
+  },
+  {
+   "id": "A03",
+   "text": "My husband died last year. I used to love my allotment but I haven't been since",
+   "activities": [
+    "gardening"
+   ],
+   "terms": [
+    "allotment"
+   ],
+   "ignore": [
+    "*"
+   ]
+  },
+  {
+   "id": "A04",
+   "text": "I used to enjoy gardening, but I don't feel like doing anything now",
+   "activities": [
+    "gardening"
+   ],
+   "terms": [
+    "gardening"
+   ],
+   "ignore": [
+    "*"
+   ]
+  },
+  {
+   "id": "A05",
+   "text": "I live near a park in Taunton and I'm so lonely",
+   "activities": [],
+   "terms": [],
+   "ignore": [
+    "*"
+   ]
+  },
+  {
+   "id": "A06",
+   "text": "my neighbour does a lot of gardening, I just sit indoors feeling low",
+   "activities": [],
+   "terms": [],
+   "ignore": [
+    "*"
+   ]
+  },
+  {
+   "id": "A07",
+   "text": "I need someone to talk to about my anxiety",
+   "activities": [],
+   "terms": [],
+   "ignore": [
+    "*"
+   ]
+  },
+  {
+   "id": "A08",
+   "text": "help with my benefits forms please, Yeovil",
+   "activities": [],
+   "terms": [],
+   "ignore": [
+    "*"
+   ]
+  },
+  {
+   "id": "A09",
+   "text": "walking groups near Bridgwater? I want to get fitter and meet people",
+   "activities": [
+    "walking"
+   ],
+   "terms": [
+    "walking"
+   ],
+   "ignore": [
+    "*"
+   ]
+  },
+  {
+   "id": "A10",
+   "text": "anything like a men's shed round Chard? I'm good with my hands",
+   "activities": [
+    "making and mending"
+   ],
+   "terms": [
+    "shed"
+   ],
+   "ignore": [
+    "*"
+   ]
+  },
+  {
+   "id": "A11",
+   "text": "a book club or something, I read a lot but don't know anyone here",
+   "activities": [
+    "reading"
+   ],
+   "terms": [
+    "book club"
+   ],
+   "ignore": [
+    "*"
+   ]
+  },
+  {
+   "id": "A12",
+   "text": "I'd like to try tai chi, my balance isn't great",
+   "activities": [
+    "exercise"
+   ],
+   "terms": [
+    "tai chi"
+   ],
+   "ignore": [
+    "*"
+   ]
+  },
+  {
+   "id": "A13",
+   "text": "Somewhere to go for a cuppa and a chat, I don't see anyone all week",
+   "activities": [
+    "cafe and chat"
+   ],
+   "terms": [],
+   "ignore": [
+    "*"
+   ]
+  },
+  {
+   "id": "A14",
+   "text": "is there a toddler group in Minehead? new mum, struggling",
+   "activities": [
+    "play"
+   ],
+   "terms": [
+    "toddler"
+   ],
+   "ignore": [
+    "*"
+   ]
+  },
+  {
+   "id": "A15",
+   "text": "I want to do some volunteering to give something back",
+   "activities": [
+    "volunteering"
+   ],
+   "terms": [
+    "volunteering"
+   ],
+   "ignore": [
+    "*"
+   ]
+  },
+  {
+   "id": "A16",
+   "text": "can anyone help me use my new tablet? I can't get online",
+   "activities": [
+    "digital skills"
+   ],
+   "terms": [
+    "tablet"
+   ],
+   "ignore": [
+    "*"
+   ]
+  },
+  {
+   "id": "A17",
+   "text": "I'm interested in local history, anything in Glastonbury?",
+   "activities": [
+    "heritage"
+   ],
+   "terms": [
+    "local history"
+   ],
+   "ignore": [
+    "*"
+   ]
+  },
+  {
+   "id": "A18",
+   "text": "walking football for over 50s near Bath",
+   "activities": [
+    "sport"
+   ],
+   "terms": [
+    "walking football"
+   ],
+   "ignore": [
+    "*"
+   ]
+  },
+  {
+   "id": "A19",
+   "text": "I paint a bit and would love to meet other people who do art",
+   "activities": [
+    "art"
+   ],
+   "terms": [],
+   "ignore": [
+    "*"
+   ]
+  },
+  {
+   "id": "A20",
+   "text": "I like board games and quizzes but have no one to play with",
+   "activities": [
+    "games"
+   ],
+   "terms": [
+    "board games"
+   ],
+   "ignore": [
+    "*"
+   ]
+  },
+  {
+   "id": "A21",
+   "text": "struggling with stress at work, I've heard meditation helps",
+   "activities": [
+    "mindfulness"
+   ],
+   "terms": [
+    "meditation"
+   ],
+   "ignore": [
+    "*"
+   ]
+  },
+  {
+   "id": "A22",
+   "text": "my son is 15 and loves football but he's very anxious",
+   "activities": [
+    "sport"
+   ],
+   "terms": [
+    "football"
+   ],
+   "ignore": [
+    "*"
+   ]
+  },
+  {
+   "id": "A23",
+   "text": "grieving my mum. not a group person, I just want to cope",
+   "activities": [],
+   "terms": [],
+   "ignore": [
+    "*"
+   ]
+  },
+  {
+   "id": "A24",
+   "text": "I enjoy swimming but I'd like company, I'm in Weston",
+   "activities": [
+    "swimming"
+   ],
+   "terms": [
+    "swimming"
+   ],
+   "ignore": [
+    "*"
+   ]
+  },
+  {
+   "id": "A25",
+   "text": "we've just moved to Street, I play guitar and want to meet people",
+   "activities": [
+    "music"
+   ],
+   "terms": [
+    "guitar"
+   ],
+   "ignore": [
+    "*"
+   ]
+  },
+  {
+   "id": "A26",
+   "text": "learn to cook healthy meals on a budget",
+   "activities": [
+    "cooking"
+   ],
+   "terms": [
+    "cook"
+   ],
+   "ignore": [
+    "*"
+   ]
+  },
+  {
+   "id": "A27",
+   "text": "I love dogs and being outdoors, feeling isolated since I lost my job",
+   "activities": [
+    "animals",
+    "nature"
+   ],
+   "terms": [
+    "dogs"
+   ],
+   "ignore": [
+    "*"
+   ]
+  },
+  {
+   "id": "A28",
+   "text": "drawing and singing were my thing before the stroke, Yeovil",
+   "activities": [
+    "art",
+    "singing"
+   ],
+   "terms": [
+    "drawing",
+    "singing"
+   ],
+   "ignore": [
+    "*"
+   ]
+  },
+  {
+   "id": "A29",
+   "text": "anything for dementia carers in Frome? Mum loves singing",
+   "activities": [
+    "singing"
+   ],
+   "terms": [
+    "singing"
+   ],
+   "ignore": [
+    "*"
+   ]
+  },
+  {
+   "id": "A30",
+   "text": "Looking for a choir in Wells... my husband checks where I am, and I'm frightened of what he'll do",
+   "activities": [
+    "singing"
+   ],
+   "terms": [
+    "choir"
+   ],
+   "ignore": [
+    "*"
+   ]
+  },
+  {
+   "id": "A31",
+   "text": "I need a counsellor, not a hobby",
+   "activities": [],
+   "terms": [],
+   "ignore": [
+    "*"
+   ]
+  },
+  {
+   "id": "A32",
+   "text": "I watch a lot of football on TV and drink too much",
+   "activities": [],
+   "terms": [],
+   "ignore": [
+    "*"
+   ]
+  }
+ ]
+}

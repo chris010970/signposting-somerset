@@ -1,0 +1,30 @@
+{
+ "_about": "The activities (the sheet's activities column): what you actually do at a service, as against what it helps with (support_for) or what kind of service it is (type). A record can have several, ';'-separated, or none (helplines, advice and support groups whose topic says it all). hint: everyday words for each, given to the AI on the landing page so it can match how people talk (the tags task: build/tools/assist/tags.json); change them freely. Used by the Worker (tags) and, later, For you.",
+ "values": [
+  {"value": "singing", "hint": "choir, sing-along, singing group"},
+  {"value": "music", "hint": "playing an instrument, a band, drumming, live music"},
+  {"value": "art", "hint": "drawing, painting, sketching, pottery, an art class"},
+  {"value": "crafts", "hint": "knitting, crochet, sewing, stitching, card-making"},
+  {"value": "writing", "hint": "creative writing, poetry, journaling"},
+  {"value": "drama", "hint": "acting, theatre, improvisation"},
+  {"value": "photography", "hint": "taking photos"},
+  {"value": "gardening", "hint": "allotment, growing veg, a community garden"},
+  {"value": "walking", "hint": "a walking group, rambling, health walks"},
+  {"value": "nature", "hint": "being outdoors, wildlife, woodland, conservation"},
+  {"value": "animals", "hint": "dogs, horses, farm animals"},
+  {"value": "exercise", "hint": "keep fit, yoga, tai chi, pilates, chair exercise, the gym"},
+  {"value": "dance", "hint": "dancing, dance classes"},
+  {"value": "sport", "hint": "football, cricket, bowls, tennis, netball, running, cycling (including the walking versions)"},
+  {"value": "swimming", "hint": "swimming, the pool"},
+  {"value": "mindfulness", "hint": "meditation, relaxation, breathing, calm"},
+  {"value": "cafe and chat", "hint": "a coffee morning, a cuppa and a chat, a lunch club, a warm space"},
+  {"value": "games", "hint": "board games, cards, bingo, quizzes, chess"},
+  {"value": "reading", "hint": "a book club, shared reading"},
+  {"value": "cooking", "hint": "learning to cook, baking"},
+  {"value": "making and mending", "hint": "a men's or community shed, woodwork, a repair café, fixing things"},
+  {"value": "volunteering", "hint": "volunteering, helping out, giving something back"},
+  {"value": "digital skills", "hint": "help with a phone, tablet or computer, getting online"},
+  {"value": "heritage", "hint": "local history, museums, family history"},
+  {"value": "play", "hint": "toddler groups, stay and play, youth clubs"}
+ ]
+}

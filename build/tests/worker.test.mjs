@@ -183,6 +183,19 @@ test("tags: preferences come back only with names and values from tags.json (a l
   assert.deepEqual((await (await tagsFor("lonely", "not json")).json()).prefs, {}, "the fallback has prefs too");
 });
 
+test("tags: activities only from the sheet's list (in order, no repeats, at most max_activities); their own words only if typed; none when not given or unreadable", async () => {
+  const ACTS = JSON.parse(readFileSync(join(HERE, "..", "core", "data", "activities.json"), "utf8")).values;
+  assert.ok(ACTS.every(a => a.value && a.hint), "every activity has everyday words for the AI");
+  const out = await (await tagsFor("I'd love to join a Choir, or a knitting group in Frome", JSON.stringify({ tags: ["connect"],
+    activities: ["singing", "Crafts", "bowling", "singing", "art", "music"], activity_terms: ["choir", "Knitting group", "pottery", "x".repeat(40)] }))).json();
+  assert.deepEqual(out.activities, ["singing", "crafts", "art"], "bowling isn't one; a repeat counts once; at most max_activities");
+  assert.deepEqual(out.activity_terms, ["choir", "knitting group"], "pottery wasn't typed; too long is dropped");
+  const none = await (await tagsFor("lonely", '{"tags": ["connect"]}')).json();
+  assert.deepEqual([none.activities, none.activity_terms], [[], []]);
+  const fallback = await (await tagsFor("lonely, I like singing", "not json")).json();
+  assert.deepEqual([fallback.activities, fallback.activity_terms], [[], []], "the fallback has them too");
+});
+
 test("tags: its own hourly limit per visitor (per_hour; 0: none), counted apart from Assist's", async () => {
   const me = "10.0.9.1", go = path => worker.fetch(new Request("https://relay.test/" + path, { method: "POST",
     headers: { Origin: ORIGIN, "X-Access-Code": CODE, "Content-Type": "application/json", "CF-Connecting-IP": me }, body: JSON.stringify({ text: "lonely" }) }), ENV);
@@ -207,6 +220,7 @@ test("tags: the answer comes on the label tool (forced), with the allowed values
   assert.deepEqual(schema.safety.items.enum, Object.keys(TAG_SETTINGS.safety));
   assert.deepEqual([...schema.tags.items.enum].sort(), [...TAG_LIST].sort());
   assert.deepEqual(schema.prefs.properties.when.items.enum, TAG_SETTINGS.preferences.when.values);
+  assert.deepEqual(schema.activities.items.enum, JSON.parse(readFileSync(join(HERE, "..", "core", "data", "activities.json"), "utf8")).values.map(a => a.value));
 });
 
 test("tags: a placeholder place (unknown, none, not given) counts as no place", async () => {
