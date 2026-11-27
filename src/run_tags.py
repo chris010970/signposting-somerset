@@ -60,6 +60,11 @@ def check(s, out):
     for flag in ("risk", "off_topic"):
         if bool(out.get(flag)) != s[flag]:
             notes.append(f"{flag} {bool(out.get(flag))}")
+    if "safety" in s:   # the categories that must come back; [] means none may (an extra one beside the expected is fine)
+        got_s = out.get("safety") or []
+        missing = [c for c in s["safety"] if c not in got_s]
+        if missing or (not s["safety"] and got_s):
+            notes.append(f"safety {show(got_s)}, expected {show(s['safety'])}")
     for k in pref_misses(s, out):
         notes.append(f"{k} {show(out.get('prefs', {}).get(k))}, expected {show(s.get('prefs', {}).get(k))}")
     return notes
@@ -96,6 +101,8 @@ def main():
         S = [s for s in S if any(s["id"] == w or (w.endswith("*") and s["id"].startswith(w[:-1])) for w in want)]
     rows, passed, models = [], 0, set()
     tally = {}   # each preference: [right, phrases where it was expected or came back]
+    safe = {}    # each safety category: [found, phrases where expected]; and look-alikes kept clear
+    clear = [0, 0]
     for i, s in enumerate(S):
         if PER_HOUR and i >= PER_HOUR - 2:   # the worker's limit for this task, from one computer (0: none)
             print(f"  (waiting 2 minutes: the limit of {PER_HOUR} an hour; {len(S) - i} to go)", flush=True)
@@ -104,12 +111,18 @@ def main():
         models.add(out.get("model") or "(not given: worker before 26 Nov)")
         notes = check(s, out)
         passed += not notes
+        if not out.get("error") and "safety" in s:
+            for c in s["safety"]:
+                t = safe.setdefault(c, [0, 0]); t[1] += 1; t[0] += c in (out.get("safety") or [])
+            if not s["safety"]:
+                clear[1] += 1; clear[0] += not out.get("safety")
         if not out.get("error"):
             for k in ([] if "*" in s.get("ignore", []) else (set(s.get("prefs", {})) | set(out.get("prefs", {}) or {})) - set(s.get("ignore", []))):
                 t = tally.setdefault(k, [0, 0]); t[1] += 1; t[0] += k not in pref_misses(s, out)
         place = out.get("place") or {}
         where = place.get("name", "") + (f" ({place['town']})" if place.get("town") else (" (not ours)" if place else ""))
-        flags = " ".join([f for f in ("risk", "off_topic") if out.get(f)] + [f"{k}={show(v)}" for k, v in (out.get("prefs") or {}).items()])
+        flags = " ".join([f for f in ("risk", "off_topic") if out.get(f)] + ([f"safety={show(out['safety'])}"] if out.get("safety") else [])
+                         + [f"{k}={show(v)}" for k, v in (out.get("prefs") or {}).items()])
         line = f"{s['id']}  {'PASS' if not notes else 'FAIL'}  {', '.join(out.get('tags', []))} | {where} | {flags}"
         print(line + (f"   <- {'; '.join(notes)}" if notes else "") + f"  [{out['_seconds']}s]")
         rows.append(f"| {s['id']} | {'pass' if not notes else '**fail**'} | {s['text']} | {', '.join(out.get('tags', []))} | {where} | {flags} | {'; '.join(notes)} |")
@@ -118,10 +131,14 @@ def main():
     prefs_line = ", ".join(f"{k} {r}/{n}" for k, (r, n) in sorted(tally.items()))
     if prefs_line:
         print("Preferences (right / phrases where expected or given):", prefs_line)
+    safe_line = ", ".join(f"{c} {r}/{n}" for c, (r, n) in safe.items()) + (f"; look-alikes kept clear {clear[0]}/{clear[1]}" if clear[1] else "")
+    if safe:
+        print("Safety (found / expected):", safe_line)
     path = os.path.join(HERE, f"tags-{datetime.now():%Y-%m-%d-%H%M}.md")
     with open(path, "w", encoding="utf-8") as f:
         f.write(f"# Tags task, {datetime.now():%d %b %Y %H:%M}: {passed} of {len(S)} passed\n\nModel: {model}\n\n"
                 + (f"Preferences (right / phrases where expected or given): {prefs_line}\n\n" if prefs_line else "")
+                + (f"Safety (found / expected): {safe_line}\n\n" if safe else "")
                 + 
                 "| id | result | text | tags | place | flags | notes |\n|---|---|---|---|---|---|---|\n" + "\n".join(rows) + "\n")
     print("Saved", path)
