@@ -47,25 +47,27 @@ for (const sc of cases) {
       activities: s.activities || "", miles: point && !isNaN(s.lat) && split(s.mode).includes("in-person") ? Math.round(miles(point, s) * 10) / 10 : null, out: !fyRestrict(s, c) });
     return { area: c.area, g, panel: panel.map(r => info(r.s)),
       picks: picks.map(p => ({ ...info(p.s), why: p.why, note: p.note || "", check: p.check || "", when: (p.nx && p.nx.txt) || (p.st ? (p.st.open ? "open now" : "closed now") : ""),
-        hasActivity: split(p.s.activities || "").some(a => c.activities.includes(a)) })), buttons };
+        hasActivity: split(p.s.activities || "").some(a => c.activities.includes(a)), row: fyRow(p) })), buttons };
   }, sc);
   // The checks
   const notes = [];
   if (out.picks.some(p => p.out)) notes.push("a pick they can't go to");
   const provs = out.picks.map(p => (p.provider || p.name).toLowerCase());
   if (new Set(provs).size < provs.length) notes.push("two from one provider");
-  if ((sc.activities || []).length && out.g !== "urgent" && out.g !== "own_behaviour" && !(out.picks[0] && out.picks[0].hasActivity) && !out.picks.some(p => /couldn't find/.test(p.note)))
+  const meet = out.picks.filter(p => p.row === "meet");
+  if ((sc.activities || []).length && out.g !== "urgent" && out.g !== "own_behaviour" && !((meet[0] || out.picks[0] || {}).hasActivity) && !out.picks.some(p => /couldn't find/.test(p.note)))
     notes.push("the activity isn't first and no gap is said");
   const far = out.picks.filter(p => p.miles !== null && p.area !== "national" && p.area !== out.area);
   if (far.length) notes.push("from another area: " + far.map(p => p.name).join(", "));
   const good = sc.good || [], hit = out.picks.filter(p => good.includes(p.id)).length;
   if (good.length) { goodN += hit; goodOf += Math.min(good.length, 3); }
   passed += !notes.length;
-  const line = p => `${p.why}${p.note ? ` ("${p.note}")` : ""}: ${p.name} [${p.id}] (${p.type}; ${p.area}${p.miles !== null ? `; ${p.miles} mi` : ""}${p.when ? `; ${p.when}` : ""})${p.check ? ` <${p.check}>` : ""}${good.includes(p.id) ? " *" : ""}`;
+  const line = p => `${p.row} ${p.why}${p.note ? ` ("${p.note}")` : ""}: ${p.name} [${p.id}] (${p.type}; ${p.area}${p.miles !== null ? `; ${p.miles} mi` : ""}${p.when ? `; ${p.when}` : ""})${p.check ? ` <${p.check}>` : ""}${good.includes(p.id) ? " *" : ""}`;
   console.log(`\n${sc.id} ${notes.length ? "FAIL" : "pass"}  ${sc.text}\n  area ${out.area}${out.g ? `; panel ${out.g}: ${out.panel.map(p => p.name).join(", ")}` : ""}`);
   out.picks.forEach((p, i) => console.log(`  ${i + 1}. ${line(p)}`));
   if (!out.picks.length) console.log("  (no picks)");
   console.log(`  buttons: ${out.buttons.join(" | ")}`);
+  if (sc.town && !["urgent", "own_behaviour"].includes(out.g) && meet.length < 3) console.log(`  (places row: ${meet.length})`);
   if (good.length) console.log(`  reference picks: ${hit} of ${Math.min(good.length, 3)}`);
   if (notes.length) console.log("  <- " + notes.join("; "));
   rows.push(`| ${sc.id} | ${notes.length ? "**fail**" : "pass"} | ${sc.text} | ${out.g ? `${out.g}: ${out.panel.map(p => p.name).join(", ")}` : ""} | ${out.picks.map((p, i) => `${i + 1}. ${line(p)}`).join("<br>") || "none"} | ${out.buttons.join("<br>")} | ${good.length ? `${hit}/${Math.min(good.length, 3)}` : ""} | ${notes.join("; ")} |`);

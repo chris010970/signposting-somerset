@@ -1166,7 +1166,7 @@ header.top { background: var(--cream); border-bottom: 0; }
 .tk .stub .tm { font-size: 13.5px; font-weight: 700; color: var(--b900); font-variant-numeric: tabular-nums; }
 .tk .stub .words { font-size: 13px; hyphens: auto; -webkit-hyphens: auto; overflow-wrap: anywhere; font-weight: 700; color: var(--b900); line-height: 1.2; }
 .tk .perf { position: relative; flex: 0 0 0; border-left: 1.5px dashed var(--edge); }
-.tk .perf::before, .tk .perf::after { content: ""; position: absolute; left: -9px; width: 16px; height: 16px; border-radius: 50%; background: var(--cream); border: 1px solid var(--edge); }
+.tk .perf::before, .tk .perf::after { content: ""; position: absolute; left: -9px; width: 16px; height: 16px; border-radius: 50%; background: var(--notch, var(--cream)); border: 1px solid var(--edge); }
 .tk .perf::before { top: -9px; clip-path: inset(50% 0 0 0); }
 .tk .perf::after { bottom: -9px; clip-path: inset(0 0 50% 0); }
 .tk .tbody { flex: 1; min-width: 0; padding: 12px 14px 14px 16px; }
@@ -1637,51 +1637,76 @@ body.landing footer.help { padding-block: 14px calc(14px + env(safe-area-inset-b
 @media (min-width: 701px) and (max-width: 1439px) { .hway span span { font-size: 12.5px; letter-spacing: -0.1px; } .hway { padding-right: 34px; } }   /* (two lines for the longest description) */
 @media (min-width: 701px) and (max-width: 1179px) { .hway span span { font-size: 12px; } .hway { padding-right: 30px; } .hway::after { right: 7px; } .hways { column-gap: 8px; } }
 
-/* ---------- For you (js/for-you.js): the picks, each under a line saying what it's for, then "Want to explore more?" ---------- */
-.fyhead { margin: 0 0 18px; }
-.fyhead .bt { margin: 0 0 4px; }
-.fyhead p { margin: 0; color: var(--tx2); }
-.fyhead .fynote { margin-top: 6px; color: var(--tx3); font-size: 14px; }
-.fypicks { display: grid; gap: 20px; }
-.fypick { margin: 0; }
+/* ---------- For you (js/for-you.js): one sage panel holding cream rows: the safety panel (if any), the picks, then the buttons ---------- */
+/* Its top in line with the dropdowns on the other tabs, as About (the header's 10px foot and the list's 14px top taken off) */
+header.top:has(#tab-foryou[aria-current="page"]) { padding-bottom: 0; }
+#foryou.talk { display: grid; grid-template-columns: minmax(0, 1fr); gap: 14px; align-items: start; margin: 0 16px; padding: 14px;
+  background: var(--sage); border-radius: 16px; }
+#foryou .fymain { display: grid; gap: 14px; }
+/* Each row: cream, as the other tabs' background; --notch: the cards' punched notches take its colour */
+#foryou .fypanel, #foryou .fyrow, #foryou .fyexplore { margin: 0; padding: 16px 18px 18px; background: var(--cream); border: 1px solid var(--line);
+  border-radius: 14px; --notch: var(--cream); }
+#foryou .fypanel.fy-urgent { background: #FCEDEA; border-color: #E8B4A8; --notch: #FCEDEA; }   /* (the urgent panel: never folds) */
+.fypanel > p { margin: 0 0 12px; color: var(--tx2); }
+.fy999 { display: flex; align-items: center; gap: 10px; margin: 0 0 12px; padding: 12px 14px; border-radius: 12px; background: #8F2D1F; color: #fff;
+  font: 700 16px/1.35 var(--sans); text-decoration: none; }
+.fy999 svg { width: 24px; height: 24px; flex: none; }
+/* A row's title, its fold button at the right (the card's chevron: up when open); folded, only the title shows */
+.fyrowhd { display: flex; align-items: center; gap: 12px; margin: 0 0 12px; }
+.fyrowhd > .bt { flex: 1; min-width: 0; margin: 0; font-size: 24px; }
+.fyrowhd > .fyfold { flex: none; width: 34px; height: 34px; display: inline-flex; align-items: center; justify-content: center; transform: rotate(180deg); }
+.fyfolded > :not(.fyrowhd) { display: none !important; }
+.fyfolded > .fyrowhd { margin: 0; }
+.fyfolded > .fyrowhd > .fyfold { transform: none; }
+.fyrow > .fynote, .fyalso { margin: -4px 0 12px; font-size: 14px; color: var(--tx2); }
+.fyalso a { color: var(--b700); font-weight: 600; }
+/* The cards side by side: three across, two on a tablet, one on a phone. Each pick: its line, then its card, on rows shared across
+   the row of picks, so the cards' tops line up however long a line is; a narrow card drops the word "Details" by its arrow */
+.fypicks { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px 18px; align-items: start; }
+#foryou .fyrow > .fypicks { grid-auto-rows: auto; }
+#foryou .fypick { display: grid; grid-row: span 2; grid-template-rows: subgrid; grid-template-columns: minmax(0, 1fr); row-gap: 0; margin: 0; }
+#foryou .fypick > .card, #foryou .fypick > .tcard, #foryou .fypanel .fypicks > .tcard { margin: 0; min-width: 0; container-type: inline-size; align-self: start; }   /* (an opened card grows alone: the others keep their height) */
+#foryou .fypick > .fyhd { align-self: end; }
 .fywhy { display: flex; align-items: center; gap: 8px; margin: 0 0 8px; font: 600 17px/1.3 var(--display); color: var(--b800); }
 .fywhy svg { width: 22px; height: 22px; flex: none; color: var(--b700); }
-.fypick .fynote { margin: -4px 0 8px 30px; font-size: 14px; color: var(--tx3); }
-.fyshow { display: inline-block; margin: 6px 0 0 2px; font-size: 14px; font-weight: 600; color: var(--b700); }
 .fycheck { margin: -4px 0 8px 30px; font-size: 14px; font-weight: 600; color: var(--b800); }
 #foryou .tpin { display: none; }   /* (no map on this tab) */
 #foryou .tfold { width: auto; padding: 0 8px 0 10px; gap: 2px; display: inline-flex; align-items: center; font: 600 13px var(--sans); color: var(--b700); }
 #foryou .tfold::before { content: var(--fy-details); }   /* ("Details" by the chevron: the card opens) */
-/* Its top in line with the dropdowns on the other tabs, as About (the header's 10px foot and the list's 14px top taken off), and
-   spanning to the banner's right edge, as they do */
-header.top:has(#tab-foryou[aria-current="page"]) { padding-bottom: 0; }
-#foryou.talk { padding-top: 0; display: grid; grid-template-columns: minmax(0, 65fr) minmax(0, 35fr); gap: 32px; align-items: start; }
-.fyexplore { position: sticky; top: 0; margin-top: 0; padding: 18px; background: var(--sage); border-radius: 16px; display: grid; gap: 10px; }
-.fyexplore h2 { display: flex; align-items: center; gap: 8px; margin: 0 0 4px; font: 600 20px/1.25 var(--display); color: var(--b800); }
-.fyexplore h2 svg { width: 24px; height: 24px; flex: none; color: var(--b700); }
-.fyx { display: flex; align-items: center; gap: 12px; padding: 12px 14px; background: var(--cream); border: 1px solid #DCE3CF; border-radius: 12px;
-  color: var(--b800); text-decoration: none; transition: transform .12s, box-shadow .12s; }
-.fyx:hover, .fyx:focus-visible { transform: translateY(-1px); box-shadow: 0 3px 10px rgba(40, 60, 30, .10); }
-.fyx > svg:first-child { width: 26px; height: 26px; flex: none; color: var(--b700); }
-.fyx > svg:last-child { width: 18px; height: 18px; flex: none; margin-left: auto; color: var(--b700); }
-.fyx b { display: block; font: 600 15.5px/1.3 var(--sans); }
-.fyx span span { display: block; font-size: 13.5px; color: var(--tx2); }
-.fytown { display: grid; gap: 6px; font-size: 14px; color: var(--tx2); }
-.fytown select { font: 500 15px var(--sans); padding: 8px 10px; border: 1px solid var(--edge); border-radius: 10px; background: var(--cream); }
-@media (max-width: 900px) { #foryou.talk { grid-template-columns: 1fr; gap: 20px; } .fyexplore { position: static; } }
-
-/* For you's safety panel (for-you.js fyPanel): calm, clearly first, its services as the usual phone cards */
-.fypanel { margin: 0 0 22px; padding: 18px 18px 14px; border-radius: 16px; background: #FDF6EC; border: 1px solid #EBC88F; }
-.fypanel.fy-urgent { background: #FCEDEA; border-color: #E8B4A8; }
-.fypanel .bt { margin: 0 0 6px; }
-.fypanel > p { margin: 0 0 12px; color: var(--tx2); }
-.fypanel .fynote { margin: 12px 0 0; font-size: 13.5px; color: var(--tx3); }
-.fy999 { display: flex; align-items: center; gap: 10px; margin: 6px 0 12px; padding: 12px 14px; border-radius: 12px; background: #8F2D1F; color: #fff;
-  font: 700 16px/1.35 var(--sans); text-decoration: none; }
-.fy999 svg { width: 24px; height: 24px; flex: none; }
-.fysub { margin: 4px 0 10px; font: 600 18px/1.3 var(--display); color: var(--b800); }
-.fyalso { margin: 8px 0 0; font-size: 14px; color: var(--tx2); }
-.fyalso a { color: var(--b700); font-weight: 600; }
+@container (max-width: 480px) { #foryou .tfold::before { content: none; } #foryou .tfold { padding: 0; width: 34px; justify-content: center; } }
+/* The buttons: the landing page's (.hway), all one height, a title on one line */
+#foryou .fyexplore { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 14px; align-items: stretch; }
+#foryou .fyexplore .hway b { font-size: 18px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.fytown { display: grid; gap: 6px; margin: 0 0 14px; font-size: 14px; color: var(--tx2); }
+.fytown select { max-width: 420px; font: 500 15px var(--sans); padding: 8px 10px; border: 1px solid var(--edge); border-radius: 10px; background: var(--cream); }
+@media (max-width: 1100px) { .fypicks { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+/* Computers: the buttons in one slim row that stays in view just above the helpline bar (--fy-foot: its height, for-you.js), each
+   its icon, title and arrow (the line under the title on phones only) */
+@media (min-width: 701px) {
+  #foryou .fyexplore { position: sticky; bottom: var(--fy-foot, 50px); z-index: 5; grid-template-columns: none; grid-auto-flow: column;
+    grid-auto-columns: minmax(0, 1fr); gap: 12px; padding: 10px 14px; box-shadow: 0 -6px 18px rgba(27, 49, 38, 0.10); }
+  #foryou .fyexplore .hway { padding: 8px 40px 8px 12px; align-items: center; }
+  #foryou .fyexplore .hway span span { display: none; }
+  #foryou .fyexplore .hway > svg { width: 24px; height: 24px; margin: 0; }
+  #foryou .fyexplore .hway b { margin: 0; font-size: 17px; }
+  #foryou .fyexplore .hway::after { top: 50%; transform: translateY(-50%); }
+}
+@media (min-width: 701px) and (max-width: 1100px) {
+  #foryou .fyexplore { gap: 8px; padding: 8px 10px; }
+  #foryou .fyexplore .hway { padding: 7px 32px 7px 9px; gap: 7px; }
+  #foryou .fyexplore .hway > svg { width: 20px; height: 20px; }
+  #foryou .fyexplore .hway b { font-size: 15px; }
+  #foryou .fyexplore .hway::after { right: 8px; }
+}
+@media (max-width: 700px) {
+  #foryou.talk { margin: 0 8px; padding: 8px; gap: 8px; }
+  #foryou .fymain { gap: 8px; }
+  #foryou .fypanel, #foryou .fyrow, #foryou .fyexplore { padding: 12px 10px 14px; }
+  .fypicks, #foryou .fyexplore { grid-template-columns: minmax(0, 1fr); }
+  #foryou .fyexplore { gap: 8px; }
+  #foryou .fyexplore .hway { background: #FDFBF4; border: 1px solid #CFDCD4; border-radius: 14px; }
+  .fyrowhd > .bt { font-size: 21px; }
+}
 
 </style>
 </head>
@@ -1710,7 +1735,7 @@ header.top:has(#tab-foryou[aria-current="page"]) { padding-bottom: 0; }
       <button type="button" id="tab-talk" aria-controls="panel-talk"><span class="lg">Phone and online</span><span class="sh">Phone &amp; online</span></button>
       <button type="button" id="tab-places" aria-controls="panel-places">Places</button><button type="button" id="tab-course" aria-controls="panel-course">Courses</button><button type="button" id="tab-training" aria-controls="panel-training">Training</button></span>
       <button type="button" id="tab-about" aria-controls="panel-about">About</button>
-      <span class="sitelinks"><a href="/next/courses/">Courses</a><a href="/next/about/">About</a></span>
+      <span class="sitelinks"><a href="/next/about/">About</a></span>
       </nav>
     </div>
     <!-- The filter boxes (selects) have autocomplete="off": on Back, the browser mustn't put old values back in them (the page keeps
@@ -2312,7 +2337,7 @@ KINDS.splice(0, KINDS.length, ...({
   {"kind": "Peer support", "colour": "#3A9488", "types": ["Peer group"]},
   {"kind": "Community", "colour": "#93549B", "types": ["Community"]},
   {"kind": "Advice and practical help", "colour": "#D08A2E", "types": ["Advocacy", "Practical support"]},
-  {"kind": "One-to-one and therapy", "colour": "#7A9A3A", "types": ["One-to-one support", "Counselling or therapy", "Helpline"]},
+  {"kind": "One-to-one and therapy", "colour": "#5E6E8C", "types": ["One-to-one support", "Counselling or therapy", "Helpline"]},
   {"kind": "Courses", "colour": "#B5577A", "types": ["Course"]}
  ]
 }
@@ -3173,7 +3198,7 @@ function renderAbout() {
     </section>
     </div></div>
     <p class="small">Service information belongs to the providers listed. Map data © <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap</a> contributors, © <a href="https://carto.com/attributions" target="_blank" rel="noopener">CARTO</a>.</p>
-    <p class="small" id="site-version">Version: next 2026-11-27 20:31</p>
+    <p class="small" id="site-version">Version: next 2026-11-28 00:59</p>
   </article>`;
 }
 /* ---------- Places: the town listings, as a tab of the directory ----------
@@ -3417,21 +3442,22 @@ function goShow(tags, where, fy) {
    Safety first. Each safety group has a panel of services (sheet record ids, chosen by topic and age) and says whether the
    usual picks show beneath it: none (urgent, own_behaviour: one clear step), or relevant (at_risk: only their own topics, as
    they asked; nothing added, such as the gentle Five Ways pick).
-   The picks, by simple rules:
+   The picks, by simple rules, in two rows (fyPicks): someone you can talk to (each topic's established lines, talk_lines of them,
+   only ones they can certainly use; none: no row), then places to go (up to max_picks, while there's a good one):
+     line     a topic's next established phone or online line (main_lines), or its best phone or online service if it has none
      match    for each topic, the best in-person service: the lowest score (days until a session that suits them + miles x per_mile,
               plus a penalty if it isn't a good first step for the topic, or the kind of help they asked for (help), isn't open to
               all, or needs more than turning up or signing up; less if it has one of the topic's prefer_words). Within the first
               radius, then the next (radius_nearby for travel: nearby only); at the times they said (when), then any time
-     phone    a topic with nothing in person, no place, or contact: phone or online: its best phone or online service
+     online   no place, or contact: phone or online: an online group for the topic
      gentle   for low mood, grief and the like, or when they want to get out: one nearby Five Ways activity
-     another  one topic only: a second option for it
    Only services open to all (who: anyone or adults; or a group the topic suits, groups_ok: carers for caring for someone): we
    don't know who's asking, so never a men's or older people's group by guesswork (the buttons still lead to everything). Never a
    service with a notice that stops people joining, never one in the safety panel above, never two from one provider; one with
-   eligibility conditions ranks lower; groups: avoid ranks peer groups far down. Beside the picks (below on phones): buttons into the directory set up from the same
+   eligibility conditions ranks lower; groups: avoid ranks peer groups far down. Below the picks: buttons into the directory set up from the same
    results (the kinds of help for each topic, the place, the distance), each checked so it never opens on an empty list. */
 const FY = ({
- "_about": "The For you tab (/next/directory/#foryou, opened from the landing page): what the landing page's AI read in someone's words (topics, place, preferences, safety: build/tools/assist/tags.json) turned into picks and buttons by the rules here. No AI here. Read by build/next/js/for-you.js. topics: for each topic, its line, the service types that make a good first step, words in a name or description that make one better (prefer_words), the groups (who) it suits (groups_ok) and a short name for buttons. open_to_all: the who values that mean anyone can go: the picks only use services open to all (or to a group the topic suits, groups_ok), since we don't know who's asking. score: each candidate gets days until it next runs (within soon_days, only per_day_soon a day, so a group in three weeks isn't far behind one tomorrow) + miles x per_mile, plus a penalty for each way it fits less well (other_area: a service in another area; check_first: one restricted to people we can't tell they are; exact_words: less when it has their own words for an activity; theirs: less for a service for people like them (a veteran's line for a veteran); young: less for a young people's service for someone under 18; activity_on_the_side: more, for an activity, when the service isn't one of activity_types (a breakfast drop-in with a sing-along, rather than a singing group); not_weekly: more for something that meets less than weekly, so a weekly group beats a monthly one that happens to be today; in_name: less again when the activity or their words are in its name, so it's what the group is for); the lowest wins. generic_words: left out of their own words for an activity before matching (\"walking group\" matches \"walks\"). roles, main_lines, circumstance_lines, under_18_lines, addiction_words and restrictions: what each pick is for, the established lines for each topic and area, and who a service is only for (each has its own _about). help_types: the kinds of help someone can ask for, as the sheet's types. when_hours: what daytime and evenings mean (a session's start time) and which days are weekends. safety: the panel for each risk group (most serious first), its words and the services (sheet record ids) it shows, with more by topic or for under-18s; picks: whether the usual picks show beneath (none, or relevant: only their topics, nothing added). explore: the buttons beside the picks; kind_titles: a button's title for each kind of service.",
+ "_about": "The For you tab (/next/directory/#foryou, opened from the landing page): what the landing page's AI read in someone's words (topics, place, preferences, safety: build/tools/assist/tags.json) turned into picks and buttons by the rules here. No AI here. Read by build/next/js/for-you.js. topics: for each topic, its line, the service types that make a good first step, words in a name or description that make one better (prefer_words), the groups (who) it suits (groups_ok) and a short name for buttons. open_to_all: the who values that mean anyone can go: the picks only use services open to all (or to a group the topic suits, groups_ok), since we don't know who's asking. score: each candidate gets days until it next runs (within soon_days, only per_day_soon a day, so a group in three weeks isn't far behind one tomorrow) + miles x per_mile, plus a penalty for each way it fits less well (other_area: a service in another area; check_first: one restricted to people we can't tell they are; exact_words: less when it has their own words for an activity; theirs: less for a service for people like them (a veteran's line for a veteran); young: less for a young people's service for someone under 18; activity_on_the_side: more, for an activity, when the service isn't one of activity_types (a breakfast drop-in with a sing-along, rather than a singing group); not_weekly: more for something that meets less than weekly, so a weekly group beats a monthly one that happens to be today; in_name: less again when the activity or their words are in its name, so it's what the group is for); the lowest wins. generic_words: left out of their own words for an activity before matching (\"walking group\" matches \"walks\"). talk_lines, main_lines, circumstance_lines, under_18_lines, addiction_words and restrictions: how many lines each topic offers, the established lines for each topic and area, and who a service is only for (each has its own _about). help_types: the kinds of help someone can ask for, as the sheet's types. when_hours: what daytime and evenings mean (a session's start time) and which days are weekends. safety: the panel for each risk group (at most max_picks of its services, in order) (most serious first), its words and the services (sheet record ids) it shows, with more by topic or for under-18s; picks: whether the usual picks show beneath (none, or relevant: only their topics, nothing added). rows: the rows' titles and fold labels; subtitles: the line above each pick. explore: the buttons below the picks (kind_text: a button's line for each kind of service, never naming their need); kind_titles: a button's title for each kind of service.",
  "max_picks": 3,
  "radius_miles": [
   10,
@@ -3628,8 +3654,6 @@ const FY = ({
    ]
   }
  },
- "heading": "A few places to start",
- "intro": "Based on what you've shared, here are some options that might help. You can explore them in any order.",
  "no_place": "Choose a town to see places near you. For now, here are some you can phone or use online.",
  "lines": {
   "phone": "{line}, by phone or online",
@@ -3643,28 +3667,61 @@ const FY = ({
   "online": "{line}, online at the times you said"
  },
  "details": "Details",
+ "rows": {
+  "_about": "For you's rows, each a cream panel that folds (its chevron by the title; all open when the page loads; the urgent panel never folds). talk: the first row, phone and online services (or, with none, one-to-one services in person); the second row, places to go, named by their place (so it's clearly theirs): groups (all places to meet people) or mixed (some services too); online: no place (online groups only). fold, unfold: the chevron's label for screen readers.",
+  "groups": "Groups and activities near {place}",
+  "talk": "Someone you can talk to",
+  "mixed": "Places and services near {place}",
+  "fold": "Hide",
+  "unfold": "Show",
+  "online": "Groups you can join online"
+ },
+ "subtitles": {
+  "_about": "The line above each pick, said to the person, about what they'd get (never their need: someone else may see the screen). An activity they asked for: activity, or its own words in activity_words when 'A place to enjoy …' doesn't read well; otherwise by_type for the sheet's type, else meet (phone and online picks: listen).",
+  "activity": "A place to enjoy {activity}",
+  "activity_words": {
+   "cafe and chat": "A place to enjoy a cuppa and a chat",
+   "digital skills": "A place to learn digital skills",
+   "heritage": "A place to enjoy local history",
+   "volunteering": "A place to volunteer",
+   "play": "A place for children to play"
+  },
+  "meet": "Somewhere to meet people",
+  "listen": "Someone who'll listen",
+  "by_type": {
+   "One-to-one support": "Someone who'll listen",
+   "Counselling or therapy": "Someone who'll listen",
+   "Helpline": "Someone who'll listen",
+   "Practical support": "Practical help",
+   "Advocacy": "Practical help"
+  }
+ },
  "none": "We couldn't find a good match for that. Try the tabs above, or talk to someone straight away using the helplines below.",
  "explore": {
-  "heading_near": "Find more support in {place}",
-  "heading_anywhere": "Explore more support",
-  "heading_safety": "More support",
   "choose_place": "Choose a town to see places near you",
   "max_links": 4,
   "phone": {
-   "title": "Phone and online support",
-   "text": "{line}"
+   "title": "Phone and online",
+   "text": "Talk to someone, wherever you are"
   },
   "browse": {
-   "title": "Browse the full directory",
-   "text_near": "All services and support in {place}",
-   "text_anywhere": "All services and support across Somerset"
+   "title": "Full directory",
+   "text_near": "Everything near {place}, at your own pace",
+   "text_anywhere": "Everything across Somerset, at your own pace"
   },
   "safety_phone": {
-   "title": "Phone and online support",
-   "text": "Helplines, chat and online support"
+   "title": "Phone and online",
+   "text": "Talk to someone, wherever you are"
   },
   "near": "near {place}",
-  "anywhere": "across Somerset"
+  "anywhere": "across Somerset",
+  "kind_text": {
+   "Activities": "Something to look forward to, near {place}",
+   "Peer support": "People who understand what you're going through",
+   "Community": "Friendly faces near {place}",
+   "Advice and practical help": "Practical help near {place}",
+   "One-to-one and therapy": "Time with someone who'll listen, near {place}"
+  }
  },
  "radius_nearby": [
   2,
@@ -3728,8 +3785,7 @@ const FY = ({
    }
   },
   "at_risk": {
-   "heading": "You don't have to deal with this alone",
-   "text": "You can talk to someone now, in confidence.",
+   "heading": "You can talk to someone now, in confidence",
    "picks": "relevant",
    "services": [
     "R0219",
@@ -3761,79 +3817,33 @@ const FY = ({
     "R1636",
     "R0220"
    ]
-  },
-  "note": "We're a directory, not a support service. If you or someone else is in danger, call 999."
+  }
  },
  "kind_titles": {
   "Activities": "Activities",
-  "Peer support": "Peer support groups",
-  "Community": "Community groups and cafés",
-  "Advice and practical help": "Advice and practical help",
-  "One-to-one and therapy": "One-to-one support",
+  "Peer support": "Peer groups",
+  "Community": "Community groups",
+  "Advice and practical help": "Practical help",
+  "One-to-one and therapy": "One-to-one",
   "Courses": "Courses"
  },
  "also": "Showing places near {place}. You also mentioned {also}:",
  "also_link": "show places near {also} instead",
- "also_heading": "For what you asked about",
- "roles": {
-  "_about": "For each topic, what its picks are for, in order (each topic takes its first role, then the next topic its first, and so on, up to max_picks). place: the best in-person service for the topic (by phone or online if they'd rather, or there's no place); line: the next of the topic's main lines (main_lines) for their area, then national ones; any topic not here: place, place.",
-  "connect": [
-   "place",
-   "place",
-   "line"
-  ],
-  "low mood": [
-   "place",
-   "line",
-   "line"
-  ],
-  "anxiety": [
-   "place",
-   "line",
-   "line"
-  ],
-  "bereavement": [
-   "line",
-   "place",
-   "line"
-  ],
-  "finances": [
-   "place",
-   "line",
-   "line"
-  ],
-  "housing": [
-   "line",
-   "place"
-  ],
-  "food": [
-   "place",
-   "place"
-  ],
-  "caring for someone": [
-   "place",
-   "line"
-  ],
-  "dementia": [
-   "place",
-   "line"
-  ],
-  "addiction": [
-   "line",
-   "place"
-  ],
-  "eating disorders": [
-   "line",
-   "place"
-  ],
-  "hearing voices": [
-   "place",
-   "line"
-  ],
-  "long-term pain": [
-   "place",
-   "place"
-  ]
+ "talk_lines": {
+  "_about": "Someone you can talk to: how many of each topic's established lines (main_lines, then the best phone or online service) it offers, the topics taking turns, at most max_picks in all. A topic not here: none (its places only).",
+  "connect": 1,
+  "low mood": 2,
+  "anxiety": 2,
+  "bereavement": 2,
+  "finances": 2,
+  "housing": 1,
+  "food": 0,
+  "caring for someone": 1,
+  "dementia": 1,
+  "addiction": 1,
+  "eating disorders": 1,
+  "hearing voices": 1,
+  "long-term pain": 0
  },
  "main_lines": {
   "_about": "The established phone and online services for each topic, by the person's area (Somerset when we don't know it), then national (a national one can come first in an area's own list): sheet record ids, tried in order. Each is still checked against the live record (there, no notice, open to them) and never two from one provider. why: the reason they're here, for whoever maintains this.",
@@ -4106,10 +4116,7 @@ const fyFill = (tpl, v) => tpl.replace(/\{(\w+)\}/g, (m, k) => v[k] ?? "");
 const fyTopic = t => (LABEL[t] || t).toLowerCase();
 const fyTopicSet = t => FY.topics[t] || { line: cap(fyTopic(t)), first_step: [] };
 // The safety group that leads (most serious first, in for-you.json's order)
-const fySafety = c => Object.keys(FY.safety).find(g => g !== "note" && c.safety.includes(g)) || "";
-// An icon for a topic line: the landing page's, where it has one
-const fyIcon = t => { const h = HOME_TOPICS.find(x => x[0] === t);
-  return L_ICON(h ? h[1] : '<path d="M12 3v18M12 5h6l2 2.5-2 2.5h-6M12 12H6l-2 2.5L6 17h6"/>'); };
+const fySafety = c => Object.keys(FY.safety).find(g => c.safety.includes(g)) || "";
 // The sheet's types for the kinds of help they asked for (none: the topic's own first steps)
 const fyHelpTypes = prefs => (prefs.help || []).flatMap(h => FY.help_types[h] || []);
 // Does a session suit the times they said? (when: daytime, evenings, weekends; none said: any)
@@ -4222,9 +4229,11 @@ function fyPicker(c, now, shown = []) {
     return null;
   }
   // The best phone or online service for a topic (or an activity), scored the same way
-  function byPhone(tag, { activity = false } = {}) {
+  // (sure: for the talk row: one they can certainly use, nothing to check first, and not a group)
+  const sureOf = (s, tag) => !fyRestrict(s, c).line && !whoLine(s, tag) && !isGroupType(s);
+  function byPhone(tag, { activity = false, sure = false, group = false } = {}) {
     const fits = s => activity ? split(s.activities || "").some(a => c.activities.includes(a)) : s._sf.includes(tag);
-    const all = T.filter(s => fits(s) && free(s, tag, activity)).map(s => ({ s, st: openState(s, now) })).map(x => ({ ...x, v: score(x, tag, activity) }));
+    const all = T.filter(s => fits(s) && free(s, tag, activity) && (!sure || sureOf(s, tag)) && (!group || isGroupType(s))).map(s => ({ s, st: openState(s, now) })).map(x => ({ ...x, v: score(x, tag, activity) }));
     return all.sort(order)[0] || null;
   }
   // When nothing in person suits their times: an online or phone group in their area (or UK-wide) at those times, if any
@@ -4236,28 +4245,35 @@ function fyPicker(c, now, shown = []) {
   }
   // The topic's next main line for their area, then national ones (main_lines), if it's there and open to them
   // (first: lines for people like them, then young people's for under-18s, when they fit the topic)
-  function line(tag) {
+  function line(tag, { sure = false } = {}) {
     const L = FY.main_lines[tag] || {}, U = FY.under_18_lines;
     const fit = id => { const s = ALL.find(x => x.record_id === id); return s && s._sf.includes(tag) ? id : null; };
     const ids = [...(c.circumstances || []).flatMap(x => FY.circumstance_lines[x] || []).filter(fit),
       ...(young ? [...(U[c.area] || []), ...(U.national || [])].filter(fit) : []), ...(L[c.area] || []), ...(L.national || [])];
     for (const id of ids) {
       const s = ALL.find(x => x.record_id === id);
-      if (s && free(s, tag)) return { s, st: openState(s, now) };
+      if (s && free(s, tag) && (!sure || sureOf(s, tag))) return { s, st: openState(s, now) };
     }
     return null;
   }
   return { inPerson, byPhone, onlineAt, line, take };
 }
 
-// The picks: an activity they asked for first (or an honest gap and somewhere to meet people instead); then each topic's roles in
-// turn (its first role, then the next topic's first...); the gentle Five Ways pick for low mood and the like; at most max_picks
+// The picks, in two rows of at most max_picks each. Someone you can talk to (talk): the topics' established phone and online lines
+// (talk_lines of them for each topic, in turn; the best phone or online service if a topic has no line left), only what fits: no
+// padding. Places to go (meet): an activity they asked for first (or an honest gap and somewhere to meet people instead), then the
+// best in person for each topic in turn, filled while there's a good one; the gentle Five Ways pick for low mood and the like. No
+// place, or they'd rather phone: places by phone or online too (an online group stays a place to meet people). Under a safety panel:
+// no talk row (the panel is it), and only their own topics. Each pick has its row (fyRow).
+const fyRow = p => isGroupType(p.s) || !p.st ? "meet" : "talk";
 function fyPicks(c, now = new Date(), shown = []) {
-  const P = fyPicker(c, now, shown), picks = [], room = () => picks.length < FY.max_picks, g = fySafety(c);
+  const P = fyPicker(c, now, shown), picks = [], g = fySafety(c), max = FY.max_picks;
   if (g && FY.safety[g].picks === "none") return [];
   // Under a panel, no picks for what it already covers: the crisis lines, and its topics' services (abuse: the abuse lines)
   let tags = c.tags.filter(t => !(g && (t === FY.crisis_tag || (FY.safety[g].by_topic || {})[t])));
   const phoneFirst = c.prefs.contact === "phone or online", inPersonOnly = c.prefs.contact === "in person" && c.point;
+  const n = row => picks.filter(p => fyRow(p) === row).length, room = row => n(row) < max;
+  const add = (r, why, t, note) => { if (!room(fyRow(r)) || (g && fyRow(r) === "talk")) return false; picks.push(P.take(r, why, t, note)); return true; };
   const what = (c.said || [])[0] || c.terms[0] || c.activities[0] || "";   // (their words as they said them, for the line)
   let gap = "";
   if (c.activities.length) {
@@ -4265,30 +4281,37 @@ function fyPicks(c, now = new Date(), shown = []) {
     // (a craft group when they asked for knitting: say so)
     const related = x => c.terms.length && !fyHasWords(x.s, c.terms), say = x => fyFill(related(x) ? FY.lines.activity_related : FY.lines.activity,
       { what, place: c.point ? c.point.label : "", activity: split(x.s.activities).find(a => c.activities.includes(a)) || what });
-    if (r) picks.push(P.take(r, "activity", at, say(r)));
+    if (r) add(r, "activity", at, say(r));
     // A second one like it: for a light request (no topic), or when the first is only related (two to choose from, as neither is quite it)
     if (r && (!tags.length || related(r))) { const r2 = c.point ? P.inPerson(at, { activity: true }) : P.byPhone(at, { activity: true });
-      if (r2 && related(r2) === related(r)) picks.push(P.take(r2, "activity", at, say(r2))); }
+      if (r2 && related(r2) === related(r)) add(r2, "activity", at, say(r2)); }
     if (!r) gap = fyFill(c.point ? FY.lines.gap : FY.lines.gap_anywhere, { what, place: c.point ? c.point.label : "" });
     if ((!tags.length || gap) && !g) tags = gap ? ["connect", ...tags.filter(t => t !== "connect")] : [...tags, "connect"];   // a light request, or no match: somewhere to meet people (first, after a gap, so the line says why)
   }
-  const roles = t => (FY.roles[t] || ["place", "place"]);
-  for (let i = 0; i < FY.max_picks && room(); i++)
+  // Someone you can talk to: each topic's lines in turn
+  if (!g && !inPersonOnly)
+    for (let i = 0; i < max && room("talk"); i++)
+      for (const t of tags) {
+        if (!room("talk") || i >= (FY.talk_lines[t] || 0)) continue;
+        // (only what fits: nothing to check first; the best phone or online service only for a topic with no lines of its own)
+        const r = P.line(t, { sure: true }) || (FY.main_lines[t] ? null : P.byPhone(t, { sure: true }));
+        if (r) add(r, "line", t);
+      }
+  // Places to go: the best for each topic in turn, while there's one (by phone or online when there's no place, or they'd rather)
+  const byPhone = phoneFirst || !c.point;
+  for (let found = true; found && room(byPhone ? "talk" : "meet");) {
+    found = false;
     for (const t of tags) {
-      if (!room()) break;
-      const role = roles(t)[i]; if (!role) continue;
-      let r = null, why = "match";
-      if (role === "line" && !inPersonOnly) { r = P.line(t); why = "line"; }
-      if (!r) { why = "match"; r = phoneFirst || !c.point ? P.byPhone(t) || P.inPerson(t) : P.inPerson(t) || (inPersonOnly ? null : P.byPhone(t));
-        const o = r && r.relaxed && !inPersonOnly ? P.onlineAt(t) : null;   // (an online group at their times beats a daytime one in person)
-        if (o) { r = o; why = "online"; } }
-      if (!r && !inPersonOnly) { r = P.line(t); why = "line"; }
-      if (r) picks.push(P.take(r, r.st && why === "match" && !phoneFirst && c.point ? "phone" : why, t,
-        t === "connect" && gap && !picks.some(p => p.topic === "connect" && p.why !== "activity") ? gap : ""));
+      if (!room(byPhone ? "talk" : "meet")) break;
+      let r = byPhone ? P.byPhone(t, { group: true }) || P.inPerson(t) : P.inPerson(t), why = "match";   // (by phone: groups online; the talk row has the lines)
+      const o = r && r.relaxed && !inPersonOnly ? P.onlineAt(t) : null;   // (an online group at their times beats a daytime one in person)
+      if (o) { r = o; why = "online"; }
+      if (r && add(r, why, t, t === "connect" && gap && !picks.some(p => p.topic === "connect" && fyRow(p) === "meet" && p.why !== "activity") ? gap : "")) found = true;
     }
+  }
   if (g) return picks;   // at_risk: only their own topics, nothing added
-  if (c.point && room() && !phoneFirst && (c.prefs.get_out === "yes" || tags.some(t => FY.gentle_for.includes(t))))
-    for (const w of FY.five_ways.filter(w => !tags.includes(w))) { const r = P.inPerson(w, { strict: true }); if (r) { picks.push(P.take(r, "gentle", w)); break; } }
+  if (c.point && room("meet") && !phoneFirst && (c.prefs.get_out === "yes" || tags.some(t => FY.gentle_for.includes(t))))
+    for (const w of FY.five_ways.filter(w => !tags.includes(w))) { const r = P.inPerson(w, { strict: true }); if (r) { add(r, "gentle", w); break; } }
   return picks;
 }
 
@@ -4297,17 +4320,26 @@ const FY_ICONS = {
   phone: '<path d="M5 4h4l2 5-2.5 1.5a11 11 0 0 0 5 5L15 13l5 2v4a2 2 0 0 1-2 2A16 16 0 0 1 3 6a2 2 0 0 1 2-2"/>',
   search: '<circle cx="11" cy="11" r="6.5"/><path d="M16 16l4.5 4.5"/>',
   pin: '<path d="M12 21s-6.5-6.2-6.5-11.2a6.5 6.5 0 0 1 13 0C18.5 14.8 12 21 12 21z"/><circle cx="12" cy="9.8" r="2.3"/>' };
-// The line above a pick: what it's for (the card under it says when, where and how)
-function fyLine(p) {
-  const line = fyTopicSet(p.topic).line;
-  const text = p.why === "activity" ? p.note : p.why === "match" || p.why === "line" ? line : fyFill(FY.lines[p.why], { line });   // (online: at their times)
-  const note = p.why !== "activity" && p.note ? `<p class="fynote">${esc(p.note)}</p>` : "";
-  const check = p.check ? `<p class="fycheck">${esc(p.check)}</p>` : "";
-  return `<h2 class="fywhy">${fyIcon(p.why === "gentle" ? "low mood" : p.topic)}<span>${esc(text)}</span></h2>${note}${check}`;
+// The line above a pick, said to the person: what they'd get there, never their need (someone else may see the screen). An
+// activity they asked for: "A place to enjoy singing"; otherwise by the kind of service (the card under it says when, where and
+// how). A line to check first (who it's for) stays under it.
+function fySubtitle(p, c) {
+  const A = FY.subtitles, act = p.why === "activity" ? split(p.s.activities || "").find(a => c.activities.includes(a)) || c.activities[0] : "";
+  return act ? A.activity_words[act] || fyFill(A.activity, { activity: act }) : fyMeets(p) ? A.meet : A.by_type[p.s.type] || A.listen;
 }
+const fyMeets = p => isGroupType(p.s) || (!p.st && !FY.subtitles.by_type[p.s.type]);   // (a place to meet people: a group, a drop-in, an activity, online too)
+function fyLine(p, c) {
+  const check = p.check ? `<p class="fycheck">${esc(p.check)}</p>` : "";
+  return `<div class="fyhd"><h3 class="fywhy">${L_ICON(p.st && !fyMeets(p) ? FY_ICONS.phone : FY_ICONS.people)}<span>${esc(fySubtitle(p, c))}</span></h3>${check}</div>`;
+}
+// A row's title with its fold button (all open when the page loads; the click handler at the foot folds them)
+const fyRowHead = (tag, title, fold = true) => `<div class="fyrowhd"><${tag} class="bt">${esc(title)}</${tag}>${fold ?
+  `<button type="button" class="cbtn fyfold" aria-expanded="true" aria-label="${esc(FY.rows.fold)}: ${esc(title)}">${CHEV}</button>` : ""}</div>`;
 // "Show in directory": the pick among everything else, in In person (their place, a distance that reaches it, any time; its card
-// opened and its pin shown) or in Phone and online (its card opened). next-late.js does the showing (show= in the address)
-function fyShow(p, c) {
+// opened and its pin shown) or in Phone and online (its card opened). A book icon in the card's top row, its tip "Show in
+// directory"; next-late.js does the showing (show= in the address)
+const FY_BOOK = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 4h6a4 4 0 0 1 4 4v12a3 3 0 0 0-3-3H2z"/><path d="M22 4h-6a4 4 0 0 0-4 4v12a3 3 0 0 1 3-3h7z"/></svg>';
+function fyShow(p, c, html) {
   const u = new URLSearchParams(), inPerson = !p.st;
   if (inPerson && c.point) {
     if (c.point.town) u.set("town", c.point.town); else { u.set("lat", c.point.lat.toFixed(4)); u.set("lon", c.point.lon.toFixed(4)); u.set("label", c.point.label); }
@@ -4316,11 +4348,12 @@ function fyShow(p, c) {
   }
   if (inPerson) u.set("when", "any");
   u.set("show", p.s.record_id);
-  return `<a class="fyshow" href="${PAGE_URL.directory}?${u}#${inPerson ? "near" : "talk"}">${esc(FY.show)}</a>`;
+  const book = iconLink(`${PAGE_URL.directory}?${u}#${inPerson ? "near" : "talk"}`, FY_BOOK, FY.show, `${FY.show}: ${p.s.name}`, false);
+  return html.replace('<span class="sp"></span>', '<span class="sp"></span>' + book);   // (before Copy, in the top row)
 }
 
 // The safety panel: the group's words and its services (by record id: under-18s first, then by topic, then the group's own),
-// one per provider (the one open now, else the first)
+// one per provider (the one open now, else the first), at most max_picks
 function fyPanelRecs(c, g, now) {
   if (!g) return [];
   const P = FY.safety[g], ids = [...(c.prefs.under_18 === "yes" ? P.under_18 || [] : []), ...c.tags.flatMap(t => (P.by_topic || {})[t] || []), ...P.services];
@@ -4329,14 +4362,14 @@ function fyPanelRecs(c, g, now) {
     const k = (s.provider || s.name).toLowerCase(), st = openState(s, now), at = recs.findIndex(r => (r.s.provider || r.s.name).toLowerCase() === k);
     if (at < 0) recs.push({ s, st }); else if (st.open && !recs[at].st.open) recs[at] = { s, st };
   }
-  return recs;
+  return recs.slice(0, FY.max_picks);   // (a row of at most three, as the picks: Samaritans is always in the bar at the foot)
 }
 function fyPanel(g, recs) {
   if (!g) return "";
   const P = FY.safety[g];
   const call999 = P.call999 ? `<a class="fy999" href="tel:999">${L_ICON(FY_ICONS.phone)}<span>${esc(P.call999)}</span></a>` : "";
-  return `<section class="fypanel fy-${g}"><h1 class="bt">${esc(P.heading)}</h1>${call999}<p>${esc(P.text)}</p>` +
-    `<div class="fypicks">${recs.map(r => talkCard(r)).join("")}</div><p class="fynote">${esc(FY.safety.note)}</p></section>`;
+  return `<section class="fypanel fy-${g}">${fyRowHead("h1", P.heading, g !== "urgent")}${call999}${P.text ? `<p>${esc(P.text)}</p>` : ""}` +
+    `<div class="fypicks">${recs.map(r => talkCard(r)).join("")}</div></section>`;
 }
 
 // The buttons: the directory set up from the same results. For each topic, the kinds of help that suit it (asked for, else its
@@ -4355,15 +4388,15 @@ function fyButtons(c, g) {
     if (tab === "near" && o.types) u.set("types", o.types.join(","));
     if (tab === "near" && c.point && o.within && o.within !== 10) u.set("within", o.within);
     return PAGE_URL.directory + (String(u) ? "?" + u : "") + "#" + tab; };
-  const button = (url, icon, title, text) => `<a class="fyx" href="${url}">${L_ICON(icon)}<span><b>${esc(title)}</b><span>${esc(text)}</span></span>${L_ICON('<path d="M9 6l6 6-6 6"/>')}</a>`;
+  const button = (url, icon, title, text) => `<a class="hway fyx" href="${url}">${L_ICON(icon)}<span><b>${esc(title)}</b><span>${esc(text)}</span></span></a>`;   // (as the landing page's)
   // An in-person button for a topic and kind, at the first distance that finds something (none: no button)
   const kindButton = (t, k) => {
     const types = KINDS[k][2], has = r => S.some(s => s._sf.includes(t) && types.includes(s.type) && near(s, r) && !noticeText(s));
     const within = has(radius) ? radius : has(wide) ? wide : 0;
     return within ? button(href("near", { topic: t, types, within }), FY_ICONS.people, FY.kind_titles[KINDS[k][0]] || KINDS[k][0],
-      `${fyTopicSet(t).line}, ${fyFill(E.near, { place })}`) : "";
+      fyFill(E.kind_text[KINDS[k][0]] || E.near, { place })) : "";
   };
-  const phoneButton = t => T.some(s => s._sf.includes(t)) ? button(href("talk", { topic: t }), FY_ICONS.phone, E.phone.title, fyFill(E.phone.text, { line: fyTopicSet(t).line })) : "";
+  const phoneButton = t => T.some(s => s._sf.includes(t)) ? button(href("talk", { topic: t }), FY_ICONS.phone, E.phone.title, E.phone.text) : "";
   const links = [];
   if (g === "urgent" || g === "own_behaviour") links.push(button(href("talk"), FY_ICONS.phone, E.safety_phone.title, E.safety_phone.text));
   else {
@@ -4391,17 +4424,24 @@ function drawForYou() {
   if (!ALL.length) { box.innerHTML = `<div class="empty">${liveMsg}</div>`; return; }
   const now = new Date(), c = fyChoices(), g = fySafety(c), panel = fyPanelRecs(c, g, now), picks = fyPicks(c, now, panel.map(r => r.s.id));
   box.style.setProperty("--fy-details", JSON.stringify(FY.details));
-  const cards = picks.map(p => `<section class="fypick">${fyLine(p)}${p.st ? talkCard(p) : serviceCard(p, "h2", false)}${fyShow(p, c)}</section>`).join("");
+  const card = p => `<section class="fypick">${fyRow(p) === "talk" ? "" : fyLine(p, c)}${fyShow(p, c, p.st ? talkCard(p) : serviceCard(p, "h2", false))}</section>`;
   const E = FY.explore, place = c.point ? c.point.label : "";
   // No place: a town picker (it reopens this tab with the town); a place they typed that wasn't used: one tap to it
-  const towns = place ? "" : `<label class="fytown">${esc(E.choose_place)}<select id="fy-town"><option value="">Choose a town</option>${
+  // (the note above it says the same, so the words only for screen readers then)
+  const towns = place ? "" : `<label class="fytown">${g ? esc(E.choose_place) : ""}<select id="fy-town" aria-label="${esc(E.choose_place)}"><option value="">Choose a town</option>${
     Object.keys(PLACE).sort().map(n => `<option>${esc(n)}</option>`).join("")}</select></label>`;
   const also = c.also ? `<p class="fyalso">${esc(fyFill(FY.also, { place, also: c.also.label }))} <a href="#" id="fy-also">${esc(fyFill(FY.also_link, { also: c.also.label }))}</a></p>` : "";
-  const heading = g ? E.heading_safety : place ? fyFill(E.heading_near, { place }) : E.heading_anywhere;
-  const explore = `<aside class="fyexplore"><h2>${L_ICON(FY_ICONS.pin)}${esc(heading)}</h2>${towns}${fyButtons(c, g)}</aside>`;
-  const head = g ? "" : `<div class="fyhead"><h1 class="bt">${esc(FY.heading)}</h1><p>${esc(FY.intro)}</p>${c.point ? "" : `<p class="fynote">${esc(FY.no_place)}</p>`}${also}</div>`;
-  const list = picks.length ? (g ? `<h2 class="fysub">${esc(FY.also_heading)}</h2>` : "") + `<div class="fypicks">${cards}</div>` : g ? "" : `<div class="empty">${esc(FY.none)}</div>`;
-  box.innerHTML = `<div class="fymain">${fyPanel(g, panel)}${head}${list}</div>${explore}`;
+  const explore = `<aside class="fyexplore">${fyButtons(c, g)}</aside>`;
+  // The rows: someone to talk to (phone and online: no line above each, the card says it all), then places to go; with nothing by phone, a one-to-one service in person goes
+  // up to the first row. The second row's title from what's in it; the notes on their place under the first row
+  let talk = picks.filter(p => fyRow(p) === "talk"), meet = picks.filter(p => fyRow(p) === "meet");
+  if (!talk.length && !g) { talk = meet.filter(p => !fyMeets(p)); meet = meet.filter(fyMeets); }
+  const notes = (g ? "" : `${c.point ? "" : `<p class="fynote">${esc(FY.no_place)}</p>`}${also}`) + towns;   // (the town picker too: the buttons stay in view)
+  const rows = [[FY.rows.talk, talk], [!c.point ? FY.rows.online : fyFill(meet.every(fyMeets) ? FY.rows.groups : FY.rows.mixed, { place: c.point.town || c.point.label }), meet]].filter(r => r[1].length)
+    .map(([title, list], i) => `<section class="fyrow">${fyRowHead(i || g ? "h2" : "h1", title)}${i ? "" : notes}<div class="fypicks">${list.map(card).join("")}</div></section>`).join("");
+  const list = rows || (g && !towns ? "" : `<section class="fyrow">${notes}${g ? "" : `<div class="empty">${esc(FY.none)}</div>`}</section>`);
+  box.innerHTML = `<div class="fymain">${fyPanel(g, panel)}${list}</div>${explore}`;
+  fyFoot();
   const pick = $("fy-town");
   if (pick) pick.onchange = () => { if (!pick.value) return; const q = new URLSearchParams(FY_Q); q.set("town", pick.value); q.delete("lat"); q.delete("lon"); q.delete("label");
     location.href = location.pathname + "?" + q + "#foryou"; };
@@ -4415,7 +4455,15 @@ function drawForYou() {
 }
 // A card opens and closes as in the other tabs (links, Copy and Directions do their own thing)
 // (both kinds: in-person cards and the phone and online ones, in the picks and the safety panel)
-$("foryou").addEventListener("click", e => { const c = e.target.closest(".card, .tcard"); if (c && !e.target.closest("a, button:not(.cbtn)")) toggleCard(c); });
+// The buttons stay in view on computers, just above the helpline bar at the foot (its height: --fy-foot)
+function fyFoot() { const f = document.querySelector("footer.help"); if (f) $("foryou").style.setProperty("--fy-foot", f.offsetHeight + "px"); }
+addEventListener("resize", fyFoot);
+// A row folds to its title (its button, or the title itself)
+$("foryou").addEventListener("click", e => {
+  const hd = e.target.closest(".fyrowhd");
+  if (hd) { const b = hd.querySelector(".fyfold"); if (!b) return; const sec = hd.parentElement, folded = sec.classList.toggle("fyfolded");
+    b.setAttribute("aria-expanded", String(!folded)); b.setAttribute("aria-label", `${folded ? FY.rows.unfold : FY.rows.fold}: ${hd.querySelector(".bt").textContent}`); return; }
+  const c = e.target.closest(".card, .tcard"); if (c && !e.target.closest("a, button:not(.cbtn)")) toggleCard(c); });
 
 /* ---------- links that open the directory already filtered ----------
    e.g. /directory/?support=bereavement&town=Frome#near · ?lat=51.21&lon=-3.6&label=near%20Porlock#near · ?support=anxiety#talk

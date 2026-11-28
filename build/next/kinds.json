@@ -5,7 +5,7 @@
   {"kind": "Peer support", "colour": "#3A9488", "types": ["Peer group"]},
   {"kind": "Community", "colour": "#93549B", "types": ["Community"]},
   {"kind": "Advice and practical help", "colour": "#D08A2E", "types": ["Advocacy", "Practical support"]},
-  {"kind": "One-to-one and therapy", "colour": "#7A9A3A", "types": ["One-to-one support", "Counselling or therapy", "Helpline"]},
+  {"kind": "One-to-one and therapy", "colour": "#5E6E8C", "types": ["One-to-one support", "Counselling or therapy", "Helpline"]},
   {"kind": "Courses", "colour": "#B5577A", "types": ["Course"]}
  ]
 }
