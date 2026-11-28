@@ -1640,8 +1640,8 @@ body.landing footer.help { padding-block: 14px calc(14px + env(safe-area-inset-b
 /* ---------- For you (js/for-you.js): one sage panel holding cream rows: the safety panel (if any), the picks, then the buttons ---------- */
 /* Its top in line with the dropdowns on the other tabs, as About (the header's 10px foot and the list's 14px top taken off) */
 header.top:has(#tab-foryou[aria-current="page"]) { padding-bottom: 0; }
-#foryou.talk { display: grid; grid-template-columns: minmax(0, 1fr); gap: 14px; align-items: start; margin: 0 16px; padding: 14px;
-  background: var(--sage); border-radius: 16px; }
+#foryou.talk { padding-top: 0; }   /* (the page's own width, gutters and margins, as the other tabs: lined up with the title and tabs) */
+#foryou .fysage { display: grid; grid-template-columns: minmax(0, 1fr); gap: 14px; align-items: start; padding: 14px; background: var(--sage); border-radius: 16px; }
 #foryou .fymain { display: grid; gap: 14px; }
 /* Each row: cream, as the other tabs' background; --notch: the cards' punched notches take its colour */
 #foryou .fypanel, #foryou .fyrow, #foryou .fyexplore { margin: 0; padding: 16px 18px 18px; background: var(--cream); border: 1px solid var(--line);
@@ -1699,7 +1699,8 @@ header.top:has(#tab-foryou[aria-current="page"]) { padding-bottom: 0; }
   #foryou .fyexplore .hway::after { right: 8px; }
 }
 @media (max-width: 700px) {
-  #foryou.talk { margin: 0 8px; padding: 8px; gap: 8px; }
+  #foryou.talk { padding-inline: 8px; }
+  #foryou .fysage { padding: 8px; gap: 8px; }
   #foryou .fymain { gap: 8px; }
   #foryou .fypanel, #foryou .fyrow, #foryou .fyexplore { padding: 12px 10px 14px; }
   .fypicks, #foryou .fyexplore { grid-template-columns: minmax(0, 1fr); }
@@ -3198,7 +3199,7 @@ function renderAbout() {
     </section>
     </div></div>
     <p class="small">Service information belongs to the providers listed. Map data © <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap</a> contributors, © <a href="https://carto.com/attributions" target="_blank" rel="noopener">CARTO</a>.</p>
-    <p class="small" id="site-version">Version: next 2026-11-28 00:59</p>
+    <p class="small" id="site-version">Version: next 2026-11-28 01:08</p>
   </article>`;
 }
 /* ---------- Places: the town listings, as a tab of the directory ----------
@@ -4440,7 +4441,7 @@ function drawForYou() {
   const rows = [[FY.rows.talk, talk], [!c.point ? FY.rows.online : fyFill(meet.every(fyMeets) ? FY.rows.groups : FY.rows.mixed, { place: c.point.town || c.point.label }), meet]].filter(r => r[1].length)
     .map(([title, list], i) => `<section class="fyrow">${fyRowHead(i || g ? "h2" : "h1", title)}${i ? "" : notes}<div class="fypicks">${list.map(card).join("")}</div></section>`).join("");
   const list = rows || (g && !towns ? "" : `<section class="fyrow">${notes}${g ? "" : `<div class="empty">${esc(FY.none)}</div>`}</section>`);
-  box.innerHTML = `<div class="fymain">${fyPanel(g, panel)}${list}</div>${explore}`;
+  box.innerHTML = `<div class="fysage"><div class="fymain">${fyPanel(g, panel)}${list}</div>${explore}</div>`;   // (the sage panel: inside the page's gutters, lined up with the title and tabs)
   fyFoot();
   const pick = $("fy-town");
   if (pick) pick.onchange = () => { if (!pick.value) return; const q = new URLSearchParams(FY_Q); q.set("town", pick.value); q.delete("lat"); q.delete("lon"); q.delete("label");

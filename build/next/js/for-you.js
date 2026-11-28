@@ -376,7 +376,7 @@ function drawForYou() {
   const rows = [[FY.rows.talk, talk], [!c.point ? FY.rows.online : fyFill(meet.every(fyMeets) ? FY.rows.groups : FY.rows.mixed, { place: c.point.town || c.point.label }), meet]].filter(r => r[1].length)
     .map(([title, list], i) => `<section class="fyrow">${fyRowHead(i || g ? "h2" : "h1", title)}${i ? "" : notes}<div class="fypicks">${list.map(card).join("")}</div></section>`).join("");
   const list = rows || (g && !towns ? "" : `<section class="fyrow">${notes}${g ? "" : `<div class="empty">${esc(FY.none)}</div>`}</section>`);
-  box.innerHTML = `<div class="fymain">${fyPanel(g, panel)}${list}</div>${explore}`;
+  box.innerHTML = `<div class="fysage"><div class="fymain">${fyPanel(g, panel)}${list}</div>${explore}</div>`;   // (the sage panel: inside the page's gutters, lined up with the title and tabs)
   fyFoot();
   const pick = $("fy-town");
   if (pick) pick.onchange = () => { if (!pick.value) return; const q = new URLSearchParams(FY_Q); q.set("town", pick.value); q.delete("lat"); q.delete("lon"); q.delete("label");

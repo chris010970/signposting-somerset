@@ -540,8 +540,8 @@ body.landing footer.help { padding-block: 14px calc(14px + env(safe-area-inset-b
 /* ---------- For you (js/for-you.js): one sage panel holding cream rows: the safety panel (if any), the picks, then the buttons ---------- */
 /* Its top in line with the dropdowns on the other tabs, as About (the header's 10px foot and the list's 14px top taken off) */
 header.top:has(#tab-foryou[aria-current="page"]) { padding-bottom: 0; }
-#foryou.talk { display: grid; grid-template-columns: minmax(0, 1fr); gap: 14px; align-items: start; margin: 0 16px; padding: 14px;
-  background: var(--sage); border-radius: 16px; }
+#foryou.talk { padding-top: 0; }   /* (the page's own width, gutters and margins, as the other tabs: lined up with the title and tabs) */
+#foryou .fysage { display: grid; grid-template-columns: minmax(0, 1fr); gap: 14px; align-items: start; padding: 14px; background: var(--sage); border-radius: 16px; }
 #foryou .fymain { display: grid; gap: 14px; }
 /* Each row: cream, as the other tabs' background; --notch: the cards' punched notches take its colour */
 #foryou .fypanel, #foryou .fyrow, #foryou .fyexplore { margin: 0; padding: 16px 18px 18px; background: var(--cream); border: 1px solid var(--line);
@@ -599,7 +599,8 @@ header.top:has(#tab-foryou[aria-current="page"]) { padding-bottom: 0; }
   #foryou .fyexplore .hway::after { right: 8px; }
 }
 @media (max-width: 700px) {
-  #foryou.talk { margin: 0 8px; padding: 8px; gap: 8px; }
+  #foryou.talk { padding-inline: 8px; }
+  #foryou .fysage { padding: 8px; gap: 8px; }
   #foryou .fymain { gap: 8px; }
   #foryou .fypanel, #foryou .fyrow, #foryou .fyexplore { padding: 12px 10px 14px; }
   .fypicks, #foryou .fyexplore { grid-template-columns: minmax(0, 1fr); }
