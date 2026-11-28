@@ -1689,7 +1689,8 @@ header.top:has(#tab-foryou[aria-current="page"]) { padding-bottom: 0; }
 @container (max-width: 480px) { #foryou .tfold::before { content: none; } #foryou .tfold { padding: 0; width: 34px; justify-content: center; } }
 /* The buttons: the landing page's (.hway), all one height, a title on one line */
 #foryou .fyexplore { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 14px; align-items: stretch; }
-#foryou .fyexplore .hway b { font-size: 18px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+#foryou .fyexplore .hway > span { flex: 1; min-width: 0; }   /* (the title's room: up to the arrow; for-you.js shrinks a long one to fit) */
+#foryou .fyexplore .hway b { display: block; font-size: 18px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .fytown { display: grid; gap: 6px; margin: 0 0 14px; font-size: 14px; color: var(--tx2); }
 .fytown select { max-width: 420px; font: 500 15px var(--sans); padding: 8px 10px; border: 1px solid var(--edge); border-radius: 10px; background: var(--cream); }
 @media (max-width: 1100px) { .fypicks { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
@@ -3212,7 +3213,7 @@ function renderAbout() {
     </section>
     </div></div>
     <p class="small">Service information belongs to the providers listed. Map data © <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap</a> contributors, © <a href="https://carto.com/attributions" target="_blank" rel="noopener">CARTO</a>.</p>
-    <p class="small" id="site-version">Version: next 2026-11-28 12:02</p>
+    <p class="small" id="site-version">Version: next 2026-11-28 12:32</p>
   </article>`;
 }
 /* ---------- Places: the town listings, as a tab of the directory ----------
@@ -3475,7 +3476,7 @@ function goShow(tags, where, fy) {
    eligibility conditions ranks lower; groups: avoid ranks peer groups far down. Below the picks: links into the directory (In person, Phone
    and online, everything), where the picks wait at the top in a For you section (next-late.js). */
 const FY = ({
- "_about": "The For you tab (/next/directory/#foryou, opened from the landing page): what the landing page's AI read in someone's words (topics, place, preferences, safety: build/tools/assist/tags.json) turned into picks and buttons by the rules here. No AI here. Read by build/next/js/for-you.js. topics: for each topic, its line, the service types that make a good first step, words in a name or description that make one better (prefer_words), the groups (who) it suits (groups_ok) and a short name for buttons. open_to_all: the who values that mean anyone can go: the picks only use services open to all (or to a group the topic suits, groups_ok), since we don't know who's asking. score: each candidate gets days until it next runs (within soon_days, only per_day_soon a day, so a group in three weeks isn't far behind one tomorrow) + miles x per_mile, plus a penalty for each way it fits less well (other_area: a service in another area; check_first: one restricted to people we can't tell they are; exact_words: less when it has their own words for an activity; theirs: less for a service for people like them (a veteran's line for a veteran); young: less for a young people's service for someone under 18; activity_on_the_side: more, for an activity, when the service isn't one of activity_types (a breakfast drop-in with a sing-along, rather than a singing group); not_weekly: more for something that meets less than weekly, so a weekly group beats a monthly one that happens to be today; in_name: less again when the activity or their words are in its name, so it's what the group is for); the lowest wins. generic_words: left out of their own words for an activity before matching (\"walking group\" matches \"walks\"). talk_lines, main_lines, circumstance_lines, under_18_lines, addiction_words and restrictions: how many lines each topic offers, the established lines for each topic and area, and who a service is only for (each has its own _about). help_types: the kinds of help someone can ask for, as the sheet's types. when_hours: what daytime and evenings mean (a session's start time) and which days are weekends. safety: the panel for each risk group (at most max_picks of its services, in order) (most serious first), its words and the services (sheet record ids) it shows, with more by topic or for under-18s; picks: whether the usual picks show beneath (none, or relevant: only their topics, nothing added). rows: the rows' titles and fold labels; subtitles: the line above each pick. directory: the For you section in the directory. explore: the three buttons below the picks (In person, Phone and online, everything; each set to the kinds of help they asked for, which In person's line names, kind_names, else places).",
+ "_about": "The For you tab (/next/directory/#foryou, opened from the landing page): what the landing page's AI read in someone's words (topics, place, preferences, safety: build/tools/assist/tags.json) turned into picks and buttons by the rules here. No AI here. Read by build/next/js/for-you.js. topics: for each topic, its line, the service types that make a good first step, words in a name or description that make one better (prefer_words), the groups (who) it suits (groups_ok) and a short name for buttons. open_to_all: the who values that mean anyone can go: the picks only use services open to all (or to a group the topic suits, groups_ok), since we don't know who's asking. score: each candidate gets days until it next runs (within soon_days, only per_day_soon a day, so a group in three weeks isn't far behind one tomorrow) + miles x per_mile, plus a penalty for each way it fits less well (other_area: a service in another area; check_first: one restricted to people we can't tell they are; exact_words: less when it has their own words for an activity; theirs: less for a service for people like them (a veteran's line for a veteran); young: less for a young people's service for someone under 18; activity_on_the_side: more, for an activity, when the service isn't one of activity_types (a breakfast drop-in with a sing-along, rather than a singing group); not_weekly: more for something that meets less than weekly, so a weekly group beats a monthly one that happens to be today; in_name: less again when the activity or their words are in its name, so it's what the group is for); the lowest wins. generic_words: left out of their own words for an activity before matching (\"walking group\" matches \"walks\"). talk_lines, main_lines, circumstance_lines, under_18_lines, addiction_words and restrictions: how many lines each topic offers, the established lines for each topic and area, and who a service is only for (each has its own _about). help_types: the kinds of help someone can ask for, as the sheet's types. when_hours: what daytime and evenings mean (a session's start time) and which days are weekends. safety: the panel for each risk group (at most max_picks of its services, in order) (most serious first), its words and the services (sheet record ids) it shows, with more by topic or for under-18s; picks: whether the usual picks show beneath (none, or relevant: only their topics, nothing added). rows: the rows' titles and fold labels; subtitles: the line above each pick. directory: the For you section in the directory. explore: the three buttons below the picks (In person, Phone and online, everything; each set to the kinds of help they asked for, or for an activity activity_kinds; In person's title names what it's set to and where: kind_names, activities, else places; a long town name as people say it, short_names).",
  "max_picks": 3,
  "radius_miles": [
   10,
@@ -3722,10 +3723,11 @@ const FY = ({
  "explore": {
   "choose_place": "Choose a town to see places near you",
   "in_person": {
-   "title": "In person",
+   "title_near": "{what} near {place}",
+   "title_anywhere": "{what} across Somerset",
    "places": "Places",
-   "text_near": "{what} near {place}",
-   "text_anywhere": "{what} across Somerset"
+   "activities": "Activities",
+   "text": "Groups and services you can go to"
   },
   "phone": {
    "title": "Phone and online",
@@ -3737,12 +3739,20 @@ const FY = ({
    "text_anywhere": "Everything across Somerset, at your own pace"
   },
   "kind_names": {
-   "Activities": "Activities",
-   "Peer support": "Peer groups",
-   "Community": "Community groups",
-   "Advice and practical help": "Practical help",
-   "One-to-one and therapy": "One-to-one support",
-   "Courses": "Courses"
+   "Activities": "activities",
+   "Peer support": "peer groups",
+   "Community": "community groups",
+   "Advice and practical help": "practical help",
+   "One-to-one and therapy": "one-to-one support",
+   "Courses": "courses"
+  },
+  "activity_kinds": [
+   "Activities",
+   "Community"
+  ],
+  "short_names": {
+   "Weston-super-Mare": "Weston",
+   "Burnham-on-Sea": "Burnham"
   }
  },
  "radius_nearby": [
@@ -4348,7 +4358,8 @@ const FY_ICONS = {
 // activity they asked for: "A place to enjoy singing"; otherwise by the kind of service (the card under it says when, where and
 // how). A line to check first (who it's for) stays under it.
 function fySubtitle(p, c) {
-  const A = FY.subtitles, act = p.why === "activity" ? split(p.s.activities || "").find(a => c.activities.includes(a)) || c.activities[0] : "";
+  // (any pick with an activity they asked for: a second walk as well as the first)
+  const A = FY.subtitles, act = split(p.s.activities || "").find(a => c.activities.includes(a)) || (p.why === "activity" ? c.activities[0] : "");
   return act ? A.activity_words[act] || fyFill(A.activity, { activity: act }) : fyMeets(p) ? A.meet : A.by_type[p.s.type] || A.listen;
 }
 const fyMeets = p => isGroupType(p.s) || (!p.st && !FY.subtitles.by_type[p.s.type]);   // (a place to meet people: a group, a drop-in, an activity, online too)
@@ -4386,7 +4397,9 @@ function fyPanel(g, recs) {
 // line names them), no peer groups if they'd avoid groups; In person a short distance if they'd stay nearby, a wider one when
 // there's nothing within it. Urgent, own_behaviour: Phone and online first.
 function fyButtons(c, g) {
-  const E = FY.explore, place = c.point ? c.point.label : "", nearby = c.prefs.travel === "nearby only", asked = fyHelpTypes(c.prefs);
+  // (the kinds they asked for; else, for an activity, where activities happen: activity_kinds)
+  const E = FY.explore, place = c.point ? c.point.label : "", nearby = c.prefs.travel === "nearby only";
+  const asked = fyHelpTypes(c.prefs).length ? fyHelpTypes(c.prefs) : c.activities.length ? KINDS.filter(k => E.activity_kinds.includes(k[0])).flatMap(k => k[2]) : [];
   const tags = (c.tags.length ? c.tags : c.activities.length ? ["connect"] : []).filter(t => !(g && t === FY.crisis_tag));
   // The kinds for a tab's records (all, unless they asked for some or would avoid groups); null: all of them
   const kindsFor = recs => {
@@ -4395,7 +4408,7 @@ function fyButtons(c, g) {
     if (c.prefs.groups === "avoid") kinds = kinds.filter(i => !KINDS[i][2].includes("Peer group"));
     return kinds.length && kinds.length < present.length ? kinds : null;
   };
-  const nearKinds = kindsFor(S), talkKinds = kindsFor(T), typesOf = kinds => kinds && kinds.flatMap(i => KINDS[i][2]);
+  const nearKinds = kindsFor(S), talkKinds = fyHelpTypes(c.prefs).length || c.prefs.groups === "avoid" ? kindsFor(T) : null   /* (an activity: In person only) */, typesOf = kinds => kinds && kinds.flatMap(i => KINDS[i][2]);
   // In person's distance: the first that finds something
   const has = r => S.some(s => (!tags.length || tags.some(t => s._sf.includes(t))) && (!nearKinds || nearKinds.some(i => KINDS[i][2].includes(s.type))) &&
     !isNaN(s.lat) && c.point && miles(c.point, s) <= r && !noticeText(s));
@@ -4408,9 +4421,11 @@ function fyButtons(c, g) {
     if (tab === "near" && c.point && o.within && o.within !== 10) u.set("within", o.within);
     return PAGE_URL.directory + (String(u) ? "?" + u : "") + "#" + tab; };
   const button = (url, icon, title, text) => `<a class="hway fyx" href="${url}">${L_ICON(icon)}<span><b>${esc(title)}</b><span>${esc(text)}</span></span></a>`;   // (as the landing page's)
-  const what = nearKinds && asked.length ? nearKinds.map(i => E.kind_names[KINDS[i][0]] || KINDS[i][0]).join(" and ") : E.in_person.places;   // (no groups only: still "Places")
-  const inPerson = button(href("near", tags, { types: typesOf(nearKinds), within }), FY_ICONS.people, E.in_person.title,
-    fyFill(place ? E.in_person.text_near : E.in_person.text_anywhere, { what, place }));
+  // In person's title: what it's set to and where ("Activities near Wincanton", "Peer groups near Bridgwater", "Places near Wells")
+  const what = !nearKinds || !asked.length ? E.in_person.places : !fyHelpTypes(c.prefs).length ? E.in_person.activities :   // (no groups only: still "Places")
+    cap(nearKinds.map(i => E.kind_names[KINDS[i][0]] || KINDS[i][0]).join(" and "));
+  const inPerson = button(href("near", tags, { types: typesOf(nearKinds), within }), FY_ICONS.people,
+    fyFill(place ? E.in_person.title_near : E.in_person.title_anywhere, { what, place: E.short_names[place] || place }), E.in_person.text);   // (a long town name shortened: short_names)
   const phone = button(href("talk", tags, { types: typesOf(talkKinds) }), FY_ICONS.phone, E.phone.title, E.phone.text);
   const browse = button(href("near"), FY_ICONS.search, E.browse.title, place ? fyFill(E.browse.text_near, { place }) : E.browse.text_anywhere);
   return (g === "urgent" || g === "own_behaviour" ? [phone, inPerson, browse] : [inPerson, phone, browse]).join("");
@@ -4439,7 +4454,7 @@ function drawForYou() {
     .map(([title, list], i) => `<section class="fyrow">${fyRowHead(i || g ? "h2" : "h1", title)}${i ? "" : notes}<div class="fypicks">${list.map(card).join("")}</div></section>`).join("");
   const list = rows || (g && !towns ? "" : `<section class="fyrow">${notes}${g ? "" : `<div class="empty">${esc(FY.none)}</div>`}</section>`);
   box.innerHTML = `<div class="fysage"><div class="fymain">${fyPanel(g, panel)}${list}</div>${explore}</div>`;   // (the sage panel: inside the page's gutters, lined up with the title and tabs)
-  fyFoot();
+  fyFoot(); requestAnimationFrame(fyFoot); if (document.fonts) document.fonts.ready.then(fyFoot);   // (again once laid out and the fonts are in)
   const pick = $("fy-town");
   if (pick) pick.onchange = () => { if (!pick.value) return; const q = new URLSearchParams(FY_Q); q.set("town", pick.value); q.delete("lat"); q.delete("lon"); q.delete("label");
     location.href = location.pathname + "?" + q + "#foryou"; };
@@ -4460,7 +4475,14 @@ function fySavePicks(panel, picks) {
   try { sessionStorage.setItem("ss-foryou-picks", JSON.stringify({ near: picks.filter(p => !p.st).map(id), talk: [...panel, ...picks.filter(p => p.st)].map(id) })); } catch (e) { /* (no storage: no section) */ }
 }
 // The buttons stay in view on computers, just above the helpline bar at the foot (its height: --fy-foot)
-function fyFoot() { const f = document.querySelector("footer.help"); if (f) $("foryou").style.setProperty("--fy-foot", f.offsetHeight + "px"); }
+// The buttons' titles on one line: a long one ("One-to-one support near Weston-super-Mare") a little smaller, down to 13px, then cut
+function fyFoot() {
+  const f = document.querySelector("footer.help"); if (f) $("foryou").style.setProperty("--fy-foot", f.offsetHeight + "px");
+  document.querySelectorAll("#foryou .fyexplore .hway b").forEach(b => {
+    b.style.fontSize = ""; let size = parseFloat(getComputedStyle(b).fontSize);
+    while (b.scrollWidth > b.clientWidth + 1 && size > 13) { size -= 0.5; b.style.fontSize = size + "px"; }
+  });
+}
 addEventListener("resize", fyFoot);
 // A row folds to its title (its button, or the title itself)
 $("foryou").addEventListener("click", e => {

@@ -271,7 +271,8 @@ const FY_ICONS = {
 // activity they asked for: "A place to enjoy singing"; otherwise by the kind of service (the card under it says when, where and
 // how). A line to check first (who it's for) stays under it.
 function fySubtitle(p, c) {
-  const A = FY.subtitles, act = p.why === "activity" ? split(p.s.activities || "").find(a => c.activities.includes(a)) || c.activities[0] : "";
+  // (any pick with an activity they asked for: a second walk as well as the first)
+  const A = FY.subtitles, act = split(p.s.activities || "").find(a => c.activities.includes(a)) || (p.why === "activity" ? c.activities[0] : "");
   return act ? A.activity_words[act] || fyFill(A.activity, { activity: act }) : fyMeets(p) ? A.meet : A.by_type[p.s.type] || A.listen;
 }
 const fyMeets = p => isGroupType(p.s) || (!p.st && !FY.subtitles.by_type[p.s.type]);   // (a place to meet people: a group, a drop-in, an activity, online too)
@@ -309,7 +310,9 @@ function fyPanel(g, recs) {
 // line names them), no peer groups if they'd avoid groups; In person a short distance if they'd stay nearby, a wider one when
 // there's nothing within it. Urgent, own_behaviour: Phone and online first.
 function fyButtons(c, g) {
-  const E = FY.explore, place = c.point ? c.point.label : "", nearby = c.prefs.travel === "nearby only", asked = fyHelpTypes(c.prefs);
+  // (the kinds they asked for; else, for an activity, where activities happen: activity_kinds)
+  const E = FY.explore, place = c.point ? c.point.label : "", nearby = c.prefs.travel === "nearby only";
+  const asked = fyHelpTypes(c.prefs).length ? fyHelpTypes(c.prefs) : c.activities.length ? KINDS.filter(k => E.activity_kinds.includes(k[0])).flatMap(k => k[2]) : [];
   const tags = (c.tags.length ? c.tags : c.activities.length ? ["connect"] : []).filter(t => !(g && t === FY.crisis_tag));
   // The kinds for a tab's records (all, unless they asked for some or would avoid groups); null: all of them
   const kindsFor = recs => {
@@ -318,7 +321,7 @@ function fyButtons(c, g) {
     if (c.prefs.groups === "avoid") kinds = kinds.filter(i => !KINDS[i][2].includes("Peer group"));
     return kinds.length && kinds.length < present.length ? kinds : null;
   };
-  const nearKinds = kindsFor(S), talkKinds = kindsFor(T), typesOf = kinds => kinds && kinds.flatMap(i => KINDS[i][2]);
+  const nearKinds = kindsFor(S), talkKinds = fyHelpTypes(c.prefs).length || c.prefs.groups === "avoid" ? kindsFor(T) : null   /* (an activity: In person only) */, typesOf = kinds => kinds && kinds.flatMap(i => KINDS[i][2]);
   // In person's distance: the first that finds something
   const has = r => S.some(s => (!tags.length || tags.some(t => s._sf.includes(t))) && (!nearKinds || nearKinds.some(i => KINDS[i][2].includes(s.type))) &&
     !isNaN(s.lat) && c.point && miles(c.point, s) <= r && !noticeText(s));
@@ -331,9 +334,11 @@ function fyButtons(c, g) {
     if (tab === "near" && c.point && o.within && o.within !== 10) u.set("within", o.within);
     return PAGE_URL.directory + (String(u) ? "?" + u : "") + "#" + tab; };
   const button = (url, icon, title, text) => `<a class="hway fyx" href="${url}">${L_ICON(icon)}<span><b>${esc(title)}</b><span>${esc(text)}</span></span></a>`;   // (as the landing page's)
-  const what = nearKinds && asked.length ? nearKinds.map(i => E.kind_names[KINDS[i][0]] || KINDS[i][0]).join(" and ") : E.in_person.places;   // (no groups only: still "Places")
-  const inPerson = button(href("near", tags, { types: typesOf(nearKinds), within }), FY_ICONS.people, E.in_person.title,
-    fyFill(place ? E.in_person.text_near : E.in_person.text_anywhere, { what, place }));
+  // In person's title: what it's set to and where ("Activities near Wincanton", "Peer groups near Bridgwater", "Places near Wells")
+  const what = !nearKinds || !asked.length ? E.in_person.places : !fyHelpTypes(c.prefs).length ? E.in_person.activities :   // (no groups only: still "Places")
+    cap(nearKinds.map(i => E.kind_names[KINDS[i][0]] || KINDS[i][0]).join(" and "));
+  const inPerson = button(href("near", tags, { types: typesOf(nearKinds), within }), FY_ICONS.people,
+    fyFill(place ? E.in_person.title_near : E.in_person.title_anywhere, { what, place: E.short_names[place] || place }), E.in_person.text);   // (a long town name shortened: short_names)
   const phone = button(href("talk", tags, { types: typesOf(talkKinds) }), FY_ICONS.phone, E.phone.title, E.phone.text);
   const browse = button(href("near"), FY_ICONS.search, E.browse.title, place ? fyFill(E.browse.text_near, { place }) : E.browse.text_anywhere);
   return (g === "urgent" || g === "own_behaviour" ? [phone, inPerson, browse] : [inPerson, phone, browse]).join("");
@@ -362,7 +367,7 @@ function drawForYou() {
     .map(([title, list], i) => `<section class="fyrow">${fyRowHead(i || g ? "h2" : "h1", title)}${i ? "" : notes}<div class="fypicks">${list.map(card).join("")}</div></section>`).join("");
   const list = rows || (g && !towns ? "" : `<section class="fyrow">${notes}${g ? "" : `<div class="empty">${esc(FY.none)}</div>`}</section>`);
   box.innerHTML = `<div class="fysage"><div class="fymain">${fyPanel(g, panel)}${list}</div>${explore}</div>`;   // (the sage panel: inside the page's gutters, lined up with the title and tabs)
-  fyFoot();
+  fyFoot(); requestAnimationFrame(fyFoot); if (document.fonts) document.fonts.ready.then(fyFoot);   // (again once laid out and the fonts are in)
   const pick = $("fy-town");
   if (pick) pick.onchange = () => { if (!pick.value) return; const q = new URLSearchParams(FY_Q); q.set("town", pick.value); q.delete("lat"); q.delete("lon"); q.delete("label");
     location.href = location.pathname + "?" + q + "#foryou"; };
@@ -383,7 +388,14 @@ function fySavePicks(panel, picks) {
   try { sessionStorage.setItem("ss-foryou-picks", JSON.stringify({ near: picks.filter(p => !p.st).map(id), talk: [...panel, ...picks.filter(p => p.st)].map(id) })); } catch (e) { /* (no storage: no section) */ }
 }
 // The buttons stay in view on computers, just above the helpline bar at the foot (its height: --fy-foot)
-function fyFoot() { const f = document.querySelector("footer.help"); if (f) $("foryou").style.setProperty("--fy-foot", f.offsetHeight + "px"); }
+// The buttons' titles on one line: a long one ("One-to-one support near Weston-super-Mare") a little smaller, down to 13px, then cut
+function fyFoot() {
+  const f = document.querySelector("footer.help"); if (f) $("foryou").style.setProperty("--fy-foot", f.offsetHeight + "px");
+  document.querySelectorAll("#foryou .fyexplore .hway b").forEach(b => {
+    b.style.fontSize = ""; let size = parseFloat(getComputedStyle(b).fontSize);
+    while (b.scrollWidth > b.clientWidth + 1 && size > 13) { size -= 0.5; b.style.fontSize = size + "px"; }
+  });
+}
 addEventListener("resize", fyFoot);
 // A row folds to its title (its button, or the title itself)
 $("foryou").addEventListener("click", e => {

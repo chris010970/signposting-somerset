@@ -1,5 +1,5 @@
 {
- "_about": "The For you tab (/next/directory/#foryou, opened from the landing page): what the landing page's AI read in someone's words (topics, place, preferences, safety: build/tools/assist/tags.json) turned into picks and buttons by the rules here. No AI here. Read by build/next/js/for-you.js. topics: for each topic, its line, the service types that make a good first step, words in a name or description that make one better (prefer_words), the groups (who) it suits (groups_ok) and a short name for buttons. open_to_all: the who values that mean anyone can go: the picks only use services open to all (or to a group the topic suits, groups_ok), since we don't know who's asking. score: each candidate gets days until it next runs (within soon_days, only per_day_soon a day, so a group in three weeks isn't far behind one tomorrow) + miles x per_mile, plus a penalty for each way it fits less well (other_area: a service in another area; check_first: one restricted to people we can't tell they are; exact_words: less when it has their own words for an activity; theirs: less for a service for people like them (a veteran's line for a veteran); young: less for a young people's service for someone under 18; activity_on_the_side: more, for an activity, when the service isn't one of activity_types (a breakfast drop-in with a sing-along, rather than a singing group); not_weekly: more for something that meets less than weekly, so a weekly group beats a monthly one that happens to be today; in_name: less again when the activity or their words are in its name, so it's what the group is for); the lowest wins. generic_words: left out of their own words for an activity before matching (\"walking group\" matches \"walks\"). talk_lines, main_lines, circumstance_lines, under_18_lines, addiction_words and restrictions: how many lines each topic offers, the established lines for each topic and area, and who a service is only for (each has its own _about). help_types: the kinds of help someone can ask for, as the sheet's types. when_hours: what daytime and evenings mean (a session's start time) and which days are weekends. safety: the panel for each risk group (at most max_picks of its services, in order) (most serious first), its words and the services (sheet record ids) it shows, with more by topic or for under-18s; picks: whether the usual picks show beneath (none, or relevant: only their topics, nothing added). rows: the rows' titles and fold labels; subtitles: the line above each pick. directory: the For you section in the directory. explore: the three buttons below the picks (In person, Phone and online, everything; each set to the kinds of help they asked for, which In person's line names, kind_names, else places).",
+ "_about": "The For you tab (/next/directory/#foryou, opened from the landing page): what the landing page's AI read in someone's words (topics, place, preferences, safety: build/tools/assist/tags.json) turned into picks and buttons by the rules here. No AI here. Read by build/next/js/for-you.js. topics: for each topic, its line, the service types that make a good first step, words in a name or description that make one better (prefer_words), the groups (who) it suits (groups_ok) and a short name for buttons. open_to_all: the who values that mean anyone can go: the picks only use services open to all (or to a group the topic suits, groups_ok), since we don't know who's asking. score: each candidate gets days until it next runs (within soon_days, only per_day_soon a day, so a group in three weeks isn't far behind one tomorrow) + miles x per_mile, plus a penalty for each way it fits less well (other_area: a service in another area; check_first: one restricted to people we can't tell they are; exact_words: less when it has their own words for an activity; theirs: less for a service for people like them (a veteran's line for a veteran); young: less for a young people's service for someone under 18; activity_on_the_side: more, for an activity, when the service isn't one of activity_types (a breakfast drop-in with a sing-along, rather than a singing group); not_weekly: more for something that meets less than weekly, so a weekly group beats a monthly one that happens to be today; in_name: less again when the activity or their words are in its name, so it's what the group is for); the lowest wins. generic_words: left out of their own words for an activity before matching (\"walking group\" matches \"walks\"). talk_lines, main_lines, circumstance_lines, under_18_lines, addiction_words and restrictions: how many lines each topic offers, the established lines for each topic and area, and who a service is only for (each has its own _about). help_types: the kinds of help someone can ask for, as the sheet's types. when_hours: what daytime and evenings mean (a session's start time) and which days are weekends. safety: the panel for each risk group (at most max_picks of its services, in order) (most serious first), its words and the services (sheet record ids) it shows, with more by topic or for under-18s; picks: whether the usual picks show beneath (none, or relevant: only their topics, nothing added). rows: the rows' titles and fold labels; subtitles: the line above each pick. directory: the For you section in the directory. explore: the three buttons below the picks (In person, Phone and online, everything; each set to the kinds of help they asked for, or for an activity activity_kinds; In person's title names what it's set to and where: kind_names, activities, else places; a long town name as people say it, short_names).",
  "max_picks": 3,
  "radius_miles": [
   10,
@@ -246,10 +246,11 @@
  "explore": {
   "choose_place": "Choose a town to see places near you",
   "in_person": {
-   "title": "In person",
+   "title_near": "{what} near {place}",
+   "title_anywhere": "{what} across Somerset",
    "places": "Places",
-   "text_near": "{what} near {place}",
-   "text_anywhere": "{what} across Somerset"
+   "activities": "Activities",
+   "text": "Groups and services you can go to"
   },
   "phone": {
    "title": "Phone and online",
@@ -261,12 +262,20 @@
    "text_anywhere": "Everything across Somerset, at your own pace"
   },
   "kind_names": {
-   "Activities": "Activities",
-   "Peer support": "Peer groups",
-   "Community": "Community groups",
-   "Advice and practical help": "Practical help",
-   "One-to-one and therapy": "One-to-one support",
-   "Courses": "Courses"
+   "Activities": "activities",
+   "Peer support": "peer groups",
+   "Community": "community groups",
+   "Advice and practical help": "practical help",
+   "One-to-one and therapy": "one-to-one support",
+   "Courses": "courses"
+  },
+  "activity_kinds": [
+   "Activities",
+   "Community"
+  ],
+  "short_names": {
+   "Weston-super-Mare": "Weston",
+   "Burnham-on-Sea": "Burnham"
   }
  },
  "radius_nearby": [
