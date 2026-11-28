@@ -19,8 +19,8 @@
    Only services open to all (who: anyone or adults; or a group the topic suits, groups_ok: carers for caring for someone): we
    don't know who's asking, so never a men's or older people's group by guesswork (the buttons still lead to everything). Never a
    service with a notice that stops people joining, never one in the safety panel above, never two from one provider; one with
-   eligibility conditions ranks lower; groups: avoid ranks peer groups far down. Below the picks: buttons into the directory set up from the same
-   results (the kinds of help for each topic, the place, the distance), each checked so it never opens on an empty list. */
+   eligibility conditions ranks lower; groups: avoid ranks peer groups far down. Below the picks: links into the directory (In person, Phone
+   and online, everything), where the picks wait at the top in a For you section (next-late.js). */
 const FY = (/*@next:for-you.json*/);
 const FY_Q = FOR_YOU ? location.search.slice(1) : "";   // the landing page's choices, kept in the address while this tab shows
 { const shared = linkFor; linkFor = t => t === "foryou" ? FY_Q : shared(t); }
@@ -271,22 +271,7 @@ function fyLine(p, c) {
 // A row's title with its fold button (all open when the page loads; the click handler at the foot folds them)
 const fyRowHead = (tag, title, fold = true) => `<div class="fyrowhd"><${tag} class="bt">${esc(title)}</${tag}>${fold ?
   `<button type="button" class="cbtn fyfold" aria-expanded="true" aria-label="${esc(FY.rows.fold)}: ${esc(title)}">${CHEV}</button>` : ""}</div>`;
-// "Show in directory": the pick among everything else, in In person (their place, a distance that reaches it, any time; its card
-// opened and its pin shown) or in Phone and online (its card opened). A book icon in the card's top row, its tip "Show in
-// directory"; next-late.js does the showing (show= in the address)
-const FY_BOOK = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 4h6a4 4 0 0 1 4 4v12a3 3 0 0 0-3-3H2z"/><path d="M22 4h-6a4 4 0 0 0-4 4v12a3 3 0 0 1 3-3h7z"/></svg>';
-function fyShow(p, c, html) {
-  const u = new URLSearchParams(), inPerson = !p.st;
-  if (inPerson && c.point) {
-    if (c.point.town) u.set("town", c.point.town); else { u.set("lat", c.point.lat.toFixed(4)); u.set("lon", c.point.lon.toFixed(4)); u.set("label", c.point.label); }
-    const d = miles(c.point, p.s), w = [2, 5, 10, 20].find(x => x >= d) || 0;
-    if (w !== 10) u.set("within", w);
-  }
-  if (inPerson) u.set("when", "any");
-  u.set("show", p.s.record_id);
-  const book = iconLink(`${PAGE_URL.directory}?${u}#${inPerson ? "near" : "talk"}`, FY_BOOK, FY.show, `${FY.show}: ${p.s.name}`, false);
-  return html.replace('<span class="sp"></span>', '<span class="sp"></span>' + book);   // (before Copy, in the top row)
-}
+
 
 // The safety panel: the group's words and its services (by record id: under-18s first, then by topic, then the group's own),
 // one per provider (the one open now, else the first), at most max_picks
@@ -308,59 +293,48 @@ function fyPanel(g, recs) {
     `<div class="fypicks">${recs.map(r => talkCard(r)).join("")}</div></section>`;
 }
 
-// The buttons: the directory set up from the same results. For each topic, the kinds of help that suit it (asked for, else its
-// first steps; no peer groups if they'd avoid groups; activities first if they want to get out), near their place at their
-// distance (the next distance if nothing's there; no button if still nothing), and its phone and online support; at most
-// max_links; "Browse the full directory" last. With a safety group: plainer (urgent, own_behaviour: no topics at all).
+// The buttons, always three: In person and Phone and online, each set to their topics (the picks wait at the top of each, in a
+// For you section), then the full directory. Each also set to what they said: only the kinds of help they asked for (In person's
+// line names them), no peer groups if they'd avoid groups; In person a short distance if they'd stay nearby, a wider one when
+// there's nothing within it. Urgent, own_behaviour: Phone and online first.
 function fyButtons(c, g) {
-  const E = FY.explore, place = c.point ? c.point.label : "", nearby = c.prefs.travel === "nearby only";
-  const radius = nearby ? FY.radius_nearby[1] : FY.radius_miles[0], wide = nearby ? FY.radius_miles[0] : FY.radius_miles[1];
-  const kindOfType = t => KINDS.findIndex(k => k[2].includes(t));
-  const near = (s, r) => !c.point || (!isNaN(s.lat) && miles(c.point, s) <= r);
-  const href = (tab, o = {}) => { const u = new URLSearchParams();
-    if (o.topic) u.set("support", o.topic);
+  const E = FY.explore, place = c.point ? c.point.label : "", nearby = c.prefs.travel === "nearby only", asked = fyHelpTypes(c.prefs);
+  const tags = (c.tags.length ? c.tags : c.activities.length ? ["connect"] : []).filter(t => !(g && t === FY.crisis_tag));
+  // The kinds for a tab's records (all, unless they asked for some or would avoid groups); null: all of them
+  const kindsFor = recs => {
+    const present = KINDS.map((k, i) => i).filter(i => KINDS[i][2].some(t => recs.some(s => s.type === t)));
+    let kinds = asked.length ? present.filter(i => KINDS[i][2].some(t => asked.includes(t))) : present;
+    if (c.prefs.groups === "avoid") kinds = kinds.filter(i => !KINDS[i][2].includes("Peer group"));
+    return kinds.length && kinds.length < present.length ? kinds : null;
+  };
+  const nearKinds = kindsFor(S), talkKinds = kindsFor(T), typesOf = kinds => kinds && kinds.flatMap(i => KINDS[i][2]);
+  // In person's distance: the first that finds something
+  const has = r => S.some(s => (!tags.length || tags.some(t => s._sf.includes(t))) && (!nearKinds || nearKinds.some(i => KINDS[i][2].includes(s.type))) &&
+    !isNaN(s.lat) && c.point && miles(c.point, s) <= r && !noticeText(s));
+  const [r1, r2] = nearby ? FY.radius_nearby : FY.radius_miles, within = c.point ? (has(r1) ? r1 : has(r2) ? r2 : nearby ? r1 : 0) : 0;
+  const href = (tab, topics = [], o = {}) => { const u = new URLSearchParams();
+    if (topics.length) u.set("support", topics.join(","));
     if (tab === "near" && c.point && c.point.town) u.set("town", c.point.town);
     else if (tab === "near" && c.point) { u.set("lat", c.point.lat.toFixed(4)); u.set("lon", c.point.lon.toFixed(4)); u.set("label", c.point.label); }
-    if (tab === "near" && o.types) u.set("types", o.types.join(","));
+    if (o.types) u.set("types", o.types.join(","));
     if (tab === "near" && c.point && o.within && o.within !== 10) u.set("within", o.within);
     return PAGE_URL.directory + (String(u) ? "?" + u : "") + "#" + tab; };
   const button = (url, icon, title, text) => `<a class="hway fyx" href="${url}">${L_ICON(icon)}<span><b>${esc(title)}</b><span>${esc(text)}</span></span></a>`;   // (as the landing page's)
-  // An in-person button for a topic and kind, at the first distance that finds something (none: no button)
-  const kindButton = (t, k) => {
-    const types = KINDS[k][2], has = r => S.some(s => s._sf.includes(t) && types.includes(s.type) && near(s, r) && !noticeText(s));
-    const within = has(radius) ? radius : has(wide) ? wide : 0;
-    return within ? button(href("near", { topic: t, types, within }), FY_ICONS.people, FY.kind_titles[KINDS[k][0]] || KINDS[k][0],
-      fyFill(E.kind_text[KINDS[k][0]] || E.near, { place })) : "";
-  };
-  const phoneButton = t => T.some(s => s._sf.includes(t)) ? button(href("talk", { topic: t }), FY_ICONS.phone, E.phone.title, E.phone.text) : "";
-  const links = [];
-  if (g === "urgent" || g === "own_behaviour") links.push(button(href("talk"), FY_ICONS.phone, E.safety_phone.title, E.safety_phone.text));
-  else {
-    const tags = (c.tags.length ? c.tags : c.activities.length ? ["connect"] : []).filter(t => !(g && t === FY.crisis_tag));
-    let phoned = !!g;   // (at most one phone button)
-    if (g) links.push(phoneButton(c.tags.includes(FY.crisis_tag) || !tags[0] ? FY.crisis_tag : tags[0]));   // at_risk: the lines first
-    tags.forEach((t, i) => {
-      const types = fyHelpTypes(c.prefs).length ? fyHelpTypes(c.prefs) : fyTopicSet(t).first_step;
-      let kinds = [...new Set(types.map(kindOfType).filter(k => k >= 0))];
-      if (c.prefs.groups === "avoid") kinds = kinds.filter(k => !KINDS[k][2].includes("Peer group"));
-      if (c.prefs.get_out === "yes") kinds.sort((a, b) => KINDS[b][2].includes("Activity group") - KINDS[a][2].includes("Activity group"));
-      const mine = c.point ? kinds.slice(0, i ? 1 : 2).map(k => kindButton(t, k)).filter(Boolean) : [];
-      const phone = c.prefs.contact !== "in person" && !phoned && !FY.five_ways.includes(t) && (i === 0 || !mine.length) ? [phoneButton(t)] : [];
-      if (phone.length && phone[0]) phoned = true;
-      links.push(...(c.prefs.contact === "phone or online" ? [...phone, ...mine] : [...mine, ...phone]));
-    });
-  }
-  const titles = new Set(), shown = links.filter(Boolean).filter(b => { const t = b.match(/<b>(.*?)<\/b>/)[1]; return !titles.has(t) && titles.add(t); }).slice(0, E.max_links);
-  shown.push(button(href("near"), FY_ICONS.search, E.browse.title, place ? fyFill(E.browse.text_near, { place }) : E.browse.text_anywhere));
-  return shown.join("");
+  const what = nearKinds && asked.length ? nearKinds.map(i => E.kind_names[KINDS[i][0]] || KINDS[i][0]).join(" and ") : E.in_person.places;   // (no groups only: still "Places")
+  const inPerson = button(href("near", tags, { types: typesOf(nearKinds), within }), FY_ICONS.people, E.in_person.title,
+    fyFill(place ? E.in_person.text_near : E.in_person.text_anywhere, { what, place }));
+  const phone = button(href("talk", tags, { types: typesOf(talkKinds) }), FY_ICONS.phone, E.phone.title, E.phone.text);
+  const browse = button(href("near"), FY_ICONS.search, E.browse.title, place ? fyFill(E.browse.text_near, { place }) : E.browse.text_anywhere);
+  return (g === "urgent" || g === "own_behaviour" ? [phone, inPerson, browse] : [inPerson, phone, browse]).join("");
 }
 
 function drawForYou() {
   const box = $("foryou");
   if (!ALL.length) { box.innerHTML = `<div class="empty">${liveMsg}</div>`; return; }
   const now = new Date(), c = fyChoices(), g = fySafety(c), panel = fyPanelRecs(c, g, now), picks = fyPicks(c, now, panel.map(r => r.s.id));
+  fySavePicks(panel, picks);
   box.style.setProperty("--fy-details", JSON.stringify(FY.details));
-  const card = p => `<section class="fypick">${fyRow(p) === "talk" ? "" : fyLine(p, c)}${fyShow(p, c, p.st ? talkCard(p) : serviceCard(p, "h2", false))}</section>`;
+  const card = p => `<section class="fypick">${fyRow(p) === "talk" ? "" : fyLine(p, c)}${p.st ? talkCard(p) : serviceCard(p, "h2", false)}</section>`;
   const E = FY.explore, place = c.point ? c.point.label : "";
   // No place: a town picker (it reopens this tab with the town); a place they typed that wasn't used: one tap to it
   // (the note above it says the same, so the words only for screen readers then)
@@ -391,6 +365,12 @@ function drawForYou() {
 }
 // A card opens and closes as in the other tabs (links, Copy and Directions do their own thing)
 // (both kinds: in-person cards and the phone and online ones, in the picks and the safety panel)
+// The picks, for the For you section at the top of In person and Phone and online (next-late.js): in person there, the rest
+// (the safety panel's lines first) on Phone and online. For this visit only, as what they said is.
+function fySavePicks(panel, picks) {
+  const id = x => x.s.record_id;
+  try { sessionStorage.setItem("ss-foryou-picks", JSON.stringify({ near: picks.filter(p => !p.st).map(id), talk: [...panel, ...picks.filter(p => p.st)].map(id) })); } catch (e) { /* (no storage: no section) */ }
+}
 // The buttons stay in view on computers, just above the helpline bar at the foot (its height: --fy-foot)
 function fyFoot() { const f = document.querySelector("footer.help"); if (f) $("foryou").style.setProperty("--fy-foot", f.offsetHeight + "px"); }
 addEventListener("resize", fyFoot);

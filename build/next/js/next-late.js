@@ -47,10 +47,108 @@ function talkCard({ s, st }) {   // Phone and online: the ticket card (next.js t
     acts: contactButtons(s, { mainEmail: true }) });
 }
 
+/* ---------- For you, at the top of In person and Phone and online: this visit's picks (saved by for-you.js), whatever the
+   filters, in a sage panel that folds (folded: for the rest of the visit). The rest of the list leaves them out ---------- */
+function fyMine(tabName) {
+  let ids = [];
+  try { ids = (JSON.parse(sessionStorage.getItem("ss-foryou-picks") || "{}")[tabName]) || []; } catch (e) { /* (no storage: none) */ }
+  const list = tabName === "near" ? S : T;
+  return ids.map(id => list.find(s => s.record_id === id)).filter(Boolean);
+}
+const fyFolded = tabName => { try { return sessionStorage.getItem("ss-foryou-fold-" + tabName) === "1"; } catch (e) { return false; } };
+function fySection(tabName, cards, gridClass = "") {
+  if (!cards.length) return "";
+  const D = FY.directory, folded = fyFolded(tabName), label = `${folded ? FY.rows.unfold : FY.rows.fold}: ${D.heading}`;
+  return `<section class="fyfor${folded ? " fyfolded" : ""}" data-tab="${tabName}"><div class="fyrowhd"><h2 class="bt">${esc(D.heading)}</h2>` +
+    `<button type="button" class="cbtn fyfold" aria-expanded="${!folded}" aria-label="${esc(label)}">${CHEV}</button></div>` +
+    `<div class="fyforlist ${gridClass}">${cards.join("")}</div></section>`;
+}
+// Its fold (the title bar, or its button)
+["list", "talk-list"].forEach(id => $(id).addEventListener("click", e => {
+  const hd = e.target.closest(".fyfor > .fyrowhd"); if (!hd) return;
+  e.stopPropagation();
+  const sec = hd.parentElement, folded = sec.classList.toggle("fyfolded"), b = hd.querySelector(".fyfold");
+  b.setAttribute("aria-expanded", String(!folded)); b.setAttribute("aria-label", `${folded ? FY.rows.unfold : FY.rows.fold}: ${FY.directory.heading}`);
+  try { sessionStorage.setItem("ss-foryou-fold-" + sec.dataset.tab, folded ? "1" : "0"); } catch (err) { /* (not kept) */ }
+}, true));
+
+/* ---------- In person's list: as in-person.js's render (this replaces it), with For you at the top: its picks left out of the
+   list below and always on the map ---------- */
+function render() {
+  setTimeout(syncLink, 0);   // keep the address bar in step with the filters
+  if (!ALL.length) { panelMessage(liveMsg); return; }
+  const now = new Date(), sup = fs.value, when = $("f-when").value, rad = +$("within").value;
+  $("q-support").classList.toggle("on", !!sup);
+  $("q-where").classList.toggle("on", !!searchPoint);
+  $("q-when").classList.toggle("on", when !== "week");
+  $("within").disabled = !searchPoint;
+  $("s-near").disabled = !searchPoint; if (!searchPoint && sortBy === "near") sortBy = "soon";
+  $("s-soon").setAttribute("aria-pressed", sortBy === "soon"); $("s-near").setAttribute("aria-pressed", sortBy === "near");
+  $("pointnote").textContent = locMsg;  // only short location messages; floats below the box so the filters never change height
+
+  // rows: what meets in the chosen time; checkRows: no set times, so shown below as "Times to check"
+  const win = windowFor(when, now), from = win ? new Date(Math.max(win[0], now)) : now;
+  const mine = fyMine("near"), mineIds = new Set(mine.map(s => s.id));   // (For you: at the top, whatever the filters)
+  const mineRows = mine.map(s => ({ s, d: searchPoint && !isNaN(s.lat) ? miles(searchPoint, s) : null, nx: nextText(s, now, from) }));
+  let rows = S.filter(s => !mineIds.has(s.id) && (!sup || s._sf.includes(sup))).map(s => ({
+    s, d: searchPoint && !isNaN(s.lat) ? miles(searchPoint, s) : null, nx: nextText(s, now, from) }));
+  if (searchPoint && rad) rows = rows.filter(r => r.d != null && r.d <= rad);
+  const base = rows;   // before the time filter: used to count what meets later in the month
+  let checkRows = [];
+  if (when === "now") rows = rows.filter(r => r.s.access === "drop in" && occurrences(r.s, now, 1).some(o => o.timed && o.st <= now && o.en > now));
+  else if (win) { checkRows = rows.filter(r => r.s._kind !== "dated"); rows = rows.filter(r => meetsIn(r.s, win)); }
+  else { checkRows = rows.filter(r => !r.nx.at); rows = rows.filter(r => r.nx.at); }
+  // Counts for the map key follow every filter except the key itself
+  const ofKind = (list, i) => list.filter(r => kindOf(r.s) === i).length;
+  kindCounts = KINDS.map((_, i) => ofKind(rows, i) + ofKind(checkRows, i));
+  if (kindsOff.size) { rows = rows.filter(r => !kindsOff.has(kindOf(r.s))); checkRows = checkRows.filter(r => !kindsOff.has(kindOf(r.s))); }
+  if (legendEl) drawLegend(legendEl);
+  const bySoon = (a, b) => (a.nx.at - b.nx.at) || ((a.d ?? 0) - (b.d ?? 0));
+  const byNear = (a, b) => ((a.d ?? 1e9) - (b.d ?? 1e9)) || ((a.nx.at ?? 9e15) - (b.nx.at ?? 9e15));
+  rows.sort(sortBy === "near" ? byNear : bySoon);
+  checkRows.sort(searchPoint ? byNear : (a, b) => a.s.name.localeCompare(b.s.name));
+
+  // "Next 7 days" hides monthly groups in the weeks they don't meet: count what meets in the following three weeks
+  let later = 0;
+  if (when === "week") {
+    const shown = new Set(rows.map(r => r.s.id)), wEnd = win[1], mEnd = addDays(dayStart(now), 28);
+    later = base.filter(r => r.s._kind === "dated" && !shown.has(r.s.id) && !kindsOff.has(kindOf(r.s)) &&
+      occurrences(r.s, wEnd, 21).some(o => o.st >= wEnd && o.st < mEnd)).length;
+  }
+  const moreLine = later ? `<div class="morehint"><span><b>${later}</b> more ${later === 1 ? "meets" : "meet"} later this month (many groups meet monthly).</span>` +
+    `<button type="button" id="show-month">Show next 4 weeks</button></div>` : "";
+
+  const total = rows.length + checkRows.length;
+  $("summary").innerHTML = `Showing <b>${total}</b> ${total === 1 ? "service" : "services"}` +
+    (sup ? ` for <strong>${esc(cap(sup))}</strong>` : "") +
+    (searchPoint ? (rad ? ` within ${rad} miles of ${esc(searchPoint.label)}` : ` by distance from ${esc(searchPoint.label)}`) : "") +
+    (checkRows.length ? ` · ${checkRows.length} need times checking` : "");
+  // The same list as last time (back from another tab, the five-minute refresh, the sheet arriving): stay where you were.
+  // Different filters: start at the top.
+  const listKey = JSON.stringify([linkFor("near"), sortBy, searchPoint && [searchPoint.lat, searchPoint.lon], [...kindsOff]]);
+  const top = lastListKey === null || listKey === lastListKey ? scrollPos.near || 0 : 0;
+  lastListKey = listKey;
+  const top4u = fySection("near", mineRows.map(r => serviceCard(r)));
+  if (!total) $("list").innerHTML = top4u + (moreLine
+    ? `<div class="empty"><strong>Nothing in the next 7 days</strong><br>But there are groups later this month.</div>` + moreLine
+    : `<div class="empty"><strong>No matches</strong><br>Try a wider distance or a different time, or use the 24/7 helplines below.</div>`);
+  else $("list").innerHTML = top4u + rows.map(r => serviceCard(r)).join("") + moreLine +
+    (checkRows.length ? `<div class="groupline">Times to check${win ? " (may also run then)" : ""}</div>` + checkRows.map(r => serviceCard(r)).join("") : "");
+  scroller("near").scrollTop = top;
+  $("help").classList.toggle("urgent", total <= 2);
+  $("help-title").textContent = total <= 2 ? "Nothing suitable right now? Talk to someone straight away" : "Always available: 24/7 helplines";
+  drawMap([...mineRows, ...rows, ...checkRows], rad);
+}
+
 /* ---------- Phone and online: the kinds row (as on In person) with "Open now only" at its end, and headings that say what's
    chosen ("Bereavement · 12 services"). Replaces renderTalk in phone-online.js ---------- */
 // (kept on window, so renderTalk can run before this line has: the page may draw this tab while it is still starting)
 function talkOff() { return (window.TALK_KINDS_OFF ||= new Set()); }
+// A link into this tab with types= (For you's button, when they asked for a kind of help): only those kinds ticked, as In person
+if (LINK_TAB === "talk") {
+  const types = (START_ADDRESS.get("types") || "").toLowerCase().split(",").map(t => t.trim()).filter(Boolean);
+  if (types.length) KINDS.forEach((k, i) => { if (!k[2].some(t => types.includes(t.toLowerCase()))) talkOff().add(i); });
+}
 $("kindrow-talk").addEventListener("click", e => {
   const b = e.target.closest("button[data-k]"); if (!b) return;
   const k = +b.dataset.k, off = talkOff(); off.has(k) ? off.delete(k) : off.add(k);
@@ -64,7 +162,8 @@ function renderTalk() {
   $("t-open").checked = onlyOpen;   // (the hidden tick box the shared code saves)
   $("q-tsupport").classList.toggle("on", !!sup); $("q-twhen").classList.toggle("on", !!hours); $("q-tarea").classList.toggle("on", !!area);
   $("kindrow-talk").innerHTML = kindChips(T, talkKindsOff); needsLabel("talk");
-  let rows = T.filter(s => (!sup || s._sf.includes(sup)) && (!area || (area === "national") === (s.area === "national")) && !talkKindsOff.has(kindOf(s)))
+  const mine = fyMine("talk"), mineIds = new Set(mine.map(s => s.id));   // (For you: at the top, whatever the filters)
+  let rows = T.filter(s => !mineIds.has(s.id) && (!sup || s._sf.includes(sup)) && (!area || (area === "national") === (s.area === "national")) && !talkKindsOff.has(kindOf(s)))
     .map(s => ({ s, st: openState(s, now) }));
   if (hours) rows = rows.filter(r => talkWhen(r, hours, now));
   const order = (a, b) => (b.st.open - a.st.open) || a.s.name.localeCompare(b.s.name);
@@ -96,7 +195,7 @@ function renderTalk() {
       `${tips || "Try again later"}, or call Samaritans on 116 123 at any time.` +
       (talkKindsOff.size ? `<br><button type="button" class="showall" id="talk-showall">Show all</button>` : "") + `</div>`;
   }
-  $("talk-list").innerHTML = html;
+  $("talk-list").innerHTML = fySection("talk", mine.map(s => talkCard({ s, st: openState(s, now) })), "tgrid") + html;
 }
 // "Show all" in the empty message: tick all the boxes again
 $("talk-list").addEventListener("click", e => { if (e.target.closest("#talk-showall")) { talkOff().clear(); renderTalk(); } });
@@ -195,7 +294,8 @@ function linkFor(t) {   // (replaces links.js's: the same, with the ticked needs
     if ($("f-when").value !== "week") q.set("when", $("f-when").value);
     if (kindsOff.size) q.set("types", KINDS.filter((k, i) => !kindsOff.has(i)).flatMap(k => k[2]).join(","));   // (the kinds ticked: links.js)
   } else if (t === "places") placesQuery(q);
-  else if (t === "talk" && needs("talk")) q.set("support", needs("talk"));
+  else if (t === "talk") { if (needs("talk")) q.set("support", needs("talk"));
+    if (talkOff().size) q.set("types", KINDS.filter((k, i) => !talkOff().has(i)).flatMap(k => k[2]).join(",")); }
   else if (t === "course" && needs("course")) q.set("support", needs("course"));
   return q.toString();
 }
@@ -526,26 +626,3 @@ $("courses").addEventListener("click", e => { if (e.target.closest("#course-show
 $("places-main").addEventListener("click", e => { if (e.target.closest("a.mapchip")) {
   kindsOff.clear(); placesKindsOff().forEach(k => kindsOff.add(k));   /* In person shows the same kinds as the section (this click only) */
   window.LINK_NEEDS = true; setTimeout(() => { window.LINK_NEEDS = false; }, 0); } }, true);
-// "Show in directory" from For you (show=<record id> in the address): once the records are in and the tab is drawn, that card in
-// In person or Phone and online, scrolled to, opened and flashed, and (In person) its pin centred on the map. Once only.
-// (A short wait rather than a hook: the records can arrive from this visit's copy, the site's copy or the live sheet.)
-(function () {
-  const want = START_ADDRESS.get("show");   // (as the page opened: the filters soon rewrite the address)
-  if (!want) return;
-  let tries = 0;
-  const wait = setInterval(() => {
-    if (++tries > 75) return clearInterval(wait);   // (15 seconds: the records never came)
-    const s = ALL.find(x => x.record_id === want); if (!s) return;
-    const c = tab === "near" ? $("c" + s.id) : tab === "talk" ? document.querySelector(`#talk-list .tcard[data-key="${CSS.escape(cardKey(s))}"]`) : null;
-    if (!c) return;
-    clearInterval(wait);
-    if (tab === "near") {
-      showCard(s.id);
-      if (typeof map !== "undefined" && map && !isNaN(s.lat)) setTimeout(() => map.flyTo([s.lat, s.lon], 14, { duration: .6 }), 700);
-    } else {
-      c.scrollIntoView({ behavior: "smooth", block: "center" });
-      if (!c.classList.contains("open")) toggleCard(c);
-      c.classList.add("flash"); setTimeout(() => c.classList.remove("flash"), 1200);
-    }
-  }, 200);
-})();

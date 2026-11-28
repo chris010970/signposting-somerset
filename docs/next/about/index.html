@@ -1637,6 +1637,19 @@ body.landing footer.help { padding-block: 14px calc(14px + env(safe-area-inset-b
 @media (min-width: 701px) and (max-width: 1439px) { .hway span span { font-size: 12.5px; letter-spacing: -0.1px; } .hway { padding-right: 34px; } }   /* (two lines for the longest description) */
 @media (min-width: 701px) and (max-width: 1179px) { .hway span span { font-size: 12px; } .hway { padding-right: 30px; } .hway::after { right: 7px; } .hways { column-gap: 8px; } }
 
+/* ---------- For you in the directory (next-late.js): this visit's picks at the top of In person and Phone and online, in a sage
+   panel that folds (its title bar or chevron) ---------- */
+.fyfor { margin: 0 0 18px; padding: 14px 16px 16px; background: var(--sage); border-radius: 16px; --notch: var(--sage); }
+.fyfor > .fyrowhd { display: flex; align-items: center; gap: 12px; margin: 0 0 12px; cursor: pointer; }
+.fyfor > .fyrowhd > .bt { flex: 1; min-width: 0; margin: 0; font-size: 24px; }
+.fyfor .fyfold { flex: none; width: 34px; height: 34px; display: inline-flex; align-items: center; justify-content: center; transform: rotate(180deg); }
+.fyfor.fyfolded > .fyrowhd { margin: 0; }
+.fyfor.fyfolded > .fyrowhd .fyfold { transform: none; }
+.fyfor.fyfolded > .fyforlist { display: none; }
+#list .fyforlist { display: grid; gap: 12px; }
+#list .fyforlist > .card { margin: 0; }
+@media (max-width: 700px) { .fyfor { padding: 10px 10px 12px; } .fyfor > .fyrowhd > .bt { font-size: 21px; } }
+
 /* ---------- For you (js/for-you.js): one sage panel holding cream rows: the safety panel (if any), the picks, then the buttons ---------- */
 /* Its top in line with the dropdowns on the other tabs, as About (the header's 10px foot and the list's 14px top taken off) */
 header.top:has(#tab-foryou[aria-current="page"]) { padding-bottom: 0; }
@@ -3199,7 +3212,7 @@ function renderAbout() {
     </section>
     </div></div>
     <p class="small">Service information belongs to the providers listed. Map data © <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap</a> contributors, © <a href="https://carto.com/attributions" target="_blank" rel="noopener">CARTO</a>.</p>
-    <p class="small" id="site-version">Version: next 2026-11-28 01:08</p>
+    <p class="small" id="site-version">Version: next 2026-11-28 11:42</p>
   </article>`;
 }
 /* ---------- Places: the town listings, as a tab of the directory ----------
@@ -3455,10 +3468,10 @@ function goShow(tags, where, fy) {
    Only services open to all (who: anyone or adults; or a group the topic suits, groups_ok: carers for caring for someone): we
    don't know who's asking, so never a men's or older people's group by guesswork (the buttons still lead to everything). Never a
    service with a notice that stops people joining, never one in the safety panel above, never two from one provider; one with
-   eligibility conditions ranks lower; groups: avoid ranks peer groups far down. Below the picks: buttons into the directory set up from the same
-   results (the kinds of help for each topic, the place, the distance), each checked so it never opens on an empty list. */
+   eligibility conditions ranks lower; groups: avoid ranks peer groups far down. Below the picks: links into the directory (In person, Phone
+   and online, everything), where the picks wait at the top in a For you section (next-late.js). */
 const FY = ({
- "_about": "The For you tab (/next/directory/#foryou, opened from the landing page): what the landing page's AI read in someone's words (topics, place, preferences, safety: build/tools/assist/tags.json) turned into picks and buttons by the rules here. No AI here. Read by build/next/js/for-you.js. topics: for each topic, its line, the service types that make a good first step, words in a name or description that make one better (prefer_words), the groups (who) it suits (groups_ok) and a short name for buttons. open_to_all: the who values that mean anyone can go: the picks only use services open to all (or to a group the topic suits, groups_ok), since we don't know who's asking. score: each candidate gets days until it next runs (within soon_days, only per_day_soon a day, so a group in three weeks isn't far behind one tomorrow) + miles x per_mile, plus a penalty for each way it fits less well (other_area: a service in another area; check_first: one restricted to people we can't tell they are; exact_words: less when it has their own words for an activity; theirs: less for a service for people like them (a veteran's line for a veteran); young: less for a young people's service for someone under 18; activity_on_the_side: more, for an activity, when the service isn't one of activity_types (a breakfast drop-in with a sing-along, rather than a singing group); not_weekly: more for something that meets less than weekly, so a weekly group beats a monthly one that happens to be today; in_name: less again when the activity or their words are in its name, so it's what the group is for); the lowest wins. generic_words: left out of their own words for an activity before matching (\"walking group\" matches \"walks\"). talk_lines, main_lines, circumstance_lines, under_18_lines, addiction_words and restrictions: how many lines each topic offers, the established lines for each topic and area, and who a service is only for (each has its own _about). help_types: the kinds of help someone can ask for, as the sheet's types. when_hours: what daytime and evenings mean (a session's start time) and which days are weekends. safety: the panel for each risk group (at most max_picks of its services, in order) (most serious first), its words and the services (sheet record ids) it shows, with more by topic or for under-18s; picks: whether the usual picks show beneath (none, or relevant: only their topics, nothing added). rows: the rows' titles and fold labels; subtitles: the line above each pick. explore: the buttons below the picks (kind_text: a button's line for each kind of service, never naming their need); kind_titles: a button's title for each kind of service.",
+ "_about": "The For you tab (/next/directory/#foryou, opened from the landing page): what the landing page's AI read in someone's words (topics, place, preferences, safety: build/tools/assist/tags.json) turned into picks and buttons by the rules here. No AI here. Read by build/next/js/for-you.js. topics: for each topic, its line, the service types that make a good first step, words in a name or description that make one better (prefer_words), the groups (who) it suits (groups_ok) and a short name for buttons. open_to_all: the who values that mean anyone can go: the picks only use services open to all (or to a group the topic suits, groups_ok), since we don't know who's asking. score: each candidate gets days until it next runs (within soon_days, only per_day_soon a day, so a group in three weeks isn't far behind one tomorrow) + miles x per_mile, plus a penalty for each way it fits less well (other_area: a service in another area; check_first: one restricted to people we can't tell they are; exact_words: less when it has their own words for an activity; theirs: less for a service for people like them (a veteran's line for a veteran); young: less for a young people's service for someone under 18; activity_on_the_side: more, for an activity, when the service isn't one of activity_types (a breakfast drop-in with a sing-along, rather than a singing group); not_weekly: more for something that meets less than weekly, so a weekly group beats a monthly one that happens to be today; in_name: less again when the activity or their words are in its name, so it's what the group is for); the lowest wins. generic_words: left out of their own words for an activity before matching (\"walking group\" matches \"walks\"). talk_lines, main_lines, circumstance_lines, under_18_lines, addiction_words and restrictions: how many lines each topic offers, the established lines for each topic and area, and who a service is only for (each has its own _about). help_types: the kinds of help someone can ask for, as the sheet's types. when_hours: what daytime and evenings mean (a session's start time) and which days are weekends. safety: the panel for each risk group (at most max_picks of its services, in order) (most serious first), its words and the services (sheet record ids) it shows, with more by topic or for under-18s; picks: whether the usual picks show beneath (none, or relevant: only their topics, nothing added). rows: the rows' titles and fold labels; subtitles: the line above each pick. directory: the For you section in the directory. explore: the three buttons below the picks (In person, Phone and online, everything; each set to the kinds of help they asked for, which In person's line names, kind_names, else places).",
  "max_picks": 3,
  "radius_miles": [
   10,
@@ -3677,6 +3690,10 @@ const FY = ({
   "unfold": "Show",
   "online": "Groups you can join online"
  },
+ "directory": {
+  "_about": "The For you section at the top of In person and Phone and online (next-late.js): this visit's picks, whatever the filters, in a sage panel that folds (and stays folded for the visit). In person: the in-person picks (pinned on the map); Phone and online: the safety panel's lines and the phone and online picks.",
+  "heading": "For you"
+ },
  "subtitles": {
   "_about": "The line above each pick, said to the person, about what they'd get (never their need: someone else may see the screen). An activity they asked for: activity, or its own words in activity_words when 'A place to enjoy …' doesn't read well; otherwise by_type for the sheet's type, else meet (phone and online picks: listen).",
   "activity": "A place to enjoy {activity}",
@@ -3700,7 +3717,12 @@ const FY = ({
  "none": "We couldn't find a good match for that. Try the tabs above, or talk to someone straight away using the helplines below.",
  "explore": {
   "choose_place": "Choose a town to see places near you",
-  "max_links": 4,
+  "in_person": {
+   "title": "In person",
+   "places": "Places",
+   "text_near": "{what} near {place}",
+   "text_anywhere": "{what} across Somerset"
+  },
   "phone": {
    "title": "Phone and online",
    "text": "Talk to someone, wherever you are"
@@ -3710,18 +3732,13 @@ const FY = ({
    "text_near": "Everything near {place}, at your own pace",
    "text_anywhere": "Everything across Somerset, at your own pace"
   },
-  "safety_phone": {
-   "title": "Phone and online",
-   "text": "Talk to someone, wherever you are"
-  },
-  "near": "near {place}",
-  "anywhere": "across Somerset",
-  "kind_text": {
-   "Activities": "Something to look forward to, near {place}",
-   "Peer support": "People who understand what you're going through",
-   "Community": "Friendly faces near {place}",
-   "Advice and practical help": "Practical help near {place}",
-   "One-to-one and therapy": "Time with someone who'll listen, near {place}"
+  "kind_names": {
+   "Activities": "Activities",
+   "Peer support": "Peer groups",
+   "Community": "Community groups",
+   "Advice and practical help": "Practical help",
+   "One-to-one and therapy": "One-to-one support",
+   "Courses": "Courses"
   }
  },
  "radius_nearby": [
@@ -3819,14 +3836,6 @@ const FY = ({
     "R0220"
    ]
   }
- },
- "kind_titles": {
-  "Activities": "Activities",
-  "Peer support": "Peer groups",
-  "Community": "Community groups",
-  "Advice and practical help": "Practical help",
-  "One-to-one and therapy": "One-to-one",
-  "Courses": "Courses"
  },
  "also": "Showing places near {place}. You also mentioned {also}:",
  "also_link": "show places near {also} instead",
@@ -4035,7 +4044,6 @@ const FY = ({
    "new families": "baby|babies|toddler|\\bmums?\\b|\\bdads?\\b|parent"
   }
  },
- "show": "Show in directory",
  "activity_types": [
   "Activity group",
   "Course",
@@ -4336,22 +4344,7 @@ function fyLine(p, c) {
 // A row's title with its fold button (all open when the page loads; the click handler at the foot folds them)
 const fyRowHead = (tag, title, fold = true) => `<div class="fyrowhd"><${tag} class="bt">${esc(title)}</${tag}>${fold ?
   `<button type="button" class="cbtn fyfold" aria-expanded="true" aria-label="${esc(FY.rows.fold)}: ${esc(title)}">${CHEV}</button>` : ""}</div>`;
-// "Show in directory": the pick among everything else, in In person (their place, a distance that reaches it, any time; its card
-// opened and its pin shown) or in Phone and online (its card opened). A book icon in the card's top row, its tip "Show in
-// directory"; next-late.js does the showing (show= in the address)
-const FY_BOOK = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 4h6a4 4 0 0 1 4 4v12a3 3 0 0 0-3-3H2z"/><path d="M22 4h-6a4 4 0 0 0-4 4v12a3 3 0 0 1 3-3h7z"/></svg>';
-function fyShow(p, c, html) {
-  const u = new URLSearchParams(), inPerson = !p.st;
-  if (inPerson && c.point) {
-    if (c.point.town) u.set("town", c.point.town); else { u.set("lat", c.point.lat.toFixed(4)); u.set("lon", c.point.lon.toFixed(4)); u.set("label", c.point.label); }
-    const d = miles(c.point, p.s), w = [2, 5, 10, 20].find(x => x >= d) || 0;
-    if (w !== 10) u.set("within", w);
-  }
-  if (inPerson) u.set("when", "any");
-  u.set("show", p.s.record_id);
-  const book = iconLink(`${PAGE_URL.directory}?${u}#${inPerson ? "near" : "talk"}`, FY_BOOK, FY.show, `${FY.show}: ${p.s.name}`, false);
-  return html.replace('<span class="sp"></span>', '<span class="sp"></span>' + book);   // (before Copy, in the top row)
-}
+
 
 // The safety panel: the group's words and its services (by record id: under-18s first, then by topic, then the group's own),
 // one per provider (the one open now, else the first), at most max_picks
@@ -4373,59 +4366,48 @@ function fyPanel(g, recs) {
     `<div class="fypicks">${recs.map(r => talkCard(r)).join("")}</div></section>`;
 }
 
-// The buttons: the directory set up from the same results. For each topic, the kinds of help that suit it (asked for, else its
-// first steps; no peer groups if they'd avoid groups; activities first if they want to get out), near their place at their
-// distance (the next distance if nothing's there; no button if still nothing), and its phone and online support; at most
-// max_links; "Browse the full directory" last. With a safety group: plainer (urgent, own_behaviour: no topics at all).
+// The buttons, always three: In person and Phone and online, each set to their topics (the picks wait at the top of each, in a
+// For you section), then the full directory. Each also set to what they said: only the kinds of help they asked for (In person's
+// line names them), no peer groups if they'd avoid groups; In person a short distance if they'd stay nearby, a wider one when
+// there's nothing within it. Urgent, own_behaviour: Phone and online first.
 function fyButtons(c, g) {
-  const E = FY.explore, place = c.point ? c.point.label : "", nearby = c.prefs.travel === "nearby only";
-  const radius = nearby ? FY.radius_nearby[1] : FY.radius_miles[0], wide = nearby ? FY.radius_miles[0] : FY.radius_miles[1];
-  const kindOfType = t => KINDS.findIndex(k => k[2].includes(t));
-  const near = (s, r) => !c.point || (!isNaN(s.lat) && miles(c.point, s) <= r);
-  const href = (tab, o = {}) => { const u = new URLSearchParams();
-    if (o.topic) u.set("support", o.topic);
+  const E = FY.explore, place = c.point ? c.point.label : "", nearby = c.prefs.travel === "nearby only", asked = fyHelpTypes(c.prefs);
+  const tags = (c.tags.length ? c.tags : c.activities.length ? ["connect"] : []).filter(t => !(g && t === FY.crisis_tag));
+  // The kinds for a tab's records (all, unless they asked for some or would avoid groups); null: all of them
+  const kindsFor = recs => {
+    const present = KINDS.map((k, i) => i).filter(i => KINDS[i][2].some(t => recs.some(s => s.type === t)));
+    let kinds = asked.length ? present.filter(i => KINDS[i][2].some(t => asked.includes(t))) : present;
+    if (c.prefs.groups === "avoid") kinds = kinds.filter(i => !KINDS[i][2].includes("Peer group"));
+    return kinds.length && kinds.length < present.length ? kinds : null;
+  };
+  const nearKinds = kindsFor(S), talkKinds = kindsFor(T), typesOf = kinds => kinds && kinds.flatMap(i => KINDS[i][2]);
+  // In person's distance: the first that finds something
+  const has = r => S.some(s => (!tags.length || tags.some(t => s._sf.includes(t))) && (!nearKinds || nearKinds.some(i => KINDS[i][2].includes(s.type))) &&
+    !isNaN(s.lat) && c.point && miles(c.point, s) <= r && !noticeText(s));
+  const [r1, r2] = nearby ? FY.radius_nearby : FY.radius_miles, within = c.point ? (has(r1) ? r1 : has(r2) ? r2 : nearby ? r1 : 0) : 0;
+  const href = (tab, topics = [], o = {}) => { const u = new URLSearchParams();
+    if (topics.length) u.set("support", topics.join(","));
     if (tab === "near" && c.point && c.point.town) u.set("town", c.point.town);
     else if (tab === "near" && c.point) { u.set("lat", c.point.lat.toFixed(4)); u.set("lon", c.point.lon.toFixed(4)); u.set("label", c.point.label); }
-    if (tab === "near" && o.types) u.set("types", o.types.join(","));
+    if (o.types) u.set("types", o.types.join(","));
     if (tab === "near" && c.point && o.within && o.within !== 10) u.set("within", o.within);
     return PAGE_URL.directory + (String(u) ? "?" + u : "") + "#" + tab; };
   const button = (url, icon, title, text) => `<a class="hway fyx" href="${url}">${L_ICON(icon)}<span><b>${esc(title)}</b><span>${esc(text)}</span></span></a>`;   // (as the landing page's)
-  // An in-person button for a topic and kind, at the first distance that finds something (none: no button)
-  const kindButton = (t, k) => {
-    const types = KINDS[k][2], has = r => S.some(s => s._sf.includes(t) && types.includes(s.type) && near(s, r) && !noticeText(s));
-    const within = has(radius) ? radius : has(wide) ? wide : 0;
-    return within ? button(href("near", { topic: t, types, within }), FY_ICONS.people, FY.kind_titles[KINDS[k][0]] || KINDS[k][0],
-      fyFill(E.kind_text[KINDS[k][0]] || E.near, { place })) : "";
-  };
-  const phoneButton = t => T.some(s => s._sf.includes(t)) ? button(href("talk", { topic: t }), FY_ICONS.phone, E.phone.title, E.phone.text) : "";
-  const links = [];
-  if (g === "urgent" || g === "own_behaviour") links.push(button(href("talk"), FY_ICONS.phone, E.safety_phone.title, E.safety_phone.text));
-  else {
-    const tags = (c.tags.length ? c.tags : c.activities.length ? ["connect"] : []).filter(t => !(g && t === FY.crisis_tag));
-    let phoned = !!g;   // (at most one phone button)
-    if (g) links.push(phoneButton(c.tags.includes(FY.crisis_tag) || !tags[0] ? FY.crisis_tag : tags[0]));   // at_risk: the lines first
-    tags.forEach((t, i) => {
-      const types = fyHelpTypes(c.prefs).length ? fyHelpTypes(c.prefs) : fyTopicSet(t).first_step;
-      let kinds = [...new Set(types.map(kindOfType).filter(k => k >= 0))];
-      if (c.prefs.groups === "avoid") kinds = kinds.filter(k => !KINDS[k][2].includes("Peer group"));
-      if (c.prefs.get_out === "yes") kinds.sort((a, b) => KINDS[b][2].includes("Activity group") - KINDS[a][2].includes("Activity group"));
-      const mine = c.point ? kinds.slice(0, i ? 1 : 2).map(k => kindButton(t, k)).filter(Boolean) : [];
-      const phone = c.prefs.contact !== "in person" && !phoned && !FY.five_ways.includes(t) && (i === 0 || !mine.length) ? [phoneButton(t)] : [];
-      if (phone.length && phone[0]) phoned = true;
-      links.push(...(c.prefs.contact === "phone or online" ? [...phone, ...mine] : [...mine, ...phone]));
-    });
-  }
-  const titles = new Set(), shown = links.filter(Boolean).filter(b => { const t = b.match(/<b>(.*?)<\/b>/)[1]; return !titles.has(t) && titles.add(t); }).slice(0, E.max_links);
-  shown.push(button(href("near"), FY_ICONS.search, E.browse.title, place ? fyFill(E.browse.text_near, { place }) : E.browse.text_anywhere));
-  return shown.join("");
+  const what = nearKinds && asked.length ? nearKinds.map(i => E.kind_names[KINDS[i][0]] || KINDS[i][0]).join(" and ") : E.in_person.places;   // (no groups only: still "Places")
+  const inPerson = button(href("near", tags, { types: typesOf(nearKinds), within }), FY_ICONS.people, E.in_person.title,
+    fyFill(place ? E.in_person.text_near : E.in_person.text_anywhere, { what, place }));
+  const phone = button(href("talk", tags, { types: typesOf(talkKinds) }), FY_ICONS.phone, E.phone.title, E.phone.text);
+  const browse = button(href("near"), FY_ICONS.search, E.browse.title, place ? fyFill(E.browse.text_near, { place }) : E.browse.text_anywhere);
+  return (g === "urgent" || g === "own_behaviour" ? [phone, inPerson, browse] : [inPerson, phone, browse]).join("");
 }
 
 function drawForYou() {
   const box = $("foryou");
   if (!ALL.length) { box.innerHTML = `<div class="empty">${liveMsg}</div>`; return; }
   const now = new Date(), c = fyChoices(), g = fySafety(c), panel = fyPanelRecs(c, g, now), picks = fyPicks(c, now, panel.map(r => r.s.id));
+  fySavePicks(panel, picks);
   box.style.setProperty("--fy-details", JSON.stringify(FY.details));
-  const card = p => `<section class="fypick">${fyRow(p) === "talk" ? "" : fyLine(p, c)}${fyShow(p, c, p.st ? talkCard(p) : serviceCard(p, "h2", false))}</section>`;
+  const card = p => `<section class="fypick">${fyRow(p) === "talk" ? "" : fyLine(p, c)}${p.st ? talkCard(p) : serviceCard(p, "h2", false)}</section>`;
   const E = FY.explore, place = c.point ? c.point.label : "";
   // No place: a town picker (it reopens this tab with the town); a place they typed that wasn't used: one tap to it
   // (the note above it says the same, so the words only for screen readers then)
@@ -4456,6 +4438,12 @@ function drawForYou() {
 }
 // A card opens and closes as in the other tabs (links, Copy and Directions do their own thing)
 // (both kinds: in-person cards and the phone and online ones, in the picks and the safety panel)
+// The picks, for the For you section at the top of In person and Phone and online (next-late.js): in person there, the rest
+// (the safety panel's lines first) on Phone and online. For this visit only, as what they said is.
+function fySavePicks(panel, picks) {
+  const id = x => x.s.record_id;
+  try { sessionStorage.setItem("ss-foryou-picks", JSON.stringify({ near: picks.filter(p => !p.st).map(id), talk: [...panel, ...picks.filter(p => p.st)].map(id) })); } catch (e) { /* (no storage: no section) */ }
+}
 // The buttons stay in view on computers, just above the helpline bar at the foot (its height: --fy-foot)
 function fyFoot() { const f = document.querySelector("footer.help"); if (f) $("foryou").style.setProperty("--fy-foot", f.offsetHeight + "px"); }
 addEventListener("resize", fyFoot);
@@ -4686,10 +4674,108 @@ function talkCard({ s, st }) {   // Phone and online: the ticket card (next.js t
     acts: contactButtons(s, { mainEmail: true }) });
 }
 
+/* ---------- For you, at the top of In person and Phone and online: this visit's picks (saved by for-you.js), whatever the
+   filters, in a sage panel that folds (folded: for the rest of the visit). The rest of the list leaves them out ---------- */
+function fyMine(tabName) {
+  let ids = [];
+  try { ids = (JSON.parse(sessionStorage.getItem("ss-foryou-picks") || "{}")[tabName]) || []; } catch (e) { /* (no storage: none) */ }
+  const list = tabName === "near" ? S : T;
+  return ids.map(id => list.find(s => s.record_id === id)).filter(Boolean);
+}
+const fyFolded = tabName => { try { return sessionStorage.getItem("ss-foryou-fold-" + tabName) === "1"; } catch (e) { return false; } };
+function fySection(tabName, cards, gridClass = "") {
+  if (!cards.length) return "";
+  const D = FY.directory, folded = fyFolded(tabName), label = `${folded ? FY.rows.unfold : FY.rows.fold}: ${D.heading}`;
+  return `<section class="fyfor${folded ? " fyfolded" : ""}" data-tab="${tabName}"><div class="fyrowhd"><h2 class="bt">${esc(D.heading)}</h2>` +
+    `<button type="button" class="cbtn fyfold" aria-expanded="${!folded}" aria-label="${esc(label)}">${CHEV}</button></div>` +
+    `<div class="fyforlist ${gridClass}">${cards.join("")}</div></section>`;
+}
+// Its fold (the title bar, or its button)
+["list", "talk-list"].forEach(id => $(id).addEventListener("click", e => {
+  const hd = e.target.closest(".fyfor > .fyrowhd"); if (!hd) return;
+  e.stopPropagation();
+  const sec = hd.parentElement, folded = sec.classList.toggle("fyfolded"), b = hd.querySelector(".fyfold");
+  b.setAttribute("aria-expanded", String(!folded)); b.setAttribute("aria-label", `${folded ? FY.rows.unfold : FY.rows.fold}: ${FY.directory.heading}`);
+  try { sessionStorage.setItem("ss-foryou-fold-" + sec.dataset.tab, folded ? "1" : "0"); } catch (err) { /* (not kept) */ }
+}, true));
+
+/* ---------- In person's list: as in-person.js's render (this replaces it), with For you at the top: its picks left out of the
+   list below and always on the map ---------- */
+function render() {
+  setTimeout(syncLink, 0);   // keep the address bar in step with the filters
+  if (!ALL.length) { panelMessage(liveMsg); return; }
+  const now = new Date(), sup = fs.value, when = $("f-when").value, rad = +$("within").value;
+  $("q-support").classList.toggle("on", !!sup);
+  $("q-where").classList.toggle("on", !!searchPoint);
+  $("q-when").classList.toggle("on", when !== "week");
+  $("within").disabled = !searchPoint;
+  $("s-near").disabled = !searchPoint; if (!searchPoint && sortBy === "near") sortBy = "soon";
+  $("s-soon").setAttribute("aria-pressed", sortBy === "soon"); $("s-near").setAttribute("aria-pressed", sortBy === "near");
+  $("pointnote").textContent = locMsg;  // only short location messages; floats below the box so the filters never change height
+
+  // rows: what meets in the chosen time; checkRows: no set times, so shown below as "Times to check"
+  const win = windowFor(when, now), from = win ? new Date(Math.max(win[0], now)) : now;
+  const mine = fyMine("near"), mineIds = new Set(mine.map(s => s.id));   // (For you: at the top, whatever the filters)
+  const mineRows = mine.map(s => ({ s, d: searchPoint && !isNaN(s.lat) ? miles(searchPoint, s) : null, nx: nextText(s, now, from) }));
+  let rows = S.filter(s => !mineIds.has(s.id) && (!sup || s._sf.includes(sup))).map(s => ({
+    s, d: searchPoint && !isNaN(s.lat) ? miles(searchPoint, s) : null, nx: nextText(s, now, from) }));
+  if (searchPoint && rad) rows = rows.filter(r => r.d != null && r.d <= rad);
+  const base = rows;   // before the time filter: used to count what meets later in the month
+  let checkRows = [];
+  if (when === "now") rows = rows.filter(r => r.s.access === "drop in" && occurrences(r.s, now, 1).some(o => o.timed && o.st <= now && o.en > now));
+  else if (win) { checkRows = rows.filter(r => r.s._kind !== "dated"); rows = rows.filter(r => meetsIn(r.s, win)); }
+  else { checkRows = rows.filter(r => !r.nx.at); rows = rows.filter(r => r.nx.at); }
+  // Counts for the map key follow every filter except the key itself
+  const ofKind = (list, i) => list.filter(r => kindOf(r.s) === i).length;
+  kindCounts = KINDS.map((_, i) => ofKind(rows, i) + ofKind(checkRows, i));
+  if (kindsOff.size) { rows = rows.filter(r => !kindsOff.has(kindOf(r.s))); checkRows = checkRows.filter(r => !kindsOff.has(kindOf(r.s))); }
+  if (legendEl) drawLegend(legendEl);
+  const bySoon = (a, b) => (a.nx.at - b.nx.at) || ((a.d ?? 0) - (b.d ?? 0));
+  const byNear = (a, b) => ((a.d ?? 1e9) - (b.d ?? 1e9)) || ((a.nx.at ?? 9e15) - (b.nx.at ?? 9e15));
+  rows.sort(sortBy === "near" ? byNear : bySoon);
+  checkRows.sort(searchPoint ? byNear : (a, b) => a.s.name.localeCompare(b.s.name));
+
+  // "Next 7 days" hides monthly groups in the weeks they don't meet: count what meets in the following three weeks
+  let later = 0;
+  if (when === "week") {
+    const shown = new Set(rows.map(r => r.s.id)), wEnd = win[1], mEnd = addDays(dayStart(now), 28);
+    later = base.filter(r => r.s._kind === "dated" && !shown.has(r.s.id) && !kindsOff.has(kindOf(r.s)) &&
+      occurrences(r.s, wEnd, 21).some(o => o.st >= wEnd && o.st < mEnd)).length;
+  }
+  const moreLine = later ? `<div class="morehint"><span><b>${later}</b> more ${later === 1 ? "meets" : "meet"} later this month (many groups meet monthly).</span>` +
+    `<button type="button" id="show-month">Show next 4 weeks</button></div>` : "";
+
+  const total = rows.length + checkRows.length;
+  $("summary").innerHTML = `Showing <b>${total}</b> ${total === 1 ? "service" : "services"}` +
+    (sup ? ` for <strong>${esc(cap(sup))}</strong>` : "") +
+    (searchPoint ? (rad ? ` within ${rad} miles of ${esc(searchPoint.label)}` : ` by distance from ${esc(searchPoint.label)}`) : "") +
+    (checkRows.length ? ` · ${checkRows.length} need times checking` : "");
+  // The same list as last time (back from another tab, the five-minute refresh, the sheet arriving): stay where you were.
+  // Different filters: start at the top.
+  const listKey = JSON.stringify([linkFor("near"), sortBy, searchPoint && [searchPoint.lat, searchPoint.lon], [...kindsOff]]);
+  const top = lastListKey === null || listKey === lastListKey ? scrollPos.near || 0 : 0;
+  lastListKey = listKey;
+  const top4u = fySection("near", mineRows.map(r => serviceCard(r)));
+  if (!total) $("list").innerHTML = top4u + (moreLine
+    ? `<div class="empty"><strong>Nothing in the next 7 days</strong><br>But there are groups later this month.</div>` + moreLine
+    : `<div class="empty"><strong>No matches</strong><br>Try a wider distance or a different time, or use the 24/7 helplines below.</div>`);
+  else $("list").innerHTML = top4u + rows.map(r => serviceCard(r)).join("") + moreLine +
+    (checkRows.length ? `<div class="groupline">Times to check${win ? " (may also run then)" : ""}</div>` + checkRows.map(r => serviceCard(r)).join("") : "");
+  scroller("near").scrollTop = top;
+  $("help").classList.toggle("urgent", total <= 2);
+  $("help-title").textContent = total <= 2 ? "Nothing suitable right now? Talk to someone straight away" : "Always available: 24/7 helplines";
+  drawMap([...mineRows, ...rows, ...checkRows], rad);
+}
+
 /* ---------- Phone and online: the kinds row (as on In person) with "Open now only" at its end, and headings that say what's
    chosen ("Bereavement · 12 services"). Replaces renderTalk in phone-online.js ---------- */
 // (kept on window, so renderTalk can run before this line has: the page may draw this tab while it is still starting)
 function talkOff() { return (window.TALK_KINDS_OFF ||= new Set()); }
+// A link into this tab with types= (For you's button, when they asked for a kind of help): only those kinds ticked, as In person
+if (LINK_TAB === "talk") {
+  const types = (START_ADDRESS.get("types") || "").toLowerCase().split(",").map(t => t.trim()).filter(Boolean);
+  if (types.length) KINDS.forEach((k, i) => { if (!k[2].some(t => types.includes(t.toLowerCase()))) talkOff().add(i); });
+}
 $("kindrow-talk").addEventListener("click", e => {
   const b = e.target.closest("button[data-k]"); if (!b) return;
   const k = +b.dataset.k, off = talkOff(); off.has(k) ? off.delete(k) : off.add(k);
@@ -4703,7 +4789,8 @@ function renderTalk() {
   $("t-open").checked = onlyOpen;   // (the hidden tick box the shared code saves)
   $("q-tsupport").classList.toggle("on", !!sup); $("q-twhen").classList.toggle("on", !!hours); $("q-tarea").classList.toggle("on", !!area);
   $("kindrow-talk").innerHTML = kindChips(T, talkKindsOff); needsLabel("talk");
-  let rows = T.filter(s => (!sup || s._sf.includes(sup)) && (!area || (area === "national") === (s.area === "national")) && !talkKindsOff.has(kindOf(s)))
+  const mine = fyMine("talk"), mineIds = new Set(mine.map(s => s.id));   // (For you: at the top, whatever the filters)
+  let rows = T.filter(s => !mineIds.has(s.id) && (!sup || s._sf.includes(sup)) && (!area || (area === "national") === (s.area === "national")) && !talkKindsOff.has(kindOf(s)))
     .map(s => ({ s, st: openState(s, now) }));
   if (hours) rows = rows.filter(r => talkWhen(r, hours, now));
   const order = (a, b) => (b.st.open - a.st.open) || a.s.name.localeCompare(b.s.name);
@@ -4735,7 +4822,7 @@ function renderTalk() {
       `${tips || "Try again later"}, or call Samaritans on 116 123 at any time.` +
       (talkKindsOff.size ? `<br><button type="button" class="showall" id="talk-showall">Show all</button>` : "") + `</div>`;
   }
-  $("talk-list").innerHTML = html;
+  $("talk-list").innerHTML = fySection("talk", mine.map(s => talkCard({ s, st: openState(s, now) })), "tgrid") + html;
 }
 // "Show all" in the empty message: tick all the boxes again
 $("talk-list").addEventListener("click", e => { if (e.target.closest("#talk-showall")) { talkOff().clear(); renderTalk(); } });
@@ -4834,7 +4921,8 @@ function linkFor(t) {   // (replaces links.js's: the same, with the ticked needs
     if ($("f-when").value !== "week") q.set("when", $("f-when").value);
     if (kindsOff.size) q.set("types", KINDS.filter((k, i) => !kindsOff.has(i)).flatMap(k => k[2]).join(","));   // (the kinds ticked: links.js)
   } else if (t === "places") placesQuery(q);
-  else if (t === "talk" && needs("talk")) q.set("support", needs("talk"));
+  else if (t === "talk") { if (needs("talk")) q.set("support", needs("talk"));
+    if (talkOff().size) q.set("types", KINDS.filter((k, i) => !talkOff().has(i)).flatMap(k => k[2]).join(",")); }
   else if (t === "course" && needs("course")) q.set("support", needs("course"));
   return q.toString();
 }
@@ -5165,29 +5253,6 @@ $("courses").addEventListener("click", e => { if (e.target.closest("#course-show
 $("places-main").addEventListener("click", e => { if (e.target.closest("a.mapchip")) {
   kindsOff.clear(); placesKindsOff().forEach(k => kindsOff.add(k));   /* In person shows the same kinds as the section (this click only) */
   window.LINK_NEEDS = true; setTimeout(() => { window.LINK_NEEDS = false; }, 0); } }, true);
-// "Show in directory" from For you (show=<record id> in the address): once the records are in and the tab is drawn, that card in
-// In person or Phone and online, scrolled to, opened and flashed, and (In person) its pin centred on the map. Once only.
-// (A short wait rather than a hook: the records can arrive from this visit's copy, the site's copy or the live sheet.)
-(function () {
-  const want = START_ADDRESS.get("show");   // (as the page opened: the filters soon rewrite the address)
-  if (!want) return;
-  let tries = 0;
-  const wait = setInterval(() => {
-    if (++tries > 75) return clearInterval(wait);   // (15 seconds: the records never came)
-    const s = ALL.find(x => x.record_id === want); if (!s) return;
-    const c = tab === "near" ? $("c" + s.id) : tab === "talk" ? document.querySelector(`#talk-list .tcard[data-key="${CSS.escape(cardKey(s))}"]`) : null;
-    if (!c) return;
-    clearInterval(wait);
-    if (tab === "near") {
-      showCard(s.id);
-      if (typeof map !== "undefined" && map && !isNaN(s.lat)) setTimeout(() => map.flyTo([s.lat, s.lon], 14, { duration: .6 }), 700);
-    } else {
-      c.scrollIntoView({ behavior: "smooth", block: "center" });
-      if (!c.classList.contains("open")) toggleCard(c);
-      c.classList.add("flash"); setTimeout(() => c.classList.remove("flash"), 1200);
-    }
-  }, 200);
-})();
 
 </script>
 
