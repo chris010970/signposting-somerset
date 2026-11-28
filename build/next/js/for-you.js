@@ -22,7 +22,18 @@
    eligibility conditions ranks lower; groups: avoid ranks peer groups far down. Below the picks: links into the directory (In person, Phone
    and online, everything), where the picks wait at the top in a For you section (next-late.js). */
 const FY = (/*@next:for-you.json*/);
-const FY_Q = FOR_YOU ? location.search.slice(1) : "";   // the landing page's choices, kept in the address while this tab shows
+const FY_Q = FY_SAVED_Q;   // the landing page's choices (this visit's request), kept in the address while this tab shows
+// A new request from the landing page (not this tab again, or a reload): this visit's earlier directory choices go (filters,
+// ticks, scroll positions, folds), so the other tabs start from this request, Phone and online with its topics as In person
+// has. (Before links.js reads them; its key, STATE_KEY, is "ss-directory:" and the page's path.)
+if (FOR_YOU) try {
+  const req = (sessionStorage.getItem("ss-foryou") || "") + "|" + location.search, sup = START_ADDRESS.get("support");
+  if (sessionStorage.getItem("ss-foryou-seen") !== req) {
+    sessionStorage.setItem("ss-foryou-seen", req);
+    sessionStorage.setItem("ss-directory:" + location.pathname, JSON.stringify(sup ? { talk: String(new URLSearchParams({ support: sup })) } : {}));
+    ["near", "talk"].forEach(t => sessionStorage.removeItem("ss-foryou-fold-" + t));
+  }
+} catch (e) { /* (no storage: nothing saved to clear) */ }
 { const shared = linkFor; linkFor = t => t === "foryou" ? FY_Q : shared(t); }
 
 function fyChoices() {

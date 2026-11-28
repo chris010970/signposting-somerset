@@ -6,9 +6,13 @@
    The title and the illustration go home from every page. Runs after tabs.js, before links.js opens the page. */
 const NEXT_PAGE = "/*NEXT_PAGE*/";
 const PAGE_URL = { home: "/*HOME_URL*/", courses: "/*COURSES_URL*/", about: "/*ABOUT_URL*/", directory: "/*DIRECTORY_URL*/" };
-// For you: only when the landing page sent topics or a place (its address: ?support=...&town=...#foryou)
+// For you: opened from the landing page, with topics or a place (its address: ?support=...&town=...#foryou). Its request is kept
+// for the visit (FY_SAVED_Q), so the tab stays when they follow a link into In person or Phone and online
 const FOR_YOU = NEXT_PAGE === "directory" && location.hash === "#foryou" && /[?&](support|town|lat|fy)=/.test(location.search);
-const PAGE_TABS = { home: ["home"], directory: FOR_YOU ? ["foryou", "near", "talk", "places"] : ["near", "talk", "places"], courses: ["course", "training"], about: ["about"] }[NEXT_PAGE];
+const FY_SAVED_Q = (() => { try { if (FOR_YOU) sessionStorage.setItem("ss-foryou-q", location.search.slice(1)); return sessionStorage.getItem("ss-foryou-q") || ""; }
+  catch (e) { return FOR_YOU ? location.search.slice(1) : ""; } })();
+const HAS_FOR_YOU = NEXT_PAGE === "directory" && !!FY_SAVED_Q;
+const PAGE_TABS = { home: ["home"], directory: HAS_FOR_YOU ? ["foryou", "near", "talk", "places"] : ["near", "talk", "places"], courses: ["course", "training"], about: ["about"] }[NEXT_PAGE];
 // Old links to the directory's Courses or About tab: to their own pages, with their filters
 if (NEXT_PAGE === "directory" && ["#course", "#about"].includes(location.hash))
   location.replace((location.hash === "#course" ? PAGE_URL.courses : PAGE_URL.about) + location.search + location.hash);
@@ -27,7 +31,7 @@ const OWN_TABS = { training: () => drawTraining(), home: () => drawHome(), foryo
       for (const k of SITE_TABS) { if ($("tab-" + k)) currentTab($("tab-" + k), k === t); $("panel-" + k).hidden = k !== t; $("hdr-" + k).hidden = k !== t; }
       OWN_TABS[t]();
       // (For you keeps its topics in the address, so it can be reloaded or shared)
-      try { history.replaceState(null, "", location.pathname + (t === "foryou" ? location.search + "#foryou" : t === "home" ? "" : "#" + t)); } catch (e) {}
+      try { history.replaceState(null, "", location.pathname + (t === "foryou" ? "?" + FY_SAVED_Q + "#foryou" : t === "home" ? "" : "#" + t)); } catch (e) {}
       return;
     }
     if (OWN_TABS[tab]) tab = t;   // (nothing to remember about where those were scrolled)

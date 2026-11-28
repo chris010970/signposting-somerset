@@ -3212,7 +3212,7 @@ function renderAbout() {
     </section>
     </div></div>
     <p class="small">Service information belongs to the providers listed. Map data © <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap</a> contributors, © <a href="https://carto.com/attributions" target="_blank" rel="noopener">CARTO</a>.</p>
-    <p class="small" id="site-version">Version: next 2026-11-28 11:42</p>
+    <p class="small" id="site-version">Version: next 2026-11-28 12:02</p>
   </article>`;
 }
 /* ---------- Places: the town listings, as a tab of the directory ----------
@@ -3305,9 +3305,13 @@ addEventListener("resize", () => map && map.invalidateSize());
    The title and the illustration go home from every page. Runs after tabs.js, before links.js opens the page. */
 const NEXT_PAGE = "home";
 const PAGE_URL = { home: "/next/", courses: "/next/courses/", about: "/next/about/", directory: "/next/directory/" };
-// For you: only when the landing page sent topics or a place (its address: ?support=...&town=...#foryou)
+// For you: opened from the landing page, with topics or a place (its address: ?support=...&town=...#foryou). Its request is kept
+// for the visit (FY_SAVED_Q), so the tab stays when they follow a link into In person or Phone and online
 const FOR_YOU = NEXT_PAGE === "directory" && location.hash === "#foryou" && /[?&](support|town|lat|fy)=/.test(location.search);
-const PAGE_TABS = { home: ["home"], directory: FOR_YOU ? ["foryou", "near", "talk", "places"] : ["near", "talk", "places"], courses: ["course", "training"], about: ["about"] }[NEXT_PAGE];
+const FY_SAVED_Q = (() => { try { if (FOR_YOU) sessionStorage.setItem("ss-foryou-q", location.search.slice(1)); return sessionStorage.getItem("ss-foryou-q") || ""; }
+  catch (e) { return FOR_YOU ? location.search.slice(1) : ""; } })();
+const HAS_FOR_YOU = NEXT_PAGE === "directory" && !!FY_SAVED_Q;
+const PAGE_TABS = { home: ["home"], directory: HAS_FOR_YOU ? ["foryou", "near", "talk", "places"] : ["near", "talk", "places"], courses: ["course", "training"], about: ["about"] }[NEXT_PAGE];
 // Old links to the directory's Courses or About tab: to their own pages, with their filters
 if (NEXT_PAGE === "directory" && ["#course", "#about"].includes(location.hash))
   location.replace((location.hash === "#course" ? PAGE_URL.courses : PAGE_URL.about) + location.search + location.hash);
@@ -3326,7 +3330,7 @@ const OWN_TABS = { training: () => drawTraining(), home: () => drawHome(), foryo
       for (const k of SITE_TABS) { if ($("tab-" + k)) currentTab($("tab-" + k), k === t); $("panel-" + k).hidden = k !== t; $("hdr-" + k).hidden = k !== t; }
       OWN_TABS[t]();
       // (For you keeps its topics in the address, so it can be reloaded or shared)
-      try { history.replaceState(null, "", location.pathname + (t === "foryou" ? location.search + "#foryou" : t === "home" ? "" : "#" + t)); } catch (e) {}
+      try { history.replaceState(null, "", location.pathname + (t === "foryou" ? "?" + FY_SAVED_Q + "#foryou" : t === "home" ? "" : "#" + t)); } catch (e) {}
       return;
     }
     if (OWN_TABS[tab]) tab = t;   // (nothing to remember about where those were scrolled)
@@ -4095,7 +4099,18 @@ const FY = ({
  "generic_words": "\\b(groups?|clubs?|class(es)?|sessions?|meet-?ups?)\\b"
 }
 );
-const FY_Q = FOR_YOU ? location.search.slice(1) : "";   // the landing page's choices, kept in the address while this tab shows
+const FY_Q = FY_SAVED_Q;   // the landing page's choices (this visit's request), kept in the address while this tab shows
+// A new request from the landing page (not this tab again, or a reload): this visit's earlier directory choices go (filters,
+// ticks, scroll positions, folds), so the other tabs start from this request, Phone and online with its topics as In person
+// has. (Before links.js reads them; its key, STATE_KEY, is "ss-directory:" and the page's path.)
+if (FOR_YOU) try {
+  const req = (sessionStorage.getItem("ss-foryou") || "") + "|" + location.search, sup = START_ADDRESS.get("support");
+  if (sessionStorage.getItem("ss-foryou-seen") !== req) {
+    sessionStorage.setItem("ss-foryou-seen", req);
+    sessionStorage.setItem("ss-directory:" + location.pathname, JSON.stringify(sup ? { talk: String(new URLSearchParams({ support: sup })) } : {}));
+    ["near", "talk"].forEach(t => sessionStorage.removeItem("ss-foryou-fold-" + t));
+  }
+} catch (e) { /* (no storage: nothing saved to clear) */ }
 { const shared = linkFor; linkFor = t => t === "foryou" ? FY_Q : shared(t); }
 
 function fyChoices() {
